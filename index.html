@@ -2,400 +2,642 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BotPapa Shop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Market App</title>
+    <!-- Telegram Web App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
-            border-radius: 28px !important;
-        }
-        
-        :root {
-            --kloktun-front: 255, 255, 255;
-            --kloktun-front-secondary: 128, 128, 128;
-            --kloktun-background-body: 28, 28, 30;
-            --kloktun-stroke: 50, 50, 52;
-        }
-        
-        body {
-            background-color: rgb(var(--kloktun-background-body));
-            color: rgb(var(--kloktun-front));
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 0;
-            padding-bottom: 70px;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
-        
-        .container {
-            padding: 16px;
+
+        body {
+            background-color: #171719;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: #ffffff;
+            overflow-x: hidden;
+            padding: 0 15px 80px 15px; /* отступы по бокам 15px, снизу под меню */
         }
-        
-        /* Шапка */
-        .header {
+
+        /* ШАПКА (динамический заголовок) */
+        .app-header {
+            background-color: #171719;
+            padding: 12px 0;
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            margin: 0 -15px; /* компенсация боковых отступов body */
+            padding-left: 15px;
+            padding-right: 15px;
+            width: calc(100% + 30px);
         }
-        
+
         .header-icon {
-            width: 24px;
-            height: 24px;
-            color: #0A2FFF;
-        }
-        
-        .title {
-            font-size: 24px;
-            font-weight: 500;
-        }
-        
-        /* Поиск */
-        .search-bar {
-            background: rgb(50, 50, 52);
-            border-radius: 12px;
-            padding: 12px 16px;
-            margin-bottom: 20px;
+            width: 32px;
+            height: 32px;
+            color: #4BB7EF;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
         }
-        
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 550;
+            color: white;
+        }
+
+        /* Страницы */
+        .page {
+            display: none;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .page.active-page {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+
+        /* Поиск + фильтр ряд */
+        .search-filter-row {
+            display: flex;
+            gap: 12px;
+            margin: 16px 0 20px;
+        }
+
+        .search-box {
+            flex: 1;
+            background-color: #323234;
+            border-radius: 36px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 10px;
+            cursor: text;
+        }
+
+        .search-icon {
+            width: 22px;
+            height: 22px;
+            color: #9e9ea7;
+        }
+
         .search-input {
             background: transparent;
             border: none;
-            color: white;
-            flex: 1;
-            font-size: 16px;
             outline: none;
+            color: white;
+            font-size: 18px;
+            font-weight: 500;
+            width: 100%;
         }
-        
+
         .search-input::placeholder {
-            color: rgb(var(--kloktun-front-secondary));
+            color: #9e9ea7;
+            font-weight: 500;
         }
-        
-        /* Товар */
+
+        .filter-btn {
+            width: 48px;
+            height: 48px;
+            background: transparent;
+            border: 1px solid #323234;
+            border-radius: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.1s;
+            color: #ffffff;
+        }
+
+        .filter-btn:active {
+            opacity: 0.7;
+        }
+
+        /* Сетка карточек 2 в ряд */
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        /* Карточка товара */
         .product-card {
-            background: rgb(50, 50, 52);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 12px;
+            background-color: transparent; /* прозрачный фон, но обводка */
+            border: 1px solid #323234;
+            border-radius: 28px;
+            overflow: hidden;
+            position: relative;
+            transition: 0.1s;
+        }
+
+        .card-img-wrapper {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 28px;
+            overflow: hidden;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .card-content {
+            padding: 8px;
+        }
+
+        .card-title {
+            font-size: 19px;
+            font-weight: 500;
+            color: white;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .price-row {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .current-price {
+            font-size: 19px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .old-price {
+            font-size: 16px;
+            color: #8e8e93;
+            text-decoration: line-through;
+        }
+
+        /* Кнопка действия (в корзину / счётчик) */
+        .action-button {
+            width: 100%;
+            height: 36px;
+            border-radius: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.1s;
+            background-color: transparent;
+            border: 1px solid #4BB7EF;
+            color: #4BB7EF;
+        }
+
+        .cart-counter {
+            width: 100%;
+            height: 36px;
+            background-color: #202B32;
+            border-radius: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 12px;
+            color: white;
+            font-weight: 500;
+        }
+
+        .counter-minus, .counter-plus {
+            font-size: 20px;
+            font-weight: 600;
+            color: #4BB7EF;
+            cursor: pointer;
+            user-select: none;
+            width: 28px;
+            text-align: center;
+        }
+
+        .counter-value {
+            font-size: 16px;
+        }
+
+        /* Кнопка сердечка (избранное) */
+        .favorite-icon-card {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(23,23,25,0.7);
+            backdrop-filter: blur(2px);
+            border-radius: 30px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            transition: 0.1s;
+        }
+        .favorite-icon-card.active-fav {
+            color: #ff3b6f;
+        }
+
+        /* Страница фильтров (модальная страница) */
+        .filter-page {
+            padding-bottom: 20px;
+        }
+        .category-list {
+            margin-top: 24px;
+            background-color: #202B32;
+            border-radius: 28px;
+            overflow: hidden;
+        }
+        .category-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-        
-        .product-info h3 {
-            margin: 0 0 4px 0;
-            font-size: 16px;
-        }
-        
-        .product-price {
-            font-size: 18px;
-            font-weight: bold;
-            color: #0A2FFF;
-        }
-        
-        .old-price {
-            font-size: 14px;
-            color: rgb(var(--kloktun-front-secondary));
-            text-decoration: line-through;
-            margin-left: 8px;
-        }
-        
-        .buy-btn {
-            background: #0A2FFF;
-            border: none;
-            color: white;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 14px;
+            padding: 16px 20px;
+            border-bottom: 1px solid #323234;
             cursor: pointer;
         }
-        
-        /* Нижнее меню */
+        .category-item:last-child {
+            border-bottom: none;
+        }
+        .category-name {
+            font-size: 17px;
+            font-weight: 500;
+        }
+        .check-icon {
+            color: white;
+            width: 20px;
+            height: 20px;
+        }
+        .check-icon.active-check {
+            color: #4BB7EF;
+        }
+
+        /* Страница товара (детали) */
+        .product-detail {
+            padding-bottom: 30px;
+        }
+        .detail-img {
+            width: 100%;
+            border-radius: 36px;
+            margin-bottom: 16px;
+        }
+        .detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 16px;
+        }
+        .detail-title {
+            font-size: 20px;
+            font-weight: 550;
+        }
+        .detail-prices {
+            text-align: right;
+        }
+        .divider {
+            height: 1px;
+            background-color: #323234;
+            margin: 16px 0;
+        }
+        .delivery-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            font-size: 16px;
+        }
+        .description-text {
+            font-size: 19px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        .description-body {
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.4;
+            color: #c7c7cc;
+        }
+        .action-sticky-bar {
+            position: fixed;
+            bottom: 70px;
+            left: 15px;
+            right: 15px;
+            background-color: #171719;
+            border-radius: 28px 28px 16px 16px;
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            z-index: 25;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .detail-cart-btn {
+            flex: 2;
+            height: 48px;
+            border-radius: 48px;
+            background-color: transparent;
+            border: 1px solid #4BB7EF;
+            color: #4BB7EF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        .detail-fav-btn {
+            width: 48px;
+            height: 48px;
+            background-color: rgba(75,183,239,0.2);
+            border: none;
+            border-radius: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff3b6f;
+            cursor: pointer;
+        }
+        /* нижнее меню */
         .bottom-menu {
             position: fixed;
             bottom: 0;
             left: 0;
-            right: 0;
-            background: rgb(var(--kloktun-background-body));
-            border-top: 1px solid rgb(var(--kloktun-stroke));
+            width: 100%;
+            background-color: #171719;
+            border-radius: 28px 28px 0 0;
+            border-top: 1px solid #323234;
             display: flex;
-            padding: 8px 16px;
-            padding-bottom: 12px;
             justify-content: space-around;
+            align-items: center;
+            padding: 8px 12px 12px;
+            z-index: 100;
+            box-sizing: border-box;
         }
-        
         .menu-item {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 4px;
-            font-size: 11px;
-            color: #aeaeae;
             cursor: pointer;
             flex: 1;
-            text-align: center;
+            color: #8e8e93;
+            transition: 0.1s;
         }
-        
-        .menu-item.active {
-            color: #0A2FFF;
+        .menu-item.active-menu {
+            color: #4BB7EF;
         }
-        
         .menu-icon {
             width: 24px;
             height: 24px;
         }
-        
-        .menu-icon svg {
-            width: 100%;
-            height: 100%;
+        .menu-label {
+            font-size: 11px;
+            font-weight: 500;
         }
-        
-        /* Корзина */
-        .cart-summary {
-            margin-top: 20px;
-            padding: 16px;
-            background: rgb(50, 50, 52);
-            border-radius: 16px;
-            text-align: center;
-        }
-        
-        .total-price {
-            font-size: 24px;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-        
-        .checkout-btn {
-            background: #0A2FFF;
-            border: none;
-            color: white;
-            padding: 14px;
-            border-radius: 28px;
-            font-size: 16px;
-            width: 100%;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        
-        .empty-cart {
+
+        /* вспомогательные */
+        .no-results {
             text-align: center;
             padding: 40px;
-            color: rgb(var(--kloktun-front-secondary));
-        }
-        
-        .cart-item {
-            background: rgb(50, 50, 52);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .remove-btn {
-            background: #ff3b30;
-            border: none;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-            cursor: pointer;
+            color: #8e8e93;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Шапка -->
-        <div class="header">
-            <div class="header-icon">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M7.43499 1.25C6.86499 1.25 6.38199 1.25 5.98199 1.291C5.55599 1.335 5.16199 1.431 4.79099 1.661C4.41999 1.891 4.15699 2.2 3.92699 2.561C3.71199 2.901 3.49499 3.333 3.23999 3.843L3.22399 3.876L3.19699 3.936L1.79399 7.483C1.62699 7.906 1.44199 8.433 1.38699 8.971C1.33199 9.523 1.40799 10.154 1.83999 10.701C2.09726 11.0278 2.42531 11.292 2.79945 11.4737C3.17359 11.6554 3.58407 11.7499 3.99999 11.75C4.78799 11.75 5.49899 11.419 5.99999 10.887C6.25665 11.1599 6.56655 11.3773 6.91055 11.5258C7.25455 11.6742 7.62534 11.7505 7.99999 11.75C8.78799 11.75 9.49899 11.419 9.99999 10.887C10.2566 11.1599 10.5666 11.3773 10.9106 11.5258C11.2546 11.6742 11.6253 11.7505 12 11.75C12.788 11.75 13.499 11.419 14 10.887C14.2566 11.1599 14.5666 11.3773 14.9106 11.5258C15.2546 11.6742 15.6253 11.7505 16 11.75C16.788 11.75 17.499 11.419 18 10.887C18.2566 11.1599 18.5666 11.3773 18.9106 11.5258C19.2546 11.6742 19.6253 11.7505 20 11.75C20.877 11.75 21.658 11.339 22.16 10.702C22.592 10.154 22.668 9.522 22.613 8.972C22.559 8.432 22.373 7.906 22.207 7.483L20.803 3.935L20.776 3.875L20.76 3.843C20.505 3.333 20.289 2.9 20.073 2.561C19.843 2.2 19.582 1.891 19.21 1.661C18.838 1.431 18.445 1.335 18.019 1.291C17.619 1.25 17.135 1.25 16.565 1.25H7.43499Z" fill="currentColor"/>
-                    <path d="M19.75 15C19.75 14.8011 19.671 14.6103 19.5303 14.4697C19.3897 14.329 19.1989 14.25 19 14.25C18.8011 14.25 18.6103 14.329 18.4697 14.4697C18.329 14.6103 18.25 14.8011 18.25 15V21.25H5.75V15C5.75 14.8011 5.67098 14.6103 5.53033 14.4697C5.38968 14.329 5.19891 14.25 5 14.25C4.80109 14.25 4.61032 14.329 4.46967 14.4697C4.32902 14.6103 4.25 14.8011 4.25 15V21.25H3C2.80109 21.25 2.61032 21.329 2.46967 21.4697C2.32902 21.6103 2.25 21.8011 2.25 22C2.25 22.1989 2.32902 22.3897 2.46967 22.5303C2.61032 22.671 2.80109 22.75 3 22.75H21C21.1989 22.75 21.3897 22.671 21.5303 22.5303C21.671 22.3897 21.75 22.1989 21.75 22C21.75 21.8011 21.671 21.6103 21.5303 21.4697C21.3897 21.329 21.1989 21.25 21 21.25H19.75V15Z" fill="currentColor"/>
-                </svg>
-            </div>
-            <div class="title">Каталог</div>
-        </div>
-        
-        <!-- Поиск -->
-        <div class="search-bar">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="color: rgb(128,128,128)">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M11.5 2.75C10.3509 2.75 9.21312 2.97633 8.15152 3.41605C7.08992 3.85578 6.12533 4.5003 5.31282 5.31282C4.5003 6.12533 3.85578 7.08992 3.41605 8.15152C2.97633 9.21312 2.75 10.3509 2.75 11.5C2.75 12.6491 2.97633 13.7869 3.41605 14.8485C3.85578 15.9101 4.5003 16.8747 5.31282 17.6872C6.12533 18.4997 7.08992 19.1442 8.15152 19.5839C9.21312 20.0237 10.3509 20.25 11.5 20.25C13.8206 20.25 16.0462 19.3281 17.6872 17.6872C19.3281 16.0462 20.25 13.8206 20.25 11.5C20.25 9.17936 19.3281 6.95376 17.6872 5.31282C16.0462 3.67187 13.8206 2.75 11.5 2.75Z" fill="currentColor"/>
-                <path d="M22.53 21.47L18.198 19.259C16.3383 20.8691 13.9598 21.7536 11.5 21.75C5.84 21.75 1.25 17.16 1.25 11.5C1.25 5.84 5.84 1.25 11.5 1.25C17.16 1.25 21.75 5.84 21.75 11.5C21.75 14.06 20.811 16.402 19.259 18.198L22.53 21.47C22.6037 21.5387 22.6628 21.6215 22.7038 21.7135C22.7448 21.8055 22.7668 21.9048 22.7686 22.0055C22.7704 22.1062 22.7518 22.2062 22.7141 22.2996C22.6764 22.393 22.6203 22.4778 22.549 22.549C22.4778 22.6203 22.393 22.6764 22.2996 22.7141C22.2062 22.7518 22.1062 22.7704 22.0055 22.7686C21.9048 22.7668 21.8055 22.7448 21.7135 22.7038C21.6215 22.6628 21.5387 22.6037 21.47 22.53Z" fill="currentColor"/>
-                <path d="M11.5 2.75C10.3509 2.75 9.21312 2.97633 8.15152 3.41605C7.08992 3.85578 6.12533 4.5003 5.31282 5.31282C4.5003 6.12533 3.85578 7.08992 3.41605 8.15152C2.97633 9.21312 2.75 10.3509 2.75 11.5C2.75 12.6491 2.97633 13.7869 3.41605 14.8485C3.85578 15.9101 4.5003 16.8747 5.31282 17.6872C6.12533 18.4997 7.08992 19.1442 8.15152 19.5839C9.21312 20.0237 10.3509 20.25 11.5 20.25C13.8206 20.25 16.0462 19.3281 17.6872 17.6872C19.3281 16.0462 20.25 13.8206 20.25 11.5C20.25 9.17936 19.3281 6.95376 17.6872 5.31282C16.0462 3.67187 13.8206 2.75 11.5 2.75Z" fill="currentColor"/>
-            </svg>
-            <input type="text" class="search-input" placeholder="Найти товар" id="searchInput">
-        </div>
-        
-        <!-- Список товаров -->
-        <div id="products-list"></div>
-        
-        <!-- Корзина -->
-        <div id="cart-section" style="display: none;">
-            <div id="cart-items"></div>
-            <div class="cart-summary" id="cart-summary">
-                <div>Общая стоимость</div>
-                <div class="total-price" id="total-price">0 ₽</div>
-                <button class="checkout-btn" id="checkout-btn">Оформить заказ</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Нижнее меню с ПРАВИЛЬНЫМИ иконками из BotPapa -->
-    <div class="bottom-menu">
-        <div class="menu-item active" data-page="catalog">
-            <div class="menu-icon">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M7.43499 1.25C6.86499 1.25 6.38199 1.25 5.98199 1.291C5.55599 1.335 5.16199 1.431 4.79099 1.661C4.41999 1.891 4.15699 2.2 3.92699 2.561C3.71199 2.901 3.49499 3.333 3.23999 3.843L3.22399 3.876L3.19699 3.936L1.79399 7.483C1.62699 7.906 1.44199 8.433 1.38699 8.971C1.33199 9.523 1.40799 10.154 1.83999 10.701C2.09726 11.0278 2.42531 11.292 2.79945 11.4737C3.17359 11.6554 3.58407 11.7499 3.99999 11.75C4.78799 11.75 5.49899 11.419 5.99999 10.887C6.25665 11.1599 6.56655 11.3773 6.91055 11.5258C7.25455 11.6742 7.62534 11.7505 7.99999 11.75C8.78799 11.75 9.49899 11.419 9.99999 10.887C10.2566 11.1599 10.5666 11.3773 10.9106 11.5258C11.2546 11.6742 11.6253 11.7505 12 11.75C12.788 11.75 13.499 11.419 14 10.887C14.2566 11.1599 14.5666 11.3773 14.9106 11.5258C15.2546 11.6742 15.6253 11.7505 16 11.75C16.788 11.75 17.499 11.419 18 10.887C18.2566 11.1599 18.5666 11.3773 18.9106 11.5258C19.2546 11.6742 19.6253 11.7505 20 11.75C20.877 11.75 21.658 11.339 22.16 10.702C22.592 10.154 22.668 9.522 22.613 8.972C22.559 8.432 22.373 7.906 22.207 7.483L20.803 3.935L20.776 3.875L20.76 3.843C20.505 3.333 20.289 2.9 20.073 2.561C19.843 2.2 19.582 1.891 19.21 1.661C18.838 1.431 18.445 1.335 18.019 1.291C17.619 1.25 17.135 1.25 16.565 1.25H7.43499Z" fill="currentColor"/>
-                    <path d="M19.75 15C19.75 14.8011 19.671 14.6103 19.5303 14.4697C19.3897 14.329 19.1989 14.25 19 14.25C18.8011 14.25 18.6103 14.329 18.4697 14.4697C18.329 14.6103 18.25 14.8011 18.25 15V21.25H5.75V15C5.75 14.8011 5.67098 14.6103 5.53033 14.4697C5.38968 14.329 5.19891 14.25 5 14.25C4.80109 14.25 4.61032 14.329 4.46967 14.4697C4.32902 14.6103 4.25 14.8011 4.25 15V21.25H3C2.80109 21.25 2.61032 21.329 2.46967 21.4697C2.32902 21.6103 2.25 21.8011 2.25 22C2.25 22.1989 2.32902 22.3897 2.46967 22.5303C2.61032 22.671 2.80109 22.75 3 22.75H21C21.1989 22.75 21.3897 22.671 21.5303 22.5303C21.671 22.3897 21.75 22.1989 21.75 22C21.75 21.8011 21.671 21.6103 21.5303 21.4697C21.3897 21.329 21.1989 21.25 21 21.25H19.75V15Z" fill="currentColor"/>
-                </svg>
-            </div>
-            <span>Каталог</span>
-        </div>
-        <div class="menu-item" data-page="cart">
-            <div class="menu-icon">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M2.249 2.29199C2.06123 2.22595 1.85491 2.23721 1.67544 2.32329C1.49596 2.40937 1.35804 2.56322 1.292 2.75099C1.22596 2.93876 1.23722 3.14508 1.3233 3.32455C1.40938 3.50403 1.56323 3.64195 1.751 3.70799L2.013 3.79899C2.68 4.03399 3.119 4.18899 3.442 4.34799C3.745 4.49699 3.879 4.61799 3.967 4.74599C4.057 4.87799 4.127 5.05999 4.167 5.42299C4.207 5.80299 4.208 6.29799 4.208 7.03799V9.75999C4.208 11.213 4.222 12.26 4.359 13.06C4.505 13.914 4.797 14.526 5.344 15.102C5.938 15.729 6.69 16.002 7.587 16.128C8.445 16.25 9.535 16.25 10.88 16.25H16.286C17.028 16.25 17.652 16.25 18.156 16.188C18.693 16.123 19.181 15.979 19.608 15.632C20.034 15.284 20.273 14.835 20.445 14.323C20.608 13.841 20.734 13.23 20.884 12.503L21.392 10.034L21.394 10.029L21.404 9.97699C21.569 9.15199 21.707 8.45799 21.742 7.89999C21.778 7.31399 21.711 6.73599 21.329 6.23999C21.094 5.93399 20.764 5.76099 20.463 5.65599C20.1378 5.54906 19.8018 5.47863 19.461 5.44599C18.774 5.36999 17.939 5.36999 17.121 5.36999H5.667C5.66399 5.33396 5.66066 5.29796 5.657 5.26199C5.603 4.76499 5.487 4.31199 5.204 3.89999C4.92 3.48399 4.542 3.21799 4.102 3.00099C3.69 2.79899 3.166 2.61499 2.549 2.39799L2.249 2.29199ZM5.709 6.86999H17.089C17.945 6.86999 18.699 6.87099 19.294 6.93699C19.59 6.97099 19.811 7.01699 19.966 7.07099C20.0293 7.0891 20.0888 7.11821 20.142 7.15699C20.204 7.23899 20.27 7.38699 20.244 7.80799C20.217 8.25199 20.101 8.84399 19.923 9.73399V9.73599L19.423 12.156C19.263 12.939 19.153 13.459 19.024 13.844C18.901 14.21 18.785 14.367 18.66 14.469C18.535 14.571 18.357 14.653 17.975 14.699C17.571 14.749 17.04 14.75 16.241 14.75H10.938C9.521 14.75 8.538 14.748 7.798 14.643C7.082 14.542 6.705 14.358 6.432 14.07C6.112 13.732 5.939 13.402 5.837 12.807C5.727 12.157 5.708 11.249 5.708 9.75999L5.709 6.86999Z" fill="currentColor"/>
-                    <path d="M7.5 21.75C6.90326 21.75 6.33097 21.5129 5.90901 21.091C5.48705 20.669 5.25 20.0967 5.25 19.5C5.25 18.9033 5.48705 18.331 5.90901 17.909C6.33097 17.487 6.90326 17.25 7.5 17.25C8.09674 17.25 8.66903 17.487 9.09099 17.909C9.51295 18.331 9.75 18.9033 9.75 19.5C9.75 20.0967 9.51295 20.669 9.09099 21.091C8.66903 21.5129 8.09674 21.75 7.5 21.75Z" fill="currentColor"/>
-                    <path d="M16.5 21.75C15.9033 21.75 15.331 21.5129 14.909 21.091C14.4871 20.669 14.25 20.0967 14.25 19.5C14.25 18.9033 14.4871 18.331 14.909 17.909C15.331 17.487 15.9033 17.25 16.5 17.25C17.0967 17.25 17.669 17.487 18.091 17.909C18.5129 18.331 18.75 18.9033 18.75 19.5C18.75 20.0967 18.5129 20.669 18.091 21.091C17.669 21.5129 17.0967 21.75 16.5 21.75Z" fill="currentColor"/>
-                </svg>
-            </div>
-            <span>Корзина</span>
-        </div>
-        <div class="menu-item" data-page="favorite">
-            <div class="menu-icon">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12 21.35C12 21.35 4 15.5 4 8.5C4 5.5 6.5 3 9.5 3C11.5 3 12.5 4 12 4C11.5 4 12.5 3 14.5 3C17.5 3 20 5.5 20 8.5C20 15.5 12 21.35 12 21.35Z" fill="currentColor"/>
-                </svg>
-            </div>
-            <span>Избранное</span>
-        </div>
-        <div class="menu-item" data-page="profile">
-            <div class="menu-icon">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" fill="currentColor"/>
-                    <path d="M5 20V19C5 15.6863 7.68629 13 11 13H13C16.3137 13 19 15.6863 19 19V20" stroke="currentColor" stroke-width="1.5" fill="none"/>
-                </svg>
-            </div>
-            <span>Профиль</span>
-        </div>
-    </div>
 
-    <script>
-        // Товары (меняй здесь)
-        const products = [
-            { id: 1, name: "Brawl Pass", price: 769, oldPrice: 799 },
-            { id: 2, name: "Brawl Pass Plus", price: 1099, oldPrice: null },
-            { id: 3, name: "Pro Pass", price: 150, oldPrice: null, badge: "Акция" },
-            { id: 4, name: "Товар 4", price: 2499, oldPrice: null }
-        ];
-        
-        let cart = [];
-        
-        function renderProducts(filter = '') {
-            const container = document.getElementById('products-list');
-            const filtered = products.filter(p => p.name.toLowerCase().includes(filter.toLowerCase()));
-            
-            if (filtered.length === 0) {
-                container.innerHTML = '<div class="empty-cart">Товары не найдены</div>';
-                return;
-            }
-            
-            container.innerHTML = filtered.map(p => `
-                <div class="product-card">
-                    <div class="product-info">
-                        <h3>${p.name} ${p.badge ? `<span style="color:#ff9f0a; font-size:12px;">${p.badge}</span>` : ''}</h3>
-                        <div>
-                            <span class="product-price">${p.price} ₽</span>
-                            ${p.oldPrice ? `<span class="old-price">${p.oldPrice} ₽</span>` : ''}
-                        </div>
-                    </div>
-                    <button class="buy-btn" onclick="addToCart(${p.id})">В корзину</button>
-                </div>
-            `).join('');
-        }
-        
-        function renderCart() {
-            const container = document.getElementById('cart-items');
-            const total = cart.reduce((sum, item) => sum + item.price, 0);
-            
-            if (cart.length === 0) {
-                container.innerHTML = '<div class="empty-cart">Корзина пуста</div>';
-            } else {
-                container.innerHTML = cart.map((item, idx) => `
-                    <div class="cart-item">
-                        <div class="product-info">
-                            <h3>${item.name}</h3>
-                            <div class="product-price">${item.price} ₽</div>
-                        </div>
-                        <button class="remove-btn" onclick="removeFromCart(${idx})">Удалить</button>
-                    </div>
-                `).join('');
-            }
-            
-            document.getElementById('total-price').innerHTML = total + ' ₽';
-        }
-        
-        window.addToCart = function(id) {
-            const product = products.find(p => p.id === id);
-            if (product) {
-                cart.push({ ...product });
-                renderCart();
-                alert(`Добавлен: ${product.name}`);
-            }
-        };
-        
-        window.removeFromCart = function(idx) {
-            cart.splice(idx, 1);
-            renderCart();
-        };
-        
-        // Поиск
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            if (document.querySelector('[data-page="catalog"]').classList.contains('active')) {
-                renderProducts(e.target.value);
-            }
-        });
-        
-        // Переключение страниц
+<!-- Шапка приложения (динамическая) -->
+<div class="app-header" id="appHeader">
+    <div class="header-icon" id="headerIcon"></div>
+    <div class="header-title" id="headerTitle">Каталог</div>
+</div>
+
+<!-- СТРАНИЦА КАТАЛОГ -->
+<div id="catalogPage" class="page active-page">
+    <div class="search-filter-row">
+        <div class="search-box" id="searchBox">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/>
+            </svg>
+            <input type="text" class="search-input" id="searchInput" placeholder="Найти товар по названию">
+        </div>
+        <div class="filter-btn" id="openFilterBtn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M4 6C4 5.44772 4.44772 5 5 5H19C19.5523 5 20 5.44772 20 6C20 6.55228 19.5523 7 19 7H5C4.44772 7 4 6.55228 4 6Z" fill="currentColor"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M6 11C6 10.4477 6.44772 10 7 10H17C17.5523 10 18 10.4477 18 11C18 11.5523 17.5523 12 17 12H7C6.44772 12 6 11.5523 6 11Z" fill="currentColor"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M9 16C9 15.4477 9.44772 15 10 15H14C14.5523 15 15 15.4477 15 16C15 16.5523 14.5523 17 14 17H10C9.44772 17 9 16.5523 9 16Z" fill="currentColor"/>
+            </svg>
+        </div>
+    </div>
+    <div id="catalogGrid" class="catalog-grid"></div>
+</div>
+
+<!-- СТРАНИЦА ФИЛЬТРЫ (SKU) -->
+<div id="filterPage" class="page">
+    <div class="filter-page">
+        <div class="category-list" id="categoryList"></div>
+    </div>
+</div>
+
+<!-- СТРАНИЦА ИЗБРАННОЕ -->
+<div id="favoritesPage" class="page">
+    <div id="favoritesGrid" class="catalog-grid"></div>
+</div>
+
+<!-- СТРАНИЦА ПРОФИЛЬ (заглушка) -->
+<div id="profilePage" class="page">
+    <div style="text-align: center; margin-top: 40px; color: #aaa;">Профиль пользователя<br>Здесь будет информация</div>
+</div>
+
+<!-- Страница деталей товара (скрыта до клика) -->
+<div id="detailPage" class="page"></div>
+
+<!-- Нижнее меню -->
+<div class="bottom-menu" id="bottomMenu">
+    <div class="menu-item" data-page="catalog">
+        <svg class="menu-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.43499 1.25C6.86499 1.25 6.38199 1.25 5.98199 1.291C5.55599 1.335 5.16199 1.431 4.79099 1.661C4.41999 1.891 4.15699 2.2 3.92699 2.561C3.71199 2.901 3.49499 3.333 3.23999 3.843L3.22399 3.876L3.19699 3.936L1.79399 7.483C1.62699 7.906 1.44199 8.433 1.38699 8.971C1.33199 9.523 1.40799 10.154 1.83999 10.701C2.09726 11.0278 2.42531 11.292 2.79945 11.4737C3.17359 11.6554 3.58407 11.7499 3.99999 11.75C4.78799 11.75 5.49899 11.419 5.99999 10.887C6.25665 11.1599 6.56655 11.3773 6.91055 11.5258C7.25455 11.6742 7.62534 11.7505 7.99999 11.75C8.78799 11.75 9.49899 11.419 9.99999 10.887C10.2566 11.1599 10.5666 11.3773 10.9106 11.5258C11.2546 11.6742 11.6253 11.7505 12 11.75C12.788 11.75 13.499 11.419 14 10.887C14.2566 11.1599 14.5666 11.3773 14.9106 11.5258C15.2546 11.6742 15.6253 11.7505 16 11.75C16.788 11.75 17.499 11.419 18 10.887C18.2566 11.1599 18.5666 11.3773 18.9106 11.5258C19.2546 11.6742 19.6253 11.7505 20 11.75C20.877 11.75 21.658 11.339 22.16 10.702C22.592 10.154 22.668 9.522 22.613 8.972C22.559 8.432 22.373 7.906 22.207 7.483L20.803 3.935L20.776 3.875L20.76 3.843C20.505 3.333 20.289 2.9 20.073 2.561C19.843 2.2 19.582 1.891 19.21 1.661C18.838 1.431 18.445 1.335 18.019 1.291C17.619 1.25 17.135 1.25 16.565 1.25H7.43499ZM7.99999 10.25C7.30999 10.25 6.74999 9.69 6.74999 9C6.74999 8.80109 6.67098 8.61032 6.53032 8.46967C6.38967 8.32902 6.19891 8.25 5.99999 8.25C5.80108 8.25 5.61032 8.32902 5.46966 8.46967C5.32901 8.61032 5.24999 8.80109 5.24999 9C5.24991 9.2598 5.16888 9.51311 5.01816 9.72472C4.86745 9.93633 4.65455 10.0957 4.40906 10.1808C4.16357 10.2658 3.89769 10.2722 3.64839 10.1991C3.39908 10.126 3.17874 9.9771 3.01799 9.773C2.90399 9.629 2.84799 9.431 2.87999 9.121C2.91199 8.799 3.03099 8.433 3.18799 8.035L4.57999 4.517C4.84799 3.982 5.02699 3.627 5.19299 3.367C5.35299 3.115 5.46799 3.006 5.57899 2.937C5.69099 2.867 5.83899 2.814 6.13599 2.783C6.44999 2.751 6.85599 2.75 7.47199 2.75H16.528C17.145 2.75 17.551 2.75 17.864 2.783C18.161 2.814 18.31 2.868 18.421 2.937C18.532 3.006 18.647 3.115 18.807 3.367C18.974 3.627 19.153 3.982 19.42 4.517L20.812 8.035C20.969 8.433 21.088 8.799 21.12 9.121C21.152 9.431 21.096 9.629 20.983 9.773C20.8224 9.9775 20.602 10.1268 20.3525 10.2001C20.103 10.2735 19.8368 10.2671 19.5911 10.1821C19.3454 10.097 19.1323 9.93743 18.9815 9.72555C18.8307 9.51367 18.7498 9.26004 18.75 9C18.75 8.80109 18.671 8.61032 18.5303 8.46967C18.3897 8.32902 18.1989 8.25 18 8.25C17.8011 8.25 17.6103 8.32902 17.4697 8.46967C17.329 8.61032 17.25 8.80109 17.25 9C17.25 9.33152 17.1183 9.64946 16.8839 9.88388C16.6495 10.1183 16.3315 10.25 16 10.25C15.6685 10.25 15.3505 10.1183 15.1161 9.88388C14.8817 9.64946 14.75 9.33152 14.75 9C14.75 8.80109 14.671 8.61032 14.5303 8.46967C14.3897 8.32902 14.1989 8.25 14 8.25C13.8011 8.25 13.6103 8.32902 13.4697 8.46967C13.329 8.61032 13.25 8.80109 13.25 9C13.25 9.33152 13.1183 9.64946 12.8839 9.88388C12.6495 10.1183 12.3315 10.25 12 10.25C11.6685 10.25 11.3505 10.1183 11.1161 9.88388C10.8817 9.64946 10.75 9.33152 10.75 9C10.75 8.80109 10.671 8.61032 10.5303 8.46967C10.3897 8.32902 10.1989 8.25 9.99999 8.25C9.80108 8.25 9.61032 8.32902 9.46966 8.46967C9.32901 8.61032 9.24999 8.80109 9.24999 9C9.24999 9.69 8.68999 10.25 7.99999 10.25Z" fill="currentColor"></path><path d="M19.75 15C19.75 14.8011 19.671 14.6103 19.5303 14.4697C19.3897 14.329 19.1989 14.25 19 14.25C18.8011 14.25 18.6103 14.329 18.4697 14.4697C18.329 14.6103 18.25 14.8011 18.25 15V21.25H5.75V15C5.75 14.8011 5.67098 14.6103 5.53033 14.4697C5.38968 14.329 5.19891 14.25 5 14.25C4.80109 14.25 4.61032 14.329 4.46967 14.4697C4.32902 14.6103 4.25 14.8011 4.25 15V21.25H3C2.80109 21.25 2.61032 21.329 2.46967 21.4697C2.32902 21.6103 2.25 21.8011 2.25 22C2.25 22.1989 2.32902 22.3897 2.46967 22.5303C2.61032 22.671 2.80109 22.75 3 22.75H21C21.1989 22.75 21.3897 22.671 21.5303 22.5303C21.671 22.3897 21.75 22.1989 21.75 22C21.75 21.8011 21.671 21.6103 21.5303 21.4697C21.3897 21.329 21.1989 21.25 21 21.25H19.75V15Z" fill="currentColor"></path></svg>
+        <span class="menu-label">Каталог</span>
+    </div>
+    <div class="menu-item" data-page="favorites">
+        <svg class="menu-icon" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8 1.3335C7.16014 1.3335 6.35469 1.66713 5.76082 2.26099C5.16696 2.85486 4.83333 3.66031 4.83333 4.50016C4.83333 5.34001 5.16696 6.14547 5.76082 6.73933C6.35469 7.3332 7.16014 7.66683 8 7.66683C8.83985 7.66683 9.6453 7.3332 10.2392 6.73933C10.833 6.14547 11.1667 5.34001 11.1667 4.50016C11.1667 3.66031 10.833 2.85486 10.2392 2.26099C9.6453 1.66713 8.83985 1.3335 8 1.3335ZM5.83333 4.50016C5.83333 3.92553 6.0616 3.37443 6.46793 2.9681C6.87426 2.56177 7.42536 2.3335 8 2.3335C8.57463 2.3335 9.12573 2.56177 9.53206 2.9681C9.93839 3.37443 10.1667 3.92553 10.1667 4.50016C10.1667 5.0748 9.93839 5.6259 9.53206 6.03223C9.12573 6.43856 8.57463 6.66683 8 6.66683C7.42536 6.66683 6.87426 6.43856 6.46793 6.03223C6.0616 5.6259 5.83333 5.0748 5.83333 4.50016ZM8 8.66683C6.458 8.66683 5.03666 9.0175 3.984 9.6095C2.94666 10.1935 2.16666 11.0775 2.16666 12.1668V12.2348C2.166 13.0095 2.16533 13.9815 3.018 14.6762C3.43733 15.0175 4.02466 15.2608 4.818 15.4208C5.61266 15.5822 6.64933 15.6668 8 15.6668C9.35066 15.6668 10.3867 15.5822 11.1827 15.4208C11.976 15.2608 12.5627 15.0175 12.9827 14.6762C13.8353 13.9815 13.834 13.0095 13.8333 12.2348V12.1668C13.8333 11.0775 13.0533 10.1935 12.0167 9.6095C10.9633 9.0175 9.54266 8.66683 8 8.66683ZM3.16666 12.1668C3.16666 11.5995 3.58133 10.9835 4.474 10.4815C5.35133 9.98816 6.59666 9.66683 8.00066 9.66683C9.40333 9.66683 10.6487 9.98816 11.526 10.4815C12.4193 10.9835 12.8333 11.5995 12.8333 12.1668C12.8333 13.0388 12.8067 13.5295 12.3507 13.9002C12.104 14.1015 11.6907 14.2982 10.984 14.4408C10.2793 14.5835 9.316 14.6668 8 14.6668C6.684 14.6668 5.72 14.5835 5.016 14.4408C4.30933 14.2982 3.896 14.1015 3.64933 13.9008C3.19333 13.5295 3.16666 13.0388 3.16666 12.1668Z" fill="currentColor"></path></svg>
+        <span class="menu-label">Избранное</span>
+    </div>
+    <div class="menu-item" data-page="profile">
+        <svg class="menu-icon" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8 1.3335C7.16014 1.3335 6.35469 1.66713 5.76082 2.26099C5.16696 2.85486 4.83333 3.66031 4.83333 4.50016C4.83333 5.34001 5.16696 6.14547 5.76082 6.73933C6.35469 7.3332 7.16014 7.66683 8 7.66683C8.83985 7.66683 9.6453 7.3332 10.2392 6.73933C10.833 6.14547 11.1667 5.34001 11.1667 4.50016C11.1667 3.66031 10.833 2.85486 10.2392 2.26099C9.6453 1.66713 8.83985 1.3335 8 1.3335ZM5.83333 4.50016C5.83333 3.92553 6.0616 3.37443 6.46793 2.9681C6.87426 2.56177 7.42536 2.3335 8 2.3335C8.57463 2.3335 9.12573 2.56177 9.53206 2.9681C9.93839 3.37443 10.1667 3.92553 10.1667 4.50016C10.1667 5.0748 9.93839 5.6259 9.53206 6.03223C9.12573 6.43856 8.57463 6.66683 8 6.66683C7.42536 6.66683 6.87426 6.43856 6.46793 6.03223C6.0616 5.6259 5.83333 5.0748 5.83333 4.50016ZM8 8.66683C6.458 8.66683 5.03666 9.0175 3.984 9.6095C2.94666 10.1935 2.16666 11.0775 2.16666 12.1668V12.2348C2.166 13.0095 2.16533 13.9815 3.018 14.6762C3.43733 15.0175 4.02466 15.2608 4.818 15.4208C5.61266 15.5822 6.64933 15.6668 8 15.6668C9.35066 15.6668 10.3867 15.5822 11.1827 15.4208C11.976 15.2608 12.5627 15.0175 12.9827 14.6762C13.8353 13.9815 13.834 13.0095 13.8333 12.2348V12.1668C13.8333 11.0775 13.0533 10.1935 12.0167 9.6095C10.9633 9.0175 9.54266 8.66683 8 8.66683ZM3.16666 12.1668C3.16666 11.5995 3.58133 10.9835 4.474 10.4815C5.35133 9.98816 6.59666 9.66683 8.00066 9.66683C9.40333 9.66683 10.6487 9.98816 11.526 10.4815C12.4193 10.9835 12.8333 11.5995 12.8333 12.1668C12.8333 13.0388 12.8067 13.5295 12.3507 13.9002C12.104 14.1015 11.6907 14.2982 10.984 14.4408C10.2793 14.5835 9.316 14.6668 8 14.6668C6.684 14.6668 5.72 14.5835 5.016 14.4408C4.30933 14.2982 3.896 14.1015 3.64933 13.9008C3.19333 13.5295 3.16666 13.0388 3.16666 12.1668Z" fill="currentColor"></path></svg>
+        <span class="menu-label">Профиль</span>
+    </div>
+</div>
+
+<script>
+    window.Telegram.WebApp.ready();
+    window.Telegram.WebApp.expand();
+
+    // данные товаров
+    const products = [
+        { id: 1, name: 'Brawl Pass', price: 769, oldPrice: 799, image: 'https://storage.botpapa.me/files/7cd0ec40-456b-11f1-bef9-f1ec7a2c6e45.jpeg', description: 'Эксклюзивный пропуск с наградами Brawl Stars.' },
+        { id: 2, name: 'Brawl Pass Plus', price: 1099, oldPrice: 1169, image: 'https://storage.botpapa.me/files/7643fb60-456b-11f1-bef9-f1ec7a2c6e45.jpeg', description: 'Расширенная версия с лучшими призами.' },
+        { id: 3, name: 'Pro Pass', price: 2129, oldPrice: 2249, image: 'https://storage.botpapa.me/files/e7f57440-4571-11f1-bef9-f1ec7a2c6e45.jpeg', description: 'Про-пропуск для киберспортсменов.' },
+        { id: 4, name: '2000 Gems', price: 4249, oldPrice: 4449, image: 'https://storage.botpapa.me/files/eb4ed870-4571-11f1-bef9-f1ec7a2c6e45.jpeg', description: '2000 самоцветов для внутриигровых покупок.' }
+    ];
+
+    // корзина: ключ id -> кол-во
+    let cart = JSON.parse(localStorage.getItem('cart')) || {};
+    // избранное: массив id
+    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    let currentFilter = 'all'; // all, Brawl Stars, Clash Royale (демо)
+    let currentSearch = '';
+    let currentPage = 'catalog';
+    let selectedProduct = null;
+
+    // сохраняем
+    function saveCart() { localStorage.setItem('cart', JSON.stringify(cart)); }
+    function saveFav() { localStorage.setItem('favorites', JSON.stringify(favorites)); }
+
+    function updateMenuActive(pageId) {
         document.querySelectorAll('.menu-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const page = item.dataset.page;
-                
-                document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-                item.classList.add('active');
-                
-                if (page === 'catalog') {
-                    document.getElementById('products-list').style.display = 'block';
-                    document.getElementById('cart-section').style.display = 'none';
-                    document.querySelector('.search-bar').style.display = 'flex';
-                    renderProducts(document.getElementById('searchInput').value);
-                } else if (page === 'cart') {
-                    document.getElementById('products-list').style.display = 'none';
-                    document.getElementById('cart-section').style.display = 'block';
-                    document.querySelector('.search-bar').style.display = 'none';
-                    renderCart();
-                } else {
-                    alert(`Страница "${page}" в разработке`);
-                }
-            });
+            if(item.dataset.page === pageId) item.classList.add('active-menu');
+            else item.classList.remove('active-menu');
         });
-        
-        // Оформление заказа
-        document.getElementById('checkout-btn').addEventListener('click', () => {
-            if (cart.length === 0) {
-                alert('Корзина пуста');
-                return;
-            }
-            const total = cart.reduce((sum, item) => sum + item.price, 0);
-            alert(`Заказ оформлен!\n\nТовары:\n${cart.map(p => p.name).join('\n')}\n\nИтого: ${total} ₽`);
-            cart = [];
-            renderCart();
+    }
+
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+        const target = document.getElementById(pageId + 'Page');
+        if(target) target.classList.add('active-page');
+        currentPage = pageId;
+        updateMenuActive(pageId);
+        // обновить хедер
+        const headerIcon = document.getElementById('headerIcon');
+        const headerTitle = document.getElementById('headerTitle');
+        if(pageId === 'catalog') {
+            headerIcon.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z" fill="#4BB7EF"/></svg>`;
+            headerTitle.innerText = 'Каталог';
+            renderCatalog();
+        } else if(pageId === 'favorites') {
+            headerIcon.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#4BB7EF"/></svg>`;
+            headerTitle.innerText = 'Избранное';
+            renderFavorites();
+        } else if(pageId === 'profile') {
+            headerIcon.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#4BB7EF"/></svg>`;
+            headerTitle.innerText = 'Профиль';
+        } else if(pageId === 'filter') {
+            headerIcon.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z" fill="#4BB7EF"/></svg>`;
+            headerTitle.innerText = 'Фильтры';
+            renderFilterPage();
+        } else if(pageId === 'detail') {
+            // handled separately
+        }
+    }
+
+    function renderCatalog() {
+        let filtered = products.filter(p => p.name.toLowerCase().includes(currentSearch.toLowerCase()));
+        if(currentFilter === 'Brawl Stars') filtered = filtered.filter(p => p.name.includes('Brawl'));
+        else if(currentFilter === 'Clash Royale') filtered = filtered.filter(p => p.name.includes('Royale'));
+        const container = document.getElementById('catalogGrid');
+        if(!filtered.length) { container.innerHTML = '<div class="no-results">Нет товаров</div>'; return; }
+        container.innerHTML = filtered.map(p => renderProductCard(p)).join('');
+        attachCardEvents();
+    }
+
+    function renderProductCard(p) {
+        const inCart = cart[p.id] > 0;
+        const isFav = favorites.includes(p.id);
+        return `
+            <div class="product-card" data-id="${p.id}">
+                <div class="card-img-wrapper"><img class="card-img" src="${p.image}" alt="${p.name}"></div>
+                <div class="favorite-icon-card" data-fav="${p.id}">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="${isFav ? '#ff3b6f' : 'white'}"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </div>
+                <div class="card-content">
+                    <div class="card-title">${p.name}</div>
+                    <div class="price-row"><span class="current-price">${p.price}₽</span><span class="old-price">${p.oldPrice}₽</span></div>
+                    ${inCart ? `<div class="cart-counter" data-id="${p.id}"><span class="counter-minus">−</span><span class="counter-value">${cart[p.id]}</span><span class="counter-plus">+</span></div>` : `<div class="action-button add-to-cart-btn" data-id="${p.id}">В корзину</div>`}
+                </div>
+            </div>
+        `;
+    }
+
+    function attachCardEvents() {
+        document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+            btn.removeEventListener('click', addToCartHandler);
+            btn.addEventListener('click', addToCartHandler);
         });
-        
-        // Инициализация
-        renderProducts();
-    </script>
+        document.querySelectorAll('.counter-minus').forEach(el => {
+            el.removeEventListener('click', minusHandler);
+            el.addEventListener('click', minusHandler);
+        });
+        document.querySelectorAll('.counter-plus').forEach(el => {
+            el.removeEventListener('click', plusHandler);
+            el.addEventListener('click', plusHandler);
+        });
+        document.querySelectorAll('.favorite-icon-card').forEach(el => {
+            el.removeEventListener('click', favHandlerCard);
+            el.addEventListener('click', favHandlerCard);
+        });
+        document.querySelectorAll('.product-card').forEach(card => {
+            card.removeEventListener('click', cardClickHandler);
+            card.addEventListener('click', cardClickHandler);
+        });
+    }
+
+    function addToCartHandler(e) { e.stopPropagation(); const id = parseInt(this.dataset.id); cart[id] = 1; saveCart(); renderCatalog(); }
+    function minusHandler(e) { e.stopPropagation(); const id = parseInt(this.parentElement.dataset.id); if(cart[id] > 1) cart[id]--; else delete cart[id]; saveCart(); renderCatalog(); }
+    function plusHandler(e) { e.stopPropagation(); alert('Данный товар недоступен к покупке в количестве'); }
+    function favHandlerCard(e) { e.stopPropagation(); const id = parseInt(this.dataset.fav); const idx = favorites.indexOf(id); if(idx === -1) favorites.push(id); else favorites.splice(idx,1); saveFav(); renderCatalog(); if(currentPage==='favorites') renderFavorites(); }
+    function cardClickHandler(e) { if(e.target.closest('.add-to-cart-btn')||e.target.closest('.counter-minus')||e.target.closest('.counter-plus')||e.target.closest('.favorite-icon-card')) return; const card = e.currentTarget; const id = parseInt(card.dataset.id); selectedProduct = products.find(p=>p.id===id); showDetailPage(selectedProduct); }
+
+    function showDetailPage(product) {
+        if(!product) return;
+        const detailDiv = document.getElementById('detailPage');
+        const inCart = cart[product.id] > 0;
+        const isFav = favorites.includes(product.id);
+        detailDiv.innerHTML = `
+            <div class="product-detail">
+                <img class="detail-img" src="${product.image}" alt="${product.name}">
+                <div class="detail-header"><div class="detail-title">${product.name}</div><div class="detail-prices"><span class="current-price">${product.price}₽</span> <span class="old-price">${product.oldPrice}₽</span></div></div>
+                <div class="divider"></div>
+                <div class="delivery-row"><span>Способ получения</span><span>Вход в аккаунт</span></div>
+                <div class="divider"></div>
+                <div class="description-text">Описание</div>
+                <div class="description-body">${product.description}</div>
+            </div>
+            <div class="action-sticky-bar" id="detailBar">
+                ${inCart ? `<div class="detail-cart-btn" style="background:#202B32; border:none; justify-content:space-between; padding:0 20px;"><span class="det-minus">−</span><span>${cart[product.id]}</span><span class="det-plus">+</span></div>` : `<div class="detail-cart-btn" id="detailAddToCart">🛒 В корзину</div>`}
+                <div class="detail-fav-btn" id="detailFavBtn">${isFav ? '❤️' : '🤍'}</div>
+            </div>
+        `;
+        showPage('detail');
+        document.getElementById('detailAddToCart')?.addEventListener('click',()=>{ cart[product.id]=1; saveCart(); showDetailPage(product); });
+        document.querySelector('.det-minus')?.addEventListener('click',()=>{ if(cart[product.id]>1)cart[product.id]--; else delete cart[product.id]; saveCart(); showDetailPage(product); });
+        document.querySelector('.det-plus')?.addEventListener('click',()=>alert('Данный товар недоступен к покупке в количестве'));
+        document.getElementById('detailFavBtn')?.addEventListener('click',()=>{ const idx=favorites.indexOf(product.id); idx===-1?favorites.push(product.id):favorites.splice(idx,1); saveFav(); showDetailPage(product); });
+    }
+
+    function renderFavorites() { const favProds = products.filter(p=>favorites.includes(p.id)); const container = document.getElementById('favoritesGrid'); if(!favProds.length){ container.innerHTML='<div class="no-results">Нет избранных товаров</div>'; return; } container.innerHTML=favProds.map(p=>renderProductCard(p)).join(''); attachCardEvents(); }
+    function renderFilterPage() { const categories=['Все категории','Brawl Stars','Clash Royale']; const listDiv=document.getElementById('categoryList'); listDiv.innerHTML=categories.map(cat=>`<div class="category-item" data-cat="${cat}"><span class="category-name">${cat}</span>${currentFilter===cat?'<svg class="check-icon active-check" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="currentColor"/></svg>':'<svg class="check-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/></svg>'}</div>`).join('');
+        document.querySelectorAll('.category-item').forEach(el=>{ el.addEventListener('click',()=>{ const cat=el.dataset.cat; currentFilter=cat==='Все категории'?'all':cat; renderCatalog(); showPage('catalog'); }); }); }
+
+    document.getElementById('openFilterBtn').addEventListener('click',()=>{ showPage('filter'); renderFilterPage(); });
+    document.getElementById('searchInput').addEventListener('input',(e)=>{ currentSearch=e.target.value; renderCatalog(); });
+    document.querySelectorAll('.menu-item').forEach(item=>{ item.addEventListener('click',()=>{ const page=item.dataset.page; if(page==='catalog') showPage('catalog'); else if(page==='favorites') showPage('favorites'); else if(page==='profile') showPage('profile'); }); });
+    showPage('catalog');
+    window.addEventListener('load',()=>{ renderCatalog(); });
+</script>
 </body>
 </html>

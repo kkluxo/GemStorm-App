@@ -39,7 +39,7 @@
 
     .page {
       display: none;
-      padding: 20px 16px 0 16px;
+      padding: 20px 14px 0 14px;
       max-width: 600px;
       margin: 0 auto;
       animation: fadeIn 0.2s ease;
@@ -129,7 +129,7 @@
     /* поиск + фильтр */
     .search-section {
       display: flex;
-      gap: 12px;
+      gap: 14px;
       margin-bottom: 24px;
       align-items: center;
     }
@@ -186,11 +186,11 @@
       filter: brightness(0) saturate(100%) invert(100%);
     }
 
-    /* карточки товаров */
+    /* карточки товаров — отступы между карточками 14px */
     .products-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: 14px;
       margin-bottom: 20px;
     }
 
@@ -246,7 +246,7 @@
       text-decoration: line-through;
     }
 
-    /* кнопка В корзину - обводка 4BB7EF */
+    /* кнопка В корзину - обводка 1px #4BB7EF */
     .card-action-btn {
       width: 100%;
       height: 36px;
@@ -270,7 +270,7 @@
       filter: brightness(0) saturate(100%) invert(68%) sepia(48%) saturate(1162%) hue-rotate(165deg) brightness(96%) contrast(92%);
     }
 
-    /* кнопка-счетчик - фон 202B32 */
+    /* кнопка-счетчик - БЕЗ обводки, только фон */
     .counter-btn {
       background: #202B32;
       border: none;
@@ -445,6 +445,7 @@
       align-items: center;
       padding: 0 16px;
       height: 48px;
+      border: none;
     }
     
     .detail-counter-mode .counter-minus,
@@ -489,6 +490,19 @@
 
     .bottom-menu {
       box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+    }
+    
+    /* отступы между элементами 14px */
+    .products-grid {
+      gap: 14px;
+    }
+    
+    .search-section {
+      gap: 14px;
+    }
+    
+    .header-row {
+      margin-bottom: 20px;
     }
   </style>
 </head>

@@ -32,7 +32,7 @@
       background-color: #171719;
       font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       color: #ffffff;
-      padding-bottom: 80px;
+      padding-bottom: 94px; /* увеличен отступ под меню */
     }
 
     .page {
@@ -52,7 +52,7 @@
       to { opacity: 1; transform: translateY(0);}
     }
 
-    /* нижнее меню */
+    /* нижнее меню - увеличено, с отступом снизу 14px */
     .bottom-menu {
       position: fixed;
       bottom: 0;
@@ -65,7 +65,7 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
-      padding: 8px 12px 12px;
+      padding: 10px 12px 14px 12px; /* увеличен нижний отступ до 14px */
       z-index: 1000;
       max-width: 600px;
       margin: 0 auto;
@@ -76,17 +76,18 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
+      gap: 6px; /* увеличен отступ между иконкой и текстом */
       background: none;
       border: none;
       cursor: pointer;
       transition: all 0.1s;
       flex: 1;
+      padding: 6px 0 2px 0;
     }
 
     .menu-icon {
-      width: 26px;
-      height: 26px;
+      width: 28px; /* чуть увеличены иконки */
+      height: 28px;
       filter: brightness(0) saturate(100%) invert(60%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(95%) contrast(88%);
       transition: filter 0.2s;
     }
@@ -402,7 +403,7 @@
 
     .sticky-bar {
       position: sticky;
-      bottom: 70px;
+      bottom: 94px; /* увеличен отступ под меню */
       background: #171719;
       border-radius: 60px;
       padding: 10px 16px;
@@ -472,6 +473,11 @@
       border-radius: 16px;
       object-fit: cover;
     }
+
+    /* Дополнительно для увеличенного меню */
+    .bottom-menu {
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+    }
   </style>
 </head>
 <body>
@@ -525,9 +531,8 @@
   </div>
 
   <script>
-    // Инициализация Telegram WebApp (после подключения скрипта)
+    // Инициализация Telegram WebApp с отключением вертикальных свайпов
     (function() {
-      // Ждем, пока объект Telegram станет доступен
       if (window.Telegram && window.Telegram.WebApp) {
         const tg = window.Telegram.WebApp;
         
@@ -537,14 +542,20 @@
         // Расширяем на весь экран
         tg.expand();
         
+        // ОТКЛЮЧАЕМ ВЕРТИКАЛЬНЫЕ СВАЙПЫ — ГЛАВНОЕ РЕШЕНИЕ ДЛЯ iOS
+        // Эта команда предотвращает закрытие приложения при свайпе вниз
+        if (typeof tg.disableVerticalSwipes === 'function') {
+          tg.disableVerticalSwipes();
+        } else if (tg.isVersionAtLeast && tg.isVersionAtLeast('7.7')) {
+          tg.disableVerticalSwipes();
+        }
+        
         // Устанавливаем цвет шапки и фона Telegram
-        // Используем метод setHeaderColor с произвольным цветом
         try {
           tg.setHeaderColor('#171719');
           tg.setBackgroundColor('#171719');
         } catch(e) {
-          console.warn('setHeaderColor не поддерживается, используем альтернативу');
-          // Альтернатива для старых версий Telegram
+          console.warn('setHeaderColor не поддерживается');
           tg.setHeaderColor('bg_color');
         }
         
@@ -555,10 +566,9 @@
         const meta = document.querySelector('meta[name="theme-color"]');
         if (meta) meta.setAttribute('content', '#171719');
         
-        console.log('Telegram WebApp инициализирован, цвет шапки установлен');
+        console.log('Telegram WebApp инициализирован, вертикальные свайпы отключены');
       } else {
         console.warn('Telegram WebApp не обнаружен, работаем в обычном браузере');
-        // В обычном браузере просто красим фон
         document.body.style.backgroundColor = '#171719';
       }
     })();
@@ -579,6 +589,16 @@
     function formatPrice(p) { 
       return p.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + "₽"; 
     }
+    
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+      });
+    }
 
     function renderCatalog() {
       let filtered = products.filter(p => currentFilter === "Все категории" || p.category === currentFilter);
@@ -595,7 +615,7 @@
       
       grid.innerHTML = filtered.map(p => `
         <div class="product-card" data-id="${p.id}">
-          <img class="card-img" src="${p.image}" alt="${p.name}" loading="lazy">
+          <img class="card-img" src="${p.image}" alt="${escapeHtml(p.name)}" loading="lazy">
           <div class="favorite-icon" data-fav="${p.id}">
             <img class="heart-svg ${favorites.has(p.id) ? 'heart-active' : ''}" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='${favorites.has(p.id) ? 'hotpink' : 'none'}' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8' d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'%3E%3C/path%3E%3C/svg%3E" />
           </div>
@@ -606,15 +626,6 @@
           </div>
         </div>
       `).join("");
-    }
-    
-    function escapeHtml(str) {
-      return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-      });
     }
 
     function renderCartButton(productId) {
@@ -640,7 +651,7 @@
       for (let [id, quantity] of items) {
         const prod = products.find(p => p.id == id);
         if(!prod) continue;
-        html += `<div class="cart-item"><img class="cart-img" src="${prod.image}"><div><div style="font-weight:500">${prod.name}</div><div>${formatPrice(prod.price)} x ${quantity}</div></div></div>`;
+        html += `<div class="cart-item"><img class="cart-img" src="${prod.image}"><div><div style="font-weight:500">${escapeHtml(prod.name)}</div><div>${formatPrice(prod.price)} x ${quantity}</div></div></div>`;
       }
       container.innerHTML = html;
     }
@@ -650,7 +661,7 @@
       if (!container) return;
       const favProds = products.filter(p => favorites.has(p.id));
       if (favProds.length === 0) { container.innerHTML = '<div class="empty-state">Нет избранных товаров 💔</div>'; return; }
-      container.innerHTML = favProds.map(p => `<div class="cart-item"><img class="cart-img" src="${p.image}"><div style="font-weight:500">${p.name}<br><span style="color:#3b82f6">${formatPrice(p.price)}</span></div></div>`).join("");
+      container.innerHTML = favProds.map(p => `<div class="cart-item"><img class="cart-img" src="${p.image}"><div style="font-weight:500">${escapeHtml(p.name)}<br><span style="color:#3b82f6">${formatPrice(p.price)}</span></div></div>`).join("");
     }
 
     function toggleFavorite(pid) {
@@ -768,7 +779,6 @@
       btn.addEventListener("click", () => showPage(btn.dataset.page));
     });
 
-    // Стартовая отрисовка
     renderCatalog();
     renderCartPage();
     renderFavPage();
@@ -776,3 +786,4 @@
   </script>
 </body>
 </html>
+```

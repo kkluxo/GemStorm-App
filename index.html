@@ -29,13 +29,14 @@
       --counter-bg: #202B32;
       --icon-gray: #9e9e9e;
       --icon-active: #4cb4e9;
+      --favorite-pink: #ff4d4d;
     }
 
     body {
       background-color: #171719;
       font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       color: #ffffff;
-      padding-bottom: 94px;
+      padding-bottom: 88px;
     }
 
     .page {
@@ -43,16 +44,10 @@
       padding: 20px 14px 0 14px;
       max-width: 600px;
       margin: 0 auto;
-      animation: fadeIn 0.2s ease;
     }
 
     .page.active-page {
       display: block;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(5px);}
-      to { opacity: 1; transform: translateY(0);}
     }
 
     .bottom-menu {
@@ -61,13 +56,13 @@
       left: 0;
       right: 0;
       background: #171719;
-      border-top: 1px solid rgba(255, 255, 255, 0.15);
-      border-top-left-radius: 18px;
-      border-top-right-radius: 18px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      border-top-left-radius: 28px;
+      border-top-right-radius: 28px;
       display: flex;
       justify-content: space-around;
       align-items: center;
-      padding: 10px 12px 14px 12px;
+      padding: 8px 12px 18px 12px;
       z-index: 1000;
       max-width: 600px;
       margin: 0 auto;
@@ -78,20 +73,20 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       background: none;
       border: none;
       cursor: pointer;
       transition: all 0.1s;
       flex: 1;
-      padding: 6px 0 2px 0;
+      padding: 5px 0 2px 0;
     }
 
     .menu-icon {
-      width: 28px;
-      height: 28px;
+      width: 26px;
+      height: 26px;
       color: var(--icon-gray);
-      transition: color 0.2s;
+      transition: color 0.1s;
     }
 
     .menu-item.active .menu-icon {
@@ -99,7 +94,7 @@
     }
 
     .menu-label {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 500;
       color: #9e9e9e;
     }
@@ -118,11 +113,11 @@
     .header-icon {
       width: 28px;
       height: 28px;
-      color: #ffffff;
+      color: #4cb4e9;
     }
 
     .page-title {
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 550;
     }
 
@@ -324,7 +319,7 @@
     }
 
     .heart-active {
-      color: #4cb4e9 !important;
+      color: #ff4d4d !important;
     }
 
     .filter-options {
@@ -405,18 +400,17 @@
       font-weight: 500;
       line-height: 1.4;
       color: #d1d5db;
+      margin-bottom: 20px;
     }
 
     .sticky-bar {
       position: sticky;
-      bottom: 94px;
+      bottom: 88px;
       background: #171719;
-      border-radius: 60px;
-      padding: 10px 16px;
       display: flex;
       gap: 12px;
-      margin: 20px 0 30px;
-      border: 1px solid rgba(255,255,255,0.1);
+      margin: 0;
+      padding: 12px 0;
     }
 
     .detail-cart-btn {
@@ -459,7 +453,7 @@
       width: 48px;
       height: 48px;
       border-radius: 60px;
-      background: rgba(220, 38, 38, 0.15);
+      background: rgba(255, 77, 77, 0.15);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -488,10 +482,6 @@
       height: 60px;
       border-radius: 16px;
       object-fit: cover;
-    }
-
-    .bottom-menu {
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
     }
   </style>
 </head>
@@ -548,7 +538,7 @@
 
   <div id="filter-page" class="page">
     <div class="header-row">
-      <img class="header-icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z'%3E%3C/path%3E%3C/svg%3E" style="filter:invert(1);">
+      <img class="header-icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z'%3E%3C/path%3E%3C/svg%3E" style="filter: brightness(0) saturate(100%) invert(68%) sepia(48%) saturate(1162%) hue-rotate(165deg) brightness(96%) contrast(92%);">
       <div class="page-title">Фильтры</div>
     </div>
     <div class="filter-options" id="filterOptionsContainer"></div>
@@ -671,7 +661,7 @@
       if (heartIcon) {
         if (favorites.has(productId)) {
           heartIcon.classList.add('heart-active');
-          heartIcon.style.color = '#4cb4e9';
+          heartIcon.style.color = '#ff4d4d';
         } else {
           heartIcon.classList.remove('heart-active');
           heartIcon.style.color = 'white';
@@ -696,7 +686,7 @@
         <div class="product-card" data-id="${p.id}">
           <img class="card-img" src="${p.image}" alt="${escapeHtml(p.name)}" loading="lazy">
           <div class="favorite-icon" data-fav="${p.id}">
-            <svg class="heart-svg ${favorites.has(p.id) ? 'heart-active' : ''}" style="color: ${favorites.has(p.id) ? '#4cb4e9' : 'white'}; width:22px; height:22px;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg class="heart-svg ${favorites.has(p.id) ? 'heart-active' : ''}" style="color: ${favorites.has(p.id) ? '#ff4d4d' : 'white'}; width:22px; height:22px;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" clip-rule="evenodd" d="M5.624 5.39819C3.965 6.15619 2.75 7.96019 2.75 10.1112C2.75 12.3082 3.65 14.0022 4.938 15.4542C6.001 16.6502 7.287 17.6422 8.541 18.6082C8.839 18.8382 9.135 19.0672 9.426 19.2962C9.952 19.7112 10.421 20.0742 10.874 20.3392C11.326 20.6032 11.69 20.7242 12 20.7242C12.31 20.7242 12.674 20.6042 13.126 20.3392C13.579 20.0742 14.048 19.7112 14.574 19.2962C14.864 19.0662 15.161 18.8382 15.459 18.6082C16.713 17.6422 17.999 16.6502 19.062 15.4542C20.351 14.0022 21.25 12.3082 21.25 10.1112C21.25 7.96119 20.035 6.15619 18.376 5.39819C16.764 4.66119 14.598 4.85619 12.54 6.99519C12.47 7.06778 12.3862 7.12551 12.2934 7.16495C12.2006 7.20438 12.1008 7.22471 12 7.22471C11.8992 7.22471 11.7994 7.20438 11.7066 7.16495C11.6138 7.12551 11.53 7.06778 11.46 6.99519C9.402 4.85619 7.236 4.66119 5.624 5.39819ZM12 5.43419C9.688 3.36419 7.099 3.07419 5 4.03319C2.786 5.04819 1.25 7.40019 1.25 10.1122C1.25 12.7772 2.36 14.8112 3.817 16.4512C4.983 17.7642 6.41 18.8632 7.671 19.8332C7.957 20.0532 8.234 20.2672 8.497 20.4752C9.01 20.8792 9.56 21.3092 10.117 21.6352C10.674 21.9602 11.31 22.2252 12 22.2252C12.69 22.2252 13.326 21.9602 13.883 21.6352C14.441 21.3092 14.99 20.8792 15.503 20.4752C15.7769 20.2594 16.0522 20.0454 16.329 19.8332C17.589 18.8632 19.017 17.7632 20.183 16.4512C21.64 14.8112 22.75 12.7772 22.75 10.1122C22.75 7.40019 21.215 5.04819 19 4.03519C16.901 3.07519 14.312 3.36519 12 5.43419Z" fill="currentColor"/>
             </svg>
           </div>
@@ -822,7 +812,7 @@
         <div class="sticky-bar">
           ${qty > 0 ? `<div class="detail-counter-mode"><span class="counter-minus" data-id="${prod.id}">−</span><span class="counter-value">${qty}</span><span class="counter-plus" data-id="${prod.id}">+</span></div>` : `<button class="detail-cart-btn" id="detailAddCartBtn"><img class="cart-icon-small" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23171719'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6M17 13l1.5 6M9 21h6'%3E%3C/path%3E%3C/svg%3E" /> В корзину</button>`}
           <div class="detail-fav" data-favdetail="${prod.id}">
-            <svg class="heart-svg" style="width:24px; height:24px; color: ${isFav ? '#4cb4e9' : 'white'};" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg class="heart-svg" style="width:24px; height:24px; color: ${isFav ? '#ff4d4d' : 'white'};" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" clip-rule="evenodd" d="M5.624 5.39819C3.965 6.15619 2.75 7.96019 2.75 10.1112C2.75 12.3082 3.65 14.0022 4.938 15.4542C6.001 16.6502 7.287 17.6422 8.541 18.6082C8.839 18.8382 9.135 19.0672 9.426 19.2962C9.952 19.7112 10.421 20.0742 10.874 20.3392C11.326 20.6032 11.69 20.7242 12 20.7242C12.31 20.7242 12.674 20.6042 13.126 20.3392C13.579 20.0742 14.048 19.7112 14.574 19.2962C14.864 19.0662 15.161 18.8382 15.459 18.6082C16.713 17.6422 17.999 16.6502 19.062 15.4542C20.351 14.0022 21.25 12.3082 21.25 10.1112C21.25 7.96119 20.035 6.15619 18.376 5.39819C16.764 4.66119 14.598 4.85619 12.54 6.99519C12.47 7.06778 12.3862 7.12551 12.2934 7.16495C12.2006 7.20438 12.1008 7.22471 12 7.22471C11.8992 7.22471 11.7994 7.20438 11.7066 7.16495C11.6138 7.12551 11.53 7.06778 11.46 6.99519C9.402 4.85619 7.236 4.66119 5.624 5.39819ZM12 5.43419C9.688 3.36419 7.099 3.07419 5 4.03319C2.786 5.04819 1.25 7.40019 1.25 10.1122C1.25 12.7772 2.36 14.8112 3.817 16.4512C4.983 17.7642 6.41 18.8632 7.671 19.8332C7.957 20.0532 8.234 20.2672 8.497 20.4752C9.01 20.8792 9.56 21.3092 10.117 21.6352C10.674 21.9602 11.31 22.2252 12 22.2252C12.69 22.2252 13.326 21.9602 13.883 21.6352C14.441 21.3092 14.99 20.8792 15.503 20.4752C15.7769 20.2594 16.0522 20.0454 16.329 19.8332C17.589 18.8632 19.017 17.7632 20.183 16.4512C21.64 14.8112 22.75 12.7772 22.75 10.1122C22.75 7.40019 21.215 5.04819 19 4.03519C16.901 3.07519 14.312 3.36519 12 5.43419Z" fill="currentColor"/>
             </svg>
           </div>
@@ -875,6 +865,9 @@
       btn.addEventListener("click", () => showPage(btn.dataset.page));
     });
 
+    // Устанавливаем активным каталог при загрузке
+    document.querySelector('.menu-item[data-page="catalog"]').classList.add('active');
+    
     renderCatalog();
     renderCartPage();
     renderFavPage();

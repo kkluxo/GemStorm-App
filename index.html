@@ -4,10 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
   
-  <!-- Подключаем официальный скрипт Telegram WebApp (ОБЯЗАТЕЛЬНО) -->
+  <!-- Подключаем официальный скрипт Telegram WebApp -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   
-  <!-- Мета-теги для синхронизации цвета -->
   <meta name="theme-color" content="#171719">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -21,18 +20,21 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* Принудительная синхронизация через CSS переменные */
     :root {
       --tg-theme-bg-color: #171719 !important;
       --tg-theme-secondary-bg-color: #171719 !important;
       --tg-theme-header-bg-color: #171719 !important;
+      --brand-blue: #4BB7EF;
+      --search-bg: #323234;
+      --card-border: #2B2B2D;
+      --counter-bg: #202B32;
     }
 
     body {
       background-color: #171719;
       font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       color: #ffffff;
-      padding-bottom: 94px; /* увеличен отступ под меню */
+      padding-bottom: 94px;
     }
 
     .page {
@@ -52,7 +54,7 @@
       to { opacity: 1; transform: translateY(0);}
     }
 
-    /* нижнее меню - увеличено, с отступом снизу 14px */
+    /* нижнее меню */
     .bottom-menu {
       position: fixed;
       bottom: 0;
@@ -65,7 +67,7 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
-      padding: 10px 12px 14px 12px; /* увеличен нижний отступ до 14px */
+      padding: 10px 12px 14px 12px;
       z-index: 1000;
       max-width: 600px;
       margin: 0 auto;
@@ -76,7 +78,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px; /* увеличен отступ между иконкой и текстом */
+      gap: 6px;
       background: none;
       border: none;
       cursor: pointer;
@@ -86,14 +88,14 @@
     }
 
     .menu-icon {
-      width: 28px; /* чуть увеличены иконки */
+      width: 28px;
       height: 28px;
       filter: brightness(0) saturate(100%) invert(60%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(95%) contrast(88%);
       transition: filter 0.2s;
     }
 
     .menu-item.active .menu-icon {
-      filter: brightness(0) saturate(100%) invert(52%) sepia(89%) saturate(432%) hue-rotate(175deg) brightness(96%) contrast(93%);
+      filter: brightness(0) saturate(100%) invert(68%) sepia(48%) saturate(1162%) hue-rotate(165deg) brightness(96%) contrast(92%);
     }
 
     .menu-label {
@@ -103,7 +105,7 @@
     }
 
     .menu-item.active .menu-label {
-      color: #3b82f6;
+      color: #4BB7EF;
     }
 
     .header-row {
@@ -134,7 +136,7 @@
 
     .search-bar {
       flex: 1;
-      background: #2c2c30;
+      background: #323234;
       height: 50px;
       border-radius: 36px;
       display: flex;
@@ -168,7 +170,7 @@
 
     .filter-btn {
       background: transparent;
-      border: 1px solid white;
+      border: 1px solid #323234;
       width: 50px;
       height: 50px;
       border-radius: 50%;
@@ -184,7 +186,7 @@
       filter: brightness(0) saturate(100%) invert(100%);
     }
 
-    /* карточки товаров — 2 в ряд */
+    /* карточки товаров */
     .products-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -194,7 +196,7 @@
 
     .product-card {
       background: #171719;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid #2B2B2D;
       border-radius: 28px;
       overflow: hidden;
       position: relative;
@@ -244,12 +246,13 @@
       text-decoration: line-through;
     }
 
+    /* кнопка В корзину - обводка 4BB7EF */
     .card-action-btn {
       width: 100%;
       height: 36px;
       border-radius: 36px;
       background: transparent;
-      border: 1px solid #3b82f6;
+      border: 1px solid #4BB7EF;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -257,20 +260,21 @@
       cursor: pointer;
       font-weight: 500;
       font-size: 14px;
-      color: #3b82f6;
+      color: #4BB7EF;
       transition: 0.1s;
     }
 
     .cart-icon-small {
       width: 18px;
       height: 18px;
-      filter: brightness(0) saturate(100%) invert(45%) sepia(93%) saturate(1250%) hue-rotate(185deg) brightness(98%);
+      filter: brightness(0) saturate(100%) invert(68%) sepia(48%) saturate(1162%) hue-rotate(165deg) brightness(96%) contrast(92%);
     }
 
+    /* кнопка-счетчик - фон 202B32 */
     .counter-btn {
-      background: rgba(59, 130, 246, 0.2);
+      background: #202B32;
       border: none;
-      color: #3b82f6;
+      color: #4BB7EF;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -282,7 +286,7 @@
       font-weight: bold;
       background: none;
       border: none;
-      color: #3b82f6;
+      color: #4BB7EF;
       cursor: pointer;
       width: 28px;
     }
@@ -316,13 +320,13 @@
     }
 
     .heart-active {
-      filter: brightness(0) saturate(100%) invert(47%) sepia(91%) saturate(1987%) hue-rotate(313deg) brightness(101%) contrast(101%) !important;
+      filter: brightness(0) saturate(100%) invert(68%) sepia(48%) saturate(1162%) hue-rotate(165deg) brightness(96%) contrast(92%) !important;
     }
 
     /* страница фильтров */
     .filter-options {
       margin-top: 20px;
-      background: rgba(59,130,246,0.08);
+      background: rgba(75,183,239,0.08);
       border-radius: 24px;
       padding: 8px 0;
     }
@@ -347,7 +351,7 @@
 
     .check-mark {
       font-size: 22px;
-      color: white;
+      color: #4BB7EF;
       font-weight: 600;
     }
 
@@ -403,7 +407,7 @@
 
     .sticky-bar {
       position: sticky;
-      bottom: 94px; /* увеличен отступ под меню */
+      bottom: 94px;
       background: #171719;
       border-radius: 60px;
       padding: 10px 16px;
@@ -415,11 +419,11 @@
 
     .detail-cart-btn {
       flex: 2;
-      background: #3b82f6;
+      background: #4BB7EF;
       border: none;
       border-radius: 40px;
       height: 48px;
-      color: white;
+      color: #171719;
       font-weight: 600;
       display: flex;
       align-items: center;
@@ -427,16 +431,25 @@
       gap: 8px;
       cursor: pointer;
     }
+    
+    .detail-cart-btn .cart-icon-small {
+      filter: brightness(0) saturate(100%) invert(8%) sepia(5%) saturate(10%) hue-rotate(0deg) brightness(95%) contrast(90%);
+    }
 
     .detail-counter-mode {
       flex: 2;
-      background: rgba(59,130,246,0.2);
+      background: #202B32;
       border-radius: 48px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 0 16px;
       height: 48px;
+    }
+    
+    .detail-counter-mode .counter-minus,
+    .detail-counter-mode .counter-plus {
+      color: #4BB7EF;
     }
 
     .detail-fav {
@@ -474,7 +487,6 @@
       object-fit: cover;
     }
 
-    /* Дополнительно для увеличенного меню */
     .bottom-menu {
       box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
     }
@@ -535,40 +547,27 @@
     (function() {
       if (window.Telegram && window.Telegram.WebApp) {
         const tg = window.Telegram.WebApp;
-        
-        // Сообщаем Telegram, что приложение готово
         tg.ready();
-        
-        // Расширяем на весь экран
         tg.expand();
         
-        // ОТКЛЮЧАЕМ ВЕРТИКАЛЬНЫЕ СВАЙПЫ — ГЛАВНОЕ РЕШЕНИЕ ДЛЯ iOS
-        // Эта команда предотвращает закрытие приложения при свайпе вниз
+        // Отключаем вертикальные свайпы для iOS
         if (typeof tg.disableVerticalSwipes === 'function') {
           tg.disableVerticalSwipes();
         } else if (tg.isVersionAtLeast && tg.isVersionAtLeast('7.7')) {
           tg.disableVerticalSwipes();
         }
         
-        // Устанавливаем цвет шапки и фона Telegram
         try {
           tg.setHeaderColor('#171719');
           tg.setBackgroundColor('#171719');
         } catch(e) {
-          console.warn('setHeaderColor не поддерживается');
           tg.setHeaderColor('bg_color');
         }
         
-        // Принудительно устанавливаем цвет body
         document.body.style.backgroundColor = '#171719';
-        
-        // Обновляем meta theme-color для iOS
         const meta = document.querySelector('meta[name="theme-color"]');
         if (meta) meta.setAttribute('content', '#171719');
-        
-        console.log('Telegram WebApp инициализирован, вертикальные свайпы отключены');
       } else {
-        console.warn('Telegram WebApp не обнаружен, работаем в обычном браузере');
         document.body.style.backgroundColor = '#171719';
       }
     })();
@@ -617,7 +616,7 @@
         <div class="product-card" data-id="${p.id}">
           <img class="card-img" src="${p.image}" alt="${escapeHtml(p.name)}" loading="lazy">
           <div class="favorite-icon" data-fav="${p.id}">
-            <img class="heart-svg ${favorites.has(p.id) ? 'heart-active' : ''}" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='${favorites.has(p.id) ? 'hotpink' : 'none'}' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8' d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'%3E%3C/path%3E%3C/svg%3E" />
+            <img class="heart-svg ${favorites.has(p.id) ? 'heart-active' : ''}" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='${favorites.has(p.id) ? '#4BB7EF' : 'none'}' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8' d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'%3E%3C/path%3E%3C/svg%3E" />
           </div>
           <div class="card-info">
             <div class="product-title">${escapeHtml(p.name)}</div>
@@ -633,7 +632,7 @@
       if (qty > 0) {
         return `<div class="card-action-btn counter-btn" data-counter="${productId}"><span class="counter-minus" data-id="${productId}">−</span><span class="counter-value">${qty}</span><span class="counter-plus" data-id="${productId}">+</span></div>`;
       } else {
-        return `<div class="card-action-btn" data-add="${productId}"><img class="cart-icon-small" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%233b82f6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6M17 13l1.5 6M9 21h6'%3E%3C/path%3E%3C/svg%3E" /> В корзину</div>`;
+        return `<div class="card-action-btn" data-add="${productId}"><img class="cart-icon-small" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234BB7EF'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6M17 13l1.5 6M9 21h6'%3E%3C/path%3E%3C/svg%3E" /> В корзину</div>`;
       }
     }
 
@@ -661,7 +660,7 @@
       if (!container) return;
       const favProds = products.filter(p => favorites.has(p.id));
       if (favProds.length === 0) { container.innerHTML = '<div class="empty-state">Нет избранных товаров 💔</div>'; return; }
-      container.innerHTML = favProds.map(p => `<div class="cart-item"><img class="cart-img" src="${p.image}"><div style="font-weight:500">${escapeHtml(p.name)}<br><span style="color:#3b82f6">${formatPrice(p.price)}</span></div></div>`).join("");
+      container.innerHTML = favProds.map(p => `<div class="cart-item"><img class="cart-img" src="${p.image}"><div style="font-weight:500">${escapeHtml(p.name)}<br><span style="color:#4BB7EF">${formatPrice(p.price)}</span></div></div>`).join("");
     }
 
     function toggleFavorite(pid) {
@@ -698,8 +697,8 @@
         <div class="desc-title">Описание</div>
         <div class="desc-text">Цифровой товар для Brawl Stars / Clash Royale. Мгновенная доставка после оплаты. Автоматическая выдача на указанный ID.</div>
         <div class="sticky-bar">
-          ${qty > 0 ? `<div class="detail-counter-mode"><span class="counter-minus" data-id="${prod.id}">−</span><span class="counter-value">${qty}</span><span class="counter-plus" data-id="${prod.id}">+</span></div>` : `<button class="detail-cart-btn" id="detailAddCartBtn"><img class="cart-icon-small" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6M17 13l1.5 6M9 21h6'%3E%3C/path%3E%3C/svg%3E" /> В корзину</button>`}
-          <div class="detail-fav" data-favdetail="${prod.id}"><img class="heart-svg ${isFav ? 'heart-active' : ''}" style="width:24px" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='${isFav ? 'hotpink' : 'none'}' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8' d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'%3E%3C/path%3E%3C/svg%3E" /></div>
+          ${qty > 0 ? `<div class="detail-counter-mode"><span class="counter-minus" data-id="${prod.id}">−</span><span class="counter-value">${qty}</span><span class="counter-plus" data-id="${prod.id}">+</span></div>` : `<button class="detail-cart-btn" id="detailAddCartBtn"><img class="cart-icon-small" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23171719'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6M17 13l1.5 6M9 21h6'%3E%3C/path%3E%3C/svg%3E" /> В корзину</button>`}
+          <div class="detail-fav" data-favdetail="${prod.id}"><img class="heart-svg ${isFav ? 'heart-active' : ''}" style="width:24px" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='${isFav ? '#4BB7EF' : 'none'}' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8' d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'%3E%3C/path%3E%3C/svg%3E" /></div>
         </div>
       `;
       const detailPage = document.getElementById("detail-page");
@@ -786,4 +785,3 @@
   </script>
 </body>
 </html>
-```

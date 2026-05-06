@@ -36,7 +36,7 @@
       background-color: #171719;
       font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       color: #ffffff;
-      padding-bottom: 84px;
+      padding-bottom: 0;
     }
 
     .page {
@@ -44,6 +44,7 @@
       padding: 20px 14px 0 14px;
       max-width: 600px;
       margin: 0 auto;
+      padding-bottom: 100px;
     }
 
     .page.active-page {
@@ -394,6 +395,7 @@
       margin-bottom: 0;
     }
 
+    /* Блок с кнопками - приклеен снизу прямо над меню */
     .sticky-bar {
       position: fixed;
       bottom: 0;
@@ -490,6 +492,7 @@
       object-fit: cover;
     }
     
+    /* Дополнительный отступ для страницы детали, чтобы контент не перекрывался кнопками */
     #detail-page {
       padding-bottom: 100px;
     }

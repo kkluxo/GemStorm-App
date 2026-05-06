@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -37,7 +36,7 @@
       background-color: #171719;
       font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       color: #ffffff;
-      padding-bottom: 0;
+      padding-bottom: 88px;
     }
 
     .page {
@@ -45,7 +44,6 @@
       padding: 20px 14px 0 14px;
       max-width: 600px;
       margin: 0 auto;
-      padding-bottom: 100px;
     }
 
     .page.active-page {
@@ -59,10 +57,12 @@
       right: 0;
       background: #171719;
       border-top: 1px solid rgba(255, 255, 255, 0.1);
+      border-top-left-radius: 28px;
+      border-top-right-radius: 28px;
       display: flex;
       justify-content: space-around;
       align-items: center;
-      padding: 8px 12px 20px 12px;
+      padding: 8px 12px 18px 12px;
       z-index: 1000;
       max-width: 600px;
       margin: 0 auto;
@@ -73,7 +73,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
       background: none;
       border: none;
       cursor: pointer;
@@ -106,24 +106,24 @@
     .header-row {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       margin-bottom: 20px;
     }
 
     .header-icon {
-      width: 26px;
-      height: 26px;
+      width: 28px;
+      height: 28px;
       color: #4cb4e9;
     }
 
     .page-title {
-      font-size: 25px;
-      font-weight: 500;
+      font-size: 22px;
+      font-weight: 550;
     }
 
     .search-section {
       display: flex;
-      gap: 12px;
+      gap: 14px;
       margin-bottom: 14px;
       align-items: center;
     }
@@ -131,7 +131,7 @@
     .search-bar {
       flex: 1;
       background: #323234;
-      height: 48px;
+      height: 50px;
       border-radius: 36px;
       display: flex;
       align-items: center;
@@ -165,8 +165,8 @@
     .filter-btn {
       background: transparent;
       border: 1px solid #323234;
-      width: 48px;
-      height: 48px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -188,7 +188,7 @@
     }
 
     .product-card {
-      background: #19191b;
+      background: #171719;
       border: 1px solid #2B2B2D;
       border-radius: 28px;
       overflow: hidden;
@@ -206,11 +206,11 @@
     }
 
     .card-info {
-      padding: 12px;
+      padding: 8px;
     }
 
     .product-title {
-      font-size: 18px;
+      font-size: 19px;
       font-weight: 500;
       color: white;
       margin-bottom: 4px;
@@ -224,12 +224,12 @@
       align-items: baseline;
       gap: 8px;
       flex-wrap: wrap;
-      margin: 6px 0 12px 0;
+      margin: 6px 0 10px 0;
     }
 
     .current-price {
       font-size: 19px;
-      font-weight: 500;
+      font-weight: 600;
       color: white;
     }
 
@@ -241,15 +241,15 @@
 
     .card-action-btn {
       width: 100%;
-      height: 42px;
-      border-radius: 42px;
+      height: 36px;
+      border-radius: 36px;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
       cursor: pointer;
       font-weight: 500;
-      font-size: 15px;
+      font-size: 14px;
       transition: 0.1s;
     }
 
@@ -276,22 +276,13 @@
     }
 
     .counter-minus, .counter-plus {
-      font-size: 22px;
-      font-weight: 500;
+      font-size: 20px;
+      font-weight: bold;
       background: none;
       border: none;
       color: #4cb4e9;
       cursor: pointer;
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-    }
-
-    .counter-minus:hover, .counter-plus:hover {
-      background: rgba(76, 180, 233, 0.1);
+      width: 28px;
     }
 
     .counter-value {
@@ -303,6 +294,32 @@
     .cart-icon-small {
       width: 18px;
       height: 18px;
+    }
+
+    .favorite-icon {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(4px);
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 5;
+    }
+
+    .heart-svg {
+      width: 22px;
+      height: 22px;
+      color: white;
+    }
+
+    .heart-active {
+      color: #ff4d4d !important;
     }
 
     .filter-options {
@@ -365,6 +382,13 @@
       margin: 20px 0;
     }
 
+    .delivery-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      font-size: 17px;
+    }
+
     .desc-title {
       font-size: 20px;
       font-weight: 550;
@@ -376,25 +400,17 @@
       font-weight: 500;
       line-height: 1.4;
       color: #d1d5db;
-      margin-bottom: 0;
+      margin-bottom: 20px;
     }
 
-    /* Блок с кнопками - приклеен снизу прямо над меню */
     .sticky-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      position: sticky;
+      bottom: 88px;
       background: #171719;
       display: flex;
       gap: 12px;
       margin: 0;
-      padding: 12px 14px 24px 14px;
-      border-top-left-radius: 28px;
-      border-top-right-radius: 28px;
-      max-width: 600px;
-      margin: 0 auto;
-      z-index: 100;
+      padding: 12px 0;
     }
 
     .detail-cart-btn {
@@ -402,10 +418,9 @@
       background: #4cb4e9;
       border: none;
       border-radius: 40px;
-      height: 54px;
-      color: white;
+      height: 48px;
+      color: #171719;
       font-weight: 600;
-      font-size: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -414,7 +429,7 @@
     }
     
     .detail-cart-btn .cart-icon-small {
-      filter: brightness(0) saturate(100%) invert(100%);
+      filter: brightness(0) saturate(100%) invert(8%) sepia(5%) saturate(10%) hue-rotate(0deg) brightness(95%) contrast(90%);
     }
 
     .detail-counter-mode {
@@ -424,28 +439,19 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0 12px;
-      height: 54px;
+      padding: 0 16px;
+      height: 48px;
       border: none;
     }
     
     .detail-counter-mode .counter-minus,
     .detail-counter-mode .counter-plus {
-      font-size: 24px;
-      font-weight: 500;
-      width: 44px;
-      height: 44px;
-    }
-    
-    .detail-counter-mode .counter-value {
-      font-size: 18px;
-      font-weight: 600;
-      color: white;
+      color: #4cb4e9;
     }
 
     .detail-fav {
-      width: 54px;
-      height: 54px;
+      width: 48px;
+      height: 48px;
       border-radius: 60px;
       background: rgba(255, 77, 77, 0.15);
       display: flex;
@@ -476,11 +482,6 @@
       height: 60px;
       border-radius: 16px;
       object-fit: cover;
-    }
-    
-    /* Дополнительный отступ для страницы детали, чтобы контент не перекрывался кнопками */
-    #detail-page {
-      padding-bottom: 100px;
     }
   </style>
 </head>
@@ -537,7 +538,7 @@
 
   <div id="filter-page" class="page">
     <div class="header-row">
-      <img class="header-icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z'%3E%3C/path%3E%3C/svg%3E" style="filter: brightness(0) saturate(100%) invert(68%) sepia(48%) saturate(1162%) hue-rotate(165deg) brightness(96%) contrast(92%); width:26px; height:26px;">
+      <img class="header-icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z'%3E%3C/path%3E%3C/svg%3E" style="filter: brightness(0) saturate(100%) invert(68%) sepia(48%) saturate(1162%) hue-rotate(165deg) brightness(96%) contrast(92%);">
       <div class="page-title">Фильтры</div>
     </div>
     <div class="filter-options" id="filterOptionsContainer"></div>
@@ -599,10 +600,10 @@
     })();
 
     const products = [
-      { id: 1, name: "Brawl Pass", price: 769, oldPrice: 799, image: "https://storage.botpapa.me/files/7cd0ec40-456b-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Brawl Stars" },
-      { id: 2, name: "Brawl Pass Plus", price: 1099, oldPrice: 1169, image: "https://storage.botpapa.me/files/7643fb60-456b-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Brawl Stars" },
-      { id: 3, name: "Pro Pass", price: 2129, oldPrice: 2249, image: "https://storage.botpapa.me/files/e7f57440-4571-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Clash Royale" },
-      { id: 4, name: "2000 Gems", price: 4249, oldPrice: 4449, image: "https://storage.botpapa.me/files/eb4ed870-4571-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Clash Royale" }
+      { id: 1, name: "Brawl Pass", price: 769, oldPrice: 799, image: "https://storage.botpapa.me/files/429bc8a0-4990-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Brawl Stars" },
+      { id: 2, name: "Brawl Pass Plus", price: 1099, oldPrice: 1169, image: "https://storage.botpapa.me/files/46811920-4990-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Brawl Stars" },
+      { id: 3, name: "Pro Pass", price: 2129, oldPrice: 2249, image: "https://storage.botpapa.me/files/49d17ca0-4990-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Clash Royale" },
+      { id: 4, name: "2000 Gems", price: 4249, oldPrice: 4449, image: "https://storage.botpapa.me/files/eee24300-4990-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Clash Royale" }
     ];
     
     let cart = {};
@@ -627,9 +628,9 @@
     function renderCartButtonHtml(productId) {
       const qty = cart[productId] || 0;
       if (qty > 0) {
-        return `<div class="card-action-btn counter-btn" data-counter="${productId}"><button class="counter-minus" data-id="${productId}">−</button><span class="counter-value">${qty}</span><button class="counter-plus" data-id="${productId}">+</button></div>`;
+        return `<div class="card-action-btn counter-btn" data-counter="${productId}"><span class="counter-minus" data-id="${productId}">−</span><span class="counter-value">${qty}</span><span class="counter-plus" data-id="${productId}">+</span></div>`;
       } else {
-        return `<button class="card-action-btn cart-add-btn" data-add="${productId}"><img class="cart-icon-small" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234cb4e9'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6M17 13l1.5 6M9 21h6'%3E%3C/path%3E%3C/svg%3E" /> В корзину</button>`;
+        return `<div class="card-action-btn cart-add-btn" data-add="${productId}"><img class="cart-icon-small" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234cb4e9'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6M17 13l1.5 6M9 21h6'%3E%3C/path%3E%3C/svg%3E" /> В корзину</div>`;
       }
     }
 
@@ -656,6 +657,16 @@
           }
         }
       }
+      const heartIcon = card.querySelector('.favorite-icon .heart-svg');
+      if (heartIcon) {
+        if (favorites.has(productId)) {
+          heartIcon.classList.add('heart-active');
+          heartIcon.style.color = '#ff4d4d';
+        } else {
+          heartIcon.classList.remove('heart-active');
+          heartIcon.style.color = 'white';
+        }
+      }
     }
 
     function renderCatalog() {
@@ -674,6 +685,11 @@
       grid.innerHTML = filtered.map(p => `
         <div class="product-card" data-id="${p.id}">
           <img class="card-img" src="${p.image}" alt="${escapeHtml(p.name)}" loading="lazy">
+          <div class="favorite-icon" data-fav="${p.id}">
+            <svg class="heart-svg ${favorites.has(p.id) ? 'heart-active' : ''}" style="color: ${favorites.has(p.id) ? '#ff4d4d' : 'white'}; width:22px; height:22px;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M5.624 5.39819C3.965 6.15619 2.75 7.96019 2.75 10.1112C2.75 12.3082 3.65 14.0022 4.938 15.4542C6.001 16.6502 7.287 17.6422 8.541 18.6082C8.839 18.8382 9.135 19.0672 9.426 19.2962C9.952 19.7112 10.421 20.0742 10.874 20.3392C11.326 20.6032 11.69 20.7242 12 20.7242C12.31 20.7242 12.674 20.6042 13.126 20.3392C13.579 20.0742 14.048 19.7112 14.574 19.2962C14.864 19.0662 15.161 18.8382 15.459 18.6082C16.713 17.6422 17.999 16.6502 19.062 15.4542C20.351 14.0022 21.25 12.3082 21.25 10.1112C21.25 7.96119 20.035 6.15619 18.376 5.39819C16.764 4.66119 14.598 4.85619 12.54 6.99519C12.47 7.06778 12.3862 7.12551 12.2934 7.16495C12.2006 7.20438 12.1008 7.22471 12 7.22471C11.8992 7.22471 11.7994 7.20438 11.7066 7.16495C11.6138 7.12551 11.53 7.06778 11.46 6.99519C9.402 4.85619 7.236 4.66119 5.624 5.39819ZM12 5.43419C9.688 3.36419 7.099 3.07419 5 4.03319C2.786 5.04819 1.25 7.40019 1.25 10.1122C1.25 12.7772 2.36 14.8112 3.817 16.4512C4.983 17.7642 6.41 18.8632 7.671 19.8332C7.957 20.0532 8.234 20.2672 8.497 20.4752C9.01 20.8792 9.56 21.3092 10.117 21.6352C10.674 21.9602 11.31 22.2252 12 22.2252C12.69 22.2252 13.326 21.9602 13.883 21.6352C14.441 21.3092 14.99 20.8792 15.503 20.4752C15.7769 20.2594 16.0522 20.0454 16.329 19.8332C17.589 18.8632 19.017 17.7632 20.183 16.4512C21.64 14.8112 22.75 12.7772 22.75 10.1122C22.75 7.40019 21.215 5.04819 19 4.03519C16.901 3.07519 14.312 3.36519 12 5.43419Z" fill="currentColor"/>
+            </svg>
+          </div>
           <div class="card-info">
             <div class="product-title">${escapeHtml(p.name)}</div>
             <div class="price-row"><span class="current-price">${formatPrice(p.price)}</span><span class="old-price">${formatPrice(p.oldPrice)}</span></div>
@@ -689,11 +705,21 @@
       document.querySelectorAll('.product-card').forEach(card => {
         const cardId = parseInt(card.dataset.id);
         card.addEventListener('click', (e) => {
-          if (!e.target.closest('.card-action-btn')) {
+          if (!e.target.closest('.card-action-btn') && !e.target.closest('.favorite-icon')) {
             renderDetailPage(cardId);
             showPage('detail');
           }
         });
+        
+        const favBtn = card.querySelector('.favorite-icon');
+        if (favBtn) {
+          favBtn.removeEventListener('click', favBtn._listener);
+          favBtn._listener = (e) => {
+            e.stopPropagation();
+            toggleFavorite(cardId);
+          };
+          favBtn.addEventListener('click', favBtn._listener);
+        }
         
         const actionBtn = card.querySelector('.card-action-btn');
         if (actionBtn) {
@@ -759,12 +785,13 @@
       if (!container) return;
       const favProds = products.filter(p => favorites.has(p.id));
       if (favProds.length === 0) { container.innerHTML = '<div class="empty-state">Нет избранных товаров 💔</div>'; return; }
-      container.innerHTML = favProds.map(p => `<div class="cart-item"><img class="cart-img" src="${p.image}"><div style="font-weight:500">${escapeHtml(p.name)}<br><span style="color:#4cb4e9">${formatPrice(p.price)}</span></div><div style="margin-left: auto; cursor: pointer;" onclick="toggleFavorite(${p.id})">❤️</div></div>`).join("");
+      container.innerHTML = favProds.map(p => `<div class="cart-item"><img class="cart-img" src="${p.image}"><div style="font-weight:500">${escapeHtml(p.name)}<br><span style="color:#4cb4e9">${formatPrice(p.price)}</span></div></div>`).join("");
     }
 
     function toggleFavorite(pid) {
       if (favorites.has(pid)) favorites.delete(pid);
       else favorites.add(pid);
+      updateSingleCard(pid);
       renderFavPage();
       if (document.getElementById("detail-page").classList.contains("active-page")) renderDetailPage(pid);
     }
@@ -778,13 +805,14 @@
         <img class="product-detail-img" src="${prod.image}">
         <div class="detail-header"><div class="detail-name">${escapeHtml(prod.name)}</div><div class="detail-prices"><span class="current-price">${formatPrice(prod.price)}</span> <span class="old-price">${formatPrice(prod.oldPrice)}</span></div></div>
         <div class="divider"></div>
+        <div class="delivery-row"><span>Способ получения</span><span>Вход в аккаунт</span></div>
+        <div class="divider"></div>
         <div class="desc-title">Описание</div>
         <div class="desc-text">Цифровой товар для Brawl Stars / Clash Royale. Мгновенная доставка после оплаты.</div>
-        <div style="height: 20px;"></div>
         <div class="sticky-bar">
-          ${qty > 0 ? `<div class="detail-counter-mode"><button class="counter-minus" data-id="${prod.id}">−</button><span class="counter-value">${qty}</span><button class="counter-plus" data-id="${prod.id}">+</button></div>` : `<button class="detail-cart-btn" id="detailAddCartBtn"><img class="cart-icon-small" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6M17 13l1.5 6M9 21h6'%3E%3C/path%3E%3C/svg%3E" /> В корзину</button>`}
-          <div class="detail-fav" data-favdetail="${prod.id}" style="background: ${isFav ? 'rgba(255, 77, 77, 0.3)' : 'rgba(255, 77, 77, 0.15)'}">
-            <svg style="width:26px; height:26px; color: ${isFav ? '#ff4d4d' : 'white'};" fill="${isFav ? '#ff4d4d' : 'none'}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          ${qty > 0 ? `<div class="detail-counter-mode"><span class="counter-minus" data-id="${prod.id}">−</span><span class="counter-value">${qty}</span><span class="counter-plus" data-id="${prod.id}">+</span></div>` : `<button class="detail-cart-btn" id="detailAddCartBtn"><img class="cart-icon-small" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23171719'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6M17 13l1.5 6M9 21h6'%3E%3C/path%3E%3C/svg%3E" /> В корзину</button>`}
+          <div class="detail-fav" data-favdetail="${prod.id}">
+            <svg class="heart-svg" style="width:24px; height:24px; color: ${isFav ? '#ff4d4d' : 'white'};" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" clip-rule="evenodd" d="M5.624 5.39819C3.965 6.15619 2.75 7.96019 2.75 10.1112C2.75 12.3082 3.65 14.0022 4.938 15.4542C6.001 16.6502 7.287 17.6422 8.541 18.6082C8.839 18.8382 9.135 19.0672 9.426 19.2962C9.952 19.7112 10.421 20.0742 10.874 20.3392C11.326 20.6032 11.69 20.7242 12 20.7242C12.31 20.7242 12.674 20.6042 13.126 20.3392C13.579 20.0742 14.048 19.7112 14.574 19.2962C14.864 19.0662 15.161 18.8382 15.459 18.6082C16.713 17.6422 17.999 16.6502 19.062 15.4542C20.351 14.0022 21.25 12.3082 21.25 10.1112C21.25 7.96119 20.035 6.15619 18.376 5.39819C16.764 4.66119 14.598 4.85619 12.54 6.99519C12.47 7.06778 12.3862 7.12551 12.2934 7.16495C12.2006 7.20438 12.1008 7.22471 12 7.22471C11.8992 7.22471 11.7994 7.20438 11.7066 7.16495C11.6138 7.12551 11.53 7.06778 11.46 6.99519C9.402 4.85619 7.236 4.66119 5.624 5.39819ZM12 5.43419C9.688 3.36419 7.099 3.07419 5 4.03319C2.786 5.04819 1.25 7.40019 1.25 10.1122C1.25 12.7772 2.36 14.8112 3.817 16.4512C4.983 17.7642 6.41 18.8632 7.671 19.8332C7.957 20.0532 8.234 20.2672 8.497 20.4752C9.01 20.8792 9.56 21.3092 10.117 21.6352C10.674 21.9602 11.31 22.2252 12 22.2252C12.69 22.2252 13.326 21.9602 13.883 21.6352C14.441 21.3092 14.99 20.8792 15.503 20.4752C15.7769 20.2594 16.0522 20.0454 16.329 19.8332C17.589 18.8632 19.017 17.7632 20.183 16.4512C21.64 14.8112 22.75 12.7772 22.75 10.1122C22.75 7.40019 21.215 5.04819 19 4.03519C16.901 3.07519 14.312 3.36519 12 5.43419Z" fill="currentColor"/>
             </svg>
           </div>
@@ -837,6 +865,7 @@
       btn.addEventListener("click", () => showPage(btn.dataset.page));
     });
 
+    // Устанавливаем активным каталог при загрузке
     document.querySelector('.menu-item[data-page="catalog"]').classList.add('active');
     
     renderCatalog();

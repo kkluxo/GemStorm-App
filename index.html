@@ -3,9 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-  <!-- Цвет для шапки Telegram — теперь будет ровно такой же как фон -->
+  
+  <!-- Подключаем официальный скрипт Telegram WebApp (ОБЯЗАТЕЛЬНО) -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  
+  <!-- Мета-теги для синхронизации цвета -->
   <meta name="theme-color" content="#171719">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  
   <title>Geltan Store — Каталог</title>
   <style>
     * {
@@ -15,19 +21,18 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* Основной фон приложения */
+    /* Принудительная синхронизация через CSS переменные */
+    :root {
+      --tg-theme-bg-color: #171719 !important;
+      --tg-theme-secondary-bg-color: #171719 !important;
+      --tg-theme-header-bg-color: #171719 !important;
+    }
+
     body {
       background-color: #171719;
       font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       color: #ffffff;
       padding-bottom: 80px;
-    }
-
-    /* Дополнительная синхронизация для Telegram Mini App */
-    :root {
-      --tg-theme-bg-color: #171719;
-      --tg-theme-secondary-bg-color: #171719;
-      --tg-theme-header-bg-color: #171719;
     }
 
     .page {
@@ -520,22 +525,45 @@
   </div>
 
   <script>
-    // Инициализация Telegram WebApp для корректного цвета шапки
+    // Инициализация Telegram WebApp (после подключения скрипта)
     (function() {
+      // Ждем, пока объект Telegram станет доступен
       if (window.Telegram && window.Telegram.WebApp) {
         const tg = window.Telegram.WebApp;
+        
+        // Сообщаем Telegram, что приложение готово
+        tg.ready();
+        
+        // Расширяем на весь экран
         tg.expand();
-        tg.setHeaderColor('#171719');
-        tg.setBackgroundColor('#171719');
-      } else {
-        // Эмуляция: меняем meta theme-color динамически
+        
+        // Устанавливаем цвет шапки и фона Telegram
+        // Используем метод setHeaderColor с произвольным цветом
+        try {
+          tg.setHeaderColor('#171719');
+          tg.setBackgroundColor('#171719');
+        } catch(e) {
+          console.warn('setHeaderColor не поддерживается, используем альтернативу');
+          // Альтернатива для старых версий Telegram
+          tg.setHeaderColor('bg_color');
+        }
+        
+        // Принудительно устанавливаем цвет body
+        document.body.style.backgroundColor = '#171719';
+        
+        // Обновляем meta theme-color для iOS
         const meta = document.querySelector('meta[name="theme-color"]');
         if (meta) meta.setAttribute('content', '#171719');
+        
+        console.log('Telegram WebApp инициализирован, цвет шапки установлен');
+      } else {
+        console.warn('Telegram WebApp не обнаружен, работаем в обычном браузере');
+        // В обычном браузере просто красим фон
+        document.body.style.backgroundColor = '#171719';
       }
-      // Дополнительно: вешаем обработчик на изменение видимости, чтобы сохранить цвет
-      document.body.style.backgroundColor = '#171719';
     })();
 
+    // Товары
     const products = [
       { id: 1, name: "Brawl Pass", price: 769, oldPrice: 799, image: "https://storage.botpapa.me/files/7cd0ec40-456b-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Brawl Stars" },
       { id: 2, name: "Brawl Pass Plus", price: 1099, oldPrice: 1169, image: "https://storage.botpapa.me/files/7643fb60-456b-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Brawl Stars" },
@@ -559,19 +587,34 @@
       }
       const grid = document.getElementById("catalogGrid");
       if (!grid) return;
+      
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #a1a1aa;">Товары не найдены</div>';
+        return;
+      }
+      
       grid.innerHTML = filtered.map(p => `
         <div class="product-card" data-id="${p.id}">
-          <img class="card-img" src="${p.image}" alt="${p.name}">
+          <img class="card-img" src="${p.image}" alt="${p.name}" loading="lazy">
           <div class="favorite-icon" data-fav="${p.id}">
             <img class="heart-svg ${favorites.has(p.id) ? 'heart-active' : ''}" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='${favorites.has(p.id) ? 'hotpink' : 'none'}' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8' d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'%3E%3C/path%3E%3C/svg%3E" />
           </div>
           <div class="card-info">
-            <div class="product-title">${p.name}</div>
+            <div class="product-title">${escapeHtml(p.name)}</div>
             <div class="price-row"><span class="current-price">${formatPrice(p.price)}</span><span class="old-price">${formatPrice(p.oldPrice)}</span></div>
             <div class="card-action-btn" data-addcart="${p.id}">${renderCartButton(p.id)}</div>
           </div>
         </div>
       `).join("");
+    }
+    
+    function escapeHtml(str) {
+      return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+      });
     }
 
     function renderCartButton(productId) {
@@ -597,7 +640,7 @@
       for (let [id, quantity] of items) {
         const prod = products.find(p => p.id == id);
         if(!prod) continue;
-        html += `<div class="cart-item"><img class="cart-img" src="${prod.image}"><div><div>${prod.name}</div><div>${formatPrice(prod.price)} x ${quantity}</div></div></div>`;
+        html += `<div class="cart-item"><img class="cart-img" src="${prod.image}"><div><div style="font-weight:500">${prod.name}</div><div>${formatPrice(prod.price)} x ${quantity}</div></div></div>`;
       }
       container.innerHTML = html;
     }
@@ -607,7 +650,7 @@
       if (!container) return;
       const favProds = products.filter(p => favorites.has(p.id));
       if (favProds.length === 0) { container.innerHTML = '<div class="empty-state">Нет избранных товаров 💔</div>'; return; }
-      container.innerHTML = favProds.map(p => `<div class="cart-item"><img class="cart-img" src="${p.image}"><div>${p.name} - ${formatPrice(p.price)}</div></div>`).join("");
+      container.innerHTML = favProds.map(p => `<div class="cart-item"><img class="cart-img" src="${p.image}"><div style="font-weight:500">${p.name}<br><span style="color:#3b82f6">${formatPrice(p.price)}</span></div></div>`).join("");
     }
 
     function toggleFavorite(pid) {
@@ -637,12 +680,12 @@
       const isFav = favorites.has(prod.id);
       const detailHtml = `
         <img class="product-detail-img" src="${prod.image}">
-        <div class="detail-header"><div class="detail-name">${prod.name}</div><div class="detail-prices"><span class="current-price">${formatPrice(prod.price)}</span> <span class="old-price">${formatPrice(prod.oldPrice)}</span></div></div>
+        <div class="detail-header"><div class="detail-name">${escapeHtml(prod.name)}</div><div class="detail-prices"><span class="current-price">${formatPrice(prod.price)}</span> <span class="old-price">${formatPrice(prod.oldPrice)}</span></div></div>
         <div class="divider"></div>
         <div class="delivery-row"><span>Способ получения</span><span>Вход в аккаунт</span></div>
         <div class="divider"></div>
         <div class="desc-title">Описание</div>
-        <div class="desc-text">Цифровой товар для Brawl Stars / Clash Royale. Мгновенная доставка после оплаты.</div>
+        <div class="desc-text">Цифровой товар для Brawl Stars / Clash Royale. Мгновенная доставка после оплаты. Автоматическая выдача на указанный ID.</div>
         <div class="sticky-bar">
           ${qty > 0 ? `<div class="detail-counter-mode"><span class="counter-minus" data-id="${prod.id}">−</span><span class="counter-value">${qty}</span><span class="counter-plus" data-id="${prod.id}">+</span></div>` : `<button class="detail-cart-btn" id="detailAddCartBtn"><img class="cart-icon-small" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6M17 13l1.5 6M9 21h6'%3E%3C/path%3E%3C/svg%3E" /> В корзину</button>`}
           <div class="detail-fav" data-favdetail="${prod.id}"><img class="heart-svg ${isFav ? 'heart-active' : ''}" style="width:24px" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='${isFav ? 'hotpink' : 'none'}' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8' d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'%3E%3C/path%3E%3C/svg%3E" /></div>
@@ -653,19 +696,21 @@
       const addBtn = document.getElementById("detailAddCartBtn");
       if (addBtn) addBtn.addEventListener("click", () => { handleCartAction(prod.id, true); });
       document.querySelectorAll(".counter-minus").forEach(el => el.addEventListener("click", (e) => { e.stopPropagation(); handleCartAction(parseInt(el.dataset.id), false); }));
-      document.querySelectorAll(".counter-plus").forEach(el => el.addEventListener("click", (e) => { e.stopPropagation(); alert("Данный товар недоступен к покупке в количестве"); }));
+      document.querySelectorAll(".counter-plus").forEach(el => el.addEventListener("click", (e) => { e.stopPropagation(); alert("Данный товар недоступен к покупке в количестве более 1"); }));
       const favDetailDiv = detailPage.querySelector(".detail-fav");
       if(favDetailDiv) favDetailDiv.addEventListener("click", () => { toggleFavorite(prod.id); renderDetailPage(prod.id); });
     }
 
     function showPage(pageId) {
       document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
-      document.getElementById(pageId + "-page").classList.add("active-page");
+      const targetPage = document.getElementById(pageId + "-page");
+      if (targetPage) targetPage.classList.add("active-page");
       if (pageId === "catalog") renderCatalog();
       if (pageId === "cart") renderCartPage();
       if (pageId === "favorites") renderFavPage();
       document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
-      document.querySelector(`.menu-item[data-page="${pageId}"]`).classList.add("active");
+      const activeBtn = document.querySelector(`.menu-item[data-page="${pageId}"]`);
+      if (activeBtn) activeBtn.classList.add("active");
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -683,39 +728,47 @@
       });
     }
 
-    document.getElementById("openFilterBtn").addEventListener("click", () => { renderFilterModal(); showPage("filter"); });
-    document.getElementById("searchInput").addEventListener("input", (e) => { searchQuery = e.target.value; renderCatalog(); });
+    // Обработчики событий
+    const openFilterBtn = document.getElementById("openFilterBtn");
+    if (openFilterBtn) openFilterBtn.addEventListener("click", () => { renderFilterModal(); showPage("filter"); });
     
-    document.getElementById("catalogGrid")?.addEventListener("click", (e) => {
-      let target = e.target.closest(".product-card");
-      if (target && !e.target.closest(".card-action-btn") && !e.target.closest(".favorite-icon")) {
-        const id = parseInt(target.dataset.id);
-        renderDetailPage(id);
-        showPage("detail");
-      }
-      if (e.target.closest(".favorite-icon")) {
-        const favDiv = e.target.closest(".favorite-icon");
-        const pid = parseInt(favDiv.dataset.fav);
-        toggleFavorite(pid);
-      }
-      if (e.target.closest("[data-add]")) {
-        const btn = e.target.closest("[data-add]");
-        const pid = parseInt(btn.dataset.add);
-        handleCartAction(pid, true);
-      }
-      if (e.target.closest(".counter-minus")) {
-        const minus = e.target.closest(".counter-minus");
-        handleCartAction(parseInt(minus.dataset.id), false);
-      }
-      if (e.target.closest(".counter-plus")) {
-        alert("Данный товар недоступен к покупке в количестве");
-      }
-    });
+    const searchInput = document.getElementById("searchInput");
+    if (searchInput) searchInput.addEventListener("input", (e) => { searchQuery = e.target.value; renderCatalog(); });
+    
+    const catalogGrid = document.getElementById("catalogGrid");
+    if (catalogGrid) {
+      catalogGrid.addEventListener("click", (e) => {
+        let target = e.target.closest(".product-card");
+        if (target && !e.target.closest(".card-action-btn") && !e.target.closest(".favorite-icon")) {
+          const id = parseInt(target.dataset.id);
+          renderDetailPage(id);
+          showPage("detail");
+        }
+        if (e.target.closest(".favorite-icon")) {
+          const favDiv = e.target.closest(".favorite-icon");
+          const pid = parseInt(favDiv.dataset.fav);
+          toggleFavorite(pid);
+        }
+        if (e.target.closest("[data-add]")) {
+          const btn = e.target.closest("[data-add]");
+          const pid = parseInt(btn.dataset.add);
+          handleCartAction(pid, true);
+        }
+        if (e.target.closest(".counter-minus")) {
+          const minus = e.target.closest(".counter-minus");
+          handleCartAction(parseInt(minus.dataset.id), false);
+        }
+        if (e.target.closest(".counter-plus")) {
+          alert("Данный товар недоступен к покупке в количестве более 1");
+        }
+      });
+    }
 
     document.querySelectorAll(".menu-item").forEach(btn => {
       btn.addEventListener("click", () => showPage(btn.dataset.page));
     });
 
+    // Стартовая отрисовка
     renderCatalog();
     renderCartPage();
     renderFavPage();

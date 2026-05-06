@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-  <title>Brawl Store — Каталог</title>
+  <!-- Настройка цвета для шапки Telegram и status bar -->
+  <meta name="theme-color" content="#171719">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Geltan Store — Каталог</title>
   <style>
     * {
       margin: 0;
@@ -12,11 +15,18 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    /* Расширенная синхронизация фона для Telegram Mini App */
     body {
       background-color: #171719;
       font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       color: #ffffff;
       padding-bottom: 80px; /* отступ под меню */
+    }
+
+    /* Для WebView Telegram — чтобы цвет фона совпадал с верхней панелью */
+    :root {
+      --tg-theme-bg-color: #171719;
+      --tg-theme-secondary-bg-color: #171719;
     }
 
     /* контейнер страниц */
@@ -43,7 +53,7 @@
       bottom: 0;
       left: 0;
       right: 0;
-      background: #121214;
+      background: #171719;
       border-top: 1px solid rgba(255, 255, 255, 0.15);
       border-top-left-radius: 18px;
       border-top-right-radius: 18px;
@@ -182,7 +192,7 @@
     }
 
     .product-card {
-      background: #121214;
+      background: #171719;
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 28px;
       overflow: hidden;
@@ -395,7 +405,7 @@
     .sticky-bar {
       position: sticky;
       bottom: 70px;
-      background: #121214;
+      background: #171719;
       border-radius: 60px;
       padding: 10px 16px;
       display: flex;
@@ -629,7 +639,8 @@
       `;
       const detailPage = document.getElementById("detail-page");
       detailPage.innerHTML = detailHtml;
-      document.getElementById("detailAddCartBtn")?.addEventListener("click", () => { handleCartAction(prod.id, true); });
+      const addBtn = document.getElementById("detailAddCartBtn");
+      if (addBtn) addBtn.addEventListener("click", () => { handleCartAction(prod.id, true); });
       document.querySelectorAll(".counter-minus").forEach(el => el.addEventListener("click", (e) => { e.stopPropagation(); handleCartAction(parseInt(el.dataset.id), false); }));
       document.querySelectorAll(".counter-plus").forEach(el => el.addEventListener("click", (e) => { e.stopPropagation(); alert("Данный товар недоступен к покупке в количестве"); }));
       const favDetailDiv = detailPage.querySelector(".detail-fav");
@@ -644,6 +655,8 @@
       if (pageId === "favorites") renderFavPage();
       document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
       document.querySelector(`.menu-item[data-page="${pageId}"]`).classList.add("active");
+      // Прокрутка вверх при смене страницы
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     // фильтр логика
@@ -686,16 +699,4 @@
         handleCartAction(parseInt(minus.dataset.id), false);
       }
       if (e.target.closest(".counter-plus")) {
-        alert("Данный товар недоступен к покупке в количестве");
-      }
-    });
-
-    document.querySelectorAll(".menu-item").forEach(btn => {
-      btn.addEventListener("click", () => showPage(btn.dataset.page));
-    });
-
-    renderCatalog(); renderCartPage(); renderFavPage(); renderFilterModal();
-    window.showPage = showPage;
-  </script>
-</body>
-</html>
+        alert("Данный товар

@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
   
-  <!-- Подключаем официальный скрипт Telegram WebApp -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   
   <meta name="theme-color" content="#171719">
@@ -112,7 +111,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     .header-icon {
@@ -126,11 +125,11 @@
       font-weight: 550;
     }
 
-    /* поиск + фильтр */
+    /* поиск + фильтр — отступ снизу 14px */
     .search-section {
       display: flex;
       gap: 14px;
-      margin-bottom: 24px;
+      margin-bottom: 14px;
       align-items: center;
     }
 
@@ -186,11 +185,11 @@
       filter: brightness(0) saturate(100%) invert(100%);
     }
 
-    /* карточки товаров — отступы между карточками 14px */
+    /* карточки товаров — отступ между карточками 13px */
     .products-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 14px;
+      gap: 13px;
       margin-bottom: 20px;
     }
 
@@ -246,13 +245,11 @@
       text-decoration: line-through;
     }
 
-    /* кнопка В корзину - обводка 1px #4BB7EF */
+    /* ОБЩАЯ КНОПКА — базовая обводка 1px #4BB7EF */
     .card-action-btn {
       width: 100%;
       height: 36px;
       border-radius: 36px;
-      background: transparent;
-      border: 1px solid #4BB7EF;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -260,20 +257,26 @@
       cursor: pointer;
       font-weight: 500;
       font-size: 14px;
-      color: #4BB7EF;
       transition: 0.1s;
     }
 
-    .cart-icon-small {
-      width: 18px;
-      height: 18px;
+    /* Кнопка "В корзину" — обводка 1px, как у карточек */
+    .cart-add-btn {
+      background: transparent;
+      border: 1px solid #4BB7EF;
+      color: #4BB7EF;
+    }
+
+    .cart-add-btn .cart-icon-small {
       filter: brightness(0) saturate(100%) invert(68%) sepia(48%) saturate(1162%) hue-rotate(165deg) brightness(96%) contrast(92%);
     }
 
-    /* кнопка-счетчик - БЕЗ обводки, только фон */
+    /* Кнопка-счетчик — ПОЛНОСТЬЮ БЕЗ ОБВОДКИ, только фон */
     .counter-btn {
       background: #202B32;
-      border: none;
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
       color: #4BB7EF;
       display: flex;
       justify-content: space-between;
@@ -295,6 +298,11 @@
       font-size: 16px;
       font-weight: 600;
       color: white;
+    }
+
+    .cart-icon-small {
+      width: 18px;
+      height: 18px;
     }
 
     .favorite-icon {
@@ -491,19 +499,6 @@
     .bottom-menu {
       box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
     }
-    
-    /* отступы между элементами 14px */
-    .products-grid {
-      gap: 14px;
-    }
-    
-    .search-section {
-      gap: 14px;
-    }
-    
-    .header-row {
-      margin-bottom: 20px;
-    }
   </style>
 </head>
 <body>
@@ -557,27 +552,22 @@
   </div>
 
   <script>
-    // Инициализация Telegram WebApp с отключением вертикальных свайпов
     (function() {
       if (window.Telegram && window.Telegram.WebApp) {
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
-        
-        // Отключаем вертикальные свайпы для iOS
         if (typeof tg.disableVerticalSwipes === 'function') {
           tg.disableVerticalSwipes();
         } else if (tg.isVersionAtLeast && tg.isVersionAtLeast('7.7')) {
           tg.disableVerticalSwipes();
         }
-        
         try {
           tg.setHeaderColor('#171719');
           tg.setBackgroundColor('#171719');
         } catch(e) {
           tg.setHeaderColor('bg_color');
         }
-        
         document.body.style.backgroundColor = '#171719';
         const meta = document.querySelector('meta[name="theme-color"]');
         if (meta) meta.setAttribute('content', '#171719');
@@ -586,7 +576,6 @@
       }
     })();
 
-    // Товары
     const products = [
       { id: 1, name: "Brawl Pass", price: 769, oldPrice: 799, image: "https://storage.botpapa.me/files/7cd0ec40-456b-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Brawl Stars" },
       { id: 2, name: "Brawl Pass Plus", price: 1099, oldPrice: 1169, image: "https://storage.botpapa.me/files/7643fb60-456b-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Brawl Stars" },
@@ -613,6 +602,17 @@
       });
     }
 
+    function renderCartButton(productId) {
+      const qty = cart[productId] || 0;
+      if (qty > 0) {
+        // Кнопка-счетчик — БЕЗ обводки, только фон
+        return `<div class="card-action-btn counter-btn" data-counter="${productId}"><span class="counter-minus" data-id="${productId}">−</span><span class="counter-value">${qty}</span><span class="counter-plus" data-id="${productId}">+</span></div>`;
+      } else {
+        // Кнопка "В корзину" — обводка 1px, как у карточек
+        return `<div class="card-action-btn cart-add-btn" data-add="${productId}"><img class="cart-icon-small" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234BB7EF'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6M17 13l1.5 6M9 21h6'%3E%3C/path%3E%3C/svg%3E" /> В корзину</div>`;
+      }
+    }
+
     function renderCatalog() {
       let filtered = products.filter(p => currentFilter === "Все категории" || p.category === currentFilter);
       if (searchQuery.trim() !== "") {
@@ -635,19 +635,10 @@
           <div class="card-info">
             <div class="product-title">${escapeHtml(p.name)}</div>
             <div class="price-row"><span class="current-price">${formatPrice(p.price)}</span><span class="old-price">${formatPrice(p.oldPrice)}</span></div>
-            <div class="card-action-btn" data-addcart="${p.id}">${renderCartButton(p.id)}</div>
+            ${renderCartButton(p.id)}
           </div>
         </div>
       `).join("");
-    }
-
-    function renderCartButton(productId) {
-      const qty = cart[productId] || 0;
-      if (qty > 0) {
-        return `<div class="card-action-btn counter-btn" data-counter="${productId}"><span class="counter-minus" data-id="${productId}">−</span><span class="counter-value">${qty}</span><span class="counter-plus" data-id="${productId}">+</span></div>`;
-      } else {
-        return `<div class="card-action-btn" data-add="${productId}"><img class="cart-icon-small" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234BB7EF'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6M17 13l1.5 6M9 21h6'%3E%3C/path%3E%3C/svg%3E" /> В корзину</div>`;
-      }
     }
 
     function updateCartAndRender() { 
@@ -709,7 +700,7 @@
         <div class="delivery-row"><span>Способ получения</span><span>Вход в аккаунт</span></div>
         <div class="divider"></div>
         <div class="desc-title">Описание</div>
-        <div class="desc-text">Цифровой товар для Brawl Stars / Clash Royale. Мгновенная доставка после оплаты. Автоматическая выдача на указанный ID.</div>
+        <div class="desc-text">Цифровой товар для Brawl Stars / Clash Royale. Мгновенная доставка после оплаты.</div>
         <div class="sticky-bar">
           ${qty > 0 ? `<div class="detail-counter-mode"><span class="counter-minus" data-id="${prod.id}">−</span><span class="counter-value">${qty}</span><span class="counter-plus" data-id="${prod.id}">+</span></div>` : `<button class="detail-cart-btn" id="detailAddCartBtn"><img class="cart-icon-small" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23171719'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6M17 13l1.5 6M9 21h6'%3E%3C/path%3E%3C/svg%3E" /> В корзину</button>`}
           <div class="detail-fav" data-favdetail="${prod.id}"><img class="heart-svg ${isFav ? 'heart-active' : ''}" style="width:24px" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='${isFav ? '#4BB7EF' : 'none'}' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8' d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'%3E%3C/path%3E%3C/svg%3E" /></div>
@@ -752,7 +743,6 @@
       });
     }
 
-    // Обработчики событий
     const openFilterBtn = document.getElementById("openFilterBtn");
     if (openFilterBtn) openFilterBtn.addEventListener("click", () => { renderFilterModal(); showPage("filter"); });
     

@@ -603,7 +603,7 @@
     .content-card {
       background: #202022;
       border: 1px solid #2B2B2D;
-      border-radius: 32px;
+      border-radius: 34px 34px 36px 36px;
       padding: 18px;
       margin-bottom: 0;
     }
@@ -1529,7 +1529,7 @@
         <div class="content-card">
           <div class="form-section">
             <div class="form-label">Почта от аккаунта</div>
-            <input type="email" class="form-input" id="emailInput" placeholder="Укажите почту от вашего аккаунта" value="${escapeHtml(checkoutData.email)}">
+            <input type="email" class="form-input" id="emailInput" placeholder="Укажите почту аккаунта" value="${escapeHtml(checkoutData.email)}">
           </div>
           
           <div class="form-section">
@@ -1636,7 +1636,7 @@
         : `<span class="total-price-wrapper"><span class="total-price">${formatPrice(rawTotal)}</span></span>`;
       
       container.innerHTML = `
-        <div style="color:#cbd5e1;font-size:18px;margin-bottom:18px;">Оплатите заказ по указанным ниже реквизитам и нажмите кнопку «Я оплатил»</div>
+        <div style="color:#cbd5e1;font-size:18px;margin-bottom:18px;">Оплатите заказ по указанным ниже реквизитам и нажмите «Я оплатил»</div>
         
         <div class="content-card">
           <div class="form-section">

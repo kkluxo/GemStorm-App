@@ -21,15 +21,7 @@
 
     :root {
       --tg-theme-bg-color: #171719 !important;
-      --tg-theme-secondary-bg-color: #171719 !important;
-      --tg-theme-header-bg-color: #171719 !important;
       --brand-blue: #4cb4e9;
-      --search-bg: #303032;
-      --card-border: #2B2B2D;
-      --card-bg: #19191b;
-      --counter-bg: #202B32;
-      --icon-gray: #9e9e9e;
-      --icon-active: #4cb4e9;
     }
 
     body {
@@ -63,7 +55,7 @@
       justify-content: space-around;
       align-items: center;
       padding: 5px 12px 8px 12px;
-      z-index: 1000;
+      z-index: 1001;
       max-width: 600px;
       margin: 0 auto;
       width: calc(100% - 36px);
@@ -126,7 +118,6 @@
     .header-icon {
       width: 26px;
       height: 26px;
-      color: #4cb4e9;
     }
 
     .page-title {
@@ -315,21 +306,21 @@
       font-size: 18px;
     }
 
-    /* СТИЛИ КАРТОЧКИ КОРЗИНЫ — увеличенные размеры */
+    /* СТИЛИ КАРТОЧКИ КОРЗИНЫ — изображение 100% по высоте карточки */
     .cart-item {
       background: #202022;
       border: 1px solid #2B2B2D;
       border-radius: 28px;
-      padding: 10px;
-      margin-bottom: 14px;
+      padding: 8px;
+      margin-bottom: 12px;
       display: flex;
-      gap: 14px;
+      gap: 12px;
       align-items: center;
     }
 
     .cart-img {
-      width: 81px;  /* +6px от 75 */
-      height: 81px;
+      width: 70px;
+      height: 70px;
       border-radius: 20px;
       object-fit: cover;
       flex-shrink: 0;
@@ -339,39 +330,39 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 4px;
     }
 
     .cart-product-name {
-      font-size: 18px;  /* +1px */
+      font-size: 16px;
       font-weight: 500;
       color: white;
     }
 
     .cart-product-price {
-      font-size: 17px;  /* +1px */
+      font-size: 15px;
       font-weight: 500;
       color: white;
     }
 
     .cart-product-category {
-      font-size: 14px;  /* +1px */
+      font-size: 13px;
       color: #9e9e9e;
     }
 
     .cart-actions {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
       align-items: flex-end;
     }
 
     .cart-remove-btn {
       background: rgba(239, 68, 68, 0.12);
       border: none;
-      width: 40px;     /* увеличены */
-      height: 40px;
-      border-radius: 44px;
+      width: 36px;
+      height: 36px;
+      border-radius: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -379,53 +370,53 @@
       transition: 0.1s;
     }
 
-    .cart-remove-btn svg {
-      width: 22px;
-      height: 22px;
-      stroke: #ef4444;
-      stroke-width: 1.8;
-      fill: none;
+    .cart-remove-btn img {
+      width: 20px;
+      height: 20px;
     }
 
+    /* Укороченная кнопка количества с иконками как в каталоге */
     .cart-quantity {
       display: flex;
       align-items: center;
-      gap: 12px;
-      background: #2c2c2e;
-      border-radius: 44px;
-      padding: 6px 10px;
+      gap: 6px;
+      background: #202B32;
+      border-radius: 40px;
+      padding: 4px 8px;
     }
 
     .cart-qty-btn {
       background: none;
       border: none;
-      width: 32px;
-      height: 32px;
+      width: 26px;
+      height: 26px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       border-radius: 30px;
-      font-size: 22px;
-      font-weight: 600;
-      color: #4cb4e9;
+    }
+
+    .cart-qty-btn img {
+      width: 16px;
+      height: 16px;
     }
 
     .cart-qty-value {
-      font-size: 17px;
+      font-size: 15px;
       font-weight: 600;
       color: white;
-      min-width: 30px;
+      min-width: 24px;
       text-align: center;
     }
 
-    /* ЗАКРЕПЛЁННЫЙ БЛОК ОФОРМЛЕНИЯ (как меню, с нахлёстом) */
+    /* ЗАКРЕПЛЁННЫЙ БЛОК ОФОРМЛЕНИЯ — увеличенный, скругление 34px, z-index ниже меню */
     .cart-checkout-fixed {
       position: fixed;
-      bottom: 88px;       /* отступ, чтобы половина блока была под меню */
+      bottom: 18px;
       left: 18px;
       right: 18px;
-      z-index: 99;
+      z-index: 1000;
       max-width: 600px;
       margin: 0 auto;
       width: calc(100% - 36px);
@@ -435,46 +426,53 @@
       background: #202022f9;
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border-radius: 60px;
-      padding: 14px 20px;
+      border-radius: 34px;
+      padding: 24px 20px 20px 20px;
       border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .total-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      font-size: 18px;
+      font-weight: 500;
     }
 
     .total-label {
-      font-size: 15px;
-      font-weight: 500;
       color: #cbd5e1;
     }
 
     .total-price {
-      font-size: 20px;
-      font-weight: 700;
       color: white;
+      font-weight: 700;
+      font-size: 22px;
     }
 
     .checkout-button {
+      width: 100%;
       background: #4cb4e9;
       border: none;
-      border-radius: 44px;
-      padding: 12px 24px;
+      border-radius: 50px;
+      padding: 16px;
       color: white;
       font-weight: 600;
-      font-size: 16px;
+      font-size: 18px;
       cursor: pointer;
       transition: 0.1s;
+      text-align: center;
     }
 
     .checkout-button:active {
       opacity: 0.8;
-      transform: scale(0.97);
+      transform: scale(0.98);
     }
 
-    /* Отступ для контента корзины, чтобы не перекрывался закреплённым блоком */
     .cart-content-padding {
-      padding-bottom: 100px;
+      padding-bottom: 110px;
     }
 
     .order-item {
@@ -540,15 +538,19 @@
       color: #4cb4e9;
       font-weight: 600;
     }
+
+    /* Хедер иконки */
+    .header-icon-img {
+      width: 26px;
+      height: 26px;
+      object-fit: contain;
+    }
   </style>
 </head>
 <body>
   <div id="catalog-page" class="page active-page">
     <div class="header-row">
-      <svg class="header-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M7.43499 1.25C6.86499 1.25 6.38199 1.25 5.98199 1.291C5.55599 1.335 5.16199 1.431 4.79099 1.661C4.41999 1.891 4.15699 2.2 3.92699 2.561C3.71199 2.901 3.49499 3.333 3.23999 3.843L3.22399 3.876L3.19699 3.936L1.79399 7.483C1.62699 7.906 1.44199 8.433 1.38699 8.971C1.33199 9.523 1.40799 10.154 1.83999 10.701C2.09726 11.0278 2.42531 11.292 2.79945 11.4737C3.17359 11.6554 3.58407 11.7499 3.99999 11.75C4.78799 11.75 5.49899 11.419 5.99999 10.887C6.25665 11.1599 6.56655 11.3773 6.91055 11.5258C7.25455 11.6742 7.62534 11.7505 7.99999 11.75C8.78799 11.75 9.49899 11.419 9.99999 10.887C10.2566 11.1599 10.5666 11.3773 10.9106 11.5258C11.2546 11.6742 11.6253 11.7505 12 11.75C12.788 11.75 13.499 11.419 14 10.887C14.2566 11.1599 14.5666 11.3773 14.9106 11.5258C15.2546 11.6742 15.6253 11.7505 16 11.75C16.788 11.75 17.499 11.419 18 10.887C18.2566 11.1599 18.5666 11.3773 18.9106 11.5258C19.2546 11.6742 19.6253 11.7505 20 11.75C20.877 11.75 21.658 11.339 22.16 10.702C22.592 10.154 22.668 9.522 22.613 8.972C22.559 8.432 22.373 7.906 22.207 7.483L20.803 3.935L20.776 3.875L20.76 3.843C20.505 3.333 20.289 2.9 20.073 2.561C19.843 2.2 19.582 1.891 19.21 1.661C18.838 1.431 18.445 1.335 18.019 1.291C17.619 1.25 17.135 1.25 16.565 1.25H7.43499Z" fill="currentColor"/>
-        <path d="M19.75 15C19.75 14.8011 19.671 14.6103 19.5303 14.4697C19.3897 14.329 19.1989 14.25 19 14.25C18.8011 14.25 18.6103 14.329 18.4697 14.4697C18.329 14.6103 18.25 14.8011 18.25 15V21.25H5.75V15C5.75 14.8011 5.67098 14.6103 5.53033 14.4697C5.38968 14.329 5.19891 14.25 5 14.25C4.80109 14.25 4.61032 14.329 4.46967 14.4697C4.32902 14.6103 4.25 14.8011 4.25 15V21.25H3C2.80109 21.25 2.61032 21.329 2.46967 21.4697C2.32902 21.6103 2.25 21.8011 2.25 22C2.25 22.1989 2.32902 22.3897 2.46967 22.5303C2.61032 22.671 2.80109 22.75 3 22.75H21C21.1989 22.75 21.3897 22.671 21.5303 22.5303C21.671 22.3897 21.75 22.1989 21.75 22C21.75 21.8011 21.671 21.6103 21.5303 21.4697C21.3897 21.329 21.1989 21.25 21 21.25H19.75V15Z" fill="currentColor"/>
-      </svg>
+      <img class="header-icon-img" src="https://storage.botpapa.me/files/fd86aa00-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
       <div class="page-title">Каталог</div>
     </div>
     <div class="search-section">
@@ -557,7 +559,7 @@
         <input type="text" class="search-input" id="searchInput" placeholder="Найти товар по названию">
       </div>
       <div class="filter-btn" id="openFilterBtn">
-        <img class="filter-icon" id="filterBtnIcon" src="https://storage.botpapa.me/files/bc7cbf30-49e0-11f1-bef9-f1ec7a2c6e45.png" alt="filter">
+        <img class="filter-icon" src="https://storage.botpapa.me/files/bc7cbf30-49e0-11f1-bef9-f1ec7a2c6e45.png" alt="filter">
       </div>
     </div>
     <div id="catalogGrid" class="products-grid"></div>
@@ -565,9 +567,7 @@
 
   <div id="cart-page" class="page">
     <div class="header-row">
-      <svg class="header-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M2.249 2.29199C2.06123 2.22595 1.85491 2.23721 1.67544 2.32329C1.49596 2.40937 1.35804 2.56322 1.292 2.75099C1.22596 2.93876 1.23722 3.14508 1.3233 3.32455C1.40938 3.50403 1.56323 3.64195 1.751 3.70799L2.013 3.79899C2.68 4.03399 3.119 4.18899 3.442 4.34799C3.745 4.49699 3.879 4.61799 3.967 4.74599C4.057 4.87799 4.127 5.05999 4.167 5.42299C4.207 5.80299 4.208 6.29799 4.208 7.03799V9.75999C4.208 11.213 4.222 12.26 4.359 13.06C4.505 13.914 4.797 14.526 5.344 15.102C5.938 15.729 6.69 16.002 7.587 16.128C8.445 16.25 9.535 16.25 10.88 16.25H16.286C17.028 16.25 17.652 16.25 18.156 16.188C18.693 16.123 19.181 15.979 19.608 15.632C20.034 15.284 20.273 14.835 20.445 14.323C20.608 13.841 20.734 13.23 20.884 12.503L21.392 10.034L21.394 10.029L21.404 9.97699C21.569 9.15199 21.707 8.45799 21.742 7.89999C21.778 7.31399 21.711 6.73599 21.329 6.23999C21.094 5.93399 20.764 5.76099 20.463 5.65599C20.1378 5.54906 19.8018 5.47863 19.461 5.44599C18.774 5.36999 17.939 5.36999 17.121 5.36999H5.667C5.66399 5.33396 5.66066 5.29796 5.657 5.26199C5.603 4.76499 5.487 4.31199 5.204 3.89999C4.92 3.48399 4.542 3.21799 4.102 3.00099C3.69 2.79899 3.166 2.61499 2.549 2.39799L2.249 2.29199Z" fill="currentColor"/>
-      </svg>
+      <img class="header-icon-img" src="https://storage.botpapa.me/files/19b700d0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="cart">
       <div class="page-title">Корзина</div>
     </div>
     <div id="cartItemsList" class="cart-content-padding"></div>
@@ -575,7 +575,7 @@
 
   <div id="orders-page" class="page">
     <div class="header-row">
-      <img class="header-icon" src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="orders" style="width: 26px; height: 26px;">
+      <img class="header-icon-img" src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="orders" style="width: 26px; height: 26px;">
       <div class="page-title">Заказы</div>
     </div>
     <div id="ordersList"></div>
@@ -583,9 +583,7 @@
 
   <div id="profile-page" class="page">
     <div class="header-row">
-      <svg class="header-icon" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M8 1.3335C7.16014 1.3335 6.35469 1.66713 5.76082 2.26099C5.16696 2.85486 4.83333 3.66031 4.83333 4.50016C4.83333 5.34001 5.16696 6.14547 5.76082 6.73933C6.35469 7.3332 7.16014 7.66683 8 7.66683C8.83985 7.66683 9.6453 7.3332 10.2392 6.73933C10.833 6.14547 11.1667 5.34001 11.1667 4.50016C11.1667 3.66031 10.833 2.85486 10.2392 2.26099C9.6453 1.66713 8.83985 1.3335 8 1.3335Z" fill="currentColor"/>
-      </svg>
+      <img class="header-icon-img" src="https://storage.botpapa.me/files/12337af0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="profile">
       <div class="page-title">Профиль</div>
     </div>
     <div class="empty-state">Ваш профиль: вход по аккаунту Telegram</div>
@@ -593,24 +591,24 @@
 
   <div id="filter-page" class="page">
     <div class="header-row">
-      <img class="header-icon" src="https://storage.botpapa.me/files/9478fb40-49de-11f1-bef9-f1ec7a2c6e45.png" alt="filter" style="width: 26px; height: 26px;">
+      <img class="header-icon-img" src="https://storage.botpapa.me/files/9478fb40-49de-11f1-bef9-f1ec7a2c6e45.png" alt="filter" style="width: 26px; height: 26px;">
       <div class="page-title">Фильтры</div>
     </div>
     <div class="filter-options" id="filterOptionsContainer"></div>
   </div>
 
-  <!-- ЗАКРЕПЛЁННЫЙ БЛОК КОРЗИНЫ (будет появляться при наличии товаров) -->
+  <!-- ЗАКРЕПЛЁННЫЙ БЛОК КОРЗИНЫ (появляется только на странице корзины при наличии товаров) -->
   <div id="cartCheckoutFixed" class="cart-checkout-fixed" style="display: none;"></div>
 
   <div class="bottom-menu">
     <button class="menu-item" data-page="catalog">
-      <svg class="menu-icon menu-icon-inactive" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.43499 1.25C6.86499 1.25 6.38199 1.25 5.98199 1.291C5.55599 1.335 5.16199 1.431 4.79099 1.661C4.41999 1.891 4.15699 2.2 3.92699 2.561C3.71199 2.901 3.49499 3.333 3.23999 3.843L3.22399 3.876L3.19699 3.936L1.79399 7.483C1.62699 7.906 1.44199 8.433 1.38699 8.971C1.33199 9.523 1.40799 10.154 1.83999 10.701C2.09726 11.0278 2.42531 11.292 2.79945 11.4737C3.17359 11.6554 3.58407 11.7499 3.99999 11.75C4.78799 11.75 5.49899 11.419 5.99999 10.887C6.25665 11.1599 6.56655 11.3773 6.91055 11.5258C7.25455 11.6742 7.62534 11.7505 7.99999 11.75C8.78799 11.75 9.49899 11.419 9.99999 10.887C10.2566 11.1599 10.5666 11.3773 10.9106 11.5258C11.2546 11.6742 11.6253 11.7505 12 11.75C12.788 11.75 13.499 11.419 14 10.887C14.2566 11.1599 14.5666 11.3773 14.9106 11.5258C15.2546 11.6742 15.6253 11.7505 16 11.75C16.788 11.75 17.499 11.419 18 10.887C18.2566 11.1599 18.5666 11.3773 18.9106 11.5258C19.2546 11.6742 19.6253 11.7505 20 11.75C20.877 11.75 21.658 11.339 22.16 10.702C22.592 10.154 22.668 9.522 22.613 8.972C22.559 8.432 22.373 7.906 22.207 7.483L20.803 3.935L20.776 3.875L20.76 3.843C20.505 3.333 20.289 2.9 20.073 2.561C19.843 2.2 19.582 1.891 19.21 1.661C18.838 1.431 18.445 1.335 18.019 1.291C17.619 1.25 17.135 1.25 16.565 1.25H7.43499Z" fill="#9e9e9e"/><path d="M19.75 15C19.75 14.8011 19.671 14.6103 19.5303 14.4697C19.3897 14.329 19.1989 14.25 19 14.25C18.8011 14.25 18.6103 14.329 18.4697 14.4697C18.329 14.6103 18.25 14.8011 18.25 15V21.25H5.75V15C5.75 14.8011 5.67098 14.6103 5.53033 14.4697C5.38968 14.329 5.19891 14.25 5 14.25C4.80109 14.25 4.61032 14.329 4.46967 14.4697C4.32902 14.6103 4.25 14.8011 4.25 15V21.25H3C2.80109 21.25 2.61032 21.329 2.46967 21.4697C2.32902 21.6103 2.25 21.8011 2.25 22C2.25 22.1989 2.32902 22.3897 2.46967 22.5303C2.61032 22.671 2.80109 22.75 3 22.75H21C21.1989 22.75 21.3897 22.671 21.5303 22.5303C21.671 22.3897 21.75 22.1989 21.75 22C21.75 21.8011 21.671 21.6103 21.5303 21.4697C21.3897 21.329 21.1989 21.25 21 21.25H19.75V15Z" fill="#9e9e9e"/></svg>
-      <svg class="menu-icon menu-icon-active" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.43499 1.25C6.86499 1.25 6.38199 1.25 5.98199 1.291C5.55599 1.335 5.16199 1.431 4.79099 1.661C4.41999 1.891 4.15699 2.2 3.92699 2.561C3.71199 2.901 3.49499 3.333 3.23999 3.843L3.22399 3.876L3.19699 3.936L1.79399 7.483C1.62699 7.906 1.44199 8.433 1.38699 8.971C1.33199 9.523 1.40799 10.154 1.83999 10.701C2.09726 11.0278 2.42531 11.292 2.79945 11.4737C3.17359 11.6554 3.58407 11.7499 3.99999 11.75C4.78799 11.75 5.49899 11.419 5.99999 10.887C6.25665 11.1599 6.56655 11.3773 6.91055 11.5258C7.25455 11.6742 7.62534 11.7505 7.99999 11.75C8.78799 11.75 9.49899 11.419 9.99999 10.887C10.2566 11.1599 10.5666 11.3773 10.9106 11.5258C11.2546 11.6742 11.6253 11.7505 12 11.75C12.788 11.75 13.499 11.419 14 10.887C14.2566 11.1599 14.5666 11.3773 14.9106 11.5258C15.2546 11.6742 15.6253 11.7505 16 11.75C16.788 11.75 17.499 11.419 18 10.887C18.2566 11.1599 18.5666 11.3773 18.9106 11.5258C19.2546 11.6742 19.6253 11.7505 20 11.75C20.877 11.75 21.658 11.339 22.16 10.702C22.592 10.154 22.668 9.522 22.613 8.972C22.559 8.432 22.373 7.906 22.207 7.483L20.803 3.935L20.776 3.875L20.76 3.843C20.505 3.333 20.289 2.9 20.073 2.561C19.843 2.2 19.582 1.891 19.21 1.661C18.838 1.431 18.445 1.335 18.019 1.291C17.619 1.25 17.135 1.25 16.565 1.25H7.43499Z" fill="#4cb4e9"/><path d="M19.75 15C19.75 14.8011 19.671 14.6103 19.5303 14.4697C19.3897 14.329 19.1989 14.25 19 14.25C18.8011 14.25 18.6103 14.329 18.4697 14.4697C18.329 14.6103 18.25 14.8011 18.25 15V21.25H5.75V15C5.75 14.8011 5.67098 14.6103 5.53033 14.4697C5.38968 14.329 5.19891 14.25 5 14.25C4.80109 14.25 4.61032 14.329 4.46967 14.4697C4.32902 14.6103 4.25 14.8011 4.25 15V21.25H3C2.80109 21.25 2.61032 21.329 2.46967 21.4697C2.32902 21.6103 2.25 21.8011 2.25 22C2.25 22.1989 2.32902 22.3897 2.46967 22.5303C2.61032 22.671 2.80109 22.75 3 22.75H21C21.1989 22.75 21.3897 22.671 21.5303 22.5303C21.671 22.3897 21.75 22.1989 21.75 22C21.75 21.8011 21.671 21.6103 21.5303 21.4697C21.3897 21.329 21.1989 21.25 21 21.25H19.75V15Z" fill="#4cb4e9"/></svg>
+      <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/fa0bb410-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
+      <img class="menu-icon menu-icon-active" src="https://storage.botpapa.me/files/fd86aa00-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
       <span class="menu-label">Каталог</span>
     </button>
     <button class="menu-item" data-page="cart">
-      <svg class="menu-icon menu-icon-inactive" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.249 2.29199C2.06123 2.22595 1.85491 2.23721 1.67544 2.32329C1.49596 2.40937 1.35804 2.56322 1.292 2.75099C1.22596 2.93876 1.23722 3.14508 1.3233 3.32455C1.40938 3.50403 1.56323 3.64195 1.751 3.70799L2.013 3.79899C2.68 4.03399 3.119 4.18899 3.442 4.34799C3.745 4.49699 3.879 4.61799 3.967 4.74599C4.057 4.87799 4.127 5.05999 4.167 5.42299C4.207 5.80299 4.208 6.29799 4.208 7.03799V9.75999C4.208 11.213 4.222 12.26 4.359 13.06C4.505 13.914 4.797 14.526 5.344 15.102C5.938 15.729 6.69 16.002 7.587 16.128C8.445 16.25 9.535 16.25 10.88 16.25H16.286C17.028 16.25 17.652 16.25 18.156 16.188C18.693 16.123 19.181 15.979 19.608 15.632C20.034 15.284 20.273 14.835 20.445 14.323C20.608 13.841 20.734 13.23 20.884 12.503L21.392 10.034L21.394 10.029L21.404 9.97699C21.569 9.15199 21.707 8.45799 21.742 7.89999C21.778 7.31399 21.711 6.73599 21.329 6.23999C21.094 5.93399 20.764 5.76099 20.463 5.65599C20.1378 5.54906 19.8018 5.47863 19.461 5.44599C18.774 5.36999 17.939 5.36999 17.121 5.36999H5.667C5.66399 5.33396 5.66066 5.29796 5.657 5.26199C5.603 4.76499 5.487 4.31199 5.204 3.89999C4.92 3.48399 4.542 3.21799 4.102 3.00099C3.69 2.79899 3.166 2.61499 2.549 2.39799L2.249 2.29199Z" fill="#9e9e9e"/></svg>
-      <svg class="menu-icon menu-icon-active" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.249 2.29199C2.06123 2.22595 1.85491 2.23721 1.67544 2.32329C1.49596 2.40937 1.35804 2.56322 1.292 2.75099C1.22596 2.93876 1.23722 3.14508 1.3233 3.32455C1.40938 3.50403 1.56323 3.64195 1.751 3.70799L2.013 3.79899C2.68 4.03399 3.119 4.18899 3.442 4.34799C3.745 4.49699 3.879 4.61799 3.967 4.74599C4.057 4.87799 4.127 5.05999 4.167 5.42299C4.207 5.80299 4.208 6.29799 4.208 7.03799V9.75999C4.208 11.213 4.222 12.26 4.359 13.06C4.505 13.914 4.797 14.526 5.344 15.102C5.938 15.729 6.69 16.002 7.587 16.128C8.445 16.25 9.535 16.25 10.88 16.25H16.286C17.028 16.25 17.652 16.25 18.156 16.188C18.693 16.123 19.181 15.979 19.608 15.632C20.034 15.284 20.273 14.835 20.445 14.323C20.608 13.841 20.734 13.23 20.884 12.503L21.392 10.034L21.394 10.029L21.404 9.97699C21.569 9.15199 21.707 8.45799 21.742 7.89999C21.778 7.31399 21.711 6.73599 21.329 6.23999C21.094 5.93399 20.764 5.76099 20.463 5.65599C20.1378 5.54906 19.8018 5.47863 19.461 5.44599C18.774 5.36999 17.939 5.36999 17.121 5.36999H5.667C5.66399 5.33396 5.66066 5.29796 5.657 5.26199C5.603 4.76499 5.487 4.31199 5.204 3.89999C4.92 3.48399 4.542 3.21799 4.102 3.00099C3.69 2.79899 3.166 2.61499 2.549 2.39799L2.249 2.29199Z" fill="#4cb4e9"/></svg>
+      <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/00feb9c0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="cart">
+      <img class="menu-icon menu-icon-active" src="https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="cart">
       <span class="menu-label">Корзина</span>
     </button>
     <button class="menu-item" data-page="orders">
@@ -619,8 +617,8 @@
       <span class="menu-label">Заказы</span>
     </button>
     <button class="menu-item" data-page="profile">
-      <svg class="menu-icon menu-icon-inactive" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8 1.3335C7.16014 1.3335 6.35469 1.66713 5.76082 2.26099C5.16696 2.85486 4.83333 3.66031 4.83333 4.50016C4.83333 5.34001 5.16696 6.14547 5.76082 6.73933C6.35469 7.3332 7.16014 7.66683 8 7.66683C8.83985 7.66683 9.6453 7.3332 10.2392 6.73933C10.833 6.14547 11.1667 5.34001 11.1667 4.50016C11.1667 3.66031 10.833 2.85486 10.2392 2.26099C9.6453 1.66713 8.83985 1.3335 8 1.3335Z" fill="#9e9e9e"/></svg>
-      <svg class="menu-icon menu-icon-active" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8 1.3335C7.16014 1.3335 6.35469 1.66713 5.76082 2.26099C5.16696 2.85486 4.83333 3.66031 4.83333 4.50016C4.83333 5.34001 5.16696 6.14547 5.76082 6.73933C6.35469 7.3332 7.16014 7.66683 8 7.66683C8.83985 7.66683 9.6453 7.3332 10.2392 6.73933C10.833 6.14547 11.1667 5.34001 11.1667 4.50016C11.1667 3.66031 10.833 2.85486 10.2392 2.26099C9.6453 1.66713 8.83985 1.3335 8 1.3335Z" fill="#4cb4e9"/></svg>
+      <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/1656bed0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="profile">
+      <img class="menu-icon menu-icon-active" src="https://storage.botpapa.me/files/12337af0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="profile">
       <span class="menu-label">Профиль</span>
     </button>
   </div>
@@ -732,18 +730,51 @@
     function renderCartPage() {
       const container = document.getElementById("cartItemsList");
       const items = Object.entries(cart);
-      if (!items.length) { container.innerHTML = '<div class="empty-state">Корзина пуста 🛒</div>'; document.getElementById("cartCheckoutFixed").style.display = "none"; return; }
+      if (!items.length) { 
+        container.innerHTML = '<div class="empty-state">Корзина пуста 🛒</div>'; 
+        document.getElementById("cartCheckoutFixed").style.display = "none"; 
+        return; 
+      }
       let html = '';
       for (let [id, qty] of items) {
         const prod = products.find(p => p.id == id);
         if (!prod) continue;
-        html += `<div class="cart-item"><img class="cart-img" src="${prod.image}"><div class="cart-info"><div class="cart-product-name">${escapeHtml(prod.name)}</div><div class="cart-product-price">${formatPrice(prod.price)}</div><div class="cart-product-category">${escapeHtml(prod.category)}</div></div><div class="cart-actions"><button class="cart-remove-btn" data-rm="${id}"><svg viewBox="0 0 24 24"><path d="M4 7H20M18 7L17.2 18.4C17.1 19.3 16.3 20 15.4 20H8.6C7.7 20 6.9 19.3 6.8 18.4L6 7M10 11V16M14 11V16M5 7L6 4.5C6.1 3.6 6.9 3 7.8 3H16.2C17.1 3 17.9 3.6 18 4.5L19 7" stroke="#ef4444" stroke-width="1.8"/></svg></button><div class="cart-quantity"><button class="cart-qty-btn" data-dec="${id}">−</button><span class="cart-qty-value">${qty}</span><button class="cart-qty-btn" data-inc="${id}">+</button></div></div></div>`;
+        html += `
+          <div class="cart-item">
+            <img class="cart-img" src="${prod.image}" alt="${escapeHtml(prod.name)}">
+            <div class="cart-info">
+              <div class="cart-product-name">${escapeHtml(prod.name)}</div>
+              <div class="cart-product-price">${formatPrice(prod.price)}</div>
+              <div class="cart-product-category">${escapeHtml(prod.category)}</div>
+            </div>
+            <div class="cart-actions">
+              <button class="cart-remove-btn" data-rm="${id}">
+                <img src="https://storage.botpapa.me/files/19b700d0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="remove">
+              </button>
+              <div class="cart-quantity">
+                <button class="cart-qty-btn" data-dec="${id}"><img src="https://storage.botpapa.me/files/975c4510-49de-11f1-bef9-f1ec7a2c6e45.png" alt="-"></button>
+                <span class="cart-qty-value">${qty}</span>
+                <button class="cart-qty-btn" data-inc="${id}"><img src="https://storage.botpapa.me/files/9a5d01f0-49de-11f1-bef9-f1ec7a2c6e45.png" alt="+"></button>
+              </div>
+            </div>
+          </div>
+        `;
       }
       container.innerHTML = html;
+      
       const total = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
       const fixedBlock = document.getElementById("cartCheckoutFixed");
       fixedBlock.style.display = "block";
-      fixedBlock.innerHTML = `<div class="checkout-card"><span class="total-label">Общая стоимость:</span><span class="total-price">${formatPrice(total)}</span><button class="checkout-button">Оформить заказ</button></div>`;
+      fixedBlock.innerHTML = `
+        <div class="checkout-card">
+          <div class="total-row">
+            <span class="total-label">Общая стоимость:</span>
+            <span class="total-price">${formatPrice(total)}</span>
+          </div>
+          <button class="checkout-button">Оформить заказ</button>
+        </div>
+      `;
+      
       document.querySelectorAll(".cart-remove-btn").forEach(btn => btn.addEventListener("click", () => removeCartItem(parseInt(btn.dataset.rm))));
       document.querySelectorAll("[data-dec]").forEach(btn => btn.addEventListener("click", () => changeQty(parseInt(btn.dataset.dec), -1)));
       document.querySelectorAll("[data-inc]").forEach(btn => btn.addEventListener("click", () => changeQty(parseInt(btn.dataset.inc), 1)));
@@ -753,7 +784,17 @@
     function renderOrdersPage() {
       const container = document.getElementById("ordersList");
       if (!orders.length) { container.innerHTML = '<div class="empty-state">У вас пока нет заказов 📦</div>'; return; }
-      container.innerHTML = orders.map(o => `<div class="order-item"><div class="order-header"><span class="order-id">Заказ #${o.id}</span><span class="order-status">${o.status}</span></div><div style="color:#a1a1aa;font-size:14px;margin-bottom:8px;">${o.date}</div><div class="order-products">${o.items.map(i => `${i.name} x ${i.qty}`).join(', ')}</div><div class="order-total">${formatPrice(o.total)}</div></div>`).join('');
+      container.innerHTML = orders.map(o => `
+        <div class="order-item">
+          <div class="order-header">
+            <span class="order-id">Заказ #${o.id}</span>
+            <span class="order-status">${o.status}</span>
+          </div>
+          <div style="color:#a1a1aa;font-size:14px;margin-bottom:8px;">${o.date}</div>
+          <div class="order-products">${o.items.map(i => `${i.name} x ${i.qty}`).join(', ')}</div>
+          <div class="order-total">${formatPrice(o.total)}</div>
+        </div>
+      `).join('');
     }
 
     function renderCatalog() {
@@ -761,7 +802,16 @@
       if (searchQuery.trim()) filtered = filtered.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
       const grid = document.getElementById("catalogGrid");
       if (!filtered.length) { grid.innerHTML = '<div style="text-align:center;padding:40px;color:#a1a1aa">Товары не найдены</div>'; return; }
-      grid.innerHTML = filtered.map(p => `<div class="product-card" data-id="${p.id}"><img class="card-img" src="${p.image}"><div class="card-info"><div class="product-title">${escapeHtml(p.name)}</div><div class="price-row"><span class="current-price">${formatPrice(p.price)}</span><span class="old-price">${formatPrice(p.oldPrice)}</span></div>${renderCartButtonHtml(p.id)}</div></div>`).join("");
+      grid.innerHTML = filtered.map(p => `
+        <div class="product-card" data-id="${p.id}">
+          <img class="card-img" src="${p.image}" alt="${escapeHtml(p.name)}" loading="lazy">
+          <div class="card-info">
+            <div class="product-title">${escapeHtml(p.name)}</div>
+            <div class="price-row"><span class="current-price">${formatPrice(p.price)}</span><span class="old-price">${formatPrice(p.oldPrice)}</span></div>
+            ${renderCartButtonHtml(p.id)}
+          </div>
+        </div>
+      `).join("");
       attachCardEvents();
     }
 

@@ -83,8 +83,8 @@
     }
 
     .menu-icon {
-      width: 26px;
-      height: 26px;
+      width: 28px;
+      height: 28px;
       transition: all 0.1s;
     }
 
@@ -283,8 +283,8 @@
     }
 
     .counter-minus, .counter-plus {
-      width: 24px;
-      height: 24px;
+      width: 18px;
+      height: 18px;
       background: none;
       border: none;
       cursor: pointer;
@@ -294,8 +294,8 @@
     }
 
     .counter-minus img, .counter-plus img {
-      width: 20px;
-      height: 20px;
+      width: 14px;
+      height: 14px;
     }
 
     .counter-value {
@@ -408,7 +408,7 @@
         <input type="text" class="search-input" id="searchInput" placeholder="Найти товар по названию">
       </div>
       <div class="filter-btn" id="openFilterBtn">
-        <img class="filter-icon" id="filterBtnIcon" src="https://storage.botpapa.me/files/8f54e930-49de-11f1-bef9-f1ec7a2c6e45.png" alt="filter">
+        <img class="filter-icon" id="filterBtnIcon" src="https://storage.botpapa.me/files/bc7cbf30-49e0-11f1-bef9-f1ec7a2c6e45.png" alt="filter">
       </div>
     </div>
     <div id="catalogGrid" class="products-grid"></div>
@@ -426,7 +426,7 @@
 
   <div id="orders-page" class="page">
     <div class="header-row">
-      <img class="header-icon" id="ordersHeaderIcon" src="https://storage.botpapa.me/files/9478fb40-49de-11f1-bef9-f1ec7a2c6e45.png" alt="orders" style="width: 26px; height: 26px;">
+      <img class="header-icon" src="https://storage.botpapa.me/files/8881c790-49de-11f1-bef9-f1ec7a2c6e45.png" alt="orders" style="width: 26px; height: 26px;">
       <div class="page-title">Заказы</div>
     </div>
     <div id="ordersList"></div>
@@ -472,8 +472,8 @@
       <span class="menu-label">Корзина</span>
     </button>
     <button class="menu-item" data-page="orders">
-      <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/8c24def0-49de-11f1-bef9-f1ec7a2c6e45.png" alt="orders" style="width: 26px; height: 26px;">
-      <img class="menu-icon menu-icon-active" src="https://storage.botpapa.me/files/8881c790-49de-11f1-bef9-f1ec7a2c6e45.png" alt="orders" style="width: 26px; height: 26px;">
+      <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/8c24def0-49de-11f1-bef9-f1ec7a2c6e45.png" alt="orders" style="width: 28px; height: 28px;">
+      <img class="menu-icon menu-icon-active" src="https://storage.botpapa.me/files/8881c790-49de-11f1-bef9-f1ec7a2c6e45.png" alt="orders" style="width: 28px; height: 28px;">
       <span class="menu-label">Заказы</span>
     </button>
     <button class="menu-item" data-page="profile">
@@ -541,7 +541,7 @@
     function renderCartButtonHtml(productId) {
       const qty = cart[productId] || 0;
       if (qty > 0) {
-        return `<div class="card-action-btn counter-btn" data-counter="${productId}"><span class="counter-minus" data-id="${productId}"><img src="https://storage.botpapa.me/files/975c4510-49de-11f1-bef9-f1ec7a2c6e45.png" alt="-" style="width: 20px; height: 20px;"></span><span class="counter-value">${qty}</span><span class="counter-plus" data-id="${productId}"><img src="https://storage.botpapa.me/files/9a5d01f0-49de-11f1-bef9-f1ec7a2c6e45.png" alt="+" style="width: 20px; height: 20px;"></span></div>`;
+        return `<div class="card-action-btn counter-btn" data-counter="${productId}"><span class="counter-minus" data-id="${productId}"><img src="https://storage.botpapa.me/files/975c4510-49de-11f1-bef9-f1ec7a2c6e45.png" alt="-" style="width: 14px; height: 14px;"></span><span class="counter-value">${qty}</span><span class="counter-plus" data-id="${productId}"><img src="https://storage.botpapa.me/files/9a5d01f0-49de-11f1-bef9-f1ec7a2c6e45.png" alt="+" style="width: 14px; height: 14px;"></span></div>`;
       } else {
         return `<div class="card-action-btn cart-add-btn" data-add="${productId}">В корзину</div>`;
       }

@@ -42,7 +42,6 @@
       display: block;
     }
 
-    /* Предзагрузка иконок */
     .icons-preload {
       position: absolute;
       width: 0;
@@ -52,7 +51,6 @@
       pointer-events: none;
     }
 
-    /* Нижнее меню */
     .bottom-menu {
       position: fixed;
       bottom: 18px;
@@ -318,7 +316,6 @@
       font-size: 18px;
     }
 
-    /* СТИЛИ КАРТОЧКИ КОРЗИНЫ */
     .cart-item {
       background: #202022;
       border: 1px solid #2B2B2D;
@@ -375,7 +372,6 @@
       right: 10px;
     }
 
-    /* Кнопка количества */
     .cart-quantity {
       display: flex;
       align-items: center;
@@ -410,7 +406,6 @@
       text-align: center;
     }
 
-    /* ЗАКРЕПЛЁННЫЙ БЛОК ОФОРМЛЕНИЯ */
     .cart-checkout-fixed {
       position: fixed;
       bottom: 18px;
@@ -444,14 +439,14 @@
 
     .total-label {
       color: #cbd5e1;
-      padding-left: 2px;
+      padding-left: 4px;
     }
 
     .total-price-wrapper {
       display: flex;
       align-items: baseline;
       gap: 8px;
-      padding-right: 2px;
+      padding-right: 4px;
     }
 
     .total-price {
@@ -467,7 +462,6 @@
       font-weight: 400;
     }
 
-    /* СТРОКА С КНОПКАМИ */
     .checkout-buttons-row {
       display: flex;
       gap: 8px;
@@ -499,7 +493,6 @@
       transform: scale(0.98);
     }
 
-    /* Круглая кнопка промокода */
     .promo-btn {
       width: 48px;
       height: 48px;
@@ -526,7 +519,6 @@
       transform: scale(0.95);
     }
 
-    /* Промокод режим */
     .promo-input-row {
       display: flex;
       gap: 8px;
@@ -558,7 +550,6 @@
       font-size: 18px;
     }
 
-    /* Круглые кнопки в режиме промокода */
     .promo-action-btn {
       width: 48px;
       height: 48px;
@@ -592,49 +583,161 @@
       transform: scale(0.95);
     }
 
-    /* Промокод лейбл */
     .promo-label {
       color: #cbd5e1;
       font-size: 18px;
       font-weight: 500;
-      padding-left: 2px;
+      padding-left: 4px;
     }
 
     .cart-content-padding {
       padding-bottom: 110px;
     }
 
-    .order-item {
-      background: rgba(255,255,255,0.03);
-      border-radius: 24px;
-      padding: 16px;
-      margin-bottom: 12px;
+    /* Стили для страницы оформления */
+    .form-section {
+      margin-bottom: 20px;
     }
 
-    .order-header {
+    .form-label {
+      font-size: 16px;
+      font-weight: 500;
+      color: #cbd5e1;
+      margin-bottom: 8px;
+    }
+
+    .form-select {
+      width: 100%;
+      background: #303032;
+      border: 1px solid #3a3a3d;
+      border-radius: 16px;
+      padding: 14px 16px;
+      color: white;
+      font-size: 17px;
+      font-weight: 500;
+      cursor: pointer;
       display: flex;
       justify-content: space-between;
-      margin-bottom: 8px;
+      align-items: center;
+      transition: 0.1s;
     }
 
-    .order-id {
-      font-weight: 600;
-      color: #4cb4e9;
+    .form-select.error {
+      border-color: #ef4444;
     }
 
-    .order-status {
-      color: #4cb4e9;
+    .select-arrow {
+      width: 20px;
+      height: 20px;
+      filter: brightness(0) saturate(100%) invert(70%);
     }
 
-    .order-products {
-      font-size: 14px;
-      color: #a1a1aa;
-      margin-bottom: 8px;
-    }
-
-    .order-total {
-      font-weight: 600;
+    .form-input {
+      width: 100%;
+      background: #303032;
+      border: 1px solid #3a3a3d;
+      border-radius: 16px;
+      padding: 14px 16px;
       color: white;
+      font-size: 17px;
+      font-weight: 500;
+      outline: none;
+      transition: 0.1s;
+    }
+
+    .form-input::placeholder {
+      color: #a1a1aa;
+      font-size: 15px;
+    }
+
+    .form-input.error {
+      border-color: #ef4444;
+    }
+
+    .payment-methods-list {
+      background: #252528;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .payment-method-item {
+      padding: 16px;
+      border-bottom: 0.5px solid rgba(255,255,255,0.08);
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      transition: 0.1s;
+    }
+
+    .payment-method-item:last-child {
+      border-bottom: none;
+    }
+
+    .payment-method-item:active {
+      background: rgba(76,180,233,0.15);
+    }
+
+    .payment-method-item.selected {
+      color: #4cb4e9;
+    }
+
+    .divider {
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+      margin: 8px 0;
+    }
+
+    .copy-icon {
+      width: 22px;
+      height: 22px;
+      cursor: pointer;
+      transition: 0.1s;
+      flex-shrink: 0;
+    }
+
+    .copy-icon:active {
+      transform: scale(0.9);
+      opacity: 0.7;
+    }
+
+    .card-number-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-number-text {
+      flex: 1;
+      font-size: 17px;
+      font-weight: 500;
+    }
+
+    .order-detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      font-size: 15px;
+    }
+
+    .order-detail-label {
+      color: #9e9e9e;
+    }
+
+    .order-detail-value {
+      color: white;
+      font-weight: 500;
+      text-align: right;
+    }
+
+    .order-item-card {
+      background: rgba(255,255,255,0.03);
+      border-radius: 16px;
+      padding: 10px;
+      margin: 4px 0;
+      font-size: 14px;
+      color: #cbd5e1;
     }
 
     .filter-options {
@@ -668,7 +771,6 @@
       font-weight: 600;
     }
 
-    /* Хедер иконки */
     .header-icon-img {
       width: 26px;
       height: 26px;
@@ -677,7 +779,6 @@
   </style>
 </head>
 <body>
-  <!-- Предзагрузка иконок -->
   <div class="icons-preload" aria-hidden="true">
     <img src="https://storage.botpapa.me/files/fd86aa00-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="">
     <img src="https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="">
@@ -694,14 +795,13 @@
     <img src="https://storage.botpapa.me/files/b254ec20-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="">
     <img src="https://storage.botpapa.me/files/975c4510-49de-11f1-bef9-f1ec7a2c6e45.png" alt="">
     <img src="https://storage.botpapa.me/files/9a5d01f0-49de-11f1-bef9-f1ec7a2c6e45.png" alt="">
-    <img src="https://storage.botpapa.me/files/19b700d0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="">
-    <img src="https://storage.botpapa.me/files/de7124e0-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" alt="">
-    <img src="https://storage.botpapa.me/files/e2281260-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" alt="">
-    <img src="https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" alt="">
-    <img src="https://storage.botpapa.me/files/e8aa06c0-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" alt="">
-    <img src="https://storage.botpapa.me/files/ec10b160-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" alt="">
+    <img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="">
+    <img src="https://storage.botpapa.me/files/62edaf00-4a27-11f1-bef9-f1ec7a2c6e45.png" alt="">
+    <img src="https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png" alt="">
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E" alt="">
   </div>
 
+  <!-- Страницы -->
   <div id="catalog-page" class="page active-page">
     <div class="header-row">
       <img class="header-icon-img" src="https://storage.botpapa.me/files/fd86aa00-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
@@ -751,7 +851,30 @@
     <div class="filter-options" id="filterOptionsContainer"></div>
   </div>
 
-  <!-- ЗАКРЕПЛЁННЫЙ БЛОК КОРЗИНЫ -->
+  <div id="checkout-page" class="page">
+    <div class="header-row">
+      <img class="header-icon-img" src="https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="cart">
+      <div class="page-title">Оформление</div>
+    </div>
+    <div id="checkoutFormContent"></div>
+  </div>
+
+  <div id="payment-page" class="page">
+    <div class="header-row">
+      <img class="header-icon-img" src="https://storage.botpapa.me/files/62edaf00-4a27-11f1-bef9-f1ec7a2c6e45.png" alt="payment">
+      <div class="page-title">Оплата</div>
+    </div>
+    <div id="paymentContent"></div>
+  </div>
+
+  <div id="order-detail-page" class="page">
+    <div class="header-row">
+      <img class="header-icon-img" src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="order" style="width: 26px; height: 26px;">
+      <div class="page-title" id="orderDetailTitle">Заказ</div>
+    </div>
+    <div id="orderDetailContent"></div>
+  </div>
+
   <div id="cartCheckoutFixed" class="cart-checkout-fixed" style="display: none;"></div>
 
   <div class="bottom-menu">
@@ -792,9 +915,7 @@
       }
     })();
 
-    // Обновлённый список товаров
     const products = [
-      // Brawl Stars (id 1-10)
       { id: 1, name: "Brawl Pass", price: 769, oldPrice: 799, image: "https://storage.botpapa.me/files/6b57bf60-499a-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Brawl Stars" },
       { id: 2, name: "Улучш. до BP+", price: 429, oldPrice: 449, image: "https://storage.botpapa.me/files/6f97da10-499a-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Brawl Stars" },
       { id: 3, name: "Brawl Pass Plus", price: 1099, oldPrice: 1169, image: "https://storage.botpapa.me/files/6f97da10-499a-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Brawl Stars" },
@@ -804,39 +925,104 @@
       { id: 7, name: "170 гемов", price: 849, oldPrice: 889, image: "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Brawl Stars" },
       { id: 8, name: "360 гемов", price: 1699, oldPrice: 1779, image: "https://storage.botpapa.me/files/e8aa06c0-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Brawl Stars" },
       { id: 9, name: "950 гемов", price: 4249, oldPrice: 4449, image: "https://storage.botpapa.me/files/ec10b160-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Brawl Stars" },
-      { id: 10, name: "2000 гемов", price: 8469, oldPrice: 8899, image: "https://storage.botpapa.me/files/767ed1d0-499a-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Brawl Stars" },
-      // Clash Royale (id 11-12)
-      { id: 11, name: "Pro Pass", price: 2129, oldPrice: 2249, image: "https://storage.botpapa.me/files/72f535e0-499a-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Clash Royale" },
-      { id: 12, name: "2000 Gems", price: 4249, oldPrice: 4449, image: "https://storage.botpapa.me/files/767ed1d0-499a-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Clash Royale" }
+      { id: 10, name: "2000 гемов", price: 8469, oldPrice: 8899, image: "https://storage.botpapa.me/files/767ed1d0-499a-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Brawl Stars" }
     ];
     
-    // Промокоды
     const promoCodes = {
       "SALE10": 10,
       "SALE20": 20,
       "GELTAN": 15,
       "WELCOME": 5
     };
+
+    const cardNumbers = {
+      "Т-Банк": "2200 7019 3499 0208",
+      "ВТБ Банк": "2200 2418 6382 9697",
+      "Сбер Банк": "2202 2084 4441 4743",
+      "Ozon Банк": "2204 3203 9062 7166",
+      "Альфа Банк": "2200 1529 6836 2817",
+      "МТС Деньги": "2203 8303 0760 4992"
+    };
+
+    const paymentMethods = [
+      "Перевод по карте: Т-Банк",
+      "Перевод по карте: ВТБ Банк",
+      "Перевод по карте: Сбер Банк",
+      "Перевод по карте: Ozon Банк",
+      "Перевод по карте: Альфа Банк",
+      "Перевод по карте: МТС Деньги"
+    ];
     
     let cart = {};
     let orders = [];
-    let currentFilter = "Все категории";
+    let currentFilter = "Brawl Stars";
     let searchQuery = "";
     let appliedPromo = null;
     let isPromoMode = false;
+    let checkoutData = {
+      paymentMethod: null,
+      senderName: "",
+      email: ""
+    };
+    let currentOrderId = null;
 
     function formatPrice(p) { return Math.round(p).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + "₽"; }
     function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
+
+    function getBankFromMethod(method) {
+      return method ? method.replace("Перевод по карте: ", "") : "";
+    }
+
+    function getCardNumber(method) {
+      const bank = getBankFromMethod(method);
+      return cardNumbers[bank] || "";
+    }
 
     function getDiscountedPrice(price) {
       if (!appliedPromo) return price;
       return Math.round(price * (1 - appliedPromo.discountPercent / 100));
     }
 
+    function getCartItemsCount() {
+      return Object.keys(cart).length;
+    }
+
+    function getTotalQuantity() {
+      return Object.values(cart).reduce((s, q) => s + q, 0);
+    }
+
+    function canAddToCart(productId) {
+      // Товары 1-4: максимум 1 штука
+      if (productId <= 4) {
+        if (cart[productId] >= 1) return { allowed: false, reason: "Максимум 1 шт." };
+        // Товары 1-3: нельзя добавить вместе
+        if (productId <= 3) {
+          const conflictIds = [1, 2, 3].filter(id => id !== productId && cart[id]);
+          if (conflictIds.length > 0) {
+            const conflictName = products.find(p => p.id === conflictIds[0]).name;
+            return { allowed: false, reason: `Удалите товар "${conflictName}" из корзины, чтобы добавить этот товар в корзину` };
+          }
+        }
+      }
+      // Товары 5-10: максимум 9 штук
+      if (productId >= 5 && productId <= 10) {
+        if ((cart[productId] || 0) >= 9) return { allowed: false, reason: "Максимум 9 шт." };
+      }
+      // Максимум 8 разных товаров
+      if (!cart[productId] && getCartItemsCount() >= 8) {
+        return { allowed: false, reason: "Максимум 8 разных товаров в корзине" };
+      }
+      return { allowed: true };
+    }
+
     function renderCartButtonHtml(productId) {
       const qty = cart[productId] || 0;
       if (qty > 0) {
-        return `<div class="card-action-btn counter-btn"><span class="counter-minus" data-id="${productId}"><img src="https://storage.botpapa.me/files/975c4510-49de-11f1-bef9-f1ec7a2c6e45.png" alt="-"></span><span class="counter-value">${qty}</span><span class="counter-plus" data-id="${productId}"><img src="https://storage.botpapa.me/files/9a5d01f0-49de-11f1-bef9-f1ec7a2c6e45.png" alt="+"></span></div>`;
+        if (productId <= 4) {
+          return `<div class="card-action-btn counter-btn"><span class="counter-minus" data-id="${productId}"><img src="https://storage.botpapa.me/files/975c4510-49de-11f1-bef9-f1ec7a2c6e45.png" alt="-"></span><span class="counter-value">${qty}</span><span class="counter-plus" data-id="${productId}"><img src="https://storage.botpapa.me/files/9a5d01f0-49de-11f1-bef9-f1ec7a2c6e45.png" alt="+"></span></div>`;
+        } else {
+          return `<div class="card-action-btn counter-btn"><span class="counter-minus" data-id="${productId}"><img src="https://storage.botpapa.me/files/975c4510-49de-11f1-bef9-f1ec7a2c6e45.png" alt="-"></span><span class="counter-value">${qty}</span><span class="counter-plus" data-id="${productId}"><img src="https://storage.botpapa.me/files/9a5d01f0-49de-11f1-bef9-f1ec7a2c6e45.png" alt="+"></span></div>`;
+        }
       }
       return `<div class="card-action-btn cart-add-btn" data-add="${productId}">В корзину</div>`;
     }
@@ -879,78 +1065,54 @@
           const newMinus = actionBtn.querySelector('.counter-minus');
           const newPlus = actionBtn.querySelector('.counter-plus');
           newMinus?.addEventListener('click', (e) => { e.stopPropagation(); handleCartAction(cardId, false); });
-          newPlus?.addEventListener('click', (e) => { e.stopPropagation(); alert("Максимум 1 шт."); });
+          newPlus?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (cardId <= 4) {
+              alert("Максимум 1 шт.");
+              return;
+            }
+            handleCartAction(cardId, true);
+          });
         }
       });
     }
 
     function handleCartAction(pid, isIncrement) {
       if (isIncrement) {
-        if (cart[pid] >= 1) { alert("Максимум 1 шт."); return; }
+        const check = canAddToCart(pid);
+        if (!check.allowed) { alert(check.reason); return; }
         cart[pid] = (cart[pid] || 0) + 1;
       } else {
         if (cart[pid] === 1) delete cart[pid];
         else if (cart[pid] > 0) cart[pid]--;
       }
       updateSingleCard(pid);
-      // Обновляем корзину только если мы на странице корзины
       if (document.getElementById("cart-page").classList.contains("active-page")) {
         renderCartPage();
+      } else if (document.getElementById("checkout-page").classList.contains("active-page")) {
+        renderCheckoutForm();
       } else {
-        // На других страницах только обновляем блок оформления (скрыт)
-        const checkoutBlock = document.getElementById("cartCheckoutFixed");
-        if (checkoutBlock) checkoutBlock.style.display = "none";
+        document.getElementById("cartCheckoutFixed").style.display = "none";
       }
     }
 
     function changeQty(pid, delta) {
-      const cur = cart[pid] || 0;
-      if (delta === -1 && cur === 1) delete cart[pid];
-      else if (delta === -1 && cur > 1) cart[pid] = cur - 1;
-      else if (delta === 1) { if (cur >= 1) { alert("Максимум 1 шт."); return; } cart[pid] = cur + 1; }
+      if (delta === 1) {
+        const check = canAddToCart(pid);
+        if (!check.allowed) { alert(check.reason); return; }
+        cart[pid] = (cart[pid] || 0) + 1;
+      } else if (delta === -1) {
+        const cur = cart[pid] || 0;
+        if (cur === 1) delete cart[pid];
+        else if (cur > 1) cart[pid] = cur - 1;
+      }
       updateSingleCard(pid);
       renderCartPage();
-    }
-
-    function createOrder() {
-      const items = Object.entries(cart);
-      if (!items.length) { alert("Корзина пуста"); return; }
-      
-      let total = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
-      if (appliedPromo) {
-        total = Math.round(total * (1 - appliedPromo.discountPercent / 100));
-      }
-      
-      const order = { 
-        id: orders.length + 1, 
-        date: new Date().toLocaleDateString('ru-RU'), 
-        items: items.map(([id, qty]) => ({ 
-          name: products.find(p => p.id == id).name, 
-          qty, 
-          price: products.find(p => p.id == id).price 
-        })), 
-        total, 
-        status: "Оплачен",
-        promo: appliedPromo ? appliedPromo.code : null
-      };
-      
-      orders.unshift(order);
-      cart = {};
-      appliedPromo = null;
-      isPromoMode = false;
-      
-      updateAllCards();
-      renderCartPage();
-      renderOrdersPage();
-      
-      alert(`Заказ #${order.id} создан! Сумма: ${formatPrice(total)}`);
     }
 
     function renderCheckoutBlock() {
       const fixedBlock = document.getElementById("cartCheckoutFixed");
       const items = Object.entries(cart);
-      
-      // Показываем блок только если мы на странице корзины
       const isCartPageActive = document.getElementById("cart-page").classList.contains("active-page");
       
       if (!items.length || !isCartPageActive) {
@@ -988,9 +1150,7 @@
           const applyBtn = document.getElementById("promoApplyBtn");
           
           backBtn?.addEventListener("click", () => {
-            if (appliedPromo) {
-              appliedPromo = null;
-            }
+            if (appliedPromo) appliedPromo = null;
             isPromoMode = false;
             renderCheckoutBlock();
             renderCartPage();
@@ -1016,24 +1176,13 @@
           });
           
           promoInput?.addEventListener("keypress", (e) => {
-            if (e.key === "Enter") {
-              applyBtn?.click();
-            }
+            if (e.key === "Enter") applyBtn?.click();
           });
         }, 0);
-        
       } else {
-        let totalHtml = '';
-        if (hasDiscount) {
-          totalHtml = `
-            <span class="total-price-wrapper">
-              <span class="total-price">${formatPrice(discountedTotal)}</span>
-              <span class="total-old-price">${formatPrice(rawTotal)}</span>
-            </span>
-          `;
-        } else {
-          totalHtml = `<span class="total-price-wrapper"><span class="total-price">${formatPrice(rawTotal)}</span></span>`;
-        }
+        let totalHtml = hasDiscount 
+          ? `<span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span><span class="total-old-price">${formatPrice(rawTotal)}</span></span>`
+          : `<span class="total-price-wrapper"><span class="total-price">${formatPrice(rawTotal)}</span></span>`;
         
         fixedBlock.innerHTML = `
           <div class="checkout-card">
@@ -1051,13 +1200,291 @@
         `;
         
         setTimeout(() => {
-          document.getElementById("checkoutBtn")?.addEventListener("click", createOrder);
+          document.getElementById("checkoutBtn")?.addEventListener("click", () => {
+            showPage("checkout");
+          });
           document.getElementById("openPromoBtn")?.addEventListener("click", () => {
             isPromoMode = true;
             renderCheckoutBlock();
           });
         }, 0);
       }
+    }
+
+    function renderCheckoutForm() {
+      const container = document.getElementById("checkoutFormContent");
+      const items = Object.entries(cart);
+      
+      if (!items.length) {
+        container.innerHTML = '<div class="empty-state">Корзина пуста</div>';
+        document.getElementById("cartCheckoutFixed").style.display = "none";
+        return;
+      }
+      
+      const rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
+      const discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
+      const hasDiscount = appliedPromo && discountedTotal < rawTotal;
+      
+      let totalHtml = hasDiscount 
+        ? `<span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span><span class="total-old-price">${formatPrice(rawTotal)}</span></span>`
+        : `<span class="total-price-wrapper"><span class="total-price">${formatPrice(rawTotal)}</span></span>`;
+      
+      container.innerHTML = `
+        <div class="form-section">
+          <div class="form-label">Способ оплаты</div>
+          <div class="form-select" id="paymentMethodSelect">
+            <span id="paymentMethodText" style="color: ${checkoutData.paymentMethod ? 'white' : '#a1a1aa'}">${checkoutData.paymentMethod || 'Выберите способ оплаты'}</span>
+            <img class="select-arrow" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E" alt="▼">
+          </div>
+          <div id="paymentMethodsList" class="payment-methods-list" style="display: none;"></div>
+        </div>
+        
+        <div class="form-section">
+          <div class="form-label">Данные отправителя</div>
+          <input type="text" class="form-input" id="senderNameInput" placeholder="Укажите имя отправителя (Ваше имя)" value="${escapeHtml(checkoutData.senderName)}">
+        </div>
+        
+        <div class="divider"></div>
+        
+        <div class="form-section">
+          <div class="form-label">Почта от игрового аккаунта</div>
+          <input type="email" class="form-input" id="emailInput" placeholder="Укажите почту от аккаунта" value="${escapeHtml(checkoutData.email)}">
+        </div>
+      `;
+      
+      // Рендерим список методов оплаты
+      const methodsContainer = document.getElementById("paymentMethodsList");
+      methodsContainer.innerHTML = paymentMethods.map(m => `
+        <div class="payment-method-item${checkoutData.paymentMethod === m ? ' selected' : ''}" data-method="${m}">${m}</div>
+      `).join("");
+      
+      document.getElementById("paymentMethodSelect")?.addEventListener("click", () => {
+        methodsContainer.style.display = methodsContainer.style.display === "none" ? "block" : "none";
+      });
+      
+      document.querySelectorAll(".payment-method-item").forEach(item => {
+        item.addEventListener("click", () => {
+          checkoutData.paymentMethod = item.dataset.method;
+          document.getElementById("paymentMethodText").textContent = item.dataset.method;
+          document.getElementById("paymentMethodText").style.color = "white";
+          document.getElementById("paymentMethodSelect").classList.remove("error");
+          methodsContainer.style.display = "none";
+          document.querySelectorAll(".payment-method-item").forEach(el => el.classList.remove("selected"));
+          item.classList.add("selected");
+        });
+      });
+      
+      // Фиксированный блок снизу
+      const fixedBlock = document.getElementById("cartCheckoutFixed");
+      fixedBlock.style.display = "block";
+      fixedBlock.innerHTML = `
+        <div class="checkout-card">
+          <div class="total-row">
+            <span class="total-label">Общая стоимость:</span>
+            ${totalHtml}
+          </div>
+          <div class="checkout-buttons-row">
+            <button class="checkout-button" id="payBtn">Перейти к оплате</button>
+            <button class="promo-btn" id="helpBtn">
+              <img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь">
+            </button>
+          </div>
+        </div>
+      `;
+      
+      setTimeout(() => {
+        document.getElementById("helpBtn")?.addEventListener("click", () => {
+          window.open("https://t.me/GemStormHelp", "_blank");
+        });
+        
+        document.getElementById("payBtn")?.addEventListener("click", () => {
+          let hasError = false;
+          const senderInput = document.getElementById("senderNameInput");
+          const emailInput = document.getElementById("emailInput");
+          const paymentSelect = document.getElementById("paymentMethodSelect");
+          
+          if (!checkoutData.paymentMethod) {
+            paymentSelect.classList.add("error");
+            hasError = true;
+          } else {
+            paymentSelect.classList.remove("error");
+          }
+          
+          if (!senderInput.value.trim()) {
+            senderInput.classList.add("error");
+            hasError = true;
+          } else {
+            senderInput.classList.remove("error");
+            checkoutData.senderName = senderInput.value.trim();
+          }
+          
+          if (!emailInput.value.trim()) {
+            emailInput.classList.add("error");
+            hasError = true;
+          } else {
+            emailInput.classList.remove("error");
+            checkoutData.email = emailInput.value.trim();
+          }
+          
+          if (!hasError) {
+            showPage("payment");
+          }
+        });
+        
+        // Сохраняем данные при вводе
+        document.getElementById("senderNameInput")?.addEventListener("input", function() {
+          checkoutData.senderName = this.value;
+          this.classList.remove("error");
+        });
+        document.getElementById("emailInput")?.addEventListener("input", function() {
+          checkoutData.email = this.value;
+          this.classList.remove("error");
+        });
+      }, 0);
+    }
+
+    function renderPaymentPage() {
+      const container = document.getElementById("paymentContent");
+      const cardNum = getCardNumber(checkoutData.paymentMethod);
+      const bank = getBankFromMethod(checkoutData.paymentMethod);
+      const items = Object.entries(cart);
+      const rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
+      const discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
+      const hasDiscount = appliedPromo && discountedTotal < rawTotal;
+      
+      let totalHtml = hasDiscount 
+        ? `<span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span><span class="total-old-price">${formatPrice(rawTotal)}</span></span>`
+        : `<span class="total-price-wrapper"><span class="total-price">${formatPrice(rawTotal)}</span></span>`;
+      
+      container.innerHTML = `
+        <div style="color:#cbd5e1;font-size:15px;margin-bottom:20px;">Оплатите заказ по указанным реквизитам ниже и нажмите кнопку «Я оплатил»</div>
+        <div class="divider"></div>
+        
+        <div class="form-section">
+          <div class="form-label">Номер карты</div>
+          <div class="form-select card-number-row">
+            <span class="card-number-text">${cardNum}</span>
+            <img class="copy-icon" id="copyCardBtn" src="https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png" alt="copy">
+          </div>
+        </div>
+        
+        <div class="form-section">
+          <div class="form-label">Получатель</div>
+          <div class="form-select"><span>Азат Ф.</span></div>
+        </div>
+        
+        <div class="form-section">
+          <div class="form-label">Банк получателя</div>
+          <div class="form-select"><span>${bank}</span></div>
+        </div>
+      `;
+      
+      // Фиксированный блок
+      const fixedBlock = document.getElementById("cartCheckoutFixed");
+      fixedBlock.style.display = "block";
+      fixedBlock.innerHTML = `
+        <div class="checkout-card">
+          <div class="total-row">
+            <span class="total-label">Общая стоимость:</span>
+            ${totalHtml}
+          </div>
+          <div class="checkout-buttons-row">
+            <button class="checkout-button" id="paidBtn">Я оплатил</button>
+            <button class="promo-btn" id="helpBtn2">
+              <img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь">
+            </button>
+          </div>
+        </div>
+      `;
+      
+      setTimeout(() => {
+        document.getElementById("copyCardBtn")?.addEventListener("click", () => {
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(cardNum.replace(/\s/g, ""));
+          }
+          if (window.Telegram?.WebApp?.HapticFeedback) {
+            window.Telegram.WebApp.HapticFeedback.impactOccurred("light");
+          }
+        });
+        
+        document.getElementById("helpBtn2")?.addEventListener("click", () => {
+          window.open("https://t.me/GemStormHelp", "_blank");
+        });
+        
+        document.getElementById("paidBtn")?.addEventListener("click", () => {
+          createOrder();
+        });
+      }, 0);
+    }
+
+    function createOrder() {
+      const items = Object.entries(cart);
+      if (!items.length) { alert("Корзина пуста"); return; }
+      
+      let total = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
+      if (appliedPromo) {
+        total = Math.round(total * (1 - appliedPromo.discountPercent / 100));
+      }
+      
+      const orderId = orders.length + 1;
+      const order = { 
+        id: orderId, 
+        date: new Date().toLocaleDateString('ru-RU'), 
+        time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+        items: items.map(([id, qty]) => ({ 
+          id: parseInt(id),
+          name: products.find(p => p.id == id).name, 
+          qty, 
+          price: products.find(p => p.id == id).price 
+        })), 
+        total, 
+        status: "Оплачен",
+        promo: appliedPromo ? appliedPromo.code : null,
+        paymentMethod: checkoutData.paymentMethod,
+        senderName: checkoutData.senderName,
+        email: checkoutData.email
+      };
+      
+      orders.unshift(order);
+      currentOrderId = orderId;
+      
+      cart = {};
+      appliedPromo = null;
+      isPromoMode = false;
+      checkoutData = { paymentMethod: null, senderName: "", email: "" };
+      
+      updateAllCards();
+      renderCartPage();
+      renderOrdersPage();
+      
+      // Показываем детали заказа
+      showOrderDetail(orderId);
+    }
+
+    function showOrderDetail(orderId) {
+      const order = orders.find(o => o.id === orderId);
+      if (!order) return;
+      
+      document.getElementById("orderDetailTitle").textContent = `Заказ #${order.id}`;
+      const container = document.getElementById("orderDetailContent");
+      
+      container.innerHTML = `
+        <div style="margin-bottom:16px;">
+          <div class="order-detail-row"><span class="order-detail-label">Статус</span><span class="order-detail-value" style="color:#4cb4e9">${order.status}</span></div>
+          <div class="order-detail-row"><span class="order-detail-label">Дата</span><span class="order-detail-value">${order.date} ${order.time || ''}</span></div>
+          <div class="order-detail-row"><span class="order-detail-label">Способ оплаты</span><span class="order-detail-value">${order.paymentMethod || '—'}</span></div>
+          <div class="order-detail-row"><span class="order-detail-label">Отправитель</span><span class="order-detail-value">${escapeHtml(order.senderName || '—')}</span></div>
+          <div class="order-detail-row"><span class="order-detail-label">Почта</span><span class="order-detail-value">${escapeHtml(order.email || '—')}</span></div>
+          ${order.promo ? `<div class="order-detail-row"><span class="order-detail-label">Промокод</span><span class="order-detail-value">${order.promo}</span></div>` : ''}
+        </div>
+        <div class="divider"></div>
+        <div style="margin-top:12px;">
+          ${order.items.map(i => `<div class="order-item-card">${escapeHtml(i.name)} x ${i.qty} — ${formatPrice(i.price * i.qty)}</div>`).join('')}
+        </div>
+        <div style="margin-top:12px;font-size:18px;font-weight:600;color:white;">Итого: ${formatPrice(order.total)}</div>
+      `;
+      
+      showPage("order-detail");
     }
 
     function renderCartPage() {
@@ -1105,7 +1532,6 @@
         btn.addEventListener("click", () => changeQty(parseInt(btn.dataset.inc), 1));
       });
       
-      // Показываем блок оформления только если мы на странице корзины
       if (document.getElementById("cart-page").classList.contains("active-page")) {
         renderCheckoutBlock();
       }
@@ -1116,16 +1542,20 @@
       if (!container) return;
       if (!orders.length) { container.innerHTML = '<div class="empty-state">У вас пока нет заказов 📦</div>'; return; }
       container.innerHTML = orders.map(o => `
-        <div class="order-item">
+        <div class="order-item" style="cursor:pointer" data-order-id="${o.id}">
           <div class="order-header">
             <span class="order-id">Заказ #${o.id}</span>
             <span class="order-status">${o.status}</span>
           </div>
-          <div style="color:#a1a1aa;font-size:14px;margin-bottom:8px;">${o.date}</div>
+          <div style="color:#a1a1aa;font-size:14px;margin-bottom:8px;">${o.date} ${o.time || ''}</div>
           <div class="order-products">${o.items.map(i => `${i.name} x ${i.qty}`).join(', ')}${o.promo ? ` (промокод: ${o.promo})` : ''}</div>
           <div class="order-total">${formatPrice(o.total)}</div>
         </div>
       `).join('');
+      
+      document.querySelectorAll(".order-item").forEach(item => {
+        item.addEventListener("click", () => showOrderDetail(parseInt(item.dataset.orderId)));
+      });
     }
 
     function renderCatalog() {
@@ -1157,22 +1587,41 @@
       document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
       document.getElementById(pageId + "-page")?.classList.add("active-page");
       
-      if (pageId === "catalog") renderCatalog();
-      if (pageId === "cart") renderCartPage();
-      if (pageId === "orders") renderOrdersPage();
-      
-      // Управление видимостью блока оформления
       const checkoutBlock = document.getElementById("cartCheckoutFixed");
-      if (checkoutBlock) {
-        if (pageId === "cart" && Object.keys(cart).length > 0) {
-          // Блок покажется через renderCartPage -> renderCheckoutBlock
-        } else {
-          checkoutBlock.style.display = "none";
-        }
+      
+      if (pageId === "catalog") {
+        renderCatalog();
+        checkoutBlock.style.display = "none";
+      }
+      if (pageId === "cart") {
+        renderCartPage();
+      }
+      if (pageId === "orders") {
+        renderOrdersPage();
+        checkoutBlock.style.display = "none";
+      }
+      if (pageId === "checkout") {
+        renderCheckoutForm();
+      }
+      if (pageId === "payment") {
+        renderPaymentPage();
+      }
+      if (pageId === "order-detail") {
+        checkoutBlock.style.display = "none";
+      }
+      if (pageId === "filter") {
+        checkoutBlock.style.display = "none";
+      }
+      if (pageId === "profile") {
+        checkoutBlock.style.display = "none";
       }
       
       document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
-      document.querySelector(`.menu-item[data-page="${pageId}"]`)?.classList.add("active");
+      if (["catalog", "cart", "orders", "profile"].includes(pageId)) {
+        document.querySelector(`.menu-item[data-page="${pageId}"]`)?.classList.add("active");
+      } else {
+        document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
+      }
       window.scrollTo({ top: 0 });
     }
 
@@ -1191,7 +1640,6 @@
       });
     }
 
-    // Инициализация событий
     document.getElementById("openFilterBtn")?.addEventListener("click", () => { 
       renderFilterModal(); 
       showPage("filter"); 
@@ -1206,14 +1654,11 @@
       btn.addEventListener("click", () => showPage(btn.dataset.page));
     });
     
-    // Начальная инициализация
     document.querySelector('.menu-item[data-page="catalog"]')?.classList.add("active");
     renderCatalog(); 
     renderCartPage(); 
     renderOrdersPage(); 
     renderFilterModal();
-    
-    // Скрываем блок оформления при загрузке
     document.getElementById("cartCheckoutFixed").style.display = "none";
   </script>
 </body>

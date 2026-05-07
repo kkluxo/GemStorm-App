@@ -24,8 +24,9 @@
       --tg-theme-secondary-bg-color: #171719 !important;
       --tg-theme-header-bg-color: #171719 !important;
       --brand-blue: #4cb4e9;
-      --search-bg: #323234;
+      --search-bg: #303032;
       --card-border: #2B2B2D;
+      --card-bg: #19191b;
       --counter-bg: #202B32;
       --icon-gray: #9e9e9e;
       --icon-active: #4cb4e9;
@@ -41,7 +42,7 @@
 
     .page {
       display: none;
-      padding: 20px 14px 0 14px;
+      padding: 16px 14px 0 14px;
       max-width: 600px;
       margin: 0 auto;
     }
@@ -73,7 +74,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
       background: none;
       border: none;
       cursor: pointer;
@@ -111,14 +112,14 @@
     }
 
     .header-icon {
-      width: 28px;
-      height: 28px;
+      width: 26px;
+      height: 26px;
       color: #4cb4e9;
     }
 
     .page-title {
-      font-size: 22px;
-      font-weight: 550;
+      font-size: 25px;
+      font-weight: 500;
     }
 
     .search-section {
@@ -130,7 +131,7 @@
 
     .search-bar {
       flex: 1;
-      background: #323234;
+      background: #303032;
       height: 46px;
       border-radius: 36px;
       display: flex;
@@ -188,7 +189,7 @@
     }
 
     .product-card {
-      background: #171719;
+      background: #19191b;
       border: 1px solid #2B2B2D;
       border-radius: 28px;
       overflow: hidden;
@@ -210,7 +211,7 @@
     }
 
     .product-title {
-      font-size: 19px;
+      font-size: 18px;
       font-weight: 500;
       color: white;
       margin-bottom: 4px;
@@ -229,7 +230,7 @@
 
     .current-price {
       font-size: 19px;
-      font-weight: 600;
+      font-weight: 500;
       color: white;
     }
 
@@ -249,18 +250,21 @@
       gap: 8px;
       cursor: pointer;
       font-weight: 500;
-      font-size: 14px;
+      font-size: 15px;
       transition: 0.1s;
+      background: #4cb4e9;
+      border: none;
+      color: white;
     }
 
     .cart-add-btn {
-      background: transparent;
-      border: 1px solid #4cb4e9;
-      color: #4cb4e9;
+      background: #4cb4e9;
+      border: none;
+      color: white;
     }
 
     .cart-add-btn .cart-icon-small {
-      filter: brightness(0) saturate(100%) invert(68%) sepia(48%) saturate(1162%) hue-rotate(165deg) brightness(96%) contrast(92%);
+      filter: brightness(0) saturate(100%) invert(100%);
     }
 
     .counter-btn {
@@ -320,6 +324,7 @@
 
     .heart-active {
       color: #ff4d4d !important;
+      fill: #ff4d4d;
     }
 
     .filter-options {
@@ -351,114 +356,6 @@
       font-size: 22px;
       color: #4cb4e9;
       font-weight: 600;
-    }
-
-    .product-detail-img {
-      width: 100%;
-      border-radius: 36px;
-      margin-bottom: 20px;
-    }
-
-    .detail-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
-    .detail-name {
-      font-size: 20px;
-      font-weight: 550;
-    }
-
-    .detail-prices {
-      text-align: right;
-    }
-
-    .divider {
-      height: 1px;
-      background: rgba(255,255,255,0.1);
-      margin: 20px 0;
-    }
-
-    .delivery-row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 16px;
-      font-size: 17px;
-    }
-
-    .desc-title {
-      font-size: 20px;
-      font-weight: 550;
-      margin-bottom: 12px;
-    }
-
-    .desc-text {
-      font-size: 17px;
-      font-weight: 500;
-      line-height: 1.4;
-      color: #d1d5db;
-      margin-bottom: 20px;
-    }
-
-    .sticky-bar {
-      position: sticky;
-      bottom: 88px;
-      background: #4cb4e9;
-      display: flex;
-      gap: 12px;
-      margin: 0;
-      padding: 12px 0;
-      display: none;
-    }
-
-    .detail-cart-btn {
-      flex: 2;
-      background: #4cb4e9;
-      border: none;
-      border-radius: 40px;
-      height: 48px;
-      color: #ffffff;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      cursor: pointer;
-    }
-    
-    .detail-cart-btn .cart-icon-small {
-      filter: brightness(0) saturate(100%) invert(8%) sepia(5%) saturate(10%) hue-rotate(0deg) brightness(95%) contrast(90%);
-    }
-
-    .detail-counter-mode {
-      flex: 2;
-      background: #202B32;
-      border-radius: 48px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 16px;
-      height: 48px;
-      border: none;
-    }
-    
-    .detail-counter-mode .counter-minus,
-    .detail-counter-mode .counter-plus {
-      color: #4cb4e9;
-    }
-
-    .detail-fav {
-      width: 48px;
-      height: 48px;
-      border-radius: 60px;
-      background: rgba(255, 77, 77, 0.15);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
     }
 
     .empty-state {
@@ -545,8 +442,6 @@
     <div class="filter-options" id="filterOptionsContainer"></div>
   </div>
 
-  <div id="detail-page" class="page"></div>
-
   <div class="bottom-menu">
     <button class="menu-item" data-page="catalog">
       <svg class="menu-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -631,7 +526,7 @@
       if (qty > 0) {
         return `<div class="card-action-btn counter-btn" data-counter="${productId}"><span class="counter-minus" data-id="${productId}">−</span><span class="counter-value">${qty}</span><span class="counter-plus" data-id="${productId}">+</span></div>`;
       } else {
-        return `<div class="card-action-btn cart-add-btn" data-add="${productId}"><img class="cart-icon-small" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234cb4e9'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6M17 13l1.5 6M9 21h6'%3E%3C/path%3E%3C/svg%3E" /> В корзину</div>`;
+        return `<div class="card-action-btn cart-add-btn" data-add="${productId}"><img class="cart-icon-small" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6M17 13l1.5 6M9 21h6'%3E%3C/path%3E%3C/svg%3E" /> В корзину</div>`;
       }
     }
 
@@ -662,9 +557,11 @@
       if (heartIcon) {
         if (favorites.has(productId)) {
           heartIcon.classList.add('heart-active');
+          heartIcon.setAttribute('fill', '#ff4d4d');
           heartIcon.style.color = '#ff4d4d';
         } else {
           heartIcon.classList.remove('heart-active');
+          heartIcon.removeAttribute('fill');
           heartIcon.style.color = 'white';
         }
       }
@@ -687,7 +584,7 @@
         <div class="product-card" data-id="${p.id}">
           <img class="card-img" src="${p.image}" alt="${escapeHtml(p.name)}" loading="lazy">
           <div class="favorite-icon" data-fav="${p.id}">
-            <svg class="heart-svg ${favorites.has(p.id) ? 'heart-active' : ''}" style="color: ${favorites.has(p.id) ? '#ff4d4d' : 'white'}; width:22px; height:22px;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg class="heart-svg ${favorites.has(p.id) ? 'heart-active' : ''}" style="color: ${favorites.has(p.id) ? '#ff4d4d' : 'white'}; width:22px; height:22px;" viewBox="0 0 24 24" fill="${favorites.has(p.id) ? '#ff4d4d' : 'none'}" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" clip-rule="evenodd" d="M5.624 5.39819C3.965 6.15619 2.75 7.96019 2.75 10.1112C2.75 12.3082 3.65 14.0022 4.938 15.4542C6.001 16.6502 7.287 17.6422 8.541 18.6082C8.839 18.8382 9.135 19.0672 9.426 19.2962C9.952 19.7112 10.421 20.0742 10.874 20.3392C11.326 20.6032 11.69 20.7242 12 20.7242C12.31 20.7242 12.674 20.6042 13.126 20.3392C13.579 20.0742 14.048 19.7112 14.574 19.2962C14.864 19.0662 15.161 18.8382 15.459 18.6082C16.713 17.6422 17.999 16.6502 19.062 15.4542C20.351 14.0022 21.25 12.3082 21.25 10.1112C21.25 7.96119 20.035 6.15619 18.376 5.39819C16.764 4.66119 14.598 4.85619 12.54 6.99519C12.47 7.06778 12.3862 7.12551 12.2934 7.16495C12.2006 7.20438 12.1008 7.22471 12 7.22471C11.8992 7.22471 11.7994 7.20438 11.7066 7.16495C11.6138 7.12551 11.53 7.06778 11.46 6.99519C9.402 4.85619 7.236 4.66119 5.624 5.39819ZM12 5.43419C9.688 3.36419 7.099 3.07419 5 4.03319C2.786 5.04819 1.25 7.40019 1.25 10.1122C1.25 12.7772 2.36 14.8112 3.817 16.4512C4.983 17.7642 6.41 18.8632 7.671 19.8332C7.957 20.0532 8.234 20.2672 8.497 20.4752C9.01 20.8792 9.56 21.3092 10.117 21.6352C10.674 21.9602 11.31 22.2252 12 22.2252C12.69 22.2252 13.326 21.9602 13.883 21.6352C14.441 21.3092 14.99 20.8792 15.503 20.4752C15.7769 20.2594 16.0522 20.0454 16.329 19.8332C17.589 18.8632 19.017 17.7632 20.183 16.4512C21.64 14.8112 22.75 12.7772 22.75 10.1122C22.75 7.40019 21.215 5.04819 19 4.03519C16.901 3.07519 14.312 3.36519 12 5.43419Z" fill="currentColor"/>
             </svg>
           </div>
@@ -705,13 +602,6 @@
     function attachCardEvents() {
       document.querySelectorAll('.product-card').forEach(card => {
         const cardId = parseInt(card.dataset.id);
-        card.addEventListener('click', (e) => {
-          if (!e.target.closest('.card-action-btn') && !e.target.closest('.favorite-icon')) {
-            renderDetailPage(cardId);
-            showPage('detail');
-          }
-        });
-        
         const favBtn = card.querySelector('.favorite-icon');
         if (favBtn) {
           favBtn.removeEventListener('click', favBtn._listener);
@@ -762,9 +652,6 @@
       }
       updateSingleCard(pid);
       renderCartPage();
-      if (document.getElementById("detail-page").classList.contains("active-page")) {
-        renderDetailPage(pid);
-      }
     }
 
     function renderCartPage() {
@@ -794,39 +681,6 @@
       else favorites.add(pid);
       updateSingleCard(pid);
       renderFavPage();
-      if (document.getElementById("detail-page").classList.contains("active-page")) renderDetailPage(pid);
-    }
-
-    function renderDetailPage(prodId) {
-      const prod = products.find(p => p.id === prodId);
-      if (!prod) return;
-      const qty = cart[prod.id] || 0;
-      const isFav = favorites.has(prod.id);
-      const detailHtml = `
-        <img class="product-detail-img" src="${prod.image}">
-        <div class="detail-header"><div class="detail-name">${escapeHtml(prod.name)}</div><div class="detail-prices"><span class="current-price">${formatPrice(prod.price)}</span> <span class="old-price">${formatPrice(prod.oldPrice)}</span></div></div>
-        <div class="divider"></div>
-        <div class="delivery-row"><span>Способ получения</span><span>Вход в аккаунт</span></div>
-        <div class="divider"></div>
-        <div class="desc-title">Описание</div>
-        <div class="desc-text">Цифровой товар для Brawl Stars / Clash Royale. Мгновенная доставка после оплаты.</div>
-        <div class="sticky-bar">
-          ${qty > 0 ? `<div class="detail-counter-mode"><span class="counter-minus" data-id="${prod.id}">−</span><span class="counter-value">${qty}</span><span class="counter-plus" data-id="${prod.id}">+</span></div>` : `<button class="detail-cart-btn" id="detailAddCartBtn"><img class="cart-icon-small" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23171719'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6M17 13l1.5 6M9 21h6'%3E%3C/path%3E%3C/svg%3E" /> В корзину</button>`}
-          <div class="detail-fav" data-favdetail="${prod.id}">
-            <svg class="heart-svg" style="width:24px; height:24px; color: ${isFav ? '#ff4d4d' : 'white'};" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd" clip-rule="evenodd" d="M5.624 5.39819C3.965 6.15619 2.75 7.96019 2.75 10.1112C2.75 12.3082 3.65 14.0022 4.938 15.4542C6.001 16.6502 7.287 17.6422 8.541 18.6082C8.839 18.8382 9.135 19.0672 9.426 19.2962C9.952 19.7112 10.421 20.0742 10.874 20.3392C11.326 20.6032 11.69 20.7242 12 20.7242C12.31 20.7242 12.674 20.6042 13.126 20.3392C13.579 20.0742 14.048 19.7112 14.574 19.2962C14.864 19.0662 15.161 18.8382 15.459 18.6082C16.713 17.6422 17.999 16.6502 19.062 15.4542C20.351 14.0022 21.25 12.3082 21.25 10.1112C21.25 7.96119 20.035 6.15619 18.376 5.39819C16.764 4.66119 14.598 4.85619 12.54 6.99519C12.47 7.06778 12.3862 7.12551 12.2934 7.16495C12.2006 7.20438 12.1008 7.22471 12 7.22471C11.8992 7.22471 11.7994 7.20438 11.7066 7.16495C11.6138 7.12551 11.53 7.06778 11.46 6.99519C9.402 4.85619 7.236 4.66119 5.624 5.39819ZM12 5.43419C9.688 3.36419 7.099 3.07419 5 4.03319C2.786 5.04819 1.25 7.40019 1.25 10.1122C1.25 12.7772 2.36 14.8112 3.817 16.4512C4.983 17.7642 6.41 18.8632 7.671 19.8332C7.957 20.0532 8.234 20.2672 8.497 20.4752C9.01 20.8792 9.56 21.3092 10.117 21.6352C10.674 21.9602 11.31 22.2252 12 22.2252C12.69 22.2252 13.326 21.9602 13.883 21.6352C14.441 21.3092 14.99 20.8792 15.503 20.4752C15.7769 20.2594 16.0522 20.0454 16.329 19.8332C17.589 18.8632 19.017 17.7632 20.183 16.4512C21.64 14.8112 22.75 12.7772 22.75 10.1122C22.75 7.40019 21.215 5.04819 19 4.03519C16.901 3.07519 14.312 3.36519 12 5.43419Z" fill="currentColor"/>
-            </svg>
-          </div>
-        </div>
-      `;
-      const detailPage = document.getElementById("detail-page");
-      detailPage.innerHTML = detailHtml;
-      const addBtn = document.getElementById("detailAddCartBtn");
-      if (addBtn) addBtn.addEventListener("click", () => { handleCartAction(prod.id, true); });
-      document.querySelectorAll(".counter-minus").forEach(el => el.addEventListener("click", (e) => { e.stopPropagation(); handleCartAction(parseInt(el.dataset.id), false); }));
-      document.querySelectorAll(".counter-plus").forEach(el => el.addEventListener("click", (e) => { e.stopPropagation(); alert("Данный товар недоступен к покупке в количестве более 1"); }));
-      const favDetailDiv = detailPage.querySelector(".detail-fav");
-      if(favDetailDiv) favDetailDiv.addEventListener("click", () => { toggleFavorite(prod.id); renderDetailPage(prod.id); });
     }
 
     function showPage(pageId) {

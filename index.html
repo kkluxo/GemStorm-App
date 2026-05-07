@@ -619,12 +619,8 @@
     .form-label {
       font-size: 17px;
       font-weight: 500;
-      color: #4cb4e9;
+      color: white;
       margin-bottom: 8px;
-      background: #202B32;
-      display: inline-block;
-      padding: 6px 14px;
-      border-radius: 16px;
     }
 
     .form-select {
@@ -676,12 +672,12 @@
     }
 
     .payment-methods-list {
-      background: #252528;
+      background: #3a3a3d;
       border-radius: 0 0 34px 34px;
       overflow: hidden;
-      margin: 0 12px;
-      border: 1px solid #2B2B2D;
-      border-top: none;
+      margin: 0;
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.08);
     }
 
     .payment-method-item {
@@ -751,13 +747,9 @@
     }
 
     .order-detail-label {
-      color: #4cb4e9;
+      color: white;
       font-size: 17px;
       font-weight: 500;
-      background: #202B32;
-      display: inline-block;
-      padding: 5px 12px;
-      border-radius: 14px;
     }
 
     .order-detail-value {
@@ -1258,8 +1250,7 @@
       "ВТБ Банк": "2200 2418 6382 9697",
       "Сбер Банк": "2202 2084 4441 4743",
       "Ozon Банк": "2204 3203 9062 7166",
-      "Альфа Банк": "2200 1529 6836 2817",
-      "МТС Деньги": "2203 8303 0760 4992"
+      "Альфа Банк": "2200 1529 6836 2817"
     };
 
     const paymentMethods = [
@@ -1267,8 +1258,7 @@
       "Перевод по карте: ВТБ Банк",
       "Перевод по карте: Сбер Банк",
       "Перевод по карте: Ozon Банк",
-      "Перевод по карте: Альфа Банк",
-      "Перевод по карте: МТС Деньги"
+      "Перевод по карте: Альфа Банк"
     ];
     
     let cart = {};
@@ -1550,7 +1540,7 @@
           <div class="form-section">
             <div class="form-label">Способ оплаты</div>
             <div class="form-select" id="paymentMethodSelect">
-              <span id="paymentMethodText" style="color: ${checkoutData.paymentMethod ? 'white' : '#a1a1aa'}">${checkoutData.paymentMethod || 'Выберите способ оплаты'}</span>
+              <span id="paymentMethodText" style="color: ${checkoutData.paymentMethod ? 'white' : '#a1a1aa'}; font-size: 17px;">${checkoutData.paymentMethod || 'Выберите способ оплаты'}</span>
               <img class="select-arrow" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E" alt="▼">
             </div>
             <div id="paymentMethodsListCheckout" class="payment-methods-list" style="display: none;"></div>

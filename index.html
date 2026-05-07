@@ -140,6 +140,15 @@
       font-weight: 500;
     }
 
+    /* Иконки подняты выше */
+    .header-icon-img {
+      width: 26px;
+      height: 26px;
+      object-fit: contain;
+      margin-top: -2px;
+      transform: translateY(1px);
+    }
+
     .search-section {
       display: flex;
       gap: 14px;
@@ -321,9 +330,10 @@
       font-size: 18px;
     }
 
+    /* Пустые состояния — смещены ниже */
     .empty-state-icon {
       text-align: center;
-      margin-top: 80px;
+      margin-top: 120px;
     }
     .empty-icon {
       width: 80px;
@@ -1006,7 +1016,7 @@
       background: #303032;
       border: none;
       border-radius: 34px;
-      padding: 12px 16px;
+      padding: 0 16px;
       color: #a1a1aa;
       font-size: 15px;
       font-weight: 500;
@@ -1014,6 +1024,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      height: 48px;
     }
 
     .referral-copy-circle {
@@ -1021,7 +1032,7 @@
       height: 48px;
       background: #202B32;
       border: none;
-      border-radius: 50%;
+      border-radius: 34px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1069,13 +1080,7 @@
       font-weight: 600;
     }
 
-    .header-icon-img {
-      width: 26px;
-      height: 26px;
-      object-fit: contain;
-      margin-top: 2px;
-    }
-
+    /* Карточка подписки на канал — без эмодзи, с иконкой Telegram */
     .subscribe-card {
       background: #202022;
       border: 1px solid #2B2B2D;
@@ -1106,10 +1111,11 @@
       font-size: 14px;
       color: #9e9e9e;
     }
-    .subscribe-arrow {
-      width: 24px;
-      height: 24px;
-      opacity: 0.7;
+    .telegram-logo {
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+      fill: #4cb4e9;
     }
   </style>
 </head>
@@ -1172,7 +1178,7 @@
 
   <div id="orders-page" class="page">
     <div class="header-row">
-      <img class="header-icon-img" src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="orders" style="width: 26px; height: 26px;">
+      <img class="header-icon-img" src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="orders">
       <div class="page-title">Заказы</div>
     </div>
     <div id="ordersList"></div>
@@ -1188,7 +1194,7 @@
 
   <div id="filter-page" class="page">
     <div class="header-row">
-      <img class="header-icon-img" src="https://storage.botpapa.me/files/9478fb40-49de-11f1-bef9-f1ec7a2c6e45.png" alt="filter" style="width: 26px; height: 26px;">
+      <img class="header-icon-img" src="https://storage.botpapa.me/files/9478fb40-49de-11f1-bef9-f1ec7a2c6e45.png" alt="filter">
       <div class="page-title">Фильтры</div>
     </div>
     <div class="filter-options" id="filterOptionsContainer"></div>
@@ -1212,7 +1218,7 @@
 
   <div id="order-detail-page" class="page">
     <div class="header-row">
-      <img class="header-icon-img" src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="order" style="width: 26px; height: 26px;">
+      <img class="header-icon-img" src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="order">
       <div class="page-title" id="orderDetailTitle">Заказ</div>
     </div>
     <div id="orderDetailContent"></div>
@@ -1982,10 +1988,12 @@
         
         <div class="subscribe-card" id="subscribeChannelBtn">
           <div class="subscribe-info">
-            <div class="subscribe-title">📢 Подпишитесь на наш канал</div>
+            <div class="subscribe-title">Подпишитесь на наш канал</div>
             <div class="subscribe-text">Следите за новостями и акциями</div>
           </div>
-          <img class="subscribe-arrow" src="https://storage.botpapa.me/files/b254ec20-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="→">
+          <svg class="telegram-logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.6-1.38-.97-2.23-1.56-.99-.67-.35-1.04.22-1.64.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.09-.06-.13-.07-.04-.16-.02-.23-.01-.1.02-1.7 1.08-4.8 3.17-.45.31-.86.46-1.23.45-.4-.01-1.18-.23-1.76-.42-.7-.23-1.26-.35-1.21-.74.03-.2.3-.41.83-.63 3.27-1.42 5.45-2.36 6.54-2.82 3.11-1.31 3.76-1.53 4.18-1.54.09 0 .3.02.43.12.11.09.14.2.16.32.02.12 0 .25-.02.38z" fill="#4cb4e9"/>
+          </svg>
         </div>
         
         <div class="referral-card">

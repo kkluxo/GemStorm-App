@@ -603,7 +603,7 @@
     .content-card {
       background: #202022;
       border: 1px solid #2B2B2D;
-      border-radius: 28px;
+      border-radius: 32px;
       padding: 18px;
       margin-bottom: 0;
     }
@@ -617,7 +617,7 @@
     }
 
     .form-label {
-      font-size: 18px;
+      font-size: 19px;
       font-weight: 500;
       color: white;
       margin-bottom: 8px;
@@ -630,7 +630,7 @@
       border-radius: 34px;
       padding: 14px 16px;
       color: white;
-      font-size: 18px;
+      font-size: 19px;
       font-weight: 500;
       outline: none;
       transition: 0.1s;
@@ -638,7 +638,7 @@
 
     .form-input::placeholder {
       color: #8e8e93;
-      font-size: 16px;
+      font-size: 19px;
     }
 
     .form-input.error {
@@ -653,7 +653,7 @@
       border-radius: 34px;
       padding: 14px 16px;
       color: white;
-      font-size: 18px;
+      font-size: 19px;
       font-weight: 500;
       outline: none;
       cursor: pointer;
@@ -674,7 +674,7 @@
     .form-select-native option {
       background: #202022;
       color: white;
-      font-size: 16px;
+      font-size: 19px;
       padding: 14px;
     }
 
@@ -685,8 +685,8 @@
     }
 
     .copy-icon {
-      width: 20px;
-      height: 20px;
+      width: 22px;
+      height: 22px;
       cursor: pointer;
       transition: 0.1s;
       flex-shrink: 0;
@@ -1252,7 +1252,7 @@
 
     function getPaymentMethodLabel(value) {
       const opt = paymentMethodsOptions.find(o => o.value === value);
-      return opt ? `Перевод по карте: ${opt.label}` : '';
+      return opt ? `${opt.label}` : '';
     }
 
     function getBankFromValue(value) {
@@ -1636,7 +1636,7 @@
         : `<span class="total-price-wrapper"><span class="total-price">${formatPrice(rawTotal)}</span></span>`;
       
       container.innerHTML = `
-        <div style="color:#cbd5e1;font-size:18px;margin-bottom:18px;">Оплатите заказ по указанным реквизитам ниже и нажмите кнопку «Я оплатил»</div>
+        <div style="color:#cbd5e1;font-size:18px;margin-bottom:18px;">Оплатите заказ по указанным ниже реквизитам и нажмите кнопку «Я оплатил»</div>
         
         <div class="content-card">
           <div class="form-section">

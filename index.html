@@ -380,17 +380,17 @@
     .cart-quantity {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       background: #202B32;
       border-radius: 40px;
-      padding: 4px 8px;
+      padding: 6px 10px;
     }
 
     .cart-qty-btn {
       background: none;
       border: none;
-      width: 20px;
-      height: 24px;
+      width: 22px;
+      height: 26px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -399,15 +399,15 @@
     }
 
     .cart-qty-btn img {
-      width: 12px;
-      height: 12px;
+      width: 14px;
+      height: 14px;
     }
 
     .cart-qty-value {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 500;
       color: white;
-      min-width: 18px;
+      min-width: 20px;
       text-align: center;
     }
 
@@ -599,22 +599,34 @@
       padding-bottom: 110px;
     }
 
-    /* Стили для страницы оформления */
+    /* Общие стили для карточек */
+    .content-card {
+      background: #202022;
+      border: 1px solid #2B2B2D;
+      border-radius: 28px;
+      padding: 18px;
+      margin-bottom: 0;
+    }
+
     .form-section {
-      margin-bottom: 20px;
+      margin-bottom: 16px;
+    }
+
+    .form-section:last-child {
+      margin-bottom: 0;
     }
 
     .form-label {
-      font-size: 19px;
+      font-size: 20px;
       font-weight: 500;
-      color: white;
+      color: #4cb4e9;
       margin-bottom: 8px;
     }
 
     .form-select {
       width: 100%;
-      background: #303032;
-      border: 1px solid #3a3a3d;
+      background: #202B32;
+      border: 1px solid transparent;
       border-radius: 34px;
       padding: 14px 16px;
       color: white;
@@ -639,8 +651,8 @@
 
     .form-input {
       width: 100%;
-      background: #303032;
-      border: 1px solid #3a3a3d;
+      background: #202B32;
+      border: 1px solid transparent;
       border-radius: 34px;
       padding: 14px 16px;
       color: white;
@@ -661,9 +673,11 @@
 
     .payment-methods-list {
       background: #252528;
-      border-radius: 34px;
+      border-radius: 0 0 34px 34px;
       overflow: hidden;
-      margin-top: 4px;
+      margin: 0 12px;
+      border: 1px solid #2B2B2D;
+      border-top: none;
     }
 
     .payment-method-item {
@@ -719,31 +733,94 @@
       font-weight: 500;
     }
 
+    /* Детали заказа */
     .order-detail-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 8px 0;
-      font-size: 15px;
+      padding: 10px 0;
+      font-size: 17px;
+    }
+
+    .order-detail-row:first-child {
+      padding-top: 0;
     }
 
     .order-detail-label {
-      color: #9e9e9e;
+      color: #4cb4e9;
+      font-size: 20px;
     }
 
     .order-detail-value {
       color: white;
       font-weight: 500;
       text-align: right;
+      font-size: 20px;
     }
 
-    .order-item-card {
-      background: rgba(255,255,255,0.03);
-      border-radius: 16px;
+    .order-detail-item {
+      background: #202022;
+      border: 1px solid #2B2B2D;
+      border-radius: 28px;
       padding: 10px;
-      margin: 4px 0;
-      font-size: 14px;
+      margin-bottom: 10px;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      position: relative;
+    }
+
+    .order-detail-item-img {
+      width: 70px;
+      height: 70px;
+      border-radius: 18px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .order-detail-item-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .order-detail-item-name {
+      font-size: 17px;
+      font-weight: 500;
+      color: white;
+    }
+
+    .order-detail-item-price {
+      font-size: 16px;
+      font-weight: 500;
       color: #cbd5e1;
+    }
+
+    .order-detail-item-category {
+      font-size: 15px;
+      color: #9e9e9e;
+    }
+
+    .order-detail-item-qty {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: #202B32;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 15px;
+      font-weight: 500;
+      color: white;
+    }
+
+    .order-detail-total {
+      font-size: 22px;
+      font-weight: 600;
+      color: white;
+      text-align: right;
+      padding-top: 8px;
     }
 
     /* Карточка заказа в списке */
@@ -802,62 +879,134 @@
       font-size: 17px;
     }
 
-    /* Карточка товара в деталях заказа */
-    .order-detail-item {
+    /* Профиль */
+    .profile-card {
       background: #202022;
       border: 1px solid #2B2B2D;
       border-radius: 28px;
-      padding: 10px;
-      margin-bottom: 10px;
+      padding: 18px;
       display: flex;
-      gap: 14px;
       align-items: center;
-      position: relative;
+      gap: 16px;
+      margin-bottom: 20px;
     }
 
-    .order-detail-item-img {
-      width: 70px;
-      height: 70px;
-      border-radius: 18px;
+    .profile-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
       object-fit: cover;
       flex-shrink: 0;
     }
 
-    .order-detail-item-info {
+    .profile-info {
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 5px;
-      min-width: 0;
+      gap: 8px;
     }
 
-    .order-detail-item-name {
-      font-size: 17px;
-      font-weight: 500;
+    .profile-nickname {
+      font-size: 20px;
+      font-weight: 600;
       color: white;
     }
 
-    .order-detail-item-price {
-      font-size: 16px;
-      font-weight: 500;
-      color: #cbd5e1;
-    }
-
-    .order-detail-item-category {
-      font-size: 15px;
-      color: #9e9e9e;
-    }
-
-    .order-detail-item-qty {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
+    .profile-username {
+      display: inline-block;
       background: #202B32;
       border-radius: 20px;
-      padding: 4px 12px;
+      padding: 6px 14px;
       font-size: 15px;
       font-weight: 500;
+      color: #4cb4e9;
+      align-self: flex-start;
+    }
+
+    /* Реферальная программа */
+    .referral-card {
+      background: #202022;
+      border: 1px solid #2B2B2D;
+      border-radius: 28px;
+      padding: 18px;
+    }
+
+    .referral-title {
+      font-size: 20px;
+      font-weight: 600;
       color: white;
+      margin-bottom: 4px;
+    }
+
+    .referral-subtitle {
+      font-size: 15px;
+      color: #9e9e9e;
+      margin-bottom: 16px;
+    }
+
+    .referral-stats {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .referral-stat {
+      flex: 1;
+      background: #202B32;
+      border-radius: 20px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .referral-stat-value {
+      font-size: 22px;
+      font-weight: 600;
+      color: #4cb4e9;
+    }
+
+    .referral-stat-label {
+      font-size: 13px;
+      color: #9e9e9e;
+      margin-top: 2px;
+    }
+
+    .referral-link-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .referral-link-input {
+      flex: 1;
+      background: #303032;
+      border: none;
+      border-radius: 34px;
+      padding: 12px 16px;
+      color: #a1a1aa;
+      font-size: 15px;
+      font-weight: 500;
+      outline: none;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .referral-copy-btn {
+      background: #4cb4e9;
+      border: none;
+      border-radius: 34px;
+      padding: 12px 20px;
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.1s;
+      white-space: nowrap;
+    }
+
+    .referral-copy-btn:active {
+      opacity: 0.8;
+      transform: scale(0.96);
     }
 
     .filter-options {
@@ -968,7 +1117,7 @@
       <img class="header-icon-img" src="https://storage.botpapa.me/files/12337af0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="profile">
       <div class="page-title">Профиль</div>
     </div>
-    <div class="empty-state">Ваш профиль: вход по аккаунту Telegram</div>
+    <div id="profileContent"></div>
   </div>
 
   <div id="filter-page" class="page">
@@ -1055,6 +1204,15 @@
       }
     }
 
+    // Закрытие клавиатуры при клике вне полей ввода
+    document.addEventListener('click', function(e) {
+      if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+        if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
+          document.activeElement.blur();
+        }
+      }
+    });
+
     const products = [
       { id: 1, name: "Brawl Pass", price: 769, oldPrice: 799, image: "https://storage.botpapa.me/files/6b57bf60-499a-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Brawl Stars" },
       { id: 2, name: "Улучш. до BP+", price: 429, oldPrice: 449, image: "https://storage.botpapa.me/files/6f97da10-499a-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Brawl Stars" },
@@ -1138,10 +1296,10 @@
         }
       }
       if (productId >= 5 && productId <= 10) {
-        if ((cart[productId] || 0) >= 9) return { allowed: false, reason: "Максимум 9 шт." };
+        if ((cart[productId] || 0) >= 3) return { allowed: false, reason: "Максимум 3 шт." };
       }
-      if (!cart[productId] && getCartItemsCount() >= 8) {
-        return { allowed: false, reason: "Максимум 8 разных товаров в корзине" };
+      if (!cart[productId] && getCartItemsCount() >= 3) {
+        return { allowed: false, reason: "Максимум 3 разных товара в корзине" };
       }
       return { allowed: true };
     }
@@ -1363,23 +1521,25 @@
         : `<span class="total-price-wrapper"><span class="total-price">${formatPrice(rawTotal)}</span></span>`;
       
       container.innerHTML = `
-        <div class="form-section">
-          <div class="form-label">Способ оплаты</div>
-          <div class="form-select" id="paymentMethodSelect">
-            <span id="paymentMethodText" style="color: ${checkoutData.paymentMethod ? 'white' : '#a1a1aa'}">${checkoutData.paymentMethod || 'Выберите способ оплаты'}</span>
-            <img class="select-arrow" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E" alt="▼">
+        <div class="content-card">
+          <div class="form-section">
+            <div class="form-label">Почта от аккаунта</div>
+            <input type="email" class="form-input" id="emailInput" placeholder="Укажите почту от вашего аккаунта" value="${escapeHtml(checkoutData.email)}">
           </div>
-          <div id="paymentMethodsList" class="payment-methods-list" style="display: none;"></div>
-        </div>
-        
-        <div class="form-section">
-          <div class="form-label">Данные отправителя</div>
-          <input type="text" class="form-input" id="senderNameInput" placeholder="Укажите имя отправителя (Ваше имя)" value="${escapeHtml(checkoutData.senderName)}">
-        </div>
-        
-        <div class="form-section">
-          <div class="form-label">Почта от игрового аккаунта</div>
-          <input type="email" class="form-input" id="emailInput" placeholder="Укажите почту от аккаунта" value="${escapeHtml(checkoutData.email)}">
+          
+          <div class="form-section">
+            <div class="form-label">Способ оплаты</div>
+            <div class="form-select" id="paymentMethodSelect" style="border-radius: 34px 34px ${document.getElementById('paymentMethodsList')?.style.display === 'block' ? '0 0' : '34px 34px'}">
+              <span id="paymentMethodText" style="color: ${checkoutData.paymentMethod ? 'white' : '#a1a1aa'}">${checkoutData.paymentMethod || 'Выберите способ оплаты'}</span>
+              <img class="select-arrow" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E" alt="▼">
+            </div>
+            <div id="paymentMethodsList" class="payment-methods-list" style="display: none;"></div>
+          </div>
+          
+          <div class="form-section">
+            <div class="form-label">Данные отправителя</div>
+            <input type="text" class="form-input" id="senderNameInput" placeholder="Укажите имя отправителя" value="${escapeHtml(checkoutData.senderName)}">
+          </div>
         </div>
       `;
       
@@ -1388,9 +1548,12 @@
         <div class="payment-method-item${checkoutData.paymentMethod === m ? ' selected' : ''}" data-method="${m}">${m}</div>
       `).join("");
       
-      document.getElementById("paymentMethodSelect")?.addEventListener("click", () => {
+      const paymentSelect = document.getElementById("paymentMethodSelect");
+      paymentSelect?.addEventListener("click", () => {
         hapticLight();
-        methodsContainer.style.display = methodsContainer.style.display === "none" ? "block" : "none";
+        const isOpen = methodsContainer.style.display === "block";
+        methodsContainer.style.display = isOpen ? "none" : "block";
+        paymentSelect.style.borderRadius = isOpen ? "34px" : "34px 34px 0 0";
       });
       
       document.querySelectorAll(".payment-method-item").forEach(item => {
@@ -1399,8 +1562,9 @@
           checkoutData.paymentMethod = item.dataset.method;
           document.getElementById("paymentMethodText").textContent = item.dataset.method;
           document.getElementById("paymentMethodText").style.color = "white";
-          document.getElementById("paymentMethodSelect").classList.remove("error");
+          paymentSelect.classList.remove("error");
           methodsContainer.style.display = "none";
+          paymentSelect.style.borderRadius = "34px";
           document.querySelectorAll(".payment-method-item").forEach(el => el.classList.remove("selected"));
           item.classList.add("selected");
         });
@@ -1434,7 +1598,6 @@
           let hasError = false;
           const senderInput = document.getElementById("senderNameInput");
           const emailInput = document.getElementById("emailInput");
-          const paymentSelect = document.getElementById("paymentMethodSelect");
           
           if (!checkoutData.paymentMethod) {
             paymentSelect.classList.add("error");
@@ -1490,24 +1653,25 @@
       
       container.innerHTML = `
         <div style="color:#cbd5e1;font-size:18px;margin-bottom:20px;">Оплатите заказ по указанным реквизитам ниже и нажмите кнопку «Я оплатил»</div>
-        <div class="divider"></div>
         
-        <div class="form-section">
-          <div class="form-label">Номер карты</div>
-          <div class="form-select card-number-row">
-            <span class="card-number-text">${cardNum}</span>
-            <img class="copy-icon" id="copyCardBtn" src="https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png" alt="copy">
+        <div class="content-card">
+          <div class="form-section">
+            <div class="form-label">Номер карты</div>
+            <div class="form-select card-number-row">
+              <span class="card-number-text">${cardNum}</span>
+              <img class="copy-icon" id="copyCardBtn" src="https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png" alt="copy">
+            </div>
           </div>
-        </div>
-        
-        <div class="form-section">
-          <div class="form-label">Получатель</div>
-          <div class="form-select"><span>Азат Ф.</span></div>
-        </div>
-        
-        <div class="form-section">
-          <div class="form-label">Банк получателя</div>
-          <div class="form-select"><span>${bank}</span></div>
+          
+          <div class="form-section">
+            <div class="form-label">Получатель</div>
+            <div class="form-select"><span>Азат Ф.</span></div>
+          </div>
+          
+          <div class="form-section">
+            <div class="form-label">Банк получателя</div>
+            <div class="form-select"><span>${bank}</span></div>
+          </div>
         </div>
       `;
       
@@ -1571,7 +1735,7 @@
           category: products.find(p => p.id == id).category
         })), 
         total, 
-        status: "Оплачен",
+        status: "Проверка перевода",
         promo: appliedPromo ? appliedPromo.code : null,
         paymentMethod: checkoutData.paymentMethod,
         senderName: checkoutData.senderName,
@@ -1612,19 +1776,35 @@
       `).join('');
       
       container.innerHTML = `
-        <div style="margin-bottom:16px;">
-          <div class="order-detail-row"><span class="order-detail-label">Статус</span><span class="order-detail-value" style="color:#4cb4e9">${order.status}</span></div>
-          <div class="order-detail-row"><span class="order-detail-label">Дата</span><span class="order-detail-value">${order.date} ${order.time || ''}</span></div>
-          <div class="order-detail-row"><span class="order-detail-label">Способ оплаты</span><span class="order-detail-value">${order.paymentMethod || '—'}</span></div>
-          <div class="order-detail-row"><span class="order-detail-label">Отправитель</span><span class="order-detail-value">${escapeHtml(order.senderName || '—')}</span></div>
-          <div class="order-detail-row"><span class="order-detail-label">Почта</span><span class="order-detail-value">${escapeHtml(order.email || '—')}</span></div>
+        <div class="content-card">
+          <div class="order-detail-row">
+            <span class="order-detail-label">Статус</span>
+            <span class="order-detail-value" style="color:#4cb4e9">${order.status}</span>
+          </div>
+          <div class="order-detail-row">
+            <span class="order-detail-label">Дата</span>
+            <span class="order-detail-value">${order.date} ${order.time || ''}</span>
+          </div>
+          <div class="order-detail-row">
+            <span class="order-detail-label">Способ оплаты</span>
+            <span class="order-detail-value">${order.paymentMethod || '—'}</span>
+          </div>
+          <div class="order-detail-row">
+            <span class="order-detail-label">Отправитель</span>
+            <span class="order-detail-value">${escapeHtml(order.senderName || '—')}</span>
+          </div>
+          <div class="order-detail-row">
+            <span class="order-detail-label">Почта</span>
+            <span class="order-detail-value">${escapeHtml(order.email || '—')}</span>
+          </div>
           ${order.promo ? `<div class="order-detail-row"><span class="order-detail-label">Промокод</span><span class="order-detail-value">${order.promo}</span></div>` : ''}
+          <div class="divider"></div>
+          <div class="order-detail-total">Итого: ${formatPrice(order.total)}</div>
         </div>
-        <div class="divider"></div>
-        <div style="margin-top:12px;">
+        
+        <div style="margin-top: 16px;">
           ${itemsHtml}
         </div>
-        <div style="margin-top:12px;font-size:18px;font-weight:600;color:white;">Итого: ${formatPrice(order.total)}</div>
       `;
       
       showPage("order-detail");
@@ -1704,6 +1884,64 @@
       });
     }
 
+    function renderProfilePage() {
+      const container = document.getElementById("profileContent");
+      if (!container) return;
+      
+      let tgUser = null;
+      if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
+        tgUser = window.Telegram.WebApp.initDataUnsafe.user;
+      }
+      
+      const nickname = tgUser?.first_name || "Пользователь";
+      const username = tgUser?.username ? "@" + tgUser.username : "@username";
+      const photoUrl = tgUser?.photo_url || "";
+      const userId = tgUser?.id || "0";
+      const refLink = `https://t.me/GeltanStoreBot?start=ref${userId}`;
+      
+      container.innerHTML = `
+        <div class="profile-card">
+          ${photoUrl ? `<img class="profile-avatar" src="${photoUrl}" alt="avatar">` : '<div class="profile-avatar" style="background:#303032;display:flex;align-items:center;justify-content:center;font-size:24px;color:#9e9e9e;">👤</div>'}
+          <div class="profile-info">
+            <div class="profile-nickname">${escapeHtml(nickname)}</div>
+            <div class="profile-username">${escapeHtml(username)}</div>
+          </div>
+        </div>
+        
+        <div class="referral-card">
+          <div class="referral-title">Реферальная программа</div>
+          <div class="referral-subtitle">Приглашайте друзей и получайте бонусы</div>
+          
+          <div class="referral-stats">
+            <div class="referral-stat">
+              <div class="referral-stat-value">0</div>
+              <div class="referral-stat-label">Приглашено</div>
+            </div>
+            <div class="referral-stat">
+              <div class="referral-stat-value">0 ₽</div>
+              <div class="referral-stat-label">Заработано</div>
+            </div>
+          </div>
+          
+          <div style="font-size:16px;font-weight:500;color:#4cb4e9;margin-bottom:8px;">Ваша реферальная ссылка</div>
+          <div class="referral-link-row">
+            <input type="text" class="referral-link-input" id="refLinkInput" value="${refLink}" readonly>
+            <button class="referral-copy-btn" id="refCopyBtn">Копировать</button>
+          </div>
+        </div>
+      `;
+      
+      setTimeout(() => {
+        document.getElementById("refCopyBtn")?.addEventListener("click", () => {
+          const refInput = document.getElementById("refLinkInput");
+          if (refInput && navigator.clipboard) {
+            navigator.clipboard.writeText(refInput.value);
+          }
+          hapticLight();
+        });
+      }, 0);
+    }
+
     function renderCatalog() {
       const grid = document.getElementById("catalogGrid");
       if (!grid) return;
@@ -1746,6 +1984,10 @@
         renderOrdersPage();
         checkoutBlock.style.display = "none";
       }
+      if (pageId === "profile") {
+        renderProfilePage();
+        checkoutBlock.style.display = "none";
+      }
       if (pageId === "checkout") {
         renderCheckoutForm();
       }
@@ -1758,9 +2000,6 @@
       if (pageId === "filter") {
         checkoutBlock.style.display = "none";
       }
-      if (pageId === "profile") {
-        checkoutBlock.style.display = "none";
-      }
       
       document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
       if (["catalog", "cart", "orders", "profile"].includes(pageId)) {
@@ -1769,10 +2008,6 @@
         document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
       }
       window.scrollTo({ top: 0 });
-
-      document.querySelectorAll('.menu-item, .checkout-button, .promo-btn, .promo-action-btn, .form-select, .payment-method-item, .order-card, .product-card').forEach(el => {
-        el.style.willChange = 'transform';
-      });
     }
 
     function renderFilterModal() {
@@ -1814,6 +2049,7 @@
     renderCartPage(); 
     renderOrdersPage(); 
     renderFilterModal();
+    renderProfilePage();
     document.getElementById("cartCheckoutFixed").style.display = "none";
   </script>
 </body>

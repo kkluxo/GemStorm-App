@@ -318,12 +318,12 @@
       font-size: 18px;
     }
 
-    /* СТИЛИ КАРТОЧКИ КОРЗИНЫ — увеличенные */
+    /* СТИЛИ КАРТОЧКИ КОРЗИНЫ — обновлённые */
     .cart-item {
       background: #202022;
       border: 1px solid #2B2B2D;
       border-radius: 28px;
-      padding: 12px;
+      padding: 10px;
       margin-bottom: 12px;
       display: flex;
       gap: 14px;
@@ -342,7 +342,7 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 7px;
     }
 
     .cart-product-name {
@@ -356,16 +356,9 @@
       font-weight: 500;
       color: white;
     }
-    
-    .cart-product-old-price {
-      font-size: 15px;
-      color: #9ca3af;
-      text-decoration: line-through;
-      margin-left: 8px;
-    }
 
     .cart-product-category {
-      font-size: 14px;
+      font-size: 18px;
       color: #9e9e9e;
     }
 
@@ -374,24 +367,6 @@
       flex-direction: column;
       gap: 10px;
       align-items: flex-end;
-    }
-
-    .cart-remove-btn {
-      background: rgba(239, 68, 68, 0.12);
-      border: none;
-      width: 36px;
-      height: 36px;
-      border-radius: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: 0.1s;
-    }
-
-    .cart-remove-btn img {
-      width: 20px;
-      height: 20px;
     }
 
     /* Увеличенная кнопка количества */
@@ -407,8 +382,8 @@
     .cart-qty-btn {
       background: none;
       border: none;
-      width: 28px;
-      height: 32px;
+      width: 24px;
+      height: 28px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -417,193 +392,204 @@
     }
 
     .cart-qty-btn img {
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
     }
 
     .cart-qty-value {
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 600;
       color: white;
-      min-width: 24px;
+      min-width: 22px;
       text-align: center;
     }
 
     /* ЗАКРЕПЛЁННЫЙ БЛОК ОФОРМЛЕНИЯ */
-.cart-checkout-fixed {
-  position: fixed;
-  bottom: 18px;
-  left: 18px;
-  right: 18px;
-  z-index: 1000;
-  max-width: 600px;
-  margin: 0 auto;
-  width: calc(100% - 36px);
-}
+    .cart-checkout-fixed {
+      position: fixed;
+      bottom: 18px;
+      left: 18px;
+      right: 18px;
+      z-index: 1000;
+      max-width: 600px;
+      margin: 0 auto;
+      width: calc(100% - 36px);
+    }
 
-.checkout-card {
-  background: #202022f9;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 30px 30px 34px 34px;
-  padding: 14px 14px 80px 14px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
+    .checkout-card {
+      background: #202022f9;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 30px 30px 34px 34px;
+      padding: 14px 14px 80px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
 
-.total-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 18px;
-  font-weight: 500;
-}
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 18px;
+      font-weight: 500;
+    }
 
-.total-label {
-  color: #cbd5e1;
-}
+    .total-label {
+      color: #cbd5e1;
+      padding-left: 2px;
+    }
 
-.total-price-wrapper {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
+    .total-price-wrapper {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      padding-right: 2px;
+    }
 
-.total-price {
-  color: white;
-  font-weight: 550;
-  font-size: 18px;
-}
+    .total-price {
+      color: white;
+      font-weight: 550;
+      font-size: 18px;
+    }
 
-.total-old-price {
-  color: #9ca3af;
-  font-size: 16px;
-  text-decoration: line-through;
-  font-weight: 400;
-}
+    .total-old-price {
+      color: #9ca3af;
+      font-size: 16px;
+      text-decoration: line-through;
+      font-weight: 400;
+    }
 
-/* СТРОКА С КНОПКАМИ - все три элемента в одной строке */
-.checkout-buttons-row {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  width: 100%;
-}
+    /* СТРОКА С КНОПКАМИ - все три элемента в одной строке */
+    .checkout-buttons-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      width: 100%;
+    }
 
-/* Основная кнопка Оформить заказ - занимает всё доступное пространство */
-.checkout-button {
-  flex: 1;
-  min-width: 0;
-  background: #4cb4e9;
-  border: none;
-  border-radius: 50px;
-  padding: 12px;
-  color: white;
-  font-weight: 600;
-  font-size: 18px;
-  cursor: pointer;
-  transition: 0.1s;
-  text-align: center;
-}
+    /* Основная кнопка Оформить заказ - занимает всё доступное пространство */
+    .checkout-button {
+      flex: 1;
+      min-width: 0;
+      background: #4cb4e9;
+      border: none;
+      border-radius: 50px;
+      padding: 12px;
+      color: white;
+      font-weight: 550;
+      font-size: 18px;
+      cursor: pointer;
+      transition: 0.1s;
+      text-align: center;
+    }
 
-.checkout-button:active {
-  opacity: 0.8;
-  transform: scale(0.98);
-}
+    .checkout-button:active {
+      opacity: 0.8;
+      transform: scale(0.98);
+    }
 
-/* Круглая кнопка промокода - фиксированный размер */
-.promo-btn {
-  width: 46px;
-  height: 46px;
-  min-width: 46px;
-  border-radius: 50%;
-  background: #202B32;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: 0.1s;
-}
+    /* Круглая кнопка промокода - чуть больше */
+    .promo-btn {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      border-radius: 50%;
+      background: #202B32;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: 0.1s;
+    }
 
-.promo-btn img {
-  width: 22px;
-  height: 22px;
-  object-fit: contain;
-}
+    .promo-btn img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+    }
 
-.promo-btn:active {
-  opacity: 0.8;
-  transform: scale(0.95);
-}
+    .promo-btn:active {
+      opacity: 0.8;
+      transform: scale(0.95);
+    }
 
-/* Промокод режим - все три элемента в одной строке */
-.promo-input-row {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  width: 100%;
-}
+    /* Промокод режим - все три элемента в одной строке */
+    .promo-input-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      width: 100%;
+    }
 
-.promo-input {
-  flex: 1;
-  min-width: 0;
-  background: #303032;
-  border: none;
-  border-radius: 50px;
-  padding: 0 16px;
-  color: white;
-  font-size: 16px;
-  font-weight: 500;
-  outline: none;
-  height: 46px;
-}
+    .promo-input {
+      flex: 1;
+      min-width: 0;
+      background: #303032;
+      border: none;
+      border-radius: 50px;
+      padding: 0 16px;
+      color: white;
+      font-size: 18px;
+      font-weight: 500;
+      outline: none;
+      height: 46px;
+    }
 
-.promo-input::placeholder {
-  color: #a1a1aa;
-  font-size: 14px;
-}
+    .promo-input::placeholder {
+      color: #a1a1aa;
+      font-size: 18px;
+    }
 
-.promo-input.error {
-  color: #ef4444;
-}
+    .promo-input.error {
+      color: #ef4444;
+      font-size: 18px;
+    }
 
-/* Круглые кнопки в режиме промокода */
-.promo-action-btn {
-  width: 46px;
-  height: 46px;
-  min-width: 46px;
-  border-radius: 50%;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: 0.1s;
-}
+    /* Круглые кнопки в режиме промокода */
+    .promo-action-btn {
+      width: 46px;
+      height: 46px;
+      min-width: 46px;
+      border-radius: 50%;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: 0.1s;
+    }
 
-.promo-action-btn.back-btn {
-  background: rgba(239, 68, 68, 0.12);
-}
+    .promo-action-btn.back-btn {
+      background: rgba(239, 68, 68, 0.12);
+    }
 
-.promo-action-btn.apply-btn {
-  background: #202B32;
-}
+    .promo-action-btn.apply-btn {
+      background: #202B32;
+    }
 
-.promo-action-btn img {
-  width: 22px;
-  height: 22px;
-  object-fit: contain;
-}
+    .promo-action-btn img {
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+    }
 
-.promo-action-btn:active {
-  opacity: 0.8;
-  transform: scale(0.95);
-}
+    .promo-action-btn:active {
+      opacity: 0.8;
+      transform: scale(0.95);
+    }
+
+    /* Промокод лейбл с отступом */
+    .promo-label {
+      color: #cbd5e1;
+      font-size: 18px;
+      font-weight: 500;
+      padding-left: 2px;
+    }
 
     .cart-content-padding {
       padding-bottom: 110px;
@@ -954,10 +940,10 @@
         fixedBlock.innerHTML = `
           <div class="checkout-card">
             <div class="total-row">
-              <span class="total-label">Введите промокод на скидку</span>
+              <span class="promo-label">Введите промокод на скидку</span>
             </div>
             <div class="promo-input-row">
-              <input type="text" class="promo-input" id="promoInput" placeholder="Введите промокод">
+              <input type="text" class="promo-input" id="promoInput" placeholder="Введите промокод" value="${appliedPromo ? appliedPromo.code : ''}">
               <button class="promo-action-btn back-btn" id="promoBackBtn">
                 <img src="https://storage.botpapa.me/files/af0747c0-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="Назад">
               </button>
@@ -974,6 +960,10 @@
           const applyBtn = document.getElementById("promoApplyBtn");
           
           backBtn?.addEventListener("click", () => {
+            if (appliedPromo) {
+              // Если промокод был применён, удаляем его
+              appliedPromo = null;
+            }
             isPromoMode = false;
             renderCheckoutBlock();
             renderCartPage();
@@ -992,7 +982,7 @@
                 promoInput.value = "Промокод не найден";
                 setTimeout(() => {
                   promoInput.classList.remove("error");
-                  promoInput.value = "";
+                  promoInput.value = appliedPromo ? appliedPromo.code : "";
                 }, 2000);
               }
             }
@@ -1016,7 +1006,7 @@
             </span>
           `;
         } else {
-          totalHtml = `<span class="total-price">${formatPrice(rawTotal)}</span>`;
+          totalHtml = `<span class="total-price-wrapper"><span class="total-price">${formatPrice(rawTotal)}</span></span>`;
         }
         
         fixedBlock.innerHTML = `
@@ -1026,7 +1016,7 @@
               ${totalHtml}
             </div>
             <div class="checkout-buttons-row">
-              <button class="checkout-button" id="checkoutBtn">Оформить заказ</button>
+              <button class="checkout-button" id="checkoutBtn">Перейти к оформлению</button>
               <button class="promo-btn" id="openPromoBtn">
                 <img src="https://storage.botpapa.me/files/a488c6d0-4a12-11f1-bef9-f1ec7a2c6e45.png" alt="Промокод">
               </button>
@@ -1062,31 +1052,15 @@
         const prod = products.find(p => p.id == id);
         if (!prod) continue;
         
-        const discountedPrice = getDiscountedPrice(prod.price);
-        const hasDiscount = appliedPromo && discountedPrice < prod.price;
-        
-        let priceHtml = '';
-        if (hasDiscount) {
-          priceHtml = `
-            <span class="cart-product-price">${formatPrice(discountedPrice)}</span>
-            <span class="cart-product-old-price">${formatPrice(prod.price)}</span>
-          `;
-        } else {
-          priceHtml = `<span class="cart-product-price">${formatPrice(prod.price)}</span>`;
-        }
-        
         html += `
           <div class="cart-item">
             <img class="cart-img" src="${prod.image}" alt="${escapeHtml(prod.name)}">
             <div class="cart-info">
               <div class="cart-product-name">${escapeHtml(prod.name)}</div>
-              <div>${priceHtml}</div>
+              <div class="cart-product-price">${formatPrice(prod.price)}</div>
               <div class="cart-product-category">${escapeHtml(prod.category)}</div>
             </div>
             <div class="cart-actions">
-              <button class="cart-remove-btn" data-rm="${id}">
-                <img src="https://storage.botpapa.me/files/19b700d0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="remove">
-              </button>
               <div class="cart-quantity">
                 <button class="cart-qty-btn" data-dec="${id}"><img src="https://storage.botpapa.me/files/975c4510-49de-11f1-bef9-f1ec7a2c6e45.png" alt="-"></button>
                 <span class="cart-qty-value">${qty}</span>
@@ -1098,9 +1072,6 @@
       }
       container.innerHTML = html;
       
-      document.querySelectorAll(".cart-remove-btn").forEach(btn => {
-        btn.addEventListener("click", () => removeCartItem(parseInt(btn.dataset.rm)));
-      });
       document.querySelectorAll("[data-dec]").forEach(btn => {
         btn.addEventListener("click", () => changeQty(parseInt(btn.dataset.dec), -1));
       });
@@ -1166,7 +1137,7 @@
       if (checkoutBlock) {
         if (pageId === "cart" && Object.keys(cart).length > 0) {
           checkoutBlock.style.display = "block";
-        } else if (pageId !== "cart") {
+        } else {
           checkoutBlock.style.display = "none";
         }
       }

@@ -53,9 +53,9 @@
 
     .bottom-menu {
       position: fixed;
-      bottom: 16px;
-      left: 16px;
-      right: 16px;
+      bottom: 18px;
+      left: 18px;
+      right: 18px;
       background: #202022f9;
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 60px;
@@ -413,9 +413,9 @@
 
     .cart-checkout-fixed {
       position: fixed;
-      bottom: 16px;
-      left: 16px;
-      right: 16px;
+      bottom: 18px;
+      left: 18px;
+      right: 18px;
       z-index: 1000;
       max-width: 600px;
       margin: 0 auto;
@@ -609,7 +609,7 @@
     }
 
     .form-section {
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .form-section:last-child {
@@ -617,20 +617,24 @@
     }
 
     .form-label {
-      font-size: 20px;
+      font-size: 17px;
       font-weight: 500;
       color: #4cb4e9;
       margin-bottom: 8px;
+      background: #202B32;
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 16px;
     }
 
     .form-select {
       width: 100%;
-      background: #202B32;
+      background: #3a3a3d;
       border: 1px solid transparent;
       border-radius: 34px;
-      padding: 14px 16px;
+      padding: 13px 16px;
       color: white;
-      font-size: 20px;
+      font-size: 17px;
       font-weight: 500;
       cursor: pointer;
       display: flex;
@@ -644,27 +648,27 @@
     }
 
     .select-arrow {
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
       filter: brightness(0) saturate(100%) invert(70%);
     }
 
     .form-input {
       width: 100%;
-      background: #202B32;
+      background: #3a3a3d;
       border: 1px solid transparent;
       border-radius: 34px;
-      padding: 14px 16px;
+      padding: 13px 16px;
       color: white;
-      font-size: 20px;
+      font-size: 17px;
       font-weight: 500;
       outline: none;
       transition: 0.1s;
     }
 
     .form-input::placeholder {
-      color: #a1a1aa;
-      font-size: 17px;
+      color: #8e8e93;
+      font-size: 15px;
     }
 
     .form-input.error {
@@ -681,10 +685,10 @@
     }
 
     .payment-method-item {
-      padding: 16px;
+      padding: 14px 16px;
       border-bottom: 0.5px solid rgba(255,255,255,0.08);
       cursor: pointer;
-      font-size: 19px;
+      font-size: 16px;
       font-weight: 500;
       transition: 0.1s;
     }
@@ -709,8 +713,8 @@
     }
 
     .copy-icon {
-      width: 22px;
-      height: 22px;
+      width: 20px;
+      height: 20px;
       cursor: pointer;
       transition: 0.1s;
       flex-shrink: 0;
@@ -729,7 +733,7 @@
 
     .card-number-text {
       flex: 1;
-      font-size: 20px;
+      font-size: 17px;
       font-weight: 500;
     }
 
@@ -738,8 +742,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 0;
-      font-size: 17px;
+      padding: 8px 0;
+      font-size: 16px;
     }
 
     .order-detail-row:first-child {
@@ -748,14 +752,39 @@
 
     .order-detail-label {
       color: #4cb4e9;
-      font-size: 20px;
+      font-size: 17px;
+      font-weight: 500;
+      background: #202B32;
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 14px;
     }
 
     .order-detail-value {
       color: white;
       font-weight: 500;
       text-align: right;
-      font-size: 20px;
+      font-size: 16px;
+    }
+
+    .order-detail-total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0 0 0;
+    }
+
+    .order-detail-total-label {
+      font-size: 18px;
+      font-weight: 600;
+      color: white;
+    }
+
+    .order-detail-total-price {
+      font-size: 18px;
+      font-weight: 600;
+      color: white;
+      text-align: right;
     }
 
     .order-detail-item {
@@ -813,14 +842,6 @@
       font-size: 15px;
       font-weight: 500;
       color: white;
-    }
-
-    .order-detail-total {
-      font-size: 22px;
-      font-weight: 600;
-      color: white;
-      text-align: right;
-      padding-top: 8px;
     }
 
     /* Карточка заказа в списке */
@@ -1204,7 +1225,6 @@
       }
     }
 
-    // Закрытие клавиатуры при клике вне полей ввода
     document.addEventListener('click', function(e) {
       if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
         if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
@@ -1529,11 +1549,11 @@
           
           <div class="form-section">
             <div class="form-label">Способ оплаты</div>
-            <div class="form-select" id="paymentMethodSelect" style="border-radius: 34px 34px ${document.getElementById('paymentMethodsList')?.style.display === 'block' ? '0 0' : '34px 34px'}">
+            <div class="form-select" id="paymentMethodSelect">
               <span id="paymentMethodText" style="color: ${checkoutData.paymentMethod ? 'white' : '#a1a1aa'}">${checkoutData.paymentMethod || 'Выберите способ оплаты'}</span>
               <img class="select-arrow" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E" alt="▼">
             </div>
-            <div id="paymentMethodsList" class="payment-methods-list" style="display: none;"></div>
+            <div id="paymentMethodsListCheckout" class="payment-methods-list" style="display: none;"></div>
           </div>
           
           <div class="form-section">
@@ -1543,7 +1563,7 @@
         </div>
       `;
       
-      const methodsContainer = document.getElementById("paymentMethodsList");
+      const methodsContainer = document.getElementById("paymentMethodsListCheckout");
       methodsContainer.innerHTML = paymentMethods.map(m => `
         <div class="payment-method-item${checkoutData.paymentMethod === m ? ' selected' : ''}" data-method="${m}">${m}</div>
       `).join("");
@@ -1556,7 +1576,7 @@
         paymentSelect.style.borderRadius = isOpen ? "34px" : "34px 34px 0 0";
       });
       
-      document.querySelectorAll(".payment-method-item").forEach(item => {
+      document.querySelectorAll("#paymentMethodsListCheckout .payment-method-item").forEach(item => {
         item.addEventListener("click", () => {
           hapticLight();
           checkoutData.paymentMethod = item.dataset.method;
@@ -1565,7 +1585,7 @@
           paymentSelect.classList.remove("error");
           methodsContainer.style.display = "none";
           paymentSelect.style.borderRadius = "34px";
-          document.querySelectorAll(".payment-method-item").forEach(el => el.classList.remove("selected"));
+          document.querySelectorAll("#paymentMethodsListCheckout .payment-method-item").forEach(el => el.classList.remove("selected"));
           item.classList.add("selected");
         });
       });
@@ -1652,7 +1672,7 @@
         : `<span class="total-price-wrapper"><span class="total-price">${formatPrice(rawTotal)}</span></span>`;
       
       container.innerHTML = `
-        <div style="color:#cbd5e1;font-size:18px;margin-bottom:20px;">Оплатите заказ по указанным реквизитам ниже и нажмите кнопку «Я оплатил»</div>
+        <div style="color:#cbd5e1;font-size:17px;margin-bottom:18px;">Оплатите заказ по указанным реквизитам ниже и нажмите кнопку «Я оплатил»</div>
         
         <div class="content-card">
           <div class="form-section">
@@ -1799,7 +1819,10 @@
           </div>
           ${order.promo ? `<div class="order-detail-row"><span class="order-detail-label">Промокод</span><span class="order-detail-value">${order.promo}</span></div>` : ''}
           <div class="divider"></div>
-          <div class="order-detail-total">Итого: ${formatPrice(order.total)}</div>
+          <div class="order-detail-total-row">
+            <span class="order-detail-total-label">Итого</span>
+            <span class="order-detail-total-price">${formatPrice(order.total)}</span>
+          </div>
         </div>
         
         <div style="margin-top: 16px;">

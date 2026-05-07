@@ -84,6 +84,11 @@
       padding: 5px 0 2px 0;
     }
 
+    .menu-item:active {
+      transform: scale(0.92);
+      opacity: 0.8;
+    }
+
     .menu-icon {
       width: 28px;
       height: 28px;
@@ -375,17 +380,17 @@
     .cart-quantity {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       background: #202B32;
       border-radius: 40px;
-      padding: 6px 10px;
+      padding: 4px 8px;
     }
 
     .cart-qty-btn {
       background: none;
       border: none;
-      width: 24px;
-      height: 28px;
+      width: 20px;
+      height: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -394,15 +399,15 @@
     }
 
     .cart-qty-btn img {
-      width: 16px;
-      height: 16px;
+      width: 12px;
+      height: 12px;
     }
 
     .cart-qty-value {
-      font-size: 16px;
-      font-weight: 600;
+      font-size: 15px;
+      font-weight: 500;
       color: white;
-      min-width: 22px;
+      min-width: 18px;
       text-align: center;
     }
 
@@ -600,9 +605,9 @@
     }
 
     .form-label {
-      font-size: 16px;
+      font-size: 19px;
       font-weight: 500;
-      color: #cbd5e1;
+      color: white;
       margin-bottom: 8px;
     }
 
@@ -610,10 +615,10 @@
       width: 100%;
       background: #303032;
       border: 1px solid #3a3a3d;
-      border-radius: 16px;
+      border-radius: 34px;
       padding: 14px 16px;
       color: white;
-      font-size: 17px;
+      font-size: 20px;
       font-weight: 500;
       cursor: pointer;
       display: flex;
@@ -636,10 +641,10 @@
       width: 100%;
       background: #303032;
       border: 1px solid #3a3a3d;
-      border-radius: 16px;
+      border-radius: 34px;
       padding: 14px 16px;
       color: white;
-      font-size: 17px;
+      font-size: 20px;
       font-weight: 500;
       outline: none;
       transition: 0.1s;
@@ -647,7 +652,7 @@
 
     .form-input::placeholder {
       color: #a1a1aa;
-      font-size: 15px;
+      font-size: 17px;
     }
 
     .form-input.error {
@@ -656,7 +661,7 @@
 
     .payment-methods-list {
       background: #252528;
-      border-radius: 16px;
+      border-radius: 34px;
       overflow: hidden;
       margin-top: 4px;
     }
@@ -665,7 +670,7 @@
       padding: 16px;
       border-bottom: 0.5px solid rgba(255,255,255,0.08);
       cursor: pointer;
-      font-size: 16px;
+      font-size: 19px;
       font-weight: 500;
       transition: 0.1s;
     }
@@ -676,6 +681,7 @@
 
     .payment-method-item:active {
       background: rgba(76,180,233,0.15);
+      transform: scale(0.98);
     }
 
     .payment-method-item.selected {
@@ -697,8 +703,8 @@
     }
 
     .copy-icon:active {
-      transform: scale(0.9);
-      opacity: 0.7;
+      transform: scale(0.85);
+      opacity: 0.6;
     }
 
     .card-number-row {
@@ -709,7 +715,7 @@
 
     .card-number-text {
       flex: 1;
-      font-size: 17px;
+      font-size: 20px;
       font-weight: 500;
     }
 
@@ -738,6 +744,120 @@
       margin: 4px 0;
       font-size: 14px;
       color: #cbd5e1;
+    }
+
+    /* Карточка заказа в списке */
+    .order-card {
+      background: #202022;
+      border: 1px solid #2B2B2D;
+      border-radius: 28px;
+      padding: 14px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: 0.1s;
+    }
+
+    .order-card:active {
+      transform: scale(0.98);
+      opacity: 0.9;
+    }
+
+    .order-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .order-card-id {
+      font-weight: 600;
+      color: #4cb4e9;
+      font-size: 17px;
+    }
+
+    .order-card-status {
+      background: #202B32;
+      color: #4cb4e9;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .order-card-date {
+      color: #a1a1aa;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .order-card-products {
+      font-size: 14px;
+      color: #cbd5e1;
+      margin-bottom: 8px;
+    }
+
+    .order-card-total {
+      font-weight: 600;
+      color: white;
+      font-size: 17px;
+    }
+
+    /* Карточка товара в деталях заказа */
+    .order-detail-item {
+      background: #202022;
+      border: 1px solid #2B2B2D;
+      border-radius: 28px;
+      padding: 10px;
+      margin-bottom: 10px;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      position: relative;
+    }
+
+    .order-detail-item-img {
+      width: 70px;
+      height: 70px;
+      border-radius: 18px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .order-detail-item-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .order-detail-item-name {
+      font-size: 17px;
+      font-weight: 500;
+      color: white;
+    }
+
+    .order-detail-item-price {
+      font-size: 16px;
+      font-weight: 500;
+      color: #cbd5e1;
+    }
+
+    .order-detail-item-category {
+      font-size: 15px;
+      color: #9e9e9e;
+    }
+
+    .order-detail-item-qty {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: #202B32;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 15px;
+      font-weight: 500;
+      color: white;
     }
 
     .filter-options {
@@ -799,9 +919,17 @@
     <img src="https://storage.botpapa.me/files/62edaf00-4a27-11f1-bef9-f1ec7a2c6e45.png" alt="">
     <img src="https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png" alt="">
     <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E" alt="">
+    <img src="https://storage.botpapa.me/files/6b57bf60-499a-11f1-bef9-f1ec7a2c6e45.jpeg" alt="">
+    <img src="https://storage.botpapa.me/files/6f97da10-499a-11f1-bef9-f1ec7a2c6e45.jpeg" alt="">
+    <img src="https://storage.botpapa.me/files/72f535e0-499a-11f1-bef9-f1ec7a2c6e45.jpeg" alt="">
+    <img src="https://storage.botpapa.me/files/de7124e0-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" alt="">
+    <img src="https://storage.botpapa.me/files/e2281260-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" alt="">
+    <img src="https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" alt="">
+    <img src="https://storage.botpapa.me/files/e8aa06c0-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" alt="">
+    <img src="https://storage.botpapa.me/files/ec10b160-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" alt="">
+    <img src="https://storage.botpapa.me/files/767ed1d0-499a-11f1-bef9-f1ec7a2c6e45.jpeg" alt="">
   </div>
 
-  <!-- Страницы -->
   <div id="catalog-page" class="page active-page">
     <div class="header-row">
       <img class="header-icon-img" src="https://storage.botpapa.me/files/fd86aa00-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
@@ -915,6 +1043,18 @@
       }
     })();
 
+    function hapticLight() {
+      if (window.Telegram?.WebApp?.HapticFeedback) {
+        window.Telegram.WebApp.HapticFeedback.impactOccurred("light");
+      }
+    }
+
+    function hapticMedium() {
+      if (window.Telegram?.WebApp?.HapticFeedback) {
+        window.Telegram.WebApp.HapticFeedback.impactOccurred("medium");
+      }
+    }
+
     const products = [
       { id: 1, name: "Brawl Pass", price: 769, oldPrice: 799, image: "https://storage.botpapa.me/files/6b57bf60-499a-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Brawl Stars" },
       { id: 2, name: "Улучш. до BP+", price: 429, oldPrice: 449, image: "https://storage.botpapa.me/files/6f97da10-499a-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Brawl Stars" },
@@ -964,7 +1104,6 @@
       senderName: "",
       email: ""
     };
-    let currentOrderId = null;
 
     function formatPrice(p) { return Math.round(p).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + "₽"; }
     function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
@@ -987,15 +1126,9 @@
       return Object.keys(cart).length;
     }
 
-    function getTotalQuantity() {
-      return Object.values(cart).reduce((s, q) => s + q, 0);
-    }
-
     function canAddToCart(productId) {
-      // Товары 1-4: максимум 1 штука
       if (productId <= 4) {
         if (cart[productId] >= 1) return { allowed: false, reason: "Максимум 1 шт." };
-        // Товары 1-3: нельзя добавить вместе
         if (productId <= 3) {
           const conflictIds = [1, 2, 3].filter(id => id !== productId && cart[id]);
           if (conflictIds.length > 0) {
@@ -1004,11 +1137,9 @@
           }
         }
       }
-      // Товары 5-10: максимум 9 штук
       if (productId >= 5 && productId <= 10) {
         if ((cart[productId] || 0) >= 9) return { allowed: false, reason: "Максимум 9 шт." };
       }
-      // Максимум 8 разных товаров
       if (!cart[productId] && getCartItemsCount() >= 8) {
         return { allowed: false, reason: "Максимум 8 разных товаров в корзине" };
       }
@@ -1018,11 +1149,7 @@
     function renderCartButtonHtml(productId) {
       const qty = cart[productId] || 0;
       if (qty > 0) {
-        if (productId <= 4) {
-          return `<div class="card-action-btn counter-btn"><span class="counter-minus" data-id="${productId}"><img src="https://storage.botpapa.me/files/975c4510-49de-11f1-bef9-f1ec7a2c6e45.png" alt="-"></span><span class="counter-value">${qty}</span><span class="counter-plus" data-id="${productId}"><img src="https://storage.botpapa.me/files/9a5d01f0-49de-11f1-bef9-f1ec7a2c6e45.png" alt="+"></span></div>`;
-        } else {
-          return `<div class="card-action-btn counter-btn"><span class="counter-minus" data-id="${productId}"><img src="https://storage.botpapa.me/files/975c4510-49de-11f1-bef9-f1ec7a2c6e45.png" alt="-"></span><span class="counter-value">${qty}</span><span class="counter-plus" data-id="${productId}"><img src="https://storage.botpapa.me/files/9a5d01f0-49de-11f1-bef9-f1ec7a2c6e45.png" alt="+"></span></div>`;
-        }
+        return `<div class="card-action-btn counter-btn"><span class="counter-minus" data-id="${productId}"><img src="https://storage.botpapa.me/files/975c4510-49de-11f1-bef9-f1ec7a2c6e45.png" alt="-"></span><span class="counter-value">${qty}</span><span class="counter-plus" data-id="${productId}"><img src="https://storage.botpapa.me/files/9a5d01f0-49de-11f1-bef9-f1ec7a2c6e45.png" alt="+"></span></div>`;
       }
       return `<div class="card-action-btn cart-add-btn" data-add="${productId}">В корзину</div>`;
     }
@@ -1064,9 +1191,10 @@
           plus?.replaceWith(plus.cloneNode(true));
           const newMinus = actionBtn.querySelector('.counter-minus');
           const newPlus = actionBtn.querySelector('.counter-plus');
-          newMinus?.addEventListener('click', (e) => { e.stopPropagation(); handleCartAction(cardId, false); });
+          newMinus?.addEventListener('click', (e) => { e.stopPropagation(); hapticLight(); handleCartAction(cardId, false); });
           newPlus?.addEventListener('click', (e) => {
             e.stopPropagation();
+            hapticLight();
             if (cardId <= 4) {
               alert("Максимум 1 шт.");
               return;
@@ -1097,6 +1225,7 @@
     }
 
     function changeQty(pid, delta) {
+      hapticLight();
       if (delta === 1) {
         const check = canAddToCart(pid);
         if (!check.allowed) { alert(check.reason); return; }
@@ -1150,6 +1279,7 @@
           const applyBtn = document.getElementById("promoApplyBtn");
           
           backBtn?.addEventListener("click", () => {
+            hapticLight();
             if (appliedPromo) appliedPromo = null;
             isPromoMode = false;
             renderCheckoutBlock();
@@ -1157,6 +1287,7 @@
           });
           
           applyBtn?.addEventListener("click", () => {
+            hapticLight();
             const code = promoInput?.value.trim().toUpperCase();
             if (promoCodes[code]) {
               appliedPromo = { code, discountPercent: promoCodes[code] };
@@ -1201,9 +1332,11 @@
         
         setTimeout(() => {
           document.getElementById("checkoutBtn")?.addEventListener("click", () => {
+            hapticMedium();
             showPage("checkout");
           });
           document.getElementById("openPromoBtn")?.addEventListener("click", () => {
+            hapticLight();
             isPromoMode = true;
             renderCheckoutBlock();
           });
@@ -1244,26 +1377,25 @@
           <input type="text" class="form-input" id="senderNameInput" placeholder="Укажите имя отправителя (Ваше имя)" value="${escapeHtml(checkoutData.senderName)}">
         </div>
         
-        <div class="divider"></div>
-        
         <div class="form-section">
           <div class="form-label">Почта от игрового аккаунта</div>
           <input type="email" class="form-input" id="emailInput" placeholder="Укажите почту от аккаунта" value="${escapeHtml(checkoutData.email)}">
         </div>
       `;
       
-      // Рендерим список методов оплаты
       const methodsContainer = document.getElementById("paymentMethodsList");
       methodsContainer.innerHTML = paymentMethods.map(m => `
         <div class="payment-method-item${checkoutData.paymentMethod === m ? ' selected' : ''}" data-method="${m}">${m}</div>
       `).join("");
       
       document.getElementById("paymentMethodSelect")?.addEventListener("click", () => {
+        hapticLight();
         methodsContainer.style.display = methodsContainer.style.display === "none" ? "block" : "none";
       });
       
       document.querySelectorAll(".payment-method-item").forEach(item => {
         item.addEventListener("click", () => {
+          hapticLight();
           checkoutData.paymentMethod = item.dataset.method;
           document.getElementById("paymentMethodText").textContent = item.dataset.method;
           document.getElementById("paymentMethodText").style.color = "white";
@@ -1274,7 +1406,6 @@
         });
       });
       
-      // Фиксированный блок снизу
       const fixedBlock = document.getElementById("cartCheckoutFixed");
       fixedBlock.style.display = "block";
       fixedBlock.innerHTML = `
@@ -1294,10 +1425,12 @@
       
       setTimeout(() => {
         document.getElementById("helpBtn")?.addEventListener("click", () => {
+          hapticLight();
           window.open("https://t.me/GemStormHelp", "_blank");
         });
         
         document.getElementById("payBtn")?.addEventListener("click", () => {
+          hapticMedium();
           let hasError = false;
           const senderInput = document.getElementById("senderNameInput");
           const emailInput = document.getElementById("emailInput");
@@ -1331,7 +1464,6 @@
           }
         });
         
-        // Сохраняем данные при вводе
         document.getElementById("senderNameInput")?.addEventListener("input", function() {
           checkoutData.senderName = this.value;
           this.classList.remove("error");
@@ -1357,7 +1489,7 @@
         : `<span class="total-price-wrapper"><span class="total-price">${formatPrice(rawTotal)}</span></span>`;
       
       container.innerHTML = `
-        <div style="color:#cbd5e1;font-size:15px;margin-bottom:20px;">Оплатите заказ по указанным реквизитам ниже и нажмите кнопку «Я оплатил»</div>
+        <div style="color:#cbd5e1;font-size:18px;margin-bottom:20px;">Оплатите заказ по указанным реквизитам ниже и нажмите кнопку «Я оплатил»</div>
         <div class="divider"></div>
         
         <div class="form-section">
@@ -1379,7 +1511,6 @@
         </div>
       `;
       
-      // Фиксированный блок
       const fixedBlock = document.getElementById("cartCheckoutFixed");
       fixedBlock.style.display = "block";
       fixedBlock.innerHTML = `
@@ -1402,16 +1533,16 @@
           if (navigator.clipboard) {
             navigator.clipboard.writeText(cardNum.replace(/\s/g, ""));
           }
-          if (window.Telegram?.WebApp?.HapticFeedback) {
-            window.Telegram.WebApp.HapticFeedback.impactOccurred("light");
-          }
+          hapticLight();
         });
         
         document.getElementById("helpBtn2")?.addEventListener("click", () => {
+          hapticLight();
           window.open("https://t.me/GemStormHelp", "_blank");
         });
         
         document.getElementById("paidBtn")?.addEventListener("click", () => {
+          hapticMedium();
           createOrder();
         });
       }, 0);
@@ -1419,7 +1550,7 @@
 
     function createOrder() {
       const items = Object.entries(cart);
-      if (!items.length) { alert("Корзина пуста"); return; }
+      if (!items.length) return;
       
       let total = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
       if (appliedPromo) {
@@ -1435,7 +1566,9 @@
           id: parseInt(id),
           name: products.find(p => p.id == id).name, 
           qty, 
-          price: products.find(p => p.id == id).price 
+          price: products.find(p => p.id == id).price,
+          image: products.find(p => p.id == id).image,
+          category: products.find(p => p.id == id).category
         })), 
         total, 
         status: "Оплачен",
@@ -1446,7 +1579,6 @@
       };
       
       orders.unshift(order);
-      currentOrderId = orderId;
       
       cart = {};
       appliedPromo = null;
@@ -1457,7 +1589,6 @@
       renderCartPage();
       renderOrdersPage();
       
-      // Показываем детали заказа
       showOrderDetail(orderId);
     }
 
@@ -1467,6 +1598,18 @@
       
       document.getElementById("orderDetailTitle").textContent = `Заказ #${order.id}`;
       const container = document.getElementById("orderDetailContent");
+      
+      let itemsHtml = order.items.map(i => `
+        <div class="order-detail-item">
+          <img class="order-detail-item-img" src="${i.image}" alt="${escapeHtml(i.name)}">
+          <div class="order-detail-item-info">
+            <div class="order-detail-item-name">${escapeHtml(i.name)}</div>
+            <div class="order-detail-item-price">${formatPrice(i.price)}</div>
+            <div class="order-detail-item-category">${escapeHtml(i.category)}</div>
+          </div>
+          <div class="order-detail-item-qty">${i.qty} шт.</div>
+        </div>
+      `).join('');
       
       container.innerHTML = `
         <div style="margin-bottom:16px;">
@@ -1479,7 +1622,7 @@
         </div>
         <div class="divider"></div>
         <div style="margin-top:12px;">
-          ${order.items.map(i => `<div class="order-item-card">${escapeHtml(i.name)} x ${i.qty} — ${formatPrice(i.price * i.qty)}</div>`).join('')}
+          ${itemsHtml}
         </div>
         <div style="margin-top:12px;font-size:18px;font-weight:600;color:white;">Итого: ${formatPrice(order.total)}</div>
       `;
@@ -1542,19 +1685,22 @@
       if (!container) return;
       if (!orders.length) { container.innerHTML = '<div class="empty-state">У вас пока нет заказов 📦</div>'; return; }
       container.innerHTML = orders.map(o => `
-        <div class="order-item" style="cursor:pointer" data-order-id="${o.id}">
-          <div class="order-header">
-            <span class="order-id">Заказ #${o.id}</span>
-            <span class="order-status">${o.status}</span>
+        <div class="order-card" data-order-id="${o.id}">
+          <div class="order-card-header">
+            <span class="order-card-id">Заказ #${o.id}</span>
+            <span class="order-card-status">${o.status}</span>
           </div>
-          <div style="color:#a1a1aa;font-size:14px;margin-bottom:8px;">${o.date} ${o.time || ''}</div>
-          <div class="order-products">${o.items.map(i => `${i.name} x ${i.qty}`).join(', ')}${o.promo ? ` (промокод: ${o.promo})` : ''}</div>
-          <div class="order-total">${formatPrice(o.total)}</div>
+          <div class="order-card-date">${o.date} ${o.time || ''}</div>
+          <div class="order-card-products">${o.items.map(i => `${i.name} x ${i.qty}`).join(', ')}${o.promo ? ` (промокод: ${o.promo})` : ''}</div>
+          <div class="order-card-total">${formatPrice(o.total)}</div>
         </div>
       `).join('');
       
-      document.querySelectorAll(".order-item").forEach(item => {
-        item.addEventListener("click", () => showOrderDetail(parseInt(item.dataset.orderId)));
+      document.querySelectorAll(".order-card").forEach(item => {
+        item.addEventListener("click", () => {
+          hapticLight();
+          showOrderDetail(parseInt(item.dataset.orderId));
+        });
       });
     }
 
@@ -1623,6 +1769,10 @@
         document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
       }
       window.scrollTo({ top: 0 });
+
+      document.querySelectorAll('.menu-item, .checkout-button, .promo-btn, .promo-action-btn, .form-select, .payment-method-item, .order-card, .product-card').forEach(el => {
+        el.style.willChange = 'transform';
+      });
     }
 
     function renderFilterModal() {
@@ -1632,6 +1782,7 @@
       container.innerHTML = cats.map(cat => `<div class="filter-row" data-filter="${cat}"><span class="filter-text">${cat}</span><span class="check-mark">${currentFilter === cat ? '✓' : ''}</span></div>`).join("");
       document.querySelectorAll(".filter-row").forEach(row => {
         row.addEventListener("click", () => { 
+          hapticLight();
           currentFilter = row.dataset.filter; 
           renderFilterModal(); 
           renderCatalog(); 
@@ -1641,6 +1792,7 @@
     }
 
     document.getElementById("openFilterBtn")?.addEventListener("click", () => { 
+      hapticLight();
       renderFilterModal(); 
       showPage("filter"); 
     });
@@ -1651,7 +1803,10 @@
     });
     
     document.querySelectorAll(".menu-item").forEach(btn => {
-      btn.addEventListener("click", () => showPage(btn.dataset.page));
+      btn.addEventListener("click", () => {
+        hapticLight();
+        showPage(btn.dataset.page);
+      });
     });
     
     document.querySelector('.menu-item[data-page="catalog"]')?.classList.add("active");

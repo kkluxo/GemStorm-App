@@ -617,36 +617,10 @@
     }
 
     .form-label {
-      font-size: 17px;
+      font-size: 18px;
       font-weight: 500;
       color: white;
       margin-bottom: 8px;
-    }
-
-    .form-select {
-      width: 100%;
-      background: #3a3a3d;
-      border: 1px solid transparent;
-      border-radius: 34px;
-      padding: 13px 16px;
-      color: white;
-      font-size: 17px;
-      font-weight: 500;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: 0.1s;
-    }
-
-    .form-select.error {
-      border-color: #ef4444;
-    }
-
-    .select-arrow {
-      width: 18px;
-      height: 18px;
-      filter: brightness(0) saturate(100%) invert(70%);
     }
 
     .form-input {
@@ -654,9 +628,9 @@
       background: #3a3a3d;
       border: 1px solid transparent;
       border-radius: 34px;
-      padding: 13px 16px;
+      padding: 14px 16px;
       color: white;
-      font-size: 17px;
+      font-size: 18px;
       font-weight: 500;
       outline: none;
       transition: 0.1s;
@@ -664,42 +638,44 @@
 
     .form-input::placeholder {
       color: #8e8e93;
-      font-size: 15px;
+      font-size: 16px;
     }
 
     .form-input.error {
       border-color: #ef4444;
     }
 
-    .payment-methods-list {
+    /* Системный select */
+    .form-select-native {
+      width: 100%;
       background: #3a3a3d;
-      border-radius: 0 0 34px 34px;
-      overflow: hidden;
-      margin: 0;
-      border: none;
-      border-top: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .payment-method-item {
+      border: 1px solid transparent;
+      border-radius: 34px;
       padding: 14px 16px;
-      border-bottom: 0.5px solid rgba(255,255,255,0.08);
-      cursor: pointer;
-      font-size: 16px;
+      color: white;
+      font-size: 18px;
       font-weight: 500;
-      transition: 0.1s;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      background-size: 20px;
+      padding-right: 44px;
     }
 
-    .payment-method-item:last-child {
-      border-bottom: none;
+    .form-select-native.error {
+      border-color: #ef4444;
     }
 
-    .payment-method-item:active {
-      background: rgba(76,180,233,0.15);
-      transform: scale(0.98);
-    }
-
-    .payment-method-item.selected {
-      color: #4cb4e9;
+    .form-select-native option {
+      background: #202022;
+      color: white;
+      font-size: 16px;
+      padding: 14px;
     }
 
     .divider {
@@ -729,8 +705,21 @@
 
     .card-number-text {
       flex: 1;
-      font-size: 17px;
+      font-size: 18px;
       font-weight: 500;
+    }
+
+    .form-select-readonly {
+      width: 100%;
+      background: #3a3a3d;
+      border: 1px solid transparent;
+      border-radius: 34px;
+      padding: 14px 16px;
+      color: white;
+      font-size: 18px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
     }
 
     /* Детали заказа */
@@ -1218,7 +1207,7 @@
     }
 
     document.addEventListener('click', function(e) {
-      if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+      if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'SELECT') {
         if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
           document.activeElement.blur();
         }
@@ -1253,13 +1242,28 @@
       "Альфа Банк": "2200 1529 6836 2817"
     };
 
-    const paymentMethods = [
-      "Перевод по карте: Т-Банк",
-      "Перевод по карте: ВТБ Банк",
-      "Перевод по карте: Сбер Банк",
-      "Перевод по карте: Ozon Банк",
-      "Перевод по карте: Альфа Банк"
+    const paymentMethodsOptions = [
+      { value: "tbank", label: "Т-Банк" },
+      { value: "vtb", label: "ВТБ Банк" },
+      { value: "sber", label: "Сбер Банк" },
+      { value: "ozon", label: "Ozon Банк" },
+      { value: "alfa", label: "Альфа Банк" }
     ];
+
+    function getPaymentMethodLabel(value) {
+      const opt = paymentMethodsOptions.find(o => o.value === value);
+      return opt ? `Перевод по карте: ${opt.label}` : '';
+    }
+
+    function getBankFromValue(value) {
+      const opt = paymentMethodsOptions.find(o => o.value === value);
+      return opt ? opt.label : '';
+    }
+
+    function getCardNumberFromValue(value) {
+      const bank = getBankFromValue(value);
+      return cardNumbers[bank] || "";
+    }
     
     let cart = {};
     let orders = [];
@@ -1268,22 +1272,13 @@
     let appliedPromo = null;
     let isPromoMode = false;
     let checkoutData = {
-      paymentMethod: null,
+      paymentMethod: "",
       senderName: "",
       email: ""
     };
 
     function formatPrice(p) { return Math.round(p).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + "₽"; }
     function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
-
-    function getBankFromMethod(method) {
-      return method ? method.replace("Перевод по карте: ", "") : "";
-    }
-
-    function getCardNumber(method) {
-      const bank = getBankFromMethod(method);
-      return cardNumbers[bank] || "";
-    }
 
     function getDiscountedPrice(price) {
       if (!appliedPromo) return price;
@@ -1539,11 +1534,10 @@
           
           <div class="form-section">
             <div class="form-label">Способ оплаты</div>
-            <div class="form-select" id="paymentMethodSelect">
-              <span id="paymentMethodText" style="color: ${checkoutData.paymentMethod ? 'white' : '#a1a1aa'}; font-size: 17px;">${checkoutData.paymentMethod || 'Выберите способ оплаты'}</span>
-              <img class="select-arrow" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E" alt="▼">
-            </div>
-            <div id="paymentMethodsListCheckout" class="payment-methods-list" style="display: none;"></div>
+            <select class="form-select-native" id="paymentMethodSelect">
+              <option value="" disabled ${!checkoutData.paymentMethod ? 'selected' : ''}>Нажмите для выбора</option>
+              ${paymentMethodsOptions.map(o => `<option value="${o.value}" ${checkoutData.paymentMethod === o.value ? 'selected' : ''}>${o.label}</option>`).join('')}
+            </select>
           </div>
           
           <div class="form-section">
@@ -1552,33 +1546,6 @@
           </div>
         </div>
       `;
-      
-      const methodsContainer = document.getElementById("paymentMethodsListCheckout");
-      methodsContainer.innerHTML = paymentMethods.map(m => `
-        <div class="payment-method-item${checkoutData.paymentMethod === m ? ' selected' : ''}" data-method="${m}">${m}</div>
-      `).join("");
-      
-      const paymentSelect = document.getElementById("paymentMethodSelect");
-      paymentSelect?.addEventListener("click", () => {
-        hapticLight();
-        const isOpen = methodsContainer.style.display === "block";
-        methodsContainer.style.display = isOpen ? "none" : "block";
-        paymentSelect.style.borderRadius = isOpen ? "34px" : "34px 34px 0 0";
-      });
-      
-      document.querySelectorAll("#paymentMethodsListCheckout .payment-method-item").forEach(item => {
-        item.addEventListener("click", () => {
-          hapticLight();
-          checkoutData.paymentMethod = item.dataset.method;
-          document.getElementById("paymentMethodText").textContent = item.dataset.method;
-          document.getElementById("paymentMethodText").style.color = "white";
-          paymentSelect.classList.remove("error");
-          methodsContainer.style.display = "none";
-          paymentSelect.style.borderRadius = "34px";
-          document.querySelectorAll("#paymentMethodsListCheckout .payment-method-item").forEach(el => el.classList.remove("selected"));
-          item.classList.add("selected");
-        });
-      });
       
       const fixedBlock = document.getElementById("cartCheckoutFixed");
       fixedBlock.style.display = "block";
@@ -1598,6 +1565,12 @@
       `;
       
       setTimeout(() => {
+        const paymentSelect = document.getElementById("paymentMethodSelect");
+        paymentSelect?.addEventListener("change", function() {
+          checkoutData.paymentMethod = this.value;
+          this.classList.remove("error");
+        });
+        
         document.getElementById("helpBtn")?.addEventListener("click", () => {
           hapticLight();
           window.open("https://t.me/GemStormHelp", "_blank");
@@ -1650,8 +1623,9 @@
 
     function renderPaymentPage() {
       const container = document.getElementById("paymentContent");
-      const cardNum = getCardNumber(checkoutData.paymentMethod);
-      const bank = getBankFromMethod(checkoutData.paymentMethod);
+      const cardNum = getCardNumberFromValue(checkoutData.paymentMethod);
+      const bank = getBankFromValue(checkoutData.paymentMethod);
+      const paymentLabel = getPaymentMethodLabel(checkoutData.paymentMethod);
       const items = Object.entries(cart);
       const rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
       const discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
@@ -1662,12 +1636,12 @@
         : `<span class="total-price-wrapper"><span class="total-price">${formatPrice(rawTotal)}</span></span>`;
       
       container.innerHTML = `
-        <div style="color:#cbd5e1;font-size:17px;margin-bottom:18px;">Оплатите заказ по указанным реквизитам ниже и нажмите кнопку «Я оплатил»</div>
+        <div style="color:#cbd5e1;font-size:18px;margin-bottom:18px;">Оплатите заказ по указанным реквизитам ниже и нажмите кнопку «Я оплатил»</div>
         
         <div class="content-card">
           <div class="form-section">
             <div class="form-label">Номер карты</div>
-            <div class="form-select card-number-row">
+            <div class="form-select-readonly card-number-row">
               <span class="card-number-text">${cardNum}</span>
               <img class="copy-icon" id="copyCardBtn" src="https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png" alt="copy">
             </div>
@@ -1675,12 +1649,12 @@
           
           <div class="form-section">
             <div class="form-label">Получатель</div>
-            <div class="form-select"><span>Азат Ф.</span></div>
+            <div class="form-select-readonly"><span>Азат Ф.</span></div>
           </div>
           
           <div class="form-section">
             <div class="form-label">Банк получателя</div>
-            <div class="form-select"><span>${bank}</span></div>
+            <div class="form-select-readonly"><span>${bank}</span></div>
           </div>
         </div>
       `;
@@ -1747,7 +1721,7 @@
         total, 
         status: "Проверка перевода",
         promo: appliedPromo ? appliedPromo.code : null,
-        paymentMethod: checkoutData.paymentMethod,
+        paymentMethod: getPaymentMethodLabel(checkoutData.paymentMethod),
         senderName: checkoutData.senderName,
         email: checkoutData.email
       };
@@ -1757,7 +1731,7 @@
       cart = {};
       appliedPromo = null;
       isPromoMode = false;
-      checkoutData = { paymentMethod: null, senderName: "", email: "" };
+      checkoutData = { paymentMethod: "", senderName: "", email: "" };
       
       updateAllCards();
       renderCartPage();

@@ -14,18 +14,18 @@ function showPage(pageId) {
   
   if (pageId === "catalog") {
     renderCatalog();
-    checkoutBlock.style.display = "none";
+    if (checkoutBlock) checkoutBlock.style.display = "none";
   }
   if (pageId === "cart") {
     renderCartPage();
   }
   if (pageId === "orders") {
     renderOrdersPage();
-    checkoutBlock.style.display = "none";
+    if (checkoutBlock) checkoutBlock.style.display = "none";
   }
   if (pageId === "profile") {
     renderProfilePage();
-    checkoutBlock.style.display = "none";
+    if (checkoutBlock) checkoutBlock.style.display = "none";
   }
   if (pageId === "checkout") {
     renderCheckoutForm();
@@ -34,21 +34,23 @@ function showPage(pageId) {
     renderPaymentPage();
   }
   if (pageId === "order-detail") {
-    checkoutBlock.style.display = "none";
+    if (checkoutBlock) checkoutBlock.style.display = "none";
   }
   if (pageId === "filter") {
-    checkoutBlock.style.display = "none";
+    if (checkoutBlock) checkoutBlock.style.display = "none";
   }
   
+  // Активное состояние меню
   document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
   const activeBtn = document.querySelector(`.menu-item[data-page="${pageId}"]`);
   if (activeBtn) activeBtn.classList.add("active");
   
-  window.scrollTo({ top: 0 });
+  window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
-// Инициализация Telegram и определение режима
-(function() {
+// Инициализация Telegram и приложения
+(function initApp() {
+  // Настройка Telegram WebApp
   if (window.Telegram && window.Telegram.WebApp) {
     const tg = window.Telegram.WebApp;
     tg.ready();
@@ -63,29 +65,49 @@ function showPage(pageId) {
   
   // Определяем, админ ли пользователь
   if (isAdmin()) {
-    // Показываем админ-панель, скрываем пользовательский интерфейс
+    // Режим админа: показываем админ-панель, скрываем всё пользовательское
     document.body.classList.add('admin-mode');
-    document.querySelector('.user-only').style.display = 'none';
-    document.getElementById('adminPanel').style.display = 'block';
+    const userOnly = document.querySelector('.user-only');
+    const adminPanel = document.getElementById('adminPanel');
+    if (userOnly) userOnly.style.display = 'none';
+    if (adminPanel) adminPanel.style.display = 'block';
     
     // Запускаем админ-панель
     if (typeof initAdminPanel === 'function') {
       initAdminPanel();
     }
   } else {
-    // Обычный пользователь — показываем магазин
+    // Режим пользователя: показываем магазин
     document.body.classList.remove('admin-mode');
-    document.querySelector('.user-only').style.display = 'block';
-    document.getElementById('adminPanel').style.display = 'none';
+    const userOnly = document.querySelector('.user-only');
+    const adminPanel = document.getElementById('adminPanel');
+    if (userOnly) userOnly.style.display = 'block';
+    if (adminPanel) adminPanel.style.display = 'none';
     
-    // Запускаем обычное приложение
-    document.querySelector('.menu-item[data-page="catalog"]')?.classList.add("active");
-    renderCatalog();
-    renderCartPage();
-    renderOrdersPage();
-    renderFilterModal();
-    renderProfilePage();
-    document.getElementById("cartCheckoutFixed").style.display = "none";
+    // Инициализация пользовательского интерфейса
+    if (typeof renderCatalog === 'function') {
+      renderCatalog();
+    }
+    if (typeof renderCartPage === 'function') {
+      renderCartPage();
+    }
+    if (typeof renderOrdersPage === 'function') {
+      renderOrdersPage();
+    }
+    if (typeof renderFilterModal === 'function') {
+      renderFilterModal();
+    }
+    if (typeof renderProfilePage === 'function') {
+      renderProfilePage();
+    }
+    
+    // Скрываем панель оформления
+    const checkoutBlock = document.getElementById("cartCheckoutFixed");
+    if (checkoutBlock) checkoutBlock.style.display = "none";
+    
+    // Активируем первый пункт меню (каталог)
+    const catalogMenuItem = document.querySelector('.menu-item[data-page="catalog"]');
+    if (catalogMenuItem) catalogMenuItem.classList.add("active");
   }
 })();
 
@@ -98,21 +120,30 @@ document.addEventListener('click', function(e) {
   }
 });
 
-// События для обычных пользователей
-document.getElementById("openFilterBtn")?.addEventListener("click", () => { 
-  hapticLight();
-  renderFilterModal(); 
-  showPage("filter"); 
-});
+// События для обычных пользователей (только если они есть на странице)
+const openFilterBtn = document.getElementById("openFilterBtn");
+if (openFilterBtn) {
+  openFilterBtn.addEventListener("click", () => { 
+    if (typeof hapticLight === 'function') hapticLight();
+    if (typeof renderFilterModal === 'function') renderFilterModal(); 
+    showPage("filter"); 
+  });
+}
 
-document.getElementById("searchInput")?.addEventListener("input", (e) => { 
-  searchQuery = e.target.value; 
-  renderCatalog(); 
-});
+const searchInput = document.getElementById("searchInput");
+if (searchInput) {
+  searchInput.addEventListener("input", (e) => { 
+    if (typeof searchQuery !== 'undefined') {
+      window.searchQuery = e.target.value; 
+    }
+    if (typeof renderCatalog === 'function') renderCatalog(); 
+  });
+}
 
-document.querySelectorAll(".menu-item").forEach(btn => {
+const menuItems = document.querySelectorAll(".menu-item");
+menuItems.forEach(btn => {
   btn.addEventListener("click", () => {
-    hapticLight();
+    if (typeof hapticLight === 'function') hapticLight();
     showPage(btn.dataset.page);
   });
 });

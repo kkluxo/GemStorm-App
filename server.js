@@ -6,22 +6,19 @@ const { Pool } = require('pg');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const BOT_TOKEN = process.env.BOT_TOKEN;
-const ADMIN_ID = 7509324385;  // Твой Telegram ID
+const ADMIN_ID = 7509324385;
 
 console.log('🚀 Запуск сервера...');
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static('.'));
 
-// Подключение к PostgreSQL
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
 
-// Инициализация таблицы orders
 async function initDB() {
   const query = `
     CREATE TABLE IF NOT EXISTS orders (
@@ -49,7 +46,6 @@ async function initDB() {
   try {
     await pool.query(query);
     console.log('✅ Таблица orders готова');
-    
     const result = await pool.query('SELECT COUNT(*) as count FROM orders');
     console.log(`📦 В базе данных ${result.rows[0].count} заказов`);
   } catch (err) {
@@ -57,12 +53,6 @@ async function initDB() {
   }
 }
 
-// Форматирование цены
-function formatPrice(p) {
-  return Math.round(p).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + 'руб';
-}
-
-// Уведомление админа о новом заказе
 async function notifyAdmin(bot, order) {
   try {
     const items = JSON.parse(order.items || '[]');
@@ -84,7 +74,6 @@ async function notifyAdmin(bot, order) {
   }
 }
 
-// Уведомление пользователя о новом заказе
 async function notifyUser(bot, order) {
   if (!order.user_id) return;
   
@@ -105,11 +94,10 @@ async function notifyUser(bot, order) {
   }
 }
 
-// ========== ЗАПУСК БОТА ==========
+// ЗАПУСК БОТА
 if (BOT_TOKEN) {
   const bot = new Telegraf(BOT_TOKEN);
   
-  // Команда /start
   bot.start((ctx) => {
     const userId = ctx.from.id;
     const firstName = ctx.from.first_name || 'Пользователь';
@@ -117,7 +105,6 @@ if (BOT_TOKEN) {
     console.log(`📱 Пользователь ${userId} (${firstName}) открыл бота`);
     
     if (userId === ADMIN_ID) {
-      // АДМИН: отправляем на админ-панель
       ctx.reply(`👑 Здравствуйте, Администратор ${firstName}!`, {
         reply_markup: {
           inline_keyboard: [
@@ -126,7 +113,6 @@ if (BOT_TOKEN) {
         }
       });
     } else {
-      // ОБЫЧНЫЙ ПОЛЬЗОВАТЕЛЬ: отправляем в магазин
       ctx.reply(`🛍️ Добро пожаловать в магазин, ${firstName}!`, {
         reply_markup: {
           inline_keyboard: [
@@ -137,154 +123,92 @@ if (BOT_TOKEN) {
     }
   });
   
-  // Запускаем бота
   bot.launch();
   console.log('🤖 Бот запущен');
   
-  // Остановка бота при завершении процесса
   process.once('SIGINT', () => bot.stop('SIGINT'));
   process.once('SIGTERM', () => bot.stop('SIGTERM'));
 } else {
   console.log('⚠️ BOT_TOKEN не задан, бот не запущен');
 }
 
-// ========== API ЭНДПОИНТЫ ==========
-
-// Проверка статуса сервера
+// API ЭНДПОИНТЫ
 app.get('/api/status', async (req, res) => {
   try {
     const result = await pool.query('SELECT COUNT(*) as count FROM orders');
-    res.json({ 
-      status: 'ok', 
-      bot: !!BOT_TOKEN, 
-      ordersCount: parseInt(result.rows[0].count),
-      timestamp: new Date().toISOString()
-    });
+    res.json({ status: 'ok', bot: !!BOT_TOKEN, ordersCount: parseInt(result.rows[0].count) });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// ПОЛУЧИТЬ ВСЕ ЗАКАЗЫ (для админа)
 app.get('/api/orders', async (req, res) => {
   try {
-    console.log('📋 Запрос на получение всех заказов');
     const result = await pool.query('SELECT * FROM orders ORDER BY id DESC');
-    console.log(`✅ Возвращаю ${result.rows.length} заказов`);
     res.json(result.rows);
   } catch (err) {
-    console.error('❌ Ошибка в /api/orders:', err.message);
     res.status(500).json({ error: err.message });
   }
 });
 
-// ПОЛУЧИТЬ ЗАКАЗЫ ПОЛЬЗОВАТЕЛЯ
 app.get('/api/user-orders', async (req, res) => {
   try {
     const userId = req.query.userId;
-    if (!userId) {
-      return res.json([]);
-    }
-    
-    console.log(`📋 Запрос заказов для пользователя ${userId}`);
+    if (!userId) return res.json([]);
     const result = await pool.query('SELECT * FROM orders WHERE user_id = $1 ORDER BY id DESC', [userId]);
-    console.log(`✅ Возвращаю ${result.rows.length} заказов для пользователя`);
     res.json(result.rows);
   } catch (err) {
-    console.error('❌ Ошибка в /api/user-orders:', err.message);
     res.status(500).json({ error: err.message });
   }
 });
 
-// СОЗДАТЬ НОВЫЙ ЗАКАЗ
 app.post('/api/order', async (req, res) => {
   try {
     const o = req.body;
-    console.log('📝 Получен новый заказ:', o.orderNumber);
-    
     const result = await pool.query(
       `INSERT INTO orders 
        (order_number, date, time, timestamp, items, total, promo, promo_discount, 
         payment_method, sender_name, email, user_id, user_name, user_username) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) 
-       RETURNING *`,
-      [
-        o.orderNumber, o.date, o.time, o.timestamp, 
-        JSON.stringify(o.items), o.total, 
-        o.promo || null, o.promo_discount || 0,
-        o.payment_method || null, o.sender_name || null, o.email || null,
-        o.user_id || null, o.user_name || null, o.user_username || null
-      ]
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING *`,
+      [o.orderNumber, o.date, o.time, o.timestamp, JSON.stringify(o.items), o.total, 
+       o.promo || null, o.promo_discount || 0, o.payment_method || null, 
+       o.sender_name || null, o.email || null, o.user_id || null, o.user_name || null, o.user_username || null]
     );
-    
     const saved = result.rows[0];
-    console.log('✅ Заказ #' + saved.order_number + ' сохранён в БД');
-    
-    // Отправляем уведомления через бота
+    console.log('✅ Заказ #' + saved.order_number + ' сохранён');
     if (BOT_TOKEN) {
       const bot = new Telegraf(BOT_TOKEN);
       await notifyAdmin(bot, saved);
       await notifyUser(bot, saved);
-    } else {
-      console.log('⚠️ BOT_TOKEN не задан, уведомления не отправлены');
     }
-    
     res.json({ success: true, orderId: saved.id });
   } catch (err) {
-    console.error('❌ Ошибка при сохранении заказа:', err.message);
     res.status(500).json({ error: err.message });
   }
 });
 
-// ОБНОВИТЬ СТАТУС ЗАКАЗА
 app.post('/api/update-status', async (req, res) => {
   try {
     const { orderId, status, statusCode } = req.body;
-    console.log(`🔄 Обновление статуса заказа #${orderId} -> ${status} (${statusCode})`);
-    
-    const result = await pool.query(
-      'UPDATE orders SET status = $1, status_code = $2 WHERE id = $3 RETURNING *',
-      [status, statusCode, orderId]
-    );
-    
-    if (!result.rows.length) {
-      console.log('❌ Заказ не найден');
-      return res.status(404).json({ error: 'Заказ не найден' });
-    }
-    
+    const result = await pool.query('UPDATE orders SET status=$1, status_code=$2 WHERE id=$3 RETURNING *', [status, statusCode, orderId]);
+    if (!result.rows.length) return res.status(404).json({ error: 'Заказ не найден' });
     const order = result.rows[0];
-    console.log('✅ Статус обновлён');
-    
-    // Отправляем уведомление пользователю об изменении статуса
     if (BOT_TOKEN && order.user_id) {
       const bot = new Telegraf(BOT_TOKEN);
-      try {
-        await bot.telegram.sendMessage(
-          order.user_id,
-          '🔄 Статус заказа #' + order.order_number + ' изменён: ' + status
-        );
-        console.log('✅ Уведомление об изменении статуса отправлено пользователю');
-      } catch (err) {
-        console.error('❌ Ошибка при уведомлении пользователя:', err.message);
-      }
+      await bot.telegram.sendMessage(order.user_id, '🔄 Статус заказа #' + order.order_number + ' изменён: ' + status);
     }
-    
     res.json({ success: true });
   } catch (err) {
-    console.error('❌ Ошибка при обновлении статуса:', err.message);
     res.status(500).json({ error: err.message });
   }
 });
 
-// ========== ЗАПУСК СЕРВЕРА ==========
 initDB().then(() => {
   app.listen(PORT, () => {
     console.log(`🚀 Сервер запущен на порту ${PORT}`);
-    console.log(`📍 API доступен по адресу: https://gemstorm-app-production.up.railway.app/api/status`);
-    console.log(`🤖 BOT_TOKEN: ${BOT_TOKEN ? '✅ установлен' : '❌ не установлен'}`);
     console.log(`👑 Администратор: ${ADMIN_ID}`);
   });
 }).catch((err) => {
-  console.error('❌ Критическая ошибка при инициализации БД:', err.message);
+  console.error('❌ Ошибка БД:', err.message);
   process.exit(1);
 });

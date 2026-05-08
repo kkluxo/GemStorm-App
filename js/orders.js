@@ -1,219 +1,79 @@
-// Глобальные переменные
-let allOrders = [];
-let currentFilter = 'all';
-let currentOrderId = null;
+let orders = [];
 
-// Загрузка страницы
-document.addEventListener('DOMContentLoaded', () => {
-    loadOrdersFromServer();
-    
-    // Добавляем обработчики фильтров
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentFilter = btn.dataset.status;
-            displayOrders();
-        });
-    });
+async function loadUserOrders() {
+try {
+const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+if (!tgUser?.id) return;
+
+```
+const r = await fetch(`https://gemstorm-app-production.up.railway.app/api/user-orders?userId=${tgUser.id}`);
+if (r.ok) orders = await r.json();
+```
+
+} catch(e) {
+console.error(‘Ошибка загрузки заказов:’, e);
+}
+}
+
+function renderOrdersPage() {
+const container = document.getElementById(“ordersList”);
+if (!container) return;
+
+container.innerHTML = `<div style="text-align:center;padding:40px 0;color:#9e9e9e"><div style="width:28px;height:28px;border:2px solid #2a2a2e;border-top-color:#4cb4e9;border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 12px"></div>Загрузка...</div>`;
+
+loadUserOrders().then(() => displayOrders(container));
+}
+
+function displayOrders(container) {
+if (!orders.length) {
+container.innerHTML = ` <div class="empty-state-icon"> <img class="empty-icon" src="https://storage.botpapa.me/files/8a684130-49e6-11f1-bef9-f1ec7a2c6e45.png" alt=""> <div class="empty-title">Заказов еще нет</div> <button class="empty-catalog-btn" id="emptyOrdersToCatalog">Перейти в каталог</button> </div>`;
+setTimeout(() => {
+document.getElementById(“emptyOrdersToCatalog”)?.addEventListener(“click”, () => showPage(“catalog”));
+}, 0);
+return;
+}
+
+container.innerHTML = orders.map(o => {
+let itemsList = ‘—’;
+try {
+const items = JSON.parse(o.items || ‘[]’);
+itemsList = items.map(i => `${i.name} ×${i.qty}`).join(’, ’);
+} catch(e) {}
+
+```
+return `
+  <div class="order-card" data-order-id="${o.id}">
+    <div class="order-card-header">
+      <span class="order-card-id">Заказ #${o.order_number}</span>
+      <span class="order-card-status">${o.status || 'В обработке'}</span>
+    </div>
+    <div class="order-card-date">${o.date} ${o.time || ''}</div>
+    <div class="order-card-products">${itemsList}${o.promo ? ` (промокод: ${o.promo})` : ''}</div>
+    <div class="order-card-total">${formatPrice(o.total)}</div>
+  </div>`;
+```
+
+}).join(’’);
+
+container.querySelectorAll(”.order-card”).forEach(card => {
+card.addEventListener(“click”, () => {
+hapticLight();
+const order = orders.find(o => o.id == card.dataset.orderId);
+if (order) showOrderDetail(order);
 });
-
-// Загрузка заказов с сервера
-async function loadOrdersFromServer() {
-    try {
-        const response = await fetch('/api/orders');
-        if (!response.ok) throw new Error('Ошибка загрузки');
-        
-        allOrders = await response.json();
-        displayOrders();
-        updateStats();
-    } catch (error) {
-        console.error('Ошибка:', error);
-        document.getElementById('ordersTableBody').innerHTML = 
-            '<tr><td colspan="8" class="no-data">❌ Ошибка загрузки заказов</td></tr>';
-    }
-}
-
-// Отображение заказов с учетом фильтра
-function displayOrders() {
-    const tbody = document.getElementById('ordersTableBody');
-    
-    let filteredOrders = allOrders;
-    if (currentFilter !== 'all') {
-        filteredOrders = allOrders.filter(order => order.status === currentFilter);
-    }
-    
-    if (filteredOrders.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" class="no-data">📭 Заказов не найдено</td></tr>';
-        return;
-    }
-    
-    tbody.innerHTML = filteredOrders.map(order => `
-        <tr>
-            <td><strong>#${order.id}</strong></td>
-            <td>${escapeHtml(order.customerName)}</td>
-            <td>${escapeHtml(order.phone)}</td>
-            <td>${escapeHtml(order.products)}</td>
-            <td><strong>${order.total} ₽</strong></td>
-            <td>${getStatusBadge(order.status)}</td>
-            <td>${formatDate(order.date)}</td>
-            <td class="action-buttons">
-                <button class="action-btn edit-status" onclick="openStatusModal(${order.id})">📝 Статус</button>
-                <button class="action-btn delete-order" onclick="deleteOrder(${order.id})">🗑️ Удалить</button>
-            </td>
-        </tr>
-    `).join('');
-}
-
-// Получение бейджа статуса
-function getStatusBadge(status) {
-    const statuses = {
-        'pending': '<span class="status-badge status-pending">🕐 Новый</span>',
-        'processing': '<span class="status-badge status-processing">⚙️ В обработке</span>',
-        'completed': '<span class="status-badge status-completed">✅ Выполнен</span>',
-        'cancelled': '<span class="status-badge status-cancelled">❌ Отменен</span>'
-    };
-    return statuses[status] || statuses.pending;
-}
-
-// Обновление статистики
-function updateStats() {
-    const stats = {
-        total: allOrders.length,
-        pending: allOrders.filter(o => o.status === 'pending').length,
-        processing: allOrders.filter(o => o.status === 'processing').length,
-        completed: allOrders.filter(o => o.status === 'completed').length,
-        cancelled: allOrders.filter(o => o.status === 'cancelled').length
-    };
-    
-    const statsHtml = `
-        <div class="stat-card">
-            <h3>Всего заказов</h3>
-            <p>${stats.total}</p>
-        </div>
-        <div class="stat-card">
-            <h3>Новые</h3>
-            <p style="color: #856404;">${stats.pending}</p>
-        </div>
-        <div class="stat-card">
-            <h3>В обработке</h3>
-            <p style="color: #004085;">${stats.processing}</p>
-        </div>
-        <div class="stat-card">
-            <h3>Выполненные</h3>
-            <p style="color: #155724;">${stats.completed}</p>
-        </div>
-        <div class="stat-card">
-            <h3>Отмененные</h3>
-            <p style="color: #721c24;">${stats.cancelled}</p>
-        </div>
-    `;
-    
-    const statsContainer = document.getElementById('statsContainer');
-    if (statsContainer) statsContainer.innerHTML = statsHtml;
-}
-
-// Открытие модального окна для изменения статуса
-function openStatusModal(orderId) {
-    currentOrderId = orderId;
-    const order = allOrders.find(o => o.id === orderId);
-    if (order) {
-        document.getElementById('modalOrderId').textContent = orderId;
-        document.getElementById('statusSelect').value = order.status;
-        document.getElementById('statusModal').style.display = 'flex';
-    }
-}
-
-// Закрытие модального окна
-function closeModal() {
-    document.getElementById('statusModal').style.display = 'none';
-    currentOrderId = null;
-}
-
-// Сохранение статуса
-async function saveStatus() {
-    if (!currentOrderId) return;
-    
-    const newStatus = document.getElementById('statusSelect').value;
-    
-    try {
-        const response = await fetch(`/api/orders/${currentOrderId}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ status: newStatus })
-        });
-        
-        if (response.ok) {
-            // Обновляем локальный массив
-            const orderIndex = allOrders.findIndex(o => o.id === currentOrderId);
-            if (orderIndex !== -1) {
-                allOrders[orderIndex].status = newStatus;
-            }
-            
-            displayOrders();
-            updateStats();
-            closeModal();
-        } else {
-            alert('Ошибка при обновлении статуса');
-        }
-    } catch (error) {
-        console.error('Ошибка:', error);
-        alert('Ошибка соединения с сервером');
-    }
-}
-
-// Удаление заказа
-async function deleteOrder(orderId) {
-    if (!confirm('Вы уверены, что хотите удалить этот заказ?')) return;
-    
-    try {
-        const response = await fetch(`/api/orders/${orderId}`, {
-            method: 'DELETE'
-        });
-        
-        if (response.ok) {
-            allOrders = allOrders.filter(o => o.id !== orderId);
-            displayOrders();
-            updateStats();
-        } else {
-            alert('Ошибка при удалении заказа');
-        }
-    } catch (error) {
-        console.error('Ошибка:', error);
-        alert('Ошибка соединения с сервером');
-    }
-}
-
-// Вспомогательные функции
-function escapeHtml(str) {
-    if (!str) return '';
-    return str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-}
-
-function formatDate(dateStr) {
-    if (!dateStr) return '—';
-    const date = new Date(dateStr);
-    return date.toLocaleString('ru-RU', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-}
-
-// Нажатие на Escape для закрытия модалки
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeModal();
 });
+}
 
-// Закрытие модалки при клике вне окна
-window.onclick = (e) => {
-    const modal = document.getElementById('statusModal');
-    if (e.target === modal) closeModal();
-};
+function showOrderDetail(order) {
+document.getElementById(“orderDetailTitle”).textContent = `Заказ #${order.order_number}`;
+const container = document.getElementById(“orderDetailContent”);
+
+let items = [];
+try { items = JSON.parse(order.items || ‘[]’); } catch(e) {}
+
+const itemsHtml = items.map(i => ` <div class="order-detail-item"> <div class="order-detail-item-info"> <div class="order-detail-item-name">${escapeHtml(i.name)}</div> <div class="order-detail-item-price">${formatPrice(i.price)}</div> </div> <div class="order-detail-item-qty">${i.qty} шт.</div> </div>`).join(’’);
+
+container.innerHTML = `<div class="content-card"> <div class="order-detail-row"> <span class="order-detail-label">Статус</span> <span class="order-detail-value" style="color:#4cb4e9">${order.status || 'В обработке'}</span> </div> <div class="order-detail-row"> <span class="order-detail-label">Дата</span> <span class="order-detail-value">${order.date} ${order.time || ''}</span> </div> <div class="order-detail-row"> <span class="order-detail-label">Способ оплаты</span> <span class="order-detail-value">${order.payment_method || '—'}</span> </div> <div class="order-detail-row"> <span class="order-detail-label">Отправитель</span> <span class="order-detail-value">${escapeHtml(order.sender_name || '—')}</span> </div> <div class="order-detail-row"> <span class="order-detail-label">Почта</span> <span class="order-detail-value">${escapeHtml(order.email || '—')}</span> </div> ${order.promo ?`<div class="order-detail-row"><span class="order-detail-label">Промокод</span><span class="order-detail-value">${order.promo} (−${order.promo_discount}%)</span></div>`: ''} <div class="divider"></div> <div class="order-detail-total-row"> <span class="order-detail-total-label">Стоимость</span> <span class="order-detail-total-price">${formatPrice(order.total)}</span> </div> </div> <div style="margin-top:16px">${itemsHtml}</div>`;
+
+showPage(“order-detail”);
+}

@@ -1250,27 +1250,7 @@ body {
   transform: scale(0.96);
 }
 
-/* ========== ДОПОЛНЕНИЯ ДЛЯ ФИКСАЦИИ МЕНЮ ПРИ КЛАВИАТУРЕ ========== */
-
-/* Фиксируем нижнее меню */
-.bottom-menu {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #171719;
-  border-top: 1px solid #2a2a2e;
-  z-index: 100;
-}
-
-/* Фиксируем блок оформления заказа */
-.cart-checkout-fixed {
-  position: fixed;
-  bottom: 70px;
-  left: 0;
-  right: 0;
-  z-index: 100;
-}
+/* ========== ДОПОЛНЕНИЯ ========== */
 
 /* Когда открыта клавиатура — скрываем меню и блок оформления */
 @media (max-width: 768px) {
@@ -1280,16 +1260,6 @@ body {
   body:has(input:focus, textarea:focus, select:focus) .cart-checkout-fixed {
     display: none !important;
   }
-}
-
-/* ========== ДЛЯ КАРТОЧЕК ЗАКАЗОВ У ПОЛЬЗОВАТЕЛЯ ========== */
-
-/* Изображение товара в заказе */
-.order-card-products img {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  object-fit: cover;
 }
 
 /* Блок с кодом в заказе */
@@ -1302,7 +1272,7 @@ body {
   font-size: 13px;
 }
 
-/* Стили для блока ввода кода в деталях заказа */
+/* Стили для блока ввода кода */
 .code-input-block {
   margin-top: 16px;
   background: #1a1a1e;
@@ -1351,16 +1321,7 @@ body {
   opacity: 0.7;
 }
 
-/* ========== ДЛЯ АДМИН-ПАНЕЛИ (ЕСЛИ НУЖНО) ========== */
-.admin-order-card {
-  transition: all 0.15s;
-}
-
-.admin-order-card:active {
-  transform: scale(0.99);
-}
-
-/* Код в админ-панели */
+/* Код в админке */
 .admin-code-row {
   margin-top: 10px;
   padding-top: 8px;

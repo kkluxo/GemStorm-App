@@ -34,7 +34,7 @@ function renderOrdersPage() {
           <div class="order-card-products">${items.map(i => `${i.name} x${i.qty}`).join(', ')}</div>
           <div class="order-card-total">${formatPrice(o.total)}</div>
           <button class="order-refresh-btn" data-id="${o.id}">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
           </button>
         </div>
       `;
@@ -82,9 +82,9 @@ function showOrderDetail(order) {
   try { items = JSON.parse(order.items || '[]'); } catch(e) {}
   
   const itemsHtml = items.map(i => `
-    <div style="display:flex;justify-content:space-between;padding:8px 0;">
-      <span>${escapeHtml(i.name)} x${i.qty}</span>
-      <span style="color:#4cb4e9">${formatPrice(i.price * i.qty)}</span>
+    <div style="display:flex;justify-content:space-between;padding:10px 0;">
+      <span style="font-size:16px;font-weight:500;">${escapeHtml(i.name)} x${i.qty}</span>
+      <span style="color:#ffffff;font-size:16px;font-weight:500;">${formatPrice(i.price * i.qty)}</span>
     </div>
   `).join('');
   
@@ -94,13 +94,15 @@ function showOrderDetail(order) {
   
   if (isPending && hasNoCode) {
     codeBlock = `
-      <div class="checkout-card" style="position:fixed;bottom:70px;left:0;right:0;margin:0 16px 12px 16px;width:auto;z-index:100;">
-        <div style="margin-bottom:10px;">Введите код который вам пришел</div>
-        <div style="display:flex;gap:10px;">
-          <input type="text" id="verificationCodeInput" placeholder="Введите код" style="flex:1;background:#2a2a2e;border:1px solid #3a3a3e;border-radius:30px;padding:12px;color:white;font-size:14px;">
-          <button id="submitCodeBtn" style="background:#4cb4e9;border:none;border-radius:50px;width:48px;height:48px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </button>
+      <div class="code-input-fixed">
+        <div class="checkout-card" style="margin:0;padding:14px;">
+          <div style="margin-bottom:10px;color:#cbd5e1;font-size:16px;">Введите код который вам пришел</div>
+          <div style="display:flex;gap:10px;">
+            <input type="text" id="verificationCodeInput" placeholder="Введите код" style="flex:1;background:#303032;border:1px solid #3a3a3e;border-radius:30px;padding:12px 16px;color:white;font-size:16px;outline:none;">
+            <button id="submitCodeBtn" style="background:#4cb4e9;border:none;border-radius:50px;width:48px;height:48px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </button>
+          </div>
         </div>
       </div>
     `;
@@ -116,11 +118,11 @@ function showOrderDetail(order) {
       ${order.promo ? `<div class="order-detail-row"><span class="order-detail-label">Промокод</span><span class="order-detail-value">${order.promo} (скидка ${order.promo_discount}%)</span></div>` : ''}
     </div>
     
-    <div style="margin-top:16px;background:#202022;border:1px solid #2B2B2D;border-radius:16px;padding:12px;">
+    <div class="order-items-card">
       ${itemsHtml}
-      <div style="display:flex;justify-content:space-between;padding:10px 0 0 0;margin-top:8px;font-weight:700;">
-        <span>Стоимость</span>
-        <span style="color:#4cb4e9">${formatPrice(order.total)}</span>
+      <div style="display:flex;justify-content:space-between;padding:12px 0 0 0;margin-top:8px;font-weight:700;border-top:1px solid #2a2a2e;">
+        <span style="font-size:16px;font-weight:600;">Стоимость</span>
+        <span style="color:#4cb4e9;font-size:16px;font-weight:600;">${formatPrice(order.total)}</span>
       </div>
     </div>
     ${codeBlock}

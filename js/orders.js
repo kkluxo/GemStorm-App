@@ -13,7 +13,7 @@ function renderOrdersPage() {
       }
       
       if (tgUser?.id) {
-        const response = await fetch(`https://gemstorm-app.up.railway.app/api/user-orders?userId=${tgUser.id}`);
+        const response = await fetch(`https://gemstorm-app-production.up.railway.app/api/user-orders?userId=${tgUser.id}`);
         if (response.ok) {
           orders = await response.json();
           displayOrders();

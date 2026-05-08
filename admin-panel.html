@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <title>Админ панель - Заказы</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0f0f11; color: white; font-family: system-ui; padding: 16px; }
+    h1 { margin-bottom: 20px; }
+    button { background: #4cb4e9; border: none; padding: 10px 20px; border-radius: 10px; color: white; cursor: pointer; margin-bottom: 20px; }
+    .stats { display: flex; gap: 10px; margin-bottom: 20px; }
+    .stat-card { background: #222; padding: 15px; border-radius: 12px; flex: 1; text-align: center; }
+    .stat-value { font-size: 24px; font-weight: bold; }
+    .stat-label { font-size: 12px; color: #999; margin-top: 5px; }
+    .order-card { background: #222; padding: 15px; border-radius: 12px; margin-bottom: 10px; }
+    .order-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .status { padding: 4px 8px; border-radius: 8px; font-size: 12px; }
+    .status-pending { background: rgba(251,191,36,0.2); color: #fbbf24; }
+    .status-done { background: rgba(74,222,128,0.2); color: #4ade80; }
+    .status-canceled { background: rgba(248,113,113,0.2); color: #f87171; }
+    .order-info { color: #999; font-size: 13px; margin-top: 8px; }
+    .order-total { font-size: 18px; font-weight: bold; margin-top: 10px; color: #4cb4e9; }
+    select, button.status-btn { margin-top: 10px; padding: 8px; border-radius: 8px; background: #333; color: white; border: none; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>📋 Управление заказами</h1>
+  <button id="refreshBtn">🔄 Обновить</button>
+  
+  <div class="stats">
+    <div class="stat-card"><div class="stat-value" id="total">0</div><div class="stat-label">Всего заказов</div></div>
+    <div class="stat-card"><div class="stat-value" id="pending">0</div><div class="stat-label">Ожидают</div></div>
+    <div class="stat-card"><div class="stat-value" id="done">0</div><div class="stat-label">Выполнено</div></div>
+  </div>
+  
+  <div id="ordersList">Загрузка...</div>
+
+  <script>
+    const API = 'https://gemstorm-app-production.up.railway.app';
+    
+    async function loadOrders() {
+      const container = document.getElementById('ordersList');
+      container.innerHTML = 'Загрузка...';
+      
+      try {
+        const response = await fetch(`${API}/api/orders`);
+        const orders = await response.json();
+        
+        document.getElementById('total').innerText = orders.length;
+        document.getElementById('pending').innerText = orders.filter(o => o.status_code === 'pending').length;
+        document.getElementById('done').innerText = orders.filter(o => o.status_code === 'done').length;
+        
+        if (!orders.length) {
+          container.innerHTML = '<div style="text-align:center;padding:40px;">📭 Нет заказов</div>';
+          return;
+        }
+        
+        container.innerHTML = orders.map(order => {
+          let items = [];
+          try { items = JSON.parse(order.items || '[]'); } catch(e) {}
+          
+          let statusClass = '';
+          if (order.status_code === 'pending') statusClass = 'status-pending';
+          else if (order.status_code === 'done') statusClass = 'status-done';
+          else if (order.status_code === 'canceled') statusClass = 'status-canceled';
+          
+          return `
+            <div class="order-card" data-id="${order.id}">
+              <div class="order-header">
+                <strong>Заказ #${order.order_number}</strong>
+                <span class="status ${statusClass}">${order.status || 'Ожидает'}</span>
+              </div>
+              <div>👤 ${escapeHtml(order.sender_name || '—')}</div>
+              <div>📧 ${escapeHtml(order.email || '—')}</div>
+              <div>💰 ${order.total} руб</div>
+              <div class="order-info">📦 ${items.map(i => `${i.name} ×${i.qty}`).join(', ')}</div>
+              <div class="order-info">📅 ${order.date} ${order.time || ''}</div>
+              <div class="order-total">Сумма: ${order.total} руб</div>
+              <div style="margin-top: 10px;">
+                <select class="status-select" data-id="${order.id}">
+                  <option value="pending" ${order.status_code === 'pending' ? 'selected' : ''}>🟡 Ожидает</option>
+                  <option value="processing" ${order.status_code === 'processing' ? 'selected' : ''}>🔵 В обработке</option>
+                  <option value="done" ${order.status_code === 'done' ? 'selected' : ''}>✅ Выполнен</option>
+                  <option value="canceled" ${order.status_code === 'canceled' ? 'selected' : ''}>❌ Отменен</option>
+                </select>
+                <button class="status-btn" data-id="${order.id}">Изменить статус</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+        
+        // Навешиваем обработчики на кнопки
+        document.querySelectorAll('.status-btn').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            const orderId = btn.dataset.id;
+            const select = document.querySelector(`.status-select[data-id="${orderId}"]`);
+            const newStatus = select.value;
+            let statusText = '';
+            if (newStatus === 'pending') statusText = '🟡 Ожидает проверки';
+            else if (newStatus === 'processing') statusText = '🔵 В обработке';
+            else if (newStatus === 'done') statusText = '✅ Выполнен';
+            else if (newStatus === 'canceled') statusText = '❌ Отменен';
+            
+            await updateStatus(orderId, statusText, newStatus);
+            loadOrders();
+          });
+        });
+        
+      } catch(e) {
+        container.innerHTML = '❌ Ошибка загрузки: ' + e.message;
+      }
+    }
+    
+    async function updateStatus(orderId, status, statusCode) {
+      try {
+        await fetch(`${API}/api/update-status`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orderId, status, statusCode })
+        });
+      } catch(e) {
+        alert('Ошибка: ' + e.message);
+      }
+    }
+    
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+      });
+    }
+    
+    document.getElementById('refreshBtn').addEventListener('click', loadOrders);
+    loadOrders();
+  </script>
+</body>
+</html>

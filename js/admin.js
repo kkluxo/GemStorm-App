@@ -10,48 +10,55 @@ function isAdmin() {
   return false;
 }
 
-// Получение всех заказов для админа
-function getAdminOrders() {
+// Загрузка заказов с сервера
+async function loadAdminOrders() {
   try {
-    return JSON.parse(localStorage.getItem('admin_orders') || '[]');
-  } catch (e) {
-    return [];
+    const response = await fetch('https://gemstorm-app.up.railway.app/api/orders');
+    if (response.ok) {
+      return await response.json();
+    }
+  } catch (error) {
+    console.error('Ошибка загрузки заказов:', error);
   }
+  return [];
 }
 
 // Обновление статуса заказа
-function updateOrderStatus(orderId, newStatus, newStatusCode) {
-  let orders = getAdminOrders();
-  const orderIndex = orders.findIndex(o => o.id == orderId);
-  
-  if (orderIndex !== -1) {
-    orders[orderIndex].status = newStatus;
-    orders[orderIndex].statusCode = newStatusCode;
-    localStorage.setItem('admin_orders', JSON.stringify(orders));
-    
-    // Отправляем уведомление пользователю, если нужно
-    if (window.Telegram?.WebApp) {
-      // Можно отправить сообщение пользователю через бота
-      window.Telegram.WebApp.sendData(JSON.stringify({
-        type: 'order_status_update',
-        orderId: orderId,
-        status: newStatus
-      }));
-    }
-    
-    // Обновляем админ-панель
-    renderAdminPanel();
+async function updateOrderStatus(orderId, status, statusCode) {
+  try {
+    const response = await fetch('https://gemstorm-app.up.railway.app/api/update-status', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ orderId, status, statusCode })
+    });
+    return response.ok;
+  } catch (error) {
+    console.error('Ошибка обновления статуса:', error);
+    return false;
   }
 }
 
 // Рендер админ-панели
-function renderAdminPanel() {
+async function renderAdminPanel() {
   const container = document.getElementById("adminContent");
   if (!container) return;
   
-  const orders = getAdminOrders();
+  // Проверяем, админ ли пользователь
+  if (!isAdmin()) {
+    container.innerHTML = `
+      <div class="empty-state-icon">
+        <div class="empty-title">⛔ Доступ запрещён</div>
+        <div class="empty-subtitle">У вас нет прав для просмотра этой страницы</div>
+      </div>
+    `;
+    return;
+  }
   
-  if (orders.length === 0) {
+  container.innerHTML = '<div class="empty-title">Загрузка заказов...</div>';
+  
+  const orders = await loadAdminOrders();
+  
+  if (!orders || orders.length === 0) {
     container.innerHTML = `
       <div class="empty-state-icon">
         <img class="empty-icon" src="https://storage.botpapa.me/files/8a684130-49e6-11f1-bef9-f1ec7a2c6e45.png" alt="empty">
@@ -64,9 +71,9 @@ function renderAdminPanel() {
   // Статистика
   const totalOrders = orders.length;
   const totalAmount = orders.reduce((sum, o) => sum + o.total, 0);
-  const pendingOrders = orders.filter(o => o.statusCode === 'pending').length;
+  const pendingOrders = orders.filter(o => o.status_code === 'pending').length;
   
-  container.innerHTML = `
+  let html = `
     <div class="admin-stats">
       <div class="stat-card">
         <div class="stat-value">${totalOrders}</div>
@@ -83,65 +90,76 @@ function renderAdminPanel() {
     </div>
     
     <div class="admin-orders-list">
-      ${orders.map(order => `
-        <div class="admin-order-card" data-order-id="${order.id}">
-          <div class="admin-order-header">
-            <div>
-              <span class="admin-order-id">Заказ #${order.orderNumber}</span>
-              <span class="admin-order-date">${order.date} ${order.time}</span>
-            </div>
-            <select class="admin-status-select" data-order-id="${order.id}" data-status="${order.statusCode}">
-              <option value="pending" ${order.statusCode === 'pending' ? 'selected' : ''}>🟡 Ожидает проверки</option>
-              <option value="confirmed" ${order.statusCode === 'confirmed' ? 'selected' : ''}>✅ Подтверждён</option>
-              <option value="shipped" ${order.statusCode === 'shipped' ? 'selected' : ''}>📦 Отправлен</option>
-              <option value="completed" ${order.statusCode === 'completed' ? 'selected' : ''}>🎉 Выполнен</option>
-              <option value="cancelled" ${order.statusCode === 'cancelled' ? 'selected' : ''}>❌ Отменён</option>
-            </select>
-          </div>
-          
-          <div class="admin-order-user">
-            <strong>👤 ${escapeHtml(order.senderName || 'Не указан')}</strong>
-            ${order.user?.username ? `<span class="admin-user-tag">@${order.user.username}</span>` : ''}
-          </div>
-          
-          <div class="admin-order-details">
-            <div>📧 ${escapeHtml(order.email || '—')}</div>
-            <div>💳 ${order.paymentMethod || '—'}</div>
-            <div>🎫 ${order.promo ? order.promo + ` (скидка ${order.promoDiscount}%)` : '—'}</div>
-          </div>
-          
-          <div class="admin-order-items">
-            ${order.items.map(item => `
-              <div class="admin-order-item">
-                <span>${escapeHtml(item.name)} x${item.qty}</span>
-                <span>${formatPrice(item.price * item.qty)}</span>
-              </div>
-            `).join('')}
-          </div>
-          
-          <div class="admin-order-total">
-            <span>💰 Итого:</span>
-            <strong>${formatPrice(order.total)}</strong>
-          </div>
-          
-          <div class="admin-order-actions">
-            <button class="admin-contact-btn" data-user-id="${order.user?.id || ''}" data-username="${order.user?.username || ''}">
-              💬 Связаться
-            </button>
-          </div>
-        </div>
-      `).join('')}
-    </div>
   `;
+  
+  for (const order of orders) {
+    const items = JSON.parse(order.items || '[]');
+    
+    html += `
+      <div class="admin-order-card" data-order-id="${order.id}">
+        <div class="admin-order-header">
+          <div>
+            <span class="admin-order-id">Заказ #${order.order_number}</span>
+            <span class="admin-order-date">${order.date} ${order.time}</span>
+          </div>
+          <select class="admin-status-select" data-order-id="${order.id}" data-status="${order.status_code}">
+            <option value="pending" ${order.status_code === 'pending' ? 'selected' : ''}>🟡 Ожидает проверки</option>
+            <option value="confirmed" ${order.status_code === 'confirmed' ? 'selected' : ''}>✅ Подтверждён</option>
+            <option value="completed" ${order.status_code === 'completed' ? 'selected' : ''}>🎉 Выполнен</option>
+            <option value="cancelled" ${order.status_code === 'cancelled' ? 'selected' : ''}>❌ Отменён</option>
+          </select>
+        </div>
+        
+        <div class="admin-order-user">
+          <strong>👤 ${escapeHtml(order.sender_name || 'Не указан')}</strong>
+          ${order.user_username ? `<span class="admin-user-tag">@${order.user_username}</span>` : ''}
+        </div>
+        
+        <div class="admin-order-details">
+          <div>📧 ${escapeHtml(order.email || '—')}</div>
+          <div>💳 ${order.payment_method || '—'}</div>
+          <div>🎫 ${order.promo || '—'}</div>
+        </div>
+        
+        <div class="admin-order-items">
+          ${items.map(item => `
+            <div class="admin-order-item">
+              <span>${escapeHtml(item.name)} x${item.qty}</span>
+              <span>${formatPrice(item.price * item.qty)}</span>
+            </div>
+          `).join('')}
+        </div>
+        
+        <div class="admin-order-total">
+          <span>💰 Итого:</span>
+          <strong>${formatPrice(order.total)}</strong>
+        </div>
+        
+        <div class="admin-order-actions">
+          <button class="admin-contact-btn" data-username="${order.user_username || ''}" data-userid="${order.user_id || ''}">
+            💬 Связаться
+          </button>
+        </div>
+      </div>
+    `;
+  }
+  
+  html += `</div>`;
+  container.innerHTML = html;
   
   // Добавляем обработчики
   document.querySelectorAll('.admin-status-select').forEach(select => {
-    select.addEventListener('change', (e) => {
+    select.addEventListener('change', async (e) => {
       e.stopPropagation();
-      const orderId = parseInt(select.dataset.orderId);
-      const newStatus = select.options[select.selectedIndex].text;
+      const orderId = select.dataset.orderId;
+      const newStatusText = select.options[select.selectedIndex].text;
       const newStatusCode = select.value;
-      updateOrderStatus(orderId, newStatus, newStatusCode);
+      
+      const success = await updateOrderStatus(orderId, newStatusText, newStatusCode);
+      if (success) {
+        // Обновляем панель
+        renderAdminPanel();
+      }
     });
   });
   
@@ -151,26 +169,44 @@ function renderAdminPanel() {
       const username = btn.dataset.username;
       if (username) {
         window.open(`https://t.me/${username}`, '_blank');
-      } else if (btn.dataset.userId) {
-        window.open(`tg://user?id=${btn.dataset.userId}`, '_blank');
+      } else if (btn.dataset.userid) {
+        window.open(`tg://user?id=${btn.dataset.userid}`, '_blank');
       }
-    });
-  });
-  
-  document.querySelectorAll('.admin-order-card').forEach(card => {
-    card.addEventListener('click', () => {
-      const orderId = parseInt(card.dataset.orderId);
-      showOrderDetail(orderId);
     });
   });
 }
 
-// Добавляем админ-панель в приложение
-function addAdminPage() {
-  // Проверяем, есть ли уже админ-страница
+// Функция добавления админ-кнопки в меню (ТОЛЬКО ДЛЯ АДМИНА)
+function addAdminButton() {
+  if (!isAdmin()) return;
+  
+  const bottomMenu = document.querySelector('.bottom-menu');
+  if (!bottomMenu) return;
+  
+  // Проверяем, есть ли уже кнопка админа
+  if (document.querySelector('.menu-item[data-page="admin"]')) return;
+  
+  const adminMenuItem = document.createElement('button');
+  adminMenuItem.className = 'menu-item';
+  adminMenuItem.setAttribute('data-page', 'admin');
+  adminMenuItem.innerHTML = `
+    <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/1656bed0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="admin" style="width: 28px; height: 28px;">
+    <img class="menu-icon menu-icon-active" src="https://storage.botpapa.me/files/12337af0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="admin" style="width: 28px; height: 28px;">
+    <span class="menu-label">Админ</span>
+  `;
+  bottomMenu.appendChild(adminMenuItem);
+  
+  adminMenuItem.addEventListener('click', () => {
+    hapticLight();
+    showPage('admin');
+    renderAdminPanel();
+  });
+}
+
+// Создаём админ-страницу
+function createAdminPage() {
   if (document.getElementById('admin-page')) return;
   
-  // Создаём админ-страницу
   const adminPage = document.createElement('div');
   adminPage.id = 'admin-page';
   adminPage.className = 'page';
@@ -182,52 +218,10 @@ function addAdminPage() {
     <div id="adminContent"></div>
   `;
   document.body.appendChild(adminPage);
-  
-  // Добавляем кнопку в меню для админа
-  const bottomMenu = document.querySelector('.bottom-menu');
-  const adminMenuItem = document.createElement('button');
-  adminMenuItem.className = 'menu-item';
-  adminMenuItem.setAttribute('data-page', 'admin');
-  adminMenuItem.innerHTML = `
-    <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/1656bed0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="admin" style="width: 28px; height: 28px;">
-    <img class="menu-icon menu-icon-active" src="https://storage.botpapa.me/files/12337af0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="admin" style="width: 28px; height: 28px;">
-    <span class="menu-label">Админ</span>
-  `;
-  bottomMenu.appendChild(adminMenuItem);
-  
-  // Добавляем обработчик
-  adminMenuItem.addEventListener('click', () => {
-    hapticLight();
-    if (isAdmin()) {
-      showPage('admin');
-      renderAdminPanel();
-    } else {
-      if (window.Telegram?.WebApp) {
-        window.Telegram.WebApp.showAlert('⛔ У вас нет доступа к админ-панели');
-      }
-    }
-  });
 }
 
-// Инициализация админ-функций
+// Инициализация
 function initAdmin() {
-  addAdminPage();
-  
-  // Слушаем обновления заказов
-  window.addEventListener('adminOrdersUpdated', () => {
-    if (document.getElementById('admin-page').classList.contains('active-page') && isAdmin()) {
-      renderAdminPanel();
-    }
-  });
-  
-  // Экспортируем функции в глобальный объект
-  window.adminFunctions = {
-    getAdminOrders,
-    updateOrderStatus,
-    renderAdminPanel,
-    isAdmin
-  };
+  createAdminPage();
+  addAdminButton();
 }
-
-// Запускаем инициализацию после загрузки страницы
-document.addEventListener('DOMContentLoaded', initAdmin);

@@ -1160,6 +1160,16 @@ body {
   width: calc(100% - 36px);
 }
 
+/* Возвращаем отступ снизу для checkout-card */
+.checkout-card {
+  padding-bottom: 80px !important;
+}
+
+/* Для блока ввода кода тоже нужен отступ */
+.code-input-fixed .checkout-card {
+  padding-bottom: 80px !important;
+}
+
 /* Не скрывать меню при фокусе на ввод промокода или кода */
 body:has(.promo-input:focus) .bottom-menu,
 body:has(#promoInput:focus) .bottom-menu,

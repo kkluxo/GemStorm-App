@@ -198,4 +198,4 @@ app.post('/api/refresh-order', async (req, res) => {
 
 initDB().then(() => {
   app.listen(PORT, () => console.log(`Сервер запущен на порту ${PORT}`));
-}).catch((err) => { console.error('Ошибка БД:', err.message); process.exit(1); });
+}).catch((err) => { console.error('Ошибка Базы:', err.message); process.exit(1); });

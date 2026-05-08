@@ -1170,6 +1170,86 @@ body {
   padding-bottom: 80px !important;
 }
 
+/* Единый стиль для всех фиксированных блоков (корзина, промокод, ввод кода) */
+.cart-checkout-fixed .checkout-card,
+.code-input-fixed .checkout-card {
+  background: #202022f9;
+  backdrop-filter: blur(12px);
+  border-radius: 30px;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Текст в блоках */
+.cart-checkout-fixed .total-label,
+.cart-checkout-fixed .promo-label,
+.code-input-fixed .checkout-card div:first-child {
+  color: #cbd5e1;
+  font-size: 16px;
+  font-weight: 500;
+  padding-left: 4px;
+}
+
+/* Поле ввода */
+.cart-checkout-fixed .promo-input,
+.code-input-fixed .promo-input {
+  flex: 1;
+  background: #303032;
+  border: 1px solid #3a3a3e;
+  border-radius: 30px;
+  padding: 12px 16px;
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  outline: none;
+  height: 48px;
+}
+
+.cart-checkout-fixed .promo-input::placeholder,
+.code-input-fixed .promo-input::placeholder {
+  color: #a1a1aa;
+  font-size: 16px;
+}
+
+/* Кнопки в блоках */
+.cart-checkout-fixed .promo-action-btn,
+.code-input-fixed .promo-action-btn {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: 0.1s;
+  background: #4cb4e9;
+}
+
+.cart-checkout-fixed .promo-action-btn.back-btn,
+.code-input-fixed .promo-action-btn.back-btn {
+  background: rgba(239, 68, 68, 0.12);
+}
+
+.cart-checkout-fixed .promo-action-btn svg,
+.code-input-fixed .promo-action-btn svg {
+  width: 22px;
+  height: 22px;
+  stroke: white;
+  stroke-width: 2;
+}
+
+.cart-checkout-fixed .promo-action-btn:active,
+.code-input-fixed .promo-action-btn:active {
+  opacity: 0.8;
+  transform: scale(0.95);
+}
+
 /* Не скрывать меню при фокусе на ввод промокода или кода */
 body:has(.promo-input:focus) .bottom-menu,
 body:has(#promoInput:focus) .bottom-menu,

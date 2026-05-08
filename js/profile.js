@@ -11,7 +11,7 @@ function renderProfilePage() {
   const username = tgUser?.username ? "@" + tgUser.username : "@username";
   const photoUrl = tgUser?.photo_url || "";
   const userId = tgUser?.id || "0";
-  const refLink = `https://t.me/GeltanStoreBot?start=ref${userId}`;
+  const refLink = `https://t.me/GemStormAppBot?start=ref${userId}`;
   
   container.innerHTML = `
     <div class="profile-card">

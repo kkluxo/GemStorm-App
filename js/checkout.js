@@ -6,6 +6,139 @@ let checkoutData = {
   email: ""
 };
 
+// Функция отправки заказа админу через бота
+async function sendOrderToAdmin(order) {
+  try {
+    // Формируем сообщение для админа
+    let itemsList = order.items.map(item => 
+      `└ ${item.name} x${item.qty} — ${formatPrice(item.price * item.qty)}`
+    ).join('\n');
+    
+    let message = `🛒 *НОВЫЙ ЗАКАЗ #${order.id}*\n\n` +
+      `👤 *Покупатель:* ${order.senderName || 'Не указан'}\n` +
+      `📧 *Email:* ${order.email || 'Не указан'}\n` +
+      `💳 *Оплата:* ${order.paymentMethod || 'Не указан'}\n` +
+      `📦 *Товары:*\n${itemsList}\n\n` +
+      `💰 *Итого:* ${formatPrice(order.total)}\n` +
+      `🎫 *Промокод:* ${order.promo || 'Не использован'}\n\n` +
+      `🕐 *Время:* ${order.date} ${order.time}`;
+    
+    // Отправляем через Telegram WebApp
+    if (window.Telegram?.WebApp) {
+      // Вариант 1: Через sendData (бот должен поддерживать)
+      window.Telegram.WebApp.sendData(JSON.stringify({
+        type: 'new_order',
+        order: order
+      }));
+      
+      // Вариант 2: Через вызов API (если бот на том же домене)
+      const response = await fetch('/api/send-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order, adminId: ADMIN_ID })
+      });
+      
+      if (response.ok) {
+        console.log('Заказ отправлен админу');
+      }
+    }
+  } catch (error) {
+    console.error('Ошибка отправки заказа админу:', error);
+  }
+}
+
+// Функция сохранения заказа в localStorage для админ-панели
+function saveOrderToAdminStorage(order) {
+  try {
+    let adminOrders = JSON.parse(localStorage.getItem('admin_orders') || '[]');
+    adminOrders.unshift(order);
+    // Храним последние 100 заказов
+    if (adminOrders.length > 100) adminOrders = adminOrders.slice(0, 100);
+    localStorage.setItem('admin_orders', JSON.stringify(adminOrders));
+    
+    // Триггерим обновление админ-панели
+    window.dispatchEvent(new CustomEvent('adminOrdersUpdated'));
+  } catch (e) {
+    console.error('Ошибка сохранения заказа:', e);
+  }
+}
+
+function createOrder() {
+  const items = Object.entries(cart);
+  if (!items.length) return;
+  
+  let total = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
+  if (appliedPromo) {
+    total = Math.round(total * (1 - appliedPromo.discountPercent / 100));
+  }
+  
+  let tgUser = null;
+  if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
+    tgUser = window.Telegram.WebApp.initDataUnsafe.user;
+  }
+  
+  const orderId = Date.now(); // Уникальный ID на основе времени
+  const order = { 
+    id: orderId, 
+    orderNumber: orders.length + 1,
+    date: new Date().toLocaleDateString('ru-RU'), 
+    time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+    timestamp: new Date().toISOString(),
+    items: items.map(([id, qty]) => ({ 
+      id: parseInt(id),
+      name: products.find(p => p.id == id).name, 
+      qty, 
+      price: products.find(p => p.id == id).price,
+      image: products.find(p => p.id == id).image,
+      category: products.find(p => p.id == id).category
+    })), 
+    total, 
+    status: "🟡 Ожидает проверки",
+    statusCode: "pending",
+    promo: appliedPromo ? appliedPromo.code : null,
+    promoDiscount: appliedPromo ? appliedPromo.discountPercent : 0,
+    paymentMethod: getPaymentMethodLabel(checkoutData.paymentMethod),
+    senderName: checkoutData.senderName,
+    email: checkoutData.email,
+    user: tgUser ? {
+      id: tgUser.id,
+      firstName: tgUser.first_name,
+      lastName: tgUser.last_name,
+      username: tgUser.username
+    } : null
+  };
+  
+  // Сохраняем заказ в локальное хранилище пользователя
+  orders.unshift(order);
+  
+  // Сохраняем заказ в админ-хранилище
+  saveOrderToAdminStorage(order);
+  
+  // Отправляем заказ админу
+  sendOrderToAdmin(order);
+  
+  // Очищаем корзину
+  cart = {};
+  appliedPromo = null;
+  isPromoMode = false;
+  checkoutData = { paymentMethod: "", senderName: "", email: "" };
+  
+  // Обновляем интерфейс
+  updateAllCards();
+  renderCartPage();
+  renderOrdersPage();
+  
+  // Показываем уведомление об успешном заказе
+  if (window.Telegram?.WebApp) {
+    window.Telegram.WebApp.showAlert(`✅ Заказ #${order.orderNumber} оформлен!\n\nАдминистратор проверит оплату в ближайшее время.`);
+  } else {
+    alert(`✅ Заказ #${order.orderNumber} оформлен! Администратор свяжется с вами.`);
+  }
+  
+  showOrderDetail(order.id);
+}
+
+// Остальной код checkout.js остаётся без изменений
 function renderCheckoutBlock() {
   const fixedBlock = document.getElementById("cartCheckoutFixed");
   const items = Object.entries(cart);
@@ -295,48 +428,4 @@ function renderPaymentPage() {
       createOrder();
     });
   }, 0);
-}
-
-function createOrder() {
-  const items = Object.entries(cart);
-  if (!items.length) return;
-  
-  let total = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
-  if (appliedPromo) {
-    total = Math.round(total * (1 - appliedPromo.discountPercent / 100));
-  }
-  
-  const orderId = orders.length + 1;
-  const order = { 
-    id: orderId, 
-    date: new Date().toLocaleDateString('ru-RU'), 
-    time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
-    items: items.map(([id, qty]) => ({ 
-      id: parseInt(id),
-      name: products.find(p => p.id == id).name, 
-      qty, 
-      price: products.find(p => p.id == id).price,
-      image: products.find(p => p.id == id).image,
-      category: products.find(p => p.id == id).category
-    })), 
-    total, 
-    status: "Проверка перевода",
-    promo: appliedPromo ? appliedPromo.code : null,
-    paymentMethod: getPaymentMethodLabel(checkoutData.paymentMethod),
-    senderName: checkoutData.senderName,
-    email: checkoutData.email
-  };
-  
-  orders.unshift(order);
-  
-  cart = {};
-  appliedPromo = null;
-  isPromoMode = false;
-  checkoutData = { paymentMethod: "", senderName: "", email: "" };
-  
-  updateAllCards();
-  renderCartPage();
-  renderOrdersPage();
-  
-  showOrderDetail(orderId);
 }

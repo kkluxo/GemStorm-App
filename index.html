@@ -7,222 +7,42 @@
   <meta name="theme-color" content="#171719">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>GemStorm — Магазин</title>
+  <title>Geltan Store — Каталог</title>
   <link rel="stylesheet" href="css/style.css">
-  <style>
-    /* Стили для админ-панели */
-    .admin-only {
-      display: none;
-    }
-    
-    body.admin-mode .user-only {
-      display: none;
-    }
-    
-    body.admin-mode .admin-only {
-      display: block;
-    }
-    
-    .admin-panel-container {
-      min-height: 100vh;
-      background: #0f0f11;
-      padding-bottom: 20px;
-    }
-    
-    .admin-header {
-      position: sticky;
-      top: 0;
-      background: rgba(15, 15, 17, 0.92);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid #2a2a2e;
-      padding: 16px 20px;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    
-    .admin-header h1 {
-      font-size: 20px;
-      font-weight: 600;
-      color: white;
-      margin: 0;
-    }
-    
-    .admin-refresh {
-      background: #222226;
-      border: 1px solid #2a2a2e;
-      color: #4cb4e9;
-      border-radius: 12px;
-      padding: 8px 16px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-    
-    .admin-stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      padding: 16px;
-    }
-    
-    .admin-stat-card {
-      background: #18181b;
-      border: 1px solid #2a2a2e;
-      border-radius: 16px;
-      padding: 14px;
-      text-align: center;
-    }
-    
-    .admin-stat-value {
-      font-size: 22px;
-      font-weight: 700;
-      color: white;
-    }
-    
-    .admin-stat-label {
-      font-size: 11px;
-      color: #9e9e9e;
-      margin-top: 3px;
-    }
-    
-    .admin-filters {
-      display: flex;
-      gap: 8px;
-      padding: 14px 16px;
-      overflow-x: auto;
-    }
-    
-    .admin-filter-chip {
-      background: #18181b;
-      border: 1px solid #2a2a2e;
-      border-radius: 20px;
-      padding: 7px 14px;
-      font-size: 13px;
-      color: #9e9e9e;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    
-    .admin-filter-chip.active {
-      background: rgba(76, 180, 233, 0.12);
-      border-color: #4cb4e9;
-      color: #4cb4e9;
-    }
-    
-    .admin-order-card {
-      background: #18181b;
-      border: 1px solid #2a2a2e;
-      border-radius: 18px;
-      padding: 16px;
-      margin-bottom: 10px;
-      cursor: pointer;
-    }
-    
-    .admin-order-top {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-    
-    .admin-order-num {
-      font-size: 16px;
-      font-weight: 600;
-      color: white;
-    }
-    
-    .admin-status {
-      font-size: 12px;
-      padding: 4px 10px;
-      border-radius: 20px;
-    }
-    
-    .admin-status-pending { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
-    .admin-status-done { background: rgba(74, 222, 128, 0.15); color: #4ade80; }
-    .admin-status-canceled { background: rgba(248, 113, 113, 0.15); color: #f87171; }
-    
-    .admin-order-user {
-      font-size: 14px;
-      color: #9e9e9e;
-      margin-bottom: 6px;
-    }
-    
-    .admin-order-total {
-      font-size: 18px;
-      font-weight: 700;
-      color: #4cb4e9;
-      margin-top: 8px;
-    }
-    
-    .admin-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(4px);
-      z-index: 200;
-      display: none;
-      align-items: flex-end;
-    }
-    
-    .admin-modal.open {
-      display: flex;
-    }
-    
-    .admin-modal-content {
-      background: #18181b;
-      border: 1px solid #2a2a2e;
-      border-radius: 24px 24px 0 0;
-      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      padding: 20px;
-    }
-    
-    .admin-status-buttons {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-top: 20px;
-    }
-    
-    .admin-status-btn {
-      border: 1px solid #2a2a2e;
-      border-radius: 14px;
-      padding: 12px;
-      text-align: center;
-      cursor: pointer;
-      font-weight: 500;
-    }
-    
-    .admin-close-btn {
-      width: 100%;
-      background: #222226;
-      border: 1px solid #2a2a2e;
-      border-radius: 14px;
-      padding: 14px;
-      color: #9e9e9e;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    
-    .admin-orders-list {
-      padding: 0 16px;
-    }
-  </style>
 </head>
 <body>
+  <!-- Иконки для предзагрузки -->
+  <div class="icons-preload" aria-hidden="true" style="display:none">
+    <img src="https://storage.botpapa.me/files/fd86aa00-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="">
+    <img src="https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="">
+    <img src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="">
+    <img src="https://storage.botpapa.me/files/12337af0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="">
+    <img src="https://storage.botpapa.me/files/fa0bb410-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="">
+    <img src="https://storage.botpapa.me/files/00feb9c0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="">
+    <img src="https://storage.botpapa.me/files/8a684130-49e6-11f1-bef9-f1ec7a2c6e45.png" alt="">
+    <img src="https://storage.botpapa.me/files/1656bed0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="">
+    <img src="https://storage.botpapa.me/files/9478fb40-49de-11f1-bef9-f1ec7a2c6e45.png" alt="">
+    <img src="https://storage.botpapa.me/files/bc7cbf30-49e0-11f1-bef9-f1ec7a2c6e45.png" alt="">
+    <img src="https://storage.botpapa.me/files/a488c6d0-4a12-11f1-bef9-f1ec7a2c6e45.png" alt="">
+    <img src="https://storage.botpapa.me/files/af0747c0-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="">
+    <img src="https://storage.botpapa.me/files/b254ec20-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="">
+    <img src="https://storage.botpapa.me/files/975c4510-49de-11f1-bef9-f1ec7a2c6e45.png" alt="">
+    <img src="https://storage.botpapa.me/files/9a5d01f0-49de-11f1-bef9-f1ec7a2c6e45.png" alt="">
+    <img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="">
+    <img src="https://storage.botpapa.me/files/62edaf00-4a27-11f1-bef9-f1ec7a2c6e45.png" alt="">
+    <img src="https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png" alt="">
+  </div>
 
-<!-- ========== ОБЫЧНЫЙ ИНТЕРФЕЙС (для пользователей) ========== -->
-<div class="user-only">
+  <!-- Страница каталога -->
   <div id="catalog-page" class="page active-page">
     <div class="header-row">
       <img class="header-icon-img" src="https://storage.botpapa.me/files/fd86aa00-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
       <div class="page-title">Каталог</div>
     </div>
     <div class="search-section">
-      <div class="search-bar">
+      <div class="search-bar" id="searchBar">
         <img class="search-icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'%3E%3C/path%3E%3C/svg%3E" />
-        <input type="text" class="search-input" id="searchInput" placeholder="Найти товар">
+        <input type="text" class="search-input" id="searchInput" placeholder="Найти товар по названию">
       </div>
       <div class="filter-btn" id="openFilterBtn">
         <img class="filter-icon" src="https://storage.botpapa.me/files/bc7cbf30-49e0-11f1-bef9-f1ec7a2c6e45.png" alt="filter">
@@ -231,6 +51,7 @@
     <div id="catalogGrid" class="products-grid"></div>
   </div>
 
+  <!-- Страница корзины -->
   <div id="cart-page" class="page">
     <div class="header-row">
       <img class="header-icon-img" src="https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="cart">
@@ -239,6 +60,7 @@
     <div id="cartItemsList" class="cart-content-padding"></div>
   </div>
 
+  <!-- Страница заказов -->
   <div id="orders-page" class="page">
     <div class="header-row">
       <img class="header-icon-img" src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="orders">
@@ -247,6 +69,7 @@
     <div id="ordersList"></div>
   </div>
 
+  <!-- Страница профиля -->
   <div id="profile-page" class="page">
     <div class="header-row">
       <img class="header-icon-img" src="https://storage.botpapa.me/files/12337af0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="profile">
@@ -255,6 +78,7 @@
     <div id="profileContent"></div>
   </div>
 
+  <!-- Страница фильтров -->
   <div id="filter-page" class="page">
     <div class="header-row">
       <img class="header-icon-img" src="https://storage.botpapa.me/files/9478fb40-49de-11f1-bef9-f1ec7a2c6e45.png" alt="filter">
@@ -263,6 +87,7 @@
     <div class="filter-options" id="filterOptionsContainer"></div>
   </div>
 
+  <!-- Страница оформления -->
   <div id="checkout-page" class="page">
     <div class="header-row">
       <img class="header-icon-img" src="https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="cart">
@@ -271,6 +96,7 @@
     <div id="checkoutFormContent"></div>
   </div>
 
+  <!-- Страница оплаты -->
   <div id="payment-page" class="page">
     <div class="header-row">
       <img class="header-icon-img" src="https://storage.botpapa.me/files/62edaf00-4a27-11f1-bef9-f1ec7a2c6e45.png" alt="payment">
@@ -279,6 +105,7 @@
     <div id="paymentContent"></div>
   </div>
 
+  <!-- Страница деталей заказа -->
   <div id="order-detail-page" class="page">
     <div class="header-row">
       <img class="header-icon-img" src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="order">
@@ -287,8 +114,10 @@
     <div id="orderDetailContent"></div>
   </div>
 
+  <!-- Фиксированная панель корзины -->
   <div id="cartCheckoutFixed" class="cart-checkout-fixed" style="display: none;"></div>
 
+  <!-- Нижнее меню -->
   <div class="bottom-menu">
     <button class="menu-item" data-page="catalog">
       <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/fa0bb410-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
@@ -301,8 +130,8 @@
       <span class="menu-label">Корзина</span>
     </button>
     <button class="menu-item" data-page="orders">
-      <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/8a684130-49e6-11f1-bef9-f1ec7a2c6e45.png" alt="orders" style="width:28px;height:28px">
-      <img class="menu-icon menu-icon-active" src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="orders" style="width:28px;height:28px">
+      <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/8a684130-49e6-11f1-bef9-f1ec7a2c6e45.png" alt="orders" style="width: 28px; height: 28px;">
+      <img class="menu-icon menu-icon-active" src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="orders" style="width: 28px; height: 28px;">
       <span class="menu-label">Заказы</span>
     </button>
     <button class="menu-item" data-page="profile">
@@ -311,73 +140,15 @@
       <span class="menu-label">Профиль</span>
     </button>
   </div>
-</div>
 
-<!-- ========== АДМИН-ПАНЕЛЬ ========== -->
-<div class="admin-only" id="adminPanel" style="display: none;">
-  <div class="admin-panel-container">
-    <div class="admin-header">
-      <h1>📋 Управление заказами</h1>
-      <button class="admin-refresh" id="adminRefreshBtn">↻ Обновить</button>
-    </div>
-
-    <div class="admin-stats">
-      <div class="admin-stat-card">
-        <div class="admin-stat-value" id="adminStatTotal">0</div>
-        <div class="admin-stat-label">Всего заказов</div>
-      </div>
-      <div class="admin-stat-card">
-        <div class="admin-stat-value" style="color:#fbbf24" id="adminStatPending">0</div>
-        <div class="admin-stat-label">Ожидают</div>
-      </div>
-      <div class="admin-stat-card">
-        <div class="admin-stat-value" style="color:#4ade80" id="adminStatDone">0</div>
-        <div class="admin-stat-label">Выполнено</div>
-      </div>
-    </div>
-
-    <div class="admin-filters">
-      <div class="admin-filter-chip active" data-filter="all">Все</div>
-      <div class="admin-filter-chip" data-filter="pending">🟡 Ожидают</div>
-      <div class="admin-filter-chip" data-filter="done">✅ Выполнено</div>
-      <div class="admin-filter-chip" data-filter="canceled">❌ Отменено</div>
-    </div>
-
-    <div class="admin-orders-list" id="adminOrdersList">
-      <div style="text-align:center;padding:60px;color:#9e9e9e">🔄 Загрузка заказов...</div>
-    </div>
-  </div>
-
-  <div class="admin-modal" id="adminModal">
-    <div class="admin-modal-content">
-      <div id="adminModalContent"></div>
-      <button class="admin-close-btn" id="adminCloseModal">Закрыть</button>
-    </div>
-  </div>
-</div>
-
-<script src="js/data.js"></script>
-<script src="js/utils.js"></script>
-<script src="js/cart.js"></script>
-<script src="js/catalog.js"></script>
-<script src="js/checkout.js"></script>
-<script src="js/orders.js"></script>
-<script src="js/profile.js"></script>
-<script src="js/admin.js"></script>
-<script src="js/app.js"></script>
-
-<script>
-  // Дополнительная инициализация на случай, если скрипты не загрузились
-  (function() {
-    if (typeof isAdmin === 'function' && isAdmin()) {
-      console.log('👑 Режим админа активирован');
-    } else if (typeof isAdmin === 'function') {
-      console.log('👤 Обычный пользователь');
-    } else {
-      console.log('⚠️ Функция isAdmin не найдена, проверь подключение admin.js');
-    }
-  })();
-</script>
-
+  <script src="js/data.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/catalog.js"></script>
+  <script src="js/checkout.js"></script>
+  <script src="js/orders.js"></script>
+  <script src="js/profile.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>

@@ -1330,3 +1330,23 @@ body {
   color: #4ade80;
   word-break: break-all;
 }
+
+/* Кнопка обновления в карточке заказа */
+.order-card-header {
+  position: relative;
+}
+.order-refresh-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #4cb4e9;
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+.order-refresh-btn:active {
+  opacity: 1;
+}

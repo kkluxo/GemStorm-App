@@ -19,23 +19,20 @@
     .tab { flex: 1; text-align: center; padding: 10px; border-radius: 30px; font-size: 14px; font-weight: 500; cursor: pointer; color: #9e9e9e; }
     .tab.active { background: #4cb4e9; color: white; }
     .orders-list { display: flex; flex-direction: column; gap: 12px; }
-    .order-card { background: #222226; border: 1px solid #2a2a2e; border-radius: 16px; padding: 14px; cursor: pointer; transition: all 0.15s; }
+    .order-card { background: #202022; border: 1px solid #2B2B2D; border-radius: 28px; padding: 14px; cursor: pointer; transition: all 0.15s; }
     .order-card:active { transform: scale(0.98); background: #2a2a2e; }
     .order-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .order-card-id { font-size: 15px; font-weight: 600; background: #2a2a2e; padding: 4px 12px; border-radius: 20px; }
+    .order-card-id { font-size: 15px; font-weight: 600; background: #2a2a2e; padding: 4px 12px; border-radius: 20px; color: #4cb4e9; }
     .order-card-status { font-size: 12px; padding: 4px 10px; border-radius: 20px; background: rgba(251,191,36,0.15); color: #fbbf24; }
     .order-card-date { font-size: 11px; color: #9e9e9e; margin-bottom: 8px; }
     .order-card-products { font-size: 13px; color: #9e9e9e; margin-bottom: 8px; }
     .order-card-total { font-size: 16px; font-weight: 700; color: #4cb4e9; }
     .empty-state { text-align: center; padding: 60px 20px; color: #9e9e9e; }
-    .loader { text-align: center; padding: 40px; }
-    .spinner { width: 36px; height: 36px; border: 3px solid #2a2a2e; border-top-color: #4cb4e9; border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 12px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
     
     /* Страница заказа */
     .page { display: none; }
     .page.active-page { display: block; }
-    .content-card { background: #18181b; border: 1px solid #2a2a2e; border-radius: 20px; padding: 16px; margin-bottom: 16px; }
+    .content-card { background: #202022; border: 1px solid #2B2B2D; border-radius: 28px; padding: 18px; margin-bottom: 16px; }
     .order-detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #2a2a2e; font-size: 14px; }
     .order-detail-row:last-child { border-bottom: none; }
     .order-detail-label { color: #9e9e9e; }
@@ -62,10 +59,10 @@
     <div class="tab" data-tab="done">Выполненные</div>
   </div>
 
-  <div id="ordersContainer" class="orders-list"><div class="loader"><div class="spinner"></div>Загрузка...</div></div>
+  <div id="ordersContainer" class="orders-list"><div style="text-align:center; padding:40px;">Загрузка...</div></div>
 </div>
 
-<div id="orderDetailView" class="page" style="display:none">
+<div id="orderDetailView" class="page">
   <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
     <button id="backBtn" style="background:#2a2a2e; border:none; border-radius:30px; padding:8px 16px; color:white; cursor:pointer;">← Назад</button>
     <h2 id="detailTitle" style="margin:0">Заказ</h2>
@@ -91,7 +88,7 @@
 
   async function loadOrders() {
     const container = document.getElementById('ordersContainer');
-    container.innerHTML = '<div class="loader"><div class="spinner"></div>Загрузка...</div>';
+    container.innerHTML = '<div style="text-align:center; padding:40px;">Загрузка...</div>';
     try {
       const response = await fetch(`${API}/api/orders`);
       allOrders = await response.json();
@@ -168,7 +165,7 @@
         ${order.verification_code ? `<div class="order-detail-row"><span class="order-detail-label">Код</span><span class="order-detail-value" style="color:#4ade80">${escapeHtml(order.verification_code)}</span></div>` : ''}
       </div>
       
-      <div style="margin-top:16px;background:#222226;border:1px solid #2a2a2e;border-radius:16px;padding:12px;">
+      <div style="margin-top:16px;background:#202022;border:1px solid #2B2B2D;border-radius:16px;padding:12px;">
         ${itemsHtml}
         <div style="display:flex;justify-content:space-between;padding:10px 0 0 0;margin-top:8px;font-weight:700;">
           <span>Стоимость</span>

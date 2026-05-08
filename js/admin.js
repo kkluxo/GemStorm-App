@@ -13,7 +13,7 @@ function isAdmin() {
 // Загрузка заказов с сервера
 async function loadAdminOrders() {
   try {
-    const response = await fetch('https://gemstorm-app.up.railway.app/api/orders');
+    const response = await fetch('https://gemstorm-app-production.up.railway.app/api/orders');
     if (response.ok) {
       return await response.json();
     }

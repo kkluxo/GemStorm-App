@@ -11,7 +11,6 @@
     body { background: #171719; color: white; font-family: system-ui; padding: 16px; padding-bottom: 30px; touch-action: pan-y; }
     h1 { font-size: 24px; margin-bottom: 16px; font-weight: 600; }
     .refresh-btn { background: #4cb4e9; border: none; padding: 12px 24px; border-radius: 30px; color: white; cursor: pointer; margin-bottom: 20px; font-size: 14px; font-weight: 500; }
-    .refresh-btn:active { opacity: 0.7; }
     .stats { display: flex; gap: 10px; margin-bottom: 20px; }
     .stat-card { background: #222226; padding: 14px; border-radius: 20px; flex: 1; text-align: center; border: 1px solid #2a2a2e; }
     .stat-value { font-size: 24px; font-weight: 700; color: #4cb4e9; }
@@ -20,64 +19,65 @@
     .tab { flex: 1; text-align: center; padding: 10px; border-radius: 30px; font-size: 14px; font-weight: 500; cursor: pointer; color: #9e9e9e; }
     .tab.active { background: #4cb4e9; color: white; }
     .orders-list { display: flex; flex-direction: column; gap: 12px; }
-    .order-card { background: #222226; border: 1px solid #2a2a2e; border-radius: 20px; padding: 14px; cursor: pointer; transition: all 0.15s; }
+    .order-card { background: #222226; border: 1px solid #2a2a2e; border-radius: 16px; padding: 14px; cursor: pointer; transition: all 0.15s; }
     .order-card:active { transform: scale(0.98); background: #2a2a2e; }
-    .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px; }
-    .order-number { font-size: 15px; font-weight: 600; background: #2a2a2e; padding: 4px 12px; border-radius: 20px; }
-    .order-status { font-size: 12px; padding: 4px 10px; border-radius: 20px; }
-    .status-pending { background: rgba(251,191,36,0.15); color: #fbbf24; }
-    .status-processing { background: rgba(76,180,233,0.15); color: #4cb4e9; }
-    .status-done { background: rgba(74,222,128,0.15); color: #4ade80; }
-    .status-notfound { background: rgba(248,113,113,0.15); color: #f87171; }
-    .order-date { font-size: 11px; color: #9e9e9e; margin-bottom: 8px; }
-    .order-products { font-size: 13px; color: #9e9e9e; margin-bottom: 8px; }
-    .order-total { font-size: 16px; font-weight: 700; color: #4cb4e9; }
-    .order-code { margin-top: 8px; padding-top: 8px; border-top: 1px solid #2a2a2e; font-size: 12px; color: #4ade80; }
+    .order-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .order-card-id { font-size: 15px; font-weight: 600; background: #2a2a2e; padding: 4px 12px; border-radius: 20px; }
+    .order-card-status { font-size: 12px; padding: 4px 10px; border-radius: 20px; background: rgba(251,191,36,0.15); color: #fbbf24; }
+    .order-card-date { font-size: 11px; color: #9e9e9e; margin-bottom: 8px; }
+    .order-card-products { font-size: 13px; color: #9e9e9e; margin-bottom: 8px; }
+    .order-card-total { font-size: 16px; font-weight: 700; color: #4cb4e9; }
     .empty-state { text-align: center; padding: 60px 20px; color: #9e9e9e; }
     .loader { text-align: center; padding: 40px; }
     .spinner { width: 36px; height: 36px; border: 3px solid #2a2a2e; border-top-color: #4cb4e9; border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 12px; }
     @keyframes spin { to { transform: rotate(360deg); } }
     
-    /* Модальное окно */
-    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); z-index: 200; display: none; align-items: flex-end; }
-    .modal.open { display: flex; }
-    .modal-content { background: #18181b; border: 1px solid #2a2a2e; border-radius: 24px 24px 0 0; width: 100%; max-height: 85vh; overflow-y: auto; padding: 20px; }
+    /* Страница заказа */
+    .page { display: none; }
+    .page.active-page { display: block; }
+    .content-card { background: #18181b; border: 1px solid #2a2a2e; border-radius: 20px; padding: 16px; margin-bottom: 16px; }
+    .order-detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #2a2a2e; font-size: 14px; }
+    .order-detail-row:last-child { border-bottom: none; }
+    .order-detail-label { color: #9e9e9e; }
+    .order-detail-value { font-weight: 500; text-align: right; }
     .status-select { width: 100%; background: #2a2a2e; color: white; border: 1px solid #3a3a3e; border-radius: 30px; padding: 14px; font-size: 14px; margin: 15px 0; }
     .update-status-btn { background: #4cb4e9; border: none; border-radius: 30px; padding: 14px; color: white; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; }
-    .close-modal-btn { background: #2a2a2e; border: none; border-radius: 30px; padding: 14px; color: white; font-size: 14px; cursor: pointer; width: 100%; margin-top: 10px; }
-    .order-detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #2a2a2e; font-size: 14px; }
-    .order-detail-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #2a2a2e; }
+    .back-btn { background: #2a2a2e; border: none; border-radius: 30px; padding: 14px; color: white; font-size: 14px; cursor: pointer; width: 100%; margin-top: 10px; }
   </style>
 </head>
 <body>
 
-<h1>Управление заказами</h1>
-<button class="refresh-btn" id="refreshBtn">Обновить список</button>
+<div id="mainView">
+  <h1>Управление заказами</h1>
+  <button class="refresh-btn" id="refreshBtn">Обновить список</button>
 
-<div class="stats">
-  <div class="stat-card"><div class="stat-value" id="statTotal">0</div><div class="stat-label">Всего заказов</div></div>
-  <div class="stat-card"><div class="stat-value" style="color:#fbbf24" id="statPending">0</div><div class="stat-label">Невыполненные</div></div>
-  <div class="stat-card"><div class="stat-value" style="color:#4ade80" id="statDone">0</div><div class="stat-label">Выполненные</div></div>
-</div>
-
-<div class="tabs">
-  <div class="tab active" data-tab="pending">Невыполненные</div>
-  <div class="tab" data-tab="done">Выполненные</div>
-</div>
-
-<div id="ordersContainer" class="orders-list"><div class="loader"><div class="spinner"></div>Загрузка...</div></div>
-
-<div class="modal" id="orderModal">
-  <div class="modal-content">
-    <div id="modalContent"></div>
-    <button class="close-modal-btn" id="closeModalBtn">Закрыть</button>
+  <div class="stats">
+    <div class="stat-card"><div class="stat-value" id="statTotal">0</div><div class="stat-label">Всего заказов</div></div>
+    <div class="stat-card"><div class="stat-value" style="color:#fbbf24" id="statPending">0</div><div class="stat-label">Невыполненные</div></div>
+    <div class="stat-card"><div class="stat-value" style="color:#4ade80" id="statDone">0</div><div class="stat-label">Выполненные</div></div>
   </div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="pending">Невыполненные</div>
+    <div class="tab" data-tab="done">Выполненные</div>
+  </div>
+
+  <div id="ordersContainer" class="orders-list"><div class="loader"><div class="spinner"></div>Загрузка...</div></div>
+</div>
+
+<div id="orderDetailView" class="page" style="display:none">
+  <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+    <button id="backBtn" style="background:#2a2a2e; border:none; border-radius:30px; padding:8px 16px; color:white; cursor:pointer;">← Назад</button>
+    <h2 id="detailTitle" style="margin:0">Заказ</h2>
+  </div>
+  <div id="detailContent"></div>
 </div>
 
 <script>
   const API = 'https://gemstorm-app-production.up.railway.app';
   let allOrders = [];
   let currentTab = 'pending';
+  let currentOrder = null;
 
   if (window.Telegram?.WebApp) {
     const tg = window.Telegram.WebApp;
@@ -87,6 +87,7 @@
   }
 
   function formatPrice(p) { return Math.round(p).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + 'руб'; }
+  function escapeHtml(str) { if (!str) return ''; return String(str).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
 
   async function loadOrders() {
     const container = document.getElementById('ordersContainer');
@@ -113,21 +114,19 @@
 
     if (!filtered.length) { container.innerHTML = '<div class="empty-state">Нет заказов</div>'; return; }
 
-    container.innerHTML = filtered.map((order, idx) => {
+    container.innerHTML = filtered.map((order) => {
       let items = [];
       try { items = JSON.parse(order.items || '[]'); } catch(e) {}
-      let statusClass = order.status_code === 'pending' ? 'pending' : (order.status_code === 'done' ? 'done' : (order.status_code === 'notfound' ? 'notfound' : 'processing'));
       let statusText = (order.status || 'Ожидание кода').replace(/[🟡✅❌🔵⚙⏳]/g, '').trim();
       return `
         <div class="order-card" data-order-id="${order.id}">
-          <div class="order-header">
-            <span class="order-number">Заказ ${idx + 1}</span>
-            <span class="order-status status-${statusClass}">${statusText}</span>
+          <div class="order-card-header">
+            <span class="order-card-id">Заказ ${order.order_number}</span>
+            <span class="order-card-status">${statusText}</span>
           </div>
-          <div class="order-date">${order.date} ${order.time || ''}</div>
-          <div class="order-products">${items.map(i => `${i.name} x${i.qty}`).join(', ')}</div>
-          <div class="order-total">${formatPrice(order.total)}</div>
-          ${order.verification_code ? `<div class="order-code">Код: ${escapeHtml(order.verification_code)}</div>` : ''}
+          <div class="order-card-date">${order.date} ${order.time || ''}</div>
+          <div class="order-card-products">${items.map(i => `${i.name} x${i.qty}`).join(', ')}</div>
+          <div class="order-card-total">${formatPrice(order.total)}</div>
         </div>
       `;
     }).join('');
@@ -136,32 +135,42 @@
       card.addEventListener('click', () => {
         const orderId = parseInt(card.dataset.orderId);
         const order = allOrders.find(o => o.id === orderId);
-        if (order) openOrderModal(order);
+        if (order) showOrderDetail(order);
       });
     });
   }
 
-  function openOrderModal(order) {
+  function showOrderDetail(order) {
+    currentOrder = order;
+    document.getElementById('mainView').style.display = 'none';
+    document.getElementById('orderDetailView').style.display = 'block';
+    document.getElementById('detailTitle').textContent = `Заказ ${order.order_number}`;
+    
     let items = [];
     try { items = JSON.parse(order.items || '[]'); } catch(e) {}
     
-    const itemsHtml = items.map(i => `<div class="order-detail-item"><span>${escapeHtml(i.name)} x${i.qty}</span><span style="color:#4cb4e9">${formatPrice(i.price * i.qty)}</span></div>`).join('');
+    const itemsHtml = items.map(i => `
+      <div style="display:flex;justify-content:space-between;padding:8px 0;">
+        <span>${escapeHtml(i.name)} x${i.qty}</span>
+        <span style="color:#4cb4e9">${formatPrice(i.price * i.qty)}</span>
+      </div>
+    `).join('');
     
-    document.getElementById('modalContent').innerHTML = `
-      <h3 style="margin-bottom:16px">Заказ ${getOrderIndex(order.id)}</h3>
-      <div class="order-detail-row"><span>Статус</span><span style="color:#4cb4e9">${(order.status || 'Ожидание кода').replace(/[🟡✅❌🔵⚙⏳]/g, '').trim()}</span></div>
-      <div class="order-detail-row"><span>Дата</span><span>${order.date} ${order.time || ''}</span></div>
-      <div class="order-detail-row"><span>Способ оплаты</span><span>${order.payment_method || '—'}</span></div>
-      <div class="order-detail-row"><span>Отправитель</span><span>${escapeHtml(order.sender_name || '—')}</span></div>
-      <div class="order-detail-row"><span>Почта</span><span>${escapeHtml(order.email || '—')}</span></div>
-      <div class="order-detail-row"><span>Telegram</span><span>@${escapeHtml(order.user_username || '—')}</span></div>
-      ${order.promo ? `<div class="order-detail-row"><span>Промокод</span><span>${order.promo} (скидка ${order.promo_discount}%)</span></div>` : ''}
-      ${order.verification_code ? `<div class="order-detail-row"><span>Код</span><span style="color:#4ade80">${escapeHtml(order.verification_code)}</span></div>` : ''}
+    document.getElementById('detailContent').innerHTML = `
+      <div class="content-card">
+        <div class="order-detail-row"><span class="order-detail-label">Статус</span><span class="order-detail-value" style="color:#4cb4e9">${(order.status || 'Ожидание кода').replace(/[🟡✅❌🔵⚙⏳]/g, '').trim()}</span></div>
+        <div class="order-detail-row"><span class="order-detail-label">Дата</span><span class="order-detail-value">${order.date} ${order.time || ''}</span></div>
+        <div class="order-detail-row"><span class="order-detail-label">Способ оплаты</span><span class="order-detail-value">${order.payment_method || '—'}</span></div>
+        <div class="order-detail-row"><span class="order-detail-label">Отправитель</span><span class="order-detail-value">${escapeHtml(order.sender_name || '—')}</span></div>
+        <div class="order-detail-row"><span class="order-detail-label">Почта</span><span class="order-detail-value">${escapeHtml(order.email || '—')}</span></div>
+        <div class="order-detail-row"><span class="order-detail-label">Telegram</span><span class="order-detail-value">@${escapeHtml(order.user_username || '—')}</span></div>
+        ${order.promo ? `<div class="order-detail-row"><span class="order-detail-label">Промокод</span><span class="order-detail-value">${order.promo} (скидка ${order.promo_discount}%)</span></div>` : ''}
+        ${order.verification_code ? `<div class="order-detail-row"><span class="order-detail-label">Код</span><span class="order-detail-value" style="color:#4ade80">${escapeHtml(order.verification_code)}</span></div>` : ''}
+      </div>
       
-      <div style="margin:16px 0;background:#222226;border-radius:16px;padding:12px;">
-        <div style="font-weight:600;margin-bottom:10px;">Товары</div>
+      <div style="margin-top:16px;background:#222226;border:1px solid #2a2a2e;border-radius:16px;padding:12px;">
         ${itemsHtml}
-        <div style="display:flex;justify-content:space-between;padding:10px 0 0 0;margin-top:8px;border-top:1px solid #2a2a2e;font-weight:700;">
+        <div style="display:flex;justify-content:space-between;padding:10px 0 0 0;margin-top:8px;font-weight:700;">
           <span>Стоимость</span>
           <span style="color:#4cb4e9">${formatPrice(order.total)}</span>
         </div>
@@ -169,21 +178,20 @@
       
       <select class="status-select" id="adminStatusSelect">
         <option value="pending" ${order.status_code === 'pending' ? 'selected' : ''}>Ожидание кода</option>
-        <option value="processing" ${order.status_code === 'processing' ? 'selected' : ''}>В обработке</option>
+        <option value="processing" ${order.status_code === 'processing' ? 'selected' : ''}>Ожидает выполнения</option>
         <option value="done" ${order.status_code === 'done' ? 'selected' : ''}>Заказ выполнен</option>
         <option value="notfound" ${order.status_code === 'notfound' ? 'selected' : ''}>Перевод не найден</option>
       </select>
       <button class="update-status-btn" id="adminUpdateStatusBtn">Сохранить статус</button>
+      <button class="back-btn" id="detailBackBtn">Назад к списку</button>
     `;
-    
-    document.getElementById('orderModal').classList.add('open');
     
     document.getElementById('adminUpdateStatusBtn').addEventListener('click', async () => {
       const select = document.getElementById('adminStatusSelect');
       const newStatusCode = select.value;
       const statusMap = {
         'pending': 'Ожидание кода',
-        'processing': 'В обработке',
+        'processing': 'Ожидает выполнения',
         'done': 'Заказ выполнен',
         'notfound': 'Перевод не найден'
       };
@@ -195,23 +203,25 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ orderId: order.id, status: newStatus, statusCode: newStatusCode })
         });
-        document.getElementById('orderModal').classList.remove('open');
-        loadOrders();
+        await loadOrders();
+        showOrderDetail({ ...order, status: newStatus, status_code: newStatusCode });
         if (window.Telegram?.WebApp?.HapticFeedback) window.Telegram.WebApp.HapticFeedback.impactOccurred("light");
       } catch(e) { alert('Ошибка'); }
     });
+    
+    document.getElementById('detailBackBtn').addEventListener('click', () => {
+      document.getElementById('orderDetailView').style.display = 'none';
+      document.getElementById('mainView').style.display = 'block';
+      loadOrders();
+    });
   }
-
-  function getOrderIndex(orderId) {
-    const index = allOrders.findIndex(o => o.id === orderId);
-    return index !== -1 ? index + 1 : '?';
-  }
-
-  function escapeHtml(str) { if (!str) return ''; return String(str).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
 
   document.getElementById('refreshBtn').addEventListener('click', () => loadOrders());
-  document.getElementById('closeModalBtn').addEventListener('click', () => document.getElementById('orderModal').classList.remove('open'));
-  document.getElementById('orderModal').addEventListener('click', (e) => { if (e.target === document.getElementById('orderModal')) document.getElementById('orderModal').classList.remove('open'); });
+  document.getElementById('backBtn').addEventListener('click', () => {
+    document.getElementById('orderDetailView').style.display = 'none';
+    document.getElementById('mainView').style.display = 'block';
+    loadOrders();
+  });
   
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {

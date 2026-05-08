@@ -31,7 +31,7 @@ function renderCheckoutBlock() {
   const discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
   
   if (isPromoMode) {
-    fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="promo-label">Введите промокод на скидку</span></div><div class="promo-input-row"><input type="text" class="promo-input" id="promoInput" placeholder="Введите промокод" value="${appliedPromo ? appliedPromo.code : ''}"><button class="promo-action-btn back-btn" id="promoBackBtn"><img src="https://storage.botpapa.me/files/af0747c0-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="Назад"></button><button class="promo-action-btn apply-btn" id="promoApplyBtn"><img src="https://storage.botpapa.me/files/b254ec20-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="Применить"></button></div></div>`;
+    fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="promo-label">Введите промокод на скидку</span></div><div class="promo-input-row"><input type="text" class="promo-input" id="promoInput" placeholder="Введите промокод" value="${appliedPromo ? appliedPromo.code : ''}"><button class="promo-action-btn apply-btn" id="promoApplyBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg></button><button class="promo-action-btn back-btn" id="promoBackBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div></div>`;
     setTimeout(() => {
       const promoInput = document.getElementById("promoInput");
       const backBtn = document.getElementById("promoBackBtn");

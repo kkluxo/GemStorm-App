@@ -1,3 +1,10 @@
+const ADMIN_ID = 7509324385;
+
+function isAdmin() {
+  const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  return user ? user.id == ADMIN_ID : false;
+}
+
 function showPage(pageId) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
   const targetPage = document.getElementById(pageId + "-page");
@@ -33,7 +40,6 @@ function showPage(pageId) {
     checkoutBlock.style.display = "none";
   }
   
-  // Активное состояние меню
   document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
   const activeBtn = document.querySelector(`.menu-item[data-page="${pageId}"]`);
   if (activeBtn) activeBtn.classList.add("active");
@@ -41,7 +47,7 @@ function showPage(pageId) {
   window.scrollTo({ top: 0 });
 }
 
-// Инициализация Telegram
+// Инициализация Telegram и определение режима
 (function() {
   if (window.Telegram && window.Telegram.WebApp) {
     const tg = window.Telegram.WebApp;
@@ -54,6 +60,33 @@ function showPage(pageId) {
     } catch(e) {}
     document.body.style.backgroundColor = '#171719';
   }
+  
+  // Определяем, админ ли пользователь
+  if (isAdmin()) {
+    // Показываем админ-панель, скрываем пользовательский интерфейс
+    document.body.classList.add('admin-mode');
+    document.querySelector('.user-only').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'block';
+    
+    // Запускаем админ-панель
+    if (typeof initAdminPanel === 'function') {
+      initAdminPanel();
+    }
+  } else {
+    // Обычный пользователь — показываем магазин
+    document.body.classList.remove('admin-mode');
+    document.querySelector('.user-only').style.display = 'block';
+    document.getElementById('adminPanel').style.display = 'none';
+    
+    // Запускаем обычное приложение
+    document.querySelector('.menu-item[data-page="catalog"]')?.classList.add("active");
+    renderCatalog();
+    renderCartPage();
+    renderOrdersPage();
+    renderFilterModal();
+    renderProfilePage();
+    document.getElementById("cartCheckoutFixed").style.display = "none";
+  }
 })();
 
 // Скрываем клавиатуру при клике вне полей ввода
@@ -65,7 +98,7 @@ document.addEventListener('click', function(e) {
   }
 });
 
-// События
+// События для обычных пользователей
 document.getElementById("openFilterBtn")?.addEventListener("click", () => { 
   hapticLight();
   renderFilterModal(); 
@@ -83,17 +116,3 @@ document.querySelectorAll(".menu-item").forEach(btn => {
     showPage(btn.dataset.page);
   });
 });
-
-// Запуск приложения
-document.querySelector('.menu-item[data-page="catalog"]')?.classList.add("active");
-renderCatalog();
-renderCartPage();
-renderOrdersPage();
-renderFilterModal();
-renderProfilePage();
-document.getElementById("cartCheckoutFixed").style.display = "none";
-
-// Запуск админ-панели (только для админа)
-if (typeof initAdmin === 'function') {
-  initAdmin();
-}

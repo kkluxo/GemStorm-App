@@ -5,6 +5,7 @@ let checkoutData = {
   senderName: "",
   email: ""
 };
+let isSubmitting = false;
 
 async function sendOrderToServer(order) {
   try {
@@ -35,9 +36,9 @@ function renderCheckoutBlock() {
       const promoInput = document.getElementById("promoInput");
       const backBtn = document.getElementById("promoBackBtn");
       const applyBtn = document.getElementById("promoApplyBtn");
-      backBtn?.addEventListener("click", () => { if (typeof hapticLight === 'function') hapticLight(); if (appliedPromo) appliedPromo = null; isPromoMode = false; renderCheckoutBlock(); renderCartPage(); });
-      applyBtn?.addEventListener("click", () => { if (typeof hapticLight === 'function') hapticLight(); const code = promoInput?.value.trim().toUpperCase(); if (window.promoCodes && promoCodes[code]) { appliedPromo = { code, discountPercent: promoCodes[code] }; isPromoMode = false; renderCheckoutBlock(); renderCartPage(); } else if (promoInput) { promoInput.classList.add("error"); promoInput.value = "Промокод не найден"; setTimeout(() => { promoInput.classList.remove("error"); promoInput.value = appliedPromo ? appliedPromo.code : ""; }, 2000); } });
-      promoInput?.addEventListener("keypress", (e) => { if (e.key === "Enter") applyBtn?.click(); });
+      if (backBtn) backBtn.addEventListener("click", () => { if (typeof hapticLight === 'function') hapticLight(); if (appliedPromo) appliedPromo = null; isPromoMode = false; renderCheckoutBlock(); renderCartPage(); });
+      if (applyBtn) applyBtn.addEventListener("click", () => { if (typeof hapticLight === 'function') hapticLight(); const code = promoInput?.value.trim().toUpperCase(); if (window.promoCodes && promoCodes[code]) { appliedPromo = { code, discountPercent: promoCodes[code] }; isPromoMode = false; renderCheckoutBlock(); renderCartPage(); } else if (promoInput) { promoInput.classList.add("error"); promoInput.value = "Промокод не найден"; setTimeout(() => { promoInput.classList.remove("error"); promoInput.value = appliedPromo ? appliedPromo.code : ""; }, 2000); } });
+      if (promoInput) promoInput.addEventListener("keypress", (e) => { if (e.key === "Enter") applyBtn?.click(); });
     }, 0);
   } else {
     fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${appliedPromo ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="checkoutBtn">Перейти к оформлению</button><button class="promo-btn" id="openPromoBtn"><img src="https://storage.botpapa.me/files/a488c6d0-4a12-11f1-bef9-f1ec7a2c6e45.png" alt="Промокод"></button></div></div>`;
@@ -88,12 +89,53 @@ function renderPaymentPage() {
   setTimeout(() => {
     document.getElementById("copyCardBtn")?.addEventListener("click", () => { if (navigator.clipboard) navigator.clipboard.writeText(cardNum.replace(/\s/g, "")); if (typeof hapticLight === 'function') hapticLight(); });
     document.getElementById("helpBtn2")?.addEventListener("click", () => { if (typeof hapticLight === 'function') hapticLight(); window.open("https://t.me/GemStormHelp", "_blank"); });
-    document.getElementById("paidBtn")?.addEventListener("click", async () => { if (typeof hapticMedium === 'function') hapticMedium();
-      let tgUser = null; if (window.Telegram?.WebApp?.initDataUnsafe?.user) tgUser = window.Telegram.WebApp.initDataUnsafe.user;
-      const items = Object.entries(cart); let total = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0); if (appliedPromo) total = Math.round(total * (1 - appliedPromo.discountPercent / 100));
-      const order = { orderNumber: Math.floor(Math.random() * 9000) + 1000, date: new Date().toLocaleDateString('ru-RU'), time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }), timestamp: new Date().toISOString(), items: items.map(([id, qty]) => ({ id: parseInt(id), name: products.find(p => p.id == id).name, qty, price: products.find(p => p.id == id).price, image: products.find(p => p.id == id).image })), total: total, status: "Ожидание кода", status_code: "pending", promo: appliedPromo ? appliedPromo.code : null, promo_discount: appliedPromo ? appliedPromo.discountPercent : 0, payment_method: getPaymentMethodLabel(checkoutData.paymentMethod), sender_name: checkoutData.senderName, email: checkoutData.email, user_id: tgUser?.id, user_name: tgUser?.first_name, user_username: tgUser?.username };
+    document.getElementById("paidBtn")?.addEventListener("click", async () => {
+      if (isSubmitting) return;
+      isSubmitting = true;
+      const btn = document.getElementById("paidBtn");
+      if (btn) { btn.disabled = true; btn.textContent = "Обработка..."; }
+      
+      if (typeof hapticMedium === 'function') hapticMedium();
+      let tgUser = null; 
+      if (window.Telegram?.WebApp?.initDataUnsafe?.user) tgUser = window.Telegram.WebApp.initDataUnsafe.user;
+      const items = Object.entries(cart); 
+      let total = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0); 
+      if (appliedPromo) total = Math.round(total * (1 - appliedPromo.discountPercent / 100));
+      const order = { 
+        orderNumber: 0, 
+        date: new Date().toLocaleDateString('ru-RU'), 
+        time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }), 
+        timestamp: new Date().toISOString(), 
+        items: items.map(([id, qty]) => ({ id: parseInt(id), name: products.find(p => p.id == id).name, qty, price: products.find(p => p.id == id).price })), 
+        total: total, 
+        status: "Ожидание кода", 
+        status_code: "pending", 
+        promo: appliedPromo ? appliedPromo.code : null, 
+        promo_discount: appliedPromo ? appliedPromo.discountPercent : 0, 
+        payment_method: getPaymentMethodLabel(checkoutData.paymentMethod), 
+        sender_name: checkoutData.senderName, 
+        email: checkoutData.email, 
+        user_id: tgUser?.id, 
+        user_name: tgUser?.first_name, 
+        user_username: tgUser?.username 
+      };
+      
       const success = await sendOrderToServer(order);
-      if (success) { cart = {}; appliedPromo = null; isPromoMode = false; checkoutData = { paymentMethod: "", senderName: "", email: "" }; if (typeof updateAllCards === 'function') updateAllCards(); if (typeof renderCartPage === 'function') renderCartPage(); showPage("orders"); } else { if (window.Telegram?.WebApp) window.Telegram.WebApp.showAlert("❌ Ошибка при оформлении заказа"); else alert("❌ Ошибка при оформлении заказа"); }
+      if (success) { 
+        cart = {}; 
+        appliedPromo = null; 
+        isPromoMode = false; 
+        checkoutData = { paymentMethod: "", senderName: "", email: "" }; 
+        if (typeof updateAllCards === 'function') updateAllCards(); 
+        if (typeof renderCartPage === 'function') renderCartPage(); 
+        showPage("orders"); 
+      } else { 
+        if (window.Telegram?.WebApp) window.Telegram.WebApp.showAlert("Ошибка при оформлении заказа"); 
+        else alert("Ошибка при оформлении заказа"); 
+      }
+      
+      if (btn) { btn.disabled = false; btn.textContent = "Я оплатил"; }
+      isSubmitting = false;
     });
   }, 0);
 }

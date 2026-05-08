@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <title>GemStorm — Админ</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+```
+:root {
+  --bg: #0f0f11;
+  --surface: #18181b;
+  --surface2: #222226;
+  --border: #2a2a2e;
+  --blue: #4cb4e9;
+  --blue-dim: rgba(76,180,233,0.12);
+  --green: #4ade80;
+  --yellow: #fbbf24;
+  --red: #f87171;
+  --text: #ffffff;
+  --text2: #9e9e9e;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  padding-bottom: 40px;
+  min-height: 100vh;
+}
+
+/* ── Шапка ── */
+.header {
+  position: sticky;
+  top: 0;
+  background: rgba(15,15,17,0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 20px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-title { font-size: 20px; font-weight: 600; }
+.header-sub { font-size: 13px; color: var(--text2); margin-top: 2px; }
+
+.refresh-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--blue);
+  border-radius: 12px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: opacity 0.15s;
+}
+.refresh-btn:active { opacity: 0.7; }
+.refresh-btn.loading { opacity: 0.5; pointer-events: none; }
+
+/* ── Статистика ── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 16px 16px 0;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 14px 12px;
+  text-align: center;
+}
+.stat-value { font-size: 22px; font-weight: 700; }
+.stat-label { font-size: 11px; color: var(--text2); margin-top: 3px; }
+
+/* ── Фильтры ── */
+.filters {
+  display: flex;
+  gap: 8px;
+  padding: 14px 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.filters::-webkit-scrollbar { display: none; }
+
+.filter-chip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 7px 14px;
+  font-size: 13px;
+  color: var(--text2);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+.filter-chip.active {
+  background: var(--blue-dim);
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+/* ── Список заказов ── */
+.orders-list { padding: 0 16px; }
+
+.order-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.order-card:active { opacity: 0.85; }
+.order-card:hover { border-color: #3a3a3e; }
+
+.order-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+.order-num { font-size: 16px; font-weight: 600; }
+.order-date { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+.status-badge {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.status-pending  { background: rgba(251,191,36,0.15);  color: var(--yellow); }
+.status-done     { background: rgba(74,222,128,0.15);  color: var(--green);  }
+.status-canceled { background: rgba(248,113,113,0.15); color: var(--red);    }
+.status-other    { background: rgba(156,163,175,0.15); color: #9ca3af;        }
+
+.order-user {
+  font-size: 14px;
+  color: var(--text2);
+  margin-bottom: 6px;
+}
+.order-user span { color: var(--text); font-weight: 500; }
+
+.order-items {
+  font-size: 13px;
+  color: var(--text2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 10px;
+}
+
+.order-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.order-total { font-size: 18px; font-weight: 700; color: var(--blue); }
+.order-payment { font-size: 12px; color: var(--text2); }
+
+/* ── Пусто ── */
+.empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text2);
+}
+.empty-icon { font-size: 48px; margin-bottom: 12px; }
+.empty-text { font-size: 16px; }
+
+/* ── Загрузка ── */
+.loader {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text2);
+}
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border);
+  border-top-color: var(--blue);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin: 0 auto 12px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Детальная карточка (оверлей) ── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  display: none;
+  align-items: flex-end;
+}
+.overlay.open { display: flex; }
+
+.detail-sheet {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px 24px 0 0;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 20px 20px 40px;
+  animation: slideUp 0.25s ease;
+}
+@keyframes slideUp { from { transform: translateY(100%); } }
+
+.sheet-handle {
+  width: 36px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin: 0 auto 20px;
+}
+
+.detail-title { font-size: 20px; font-weight: 700; margin-bottom: 20px; }
+
+.detail-section { margin-bottom: 20px; }
+.detail-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 10px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.detail-row:last-child { border-bottom: none; }
+.detail-row-label { color: var(--text2); }
+.detail-row-value { font-weight: 500; text-align: right; max-width: 60%; word-break: break-word; }
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.detail-item:last-child { border-bottom: none; }
+.detail-item-name { color: var(--text); }
+.detail-item-qty { color: var(--text2); font-size: 13px; }
+.detail-item-price { color: var(--blue); font-weight: 500; }
+
+.total-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+.total-line span:last-child { color: var(--blue); }
+
+/* ── Смена статуса ── */
+.status-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 20px;
+}
+.status-btn {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+}
+.status-btn:active { opacity: 0.7; transform: scale(0.97); }
+.btn-pending  { background: rgba(251,191,36,0.1);  color: var(--yellow); border-color: rgba(251,191,36,0.3); }
+.btn-done     { background: rgba(74,222,128,0.1);  color: var(--green);  border-color: rgba(74,222,128,0.3); }
+.btn-canceled { background: rgba(248,113,113,0.1); color: var(--red);    border-color: rgba(248,113,113,0.3); }
+.btn-process  { background: rgba(76,180,233,0.1);  color: var(--blue);   border-color: rgba(76,180,233,0.3); }
+
+.close-btn {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  color: var(--text2);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: opacity 0.15s;
+}
+.close-btn:active { opacity: 0.7; }
+
+/* ── Доступ запрещён ── */
+.access-denied {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+  padding: 40px;
+  gap: 12px;
+}
+.access-denied-icon { font-size: 64px; }
+.access-denied-title { font-size: 22px; font-weight: 700; }
+.access-denied-sub { font-size: 15px; color: var(--text2); }
+```
+
+  </style>
+</head>
+<body>
+
+<!-- Экран запрещён -->
+
+<div id="accessDenied" class="access-denied" style="display:none">
+  <div class="access-denied-icon">🔒</div>
+  <div class="access-denied-title">Доступ запрещён</div>
+  <div class="access-denied-sub">Эта страница доступна только администратору</div>
+</div>
+
+<!-- Основной интерфейс -->
+
+<div id="app" style="display:none">
+
+  <div class="header">
+    <div>
+      <div class="header-title">⚡ Админ-панель</div>
+      <div class="header-sub" id="headerSub">Загрузка...</div>
+    </div>
+    <button class="refresh-btn" id="refreshBtn">
+      <span>↻</span> Обновить
+    </button>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-value" id="statTotal">—</div>
+      <div class="stat-label">Всего</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="color:var(--yellow)" id="statPending">—</div>
+      <div class="stat-label">Ожидают</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="color:var(--green)" id="statDone">—</div>
+      <div class="stat-label">Выполнено</div>
+    </div>
+  </div>
+
+  <div class="filters">
+    <div class="filter-chip active" data-filter="all">Все</div>
+    <div class="filter-chip" data-filter="pending">🟡 Ожидают</div>
+    <div class="filter-chip" data-filter="done">✅ Выполнено</div>
+    <div class="filter-chip" data-filter="canceled">❌ Отменено</div>
+  </div>
+
+  <div class="orders-list" id="ordersList"></div>
+
+</div>
+
+<!-- Детальная карточка заказа -->
+
+<div class="overlay" id="overlay">
+  <div class="detail-sheet" id="detailSheet">
+    <div class="sheet-handle"></div>
+    <div id="detailContent"></div>
+  </div>
+</div>
+
+<script>
+  const API = 'https://gemstorm-app-production.up.railway.app';
+  const ADMIN_ID = 7509324385;
+
+  let allOrders = [];
+  let currentFilter = 'all';
+  let currentOrder = null;
+
+  // ── Авторизация ────────────────────────────────────────────────────────────
+  function checkAccess() {
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+      try { tg.setHeaderColor('#0f0f11'); tg.setBackgroundColor('#0f0f11'); } catch(e) {}
+      const user = tg.initDataUnsafe?.user;
+      if (user && user.id == ADMIN_ID) return true;
+      // В браузере (не TG) — разрешаем для разработки
+      if (!tg.initDataUnsafe?.user) return true;
+      return false;
+    }
+    // Открыт в браузере без TG — разрешаем
+    return true;
+  }
+
+  // ── Форматирование ─────────────────────────────────────────────────────────
+  function formatPrice(p) {
+    return Math.round(p).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + '₽';
+  }
+
+  function getStatusClass(code) {
+    if (code === 'pending') return 'status-pending';
+    if (code === 'done') return 'status-done';
+    if (code === 'canceled') return 'status-canceled';
+    return 'status-other';
+  }
+
+  // ── Загрузка данных ────────────────────────────────────────────────────────
+  async function loadOrders() {
+    const btn = document.getElementById('refreshBtn');
+    btn.classList.add('loading');
+    btn.textContent = '↻ Загрузка...';
+
+    try {
+      const r = await fetch(`${API}/api/orders`);
+      allOrders = await r.json();
+      updateStats();
+      renderOrders();
+      document.getElementById('headerSub').textContent =
+        `Обновлено в ${new Date().toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'})}`;
+    } catch (e) {
+      document.getElementById('headerSub').textContent = '❌ Ошибка соединения';
+      console.error(e);
+    }
+
+    btn.classList.remove('loading');
+    btn.innerHTML = '<span>↻</span> Обновить';
+  }
+
+  // ── Статистика ─────────────────────────────────────────────────────────────
+  function updateStats() {
+    document.getElementById('statTotal').textContent = allOrders.length;
+    document.getElementById('statPending').textContent =
+      allOrders.filter(o => o.status_code === 'pending').length;
+    document.getElementById('statDone').textContent =
+      allOrders.filter(o => o.status_code === 'done').length;
+  }
+
+  // ── Рендер списка ──────────────────────────────────────────────────────────
+  function renderOrders() {
+    const list = document.getElementById('ordersList');
+
+    let filtered = allOrders;
+    if (currentFilter !== 'all') {
+      filtered = allOrders.filter(o => o.status_code === currentFilter);
+    }
+
+    if (!filtered.length) {
+      list.innerHTML = `
+        <div class="empty">
+          <div class="empty-icon">📭</div>
+          <div class="empty-text">Заказов нет</div>
+        </div>`;
+      return;
+    }
+
+    list.innerHTML = filtered.map(o => {
+      let itemsText = '';
+      try {
+        const items = JSON.parse(o.items || '[]');
+        itemsText = items.map(i => `${i.name} ×${i.qty}`).join(', ');
+      } catch(e) { itemsText = '—'; }
+
+      return `
+        <div class="order-card" data-id="${o.id}">
+          <div class="order-top">
+            <div>
+              <div class="order-num">Заказ #${o.order_number}</div>
+              <div class="order-date">${o.date} ${o.time || ''}</div>
+            </div>
+            <div class="status-badge ${getStatusClass(o.status_code)}">${o.status}</div>
+          </div>
+          <div class="order-user">Покупатель: <span>${esc(o.sender_name || '—')}</span></div>
+          <div class="order-items">${esc(itemsText)}</div>
+          <div class="order-bottom">
+            <div class="order-total">${formatPrice(o.total)}</div>
+            <div class="order-payment">${esc(o.payment_method || '—')}</div>
+          </div>
+        </div>`;
+    }).join('');
+
+    list.querySelectorAll('.order-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const id = parseInt(card.dataset.id);
+        const order = allOrders.find(o => o.id === id);
+        if (order) openDetail(order);
+      });
+    });
+  }
+
+  // ── Детальная карточка ─────────────────────────────────────────────────────
+  function openDetail(order) {
+    currentOrder = order;
+    let items = [];
+    try { items = JSON.parse(order.items || '[]'); } catch(e) {}
+
+    const itemsHtml = items.map(i => `
+      <div class="detail-item">
+        <div>
+          <div class="detail-item-name">${esc(i.name)}</div>
+          <div class="detail-item-qty">${i.qty} шт.</div>
+        </div>
+        <div class="detail-item-price">${formatPrice(i.price * i.qty)}</div>
+      </div>`).join('');
+
+    document.getElementById('detailContent').innerHTML = `
+      <div class="detail-title">Заказ #${order.order_number}</div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">Информация</div>
+        <div class="detail-row">
+          <span class="detail-row-label">Статус</span>
+          <span class="detail-row-value">${order.status}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-row-label">Дата</span>
+          <span class="detail-row-value">${order.date} ${order.time || ''}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-row-label">Покупатель</span>
+          <span class="detail-row-value">${esc(order.sender_name || '—')}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-row-label">Email</span>
+          <span class="detail-row-value">${esc(order.email || '—')}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-row-label">Оплата</span>
+          <span class="detail-row-value">${esc(order.payment_method || '—')}</span>
+        </div>
+        ${order.promo ? `<div class="detail-row"><span class="detail-row-label">Промокод</span><span class="detail-row-value">${order.promo} (${order.promo_discount}%)</span></div>` : ''}
+        ${order.user_username ? `<div class="detail-row"><span class="detail-row-label">Telegram</span><span class="detail-row-value">@${order.user_username}</span></div>` : ''}
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">Товары</div>
+        ${itemsHtml}
+        <div class="total-line">
+          <span>Итого</span>
+          <span>${formatPrice(order.total)}</span>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">Сменить статус</div>
+        <div class="status-buttons">
+          <button class="status-btn btn-process"  data-status="🔵 В обработке"    data-code="processing">🔵 В обработке</button>
+          <button class="status-btn btn-done"      data-status="✅ Выполнен"       data-code="done">✅ Выполнен</button>
+          <button class="status-btn btn-pending"   data-status="🟡 Ожидает проверки" data-code="pending">🟡 Ожидает</button>
+          <button class="status-btn btn-canceled"  data-status="❌ Отменен"        data-code="canceled">❌ Отменён</button>
+        </div>
+      </div>
+
+      <button class="close-btn" id="closeBtn">Закрыть</button>
+    `;
+
+    document.getElementById('overlay').classList.add('open');
+
+    document.querySelectorAll('.status-btn').forEach(btn => {
+      btn.addEventListener('click', () => updateStatus(order.id, btn.dataset.status, btn.dataset.code));
+    });
+
+    document.getElementById('closeBtn').addEventListener('click', closeDetail);
+  }
+
+  function closeDetail() {
+    document.getElementById('overlay').classList.remove('open');
+    currentOrder = null;
+  }
+
+  // Закрытие по клику на фон
+  document.getElementById('overlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('overlay')) closeDetail();
+  });
+
+  // ── Смена статуса ──────────────────────────────────────────────────────────
+  async function updateStatus(orderId, status, statusCode) {
+    try {
+      const r = await fetch(`${API}/api/update-status`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId, status, statusCode })
+      });
+
+      if (r.ok) {
+        // Обновляем локально
+        const order = allOrders.find(o => o.id === orderId);
+        if (order) {
+          order.status = status;
+          order.status_code = statusCode;
+        }
+        closeDetail();
+        updateStats();
+        renderOrders();
+      } else {
+        alert('Ошибка при обновлении статуса');
+      }
+    } catch(e) {
+      alert('Ошибка соединения');
+      console.error(e);
+    }
+  }
+
+  // ── Фильтры ────────────────────────────────────────────────────────────────
+  document.querySelectorAll('.filter-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      currentFilter = chip.dataset.filter;
+      renderOrders();
+    });
+  });
+
+  document.getElementById('refreshBtn').addEventListener('click', loadOrders);
+
+  // ── Хелпер escape ──────────────────────────────────────────────────────────
+  function esc(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>]/g, m =>
+      m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'
+    );
+  }
+
+  // ── Инициализация ──────────────────────────────────────────────────────────
+  if (checkAccess()) {
+    document.getElementById('app').style.display = 'block';
+    loadOrders();
+    // Автообновление каждые 30 сек
+    setInterval(loadOrders, 30000);
+  } else {
+    document.getElementById('accessDenied').style.display = 'flex';
+  }
+</script>
+
+</body>
+</html>

@@ -68,6 +68,14 @@ async function renderAdminPanel() {
     return;
   }
   
+  // Автообновление каждые 5 секунд
+  if (window.autoRefreshInterval) clearInterval(window.autoRefreshInterval);
+  window.autoRefreshInterval = setInterval(() => {
+    if (document.getElementById('admin-page').classList.contains('active-page')) {
+      renderAdminPanel();
+    }
+  }, 5000);
+  
   // Статистика
   const totalOrders = orders.length;
   const totalAmount = orders.reduce((sum, o) => sum + o.total, 0);

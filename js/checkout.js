@@ -9,7 +9,7 @@ let checkoutData = {
 // Отправка заказа на сервер
 async function sendOrderToServer(order) {
   try {
-    const response = await fetch('https://gemstorm-app.up.railway.app/api/order', {
+    const response = await fetch('https://gemstorm-app-production.up.railway.app/api/order', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(order)

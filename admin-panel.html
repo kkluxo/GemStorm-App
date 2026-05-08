@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#171719">
+  <title>Админ-панель | GemStorm Store</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #171719;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #ffffff;
+      padding: 16px 14px 30px 14px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .header {
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 600;
+      background: linear-gradient(135deg, #4cb4e9, #fff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .stats {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: #202022;
+      border: 1px solid #2B2B2D;
+      border-radius: 20px;
+      padding: 16px 20px;
+      text-align: center;
+      flex: 1;
+      min-width: 100px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #4cb4e9;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: #9e9e9e;
+      margin-top: 4px;
+    }
+
+    .refresh-btn {
+      background: #202B32;
+      border: none;
+      border-radius: 40px;
+      padding: 10px 20px;
+      color: #4cb4e9;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.1s;
+    }
+
+    .refresh-btn:active {
+      transform: scale(0.96);
+    }
+
+    .orders-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .order-card {
+      background: #202022;
+      border: 1px solid #2B2B2D;
+      border-radius: 24px;
+      padding: 18px;
+      transition: 0.1s;
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .order-number {
+      font-size: 18px;
+      font-weight: 600;
+      color: #4cb4e9;
+    }
+
+    .order-date {
+      font-size: 13px;
+      color: #9e9e9e;
+    }
+
+    .status-select {
+      background: #303032;
+      border: 1px solid #2B2B2D;
+      border-radius: 20px;
+      padding: 6px 12px;
+      color: white;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .user-info {
+      margin-bottom: 12px;
+      padding: 10px;
+      background: #2a2a2c;
+      border-radius: 16px;
+    }
+
+    .user-name {
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .user-contact {
+      font-size: 13px;
+      color: #4cb4e9;
+      margin-top: 4px;
+    }
+
+    .order-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 12px;
+      font-size: 14px;
+      color: #cbd5e1;
+    }
+
+    .order-items {
+      background: #1a1a1c;
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .order-item:last-child {
+      border-bottom: none;
+    }
+
+    .order-total {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 12px;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .contact-btn {
+      background: #202B32;
+      border: none;
+      border-radius: 30px;
+      padding: 10px 16px;
+      color: #4cb4e9;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 12px;
+      width: 100%;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #9e9e9e;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 60px;
+      color: #4cb4e9;
+    }
+
+    footer {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 12px;
+      color: #5a5a5c;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📊 Админ-панель</h1>
+    <button class="refresh-btn" onclick="loadOrders()">🔄 Обновить</button>
+  </div>
+
+  <div class="stats" id="stats">
+    <div class="stat-card">
+      <div class="stat-value" id="totalOrders">0</div>
+      <div class="stat-label">Всего заказов</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="totalSum">0 ₽</div>
+      <div class="stat-label">На сумму</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="pendingOrders">0</div>
+      <div class="stat-label">В обработке</div>
+    </div>
+  </div>
+
+  <div id="ordersContainer" class="orders-list">
+    <div class="loading">📦 Загрузка заказов...</div>
+  </div>
+
+  <footer>
+    GemStorm Store © 2026
+  </footer>
+
+  <script>
+    const API_URL = 'https://gemstorm-app.up.railway.app';
+    const ADMIN_ID = 7509324385;
+
+    // Проверка прав админа
+    function checkAdminAccess() {
+      let tgUser = null;
+      if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
+        tgUser = window.Telegram.WebApp.initDataUnsafe.user;
+      }
+      
+      if (!tgUser || tgUser.id != ADMIN_ID) {
+        document.body.innerHTML = `
+          <div style="text-align: center; padding: 80px 20px;">
+            <div style="font-size: 48px; margin-bottom: 16px;">⛔</div>
+            <h2 style="color: #4cb4e9; margin-bottom: 8px;">Доступ запрещён</h2>
+            <p style="color: #9e9e9e;">У вас нет прав для просмотра этой страницы.</p>
+          </div>
+        `;
+        return false;
+      }
+      return true;
+    }
+
+    // Форматирование цены
+    function formatPrice(p) {
+      return Math.round(p).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + "₽";
+    }
+
+    // Загрузка заказов
+    async function loadOrders() {
+      const container = document.getElementById('ordersContainer');
+      container.innerHTML = '<div class="loading">🔄 Загрузка заказов...</div>';
+      
+      try {
+        const response = await fetch(`${API_URL}/api/orders`);
+        if (!response.ok) throw new Error('Ошибка загрузки');
+        
+        const orders = await response.json();
+        displayOrders(orders);
+        
+      } catch (error) {
+        console.error('Ошибка:', error);
+        container.innerHTML = `<div class="empty-state">❌ Ошибка загрузки заказов<br><small>${error.message}</small></div>`;
+      }
+    }
+
+    // Отображение заказов
+    function displayOrders(orders) {
+      const container = document.getElementById('ordersContainer');
+      
+      // Обновляем статистику
+      const totalOrders = orders.length;
+      const totalSum = orders.reduce((sum, o) => sum + (o.total || 0), 0);
+      const pendingOrders = orders.filter(o => o.status_code === 'pending').length;
+      
+      document.getElementById('totalOrders').textContent = totalOrders;
+      document.getElementById('totalSum').textContent = formatPrice(totalSum);
+      document.getElementById('pendingOrders').textContent = pendingOrders;
+      
+      if (totalOrders === 0) {
+        container.innerHTML = '<div class="empty-state">📭 Заказов пока нет</div>';
+        return;
+      }
+      
+      container.innerHTML = orders.map(order => {
+        let itemsList = [];
+        try {
+          itemsList = typeof order.items === 'string' ? JSON.parse(order.items) : (order.items || []);
+        } catch(e) {
+          itemsList = [];
+        }
+        
+        return `
+          <div class="order-card" data-order-id="${order.id}">
+            <div class="order-header">
+              <div>
+                <span class="order-number">Заказ #${order.order_number || order.id}</span>
+                <span class="order-date">${order.date || ''} ${order.time || ''}</span>
+              </div>
+              <select class="status-select" data-order-id="${order.id}" data-status="${order.status_code || 'pending'}">
+                <option value="pending" ${order.status_code === 'pending' ? 'selected' : ''}>🟡 Ожидает проверки</option>
+                <option value="confirmed" ${order.status_code === 'confirmed' ? 'selected' : ''}>✅ Подтверждён</option>
+                <option value="shipped" ${order.status_code === 'shipped' ? 'selected' : ''}>📦 Отправлен</option>
+                <option value="completed" ${order.status_code === 'completed' ? 'selected' : ''}>🎉 Выполнен</option>
+                <option value="cancelled" ${order.status_code === 'cancelled' ? 'selected' : ''}>❌ Отменён</option>
+              </select>
+            </div>
+            
+            <div class="user-info">
+              <div class="user-name">👤 ${escapeHtml(order.sender_name || 'Не указан')}</div>
+              <div class="user-contact">📧 ${escapeHtml(order.email || '—')}</div>
+              <div class="user-contact">💳 ${order.payment_method || '—'}</div>
+              ${order.user_username ? `<div class="user-contact">🔗 @${order.user_username}</div>` : ''}
+            </div>
+            
+            <div class="order-items">
+              ${itemsList.map(item => `
+                <div class="order-item">
+                  <span>${escapeHtml(item.name)} x${item.qty}</span>
+                  <span>${formatPrice(item.price * item.qty)}</span>
+                </div>
+              `).join('')}
+            </div>
+            
+            <div class="order-total">
+              <span>💰 Итого:</span>
+              <span style="color: #4cb4e9;">${formatPrice(order.total)}</span>
+            </div>
+            
+            <button class="contact-btn" data-userid="${order.user_id || ''}" data-username="${order.user_username || ''}">
+              💬 Связаться с покупателем
+            </button>
+          </div>
+        `;
+      }).join('');
+      
+      // Добавляем обработчики
+      document.querySelectorAll('.status-select').forEach(select => {
+        select.addEventListener('change', async (e) => {
+          e.stopPropagation();
+          const orderId = select.dataset.orderId;
+          const newStatusText = select.options[select.selectedIndex].text;
+          const newStatusCode = select.value;
+          
+          try {
+            const response = await fetch(`${API_URL}/api/update-status`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ orderId, status: newStatusText, statusCode: newStatusCode })
+            });
+            
+            if (response.ok) {
+              loadOrders(); // Обновляем список
+            }
+          } catch(err) {
+            console.error('Ошибка обновления статуса:', err);
+          }
+        });
+      });
+      
+      document.querySelectorAll('.contact-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const username = btn.dataset.username;
+          if (username) {
+            window.open(`https://t.me/${username}`, '_blank');
+          } else if (btn.dataset.userid) {
+            window.open(`tg://user?id=${btn.dataset.userid}`, '_blank');
+          }
+        });
+      });
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+      });
+    }
+
+    // Telegram WebApp
+    if (window.Telegram && window.Telegram.WebApp) {
+      const tg = window.Telegram.WebApp;
+      tg.ready();
+      tg.expand();
+      tg.disableVerticalSwipes();
+      tg.setHeaderColor('#171719');
+      tg.setBackgroundColor('#171719');
+    }
+    
+    // Проверяем доступ и загружаем заказы
+    if (checkAdminAccess()) {
+      loadOrders();
+      // Автообновление каждые 10 секунд
+      setInterval(loadOrders, 10000);
+    }
+  </script>
+</body>
+</html>

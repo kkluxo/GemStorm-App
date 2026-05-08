@@ -10,138 +10,239 @@ const ADMIN_ID = 7509324385;
 
 console.log('Запуск сервера...');
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static('.'));
 
+// Подключение к базе данных PostgreSQL
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
 
+// Инициализация таблицы orders
 async function initDB() {
-  await pool.query(`CREATE TABLE IF NOT EXISTS orders (
-    id             SERIAL PRIMARY KEY,
-    order_number   BIGINT,
-    date           TEXT,
-    time           TEXT,
-    timestamp      TEXT,
-    items          TEXT,
-    total          INTEGER,
-    status         TEXT DEFAULT '🟡 Ожидает проверки',
-    status_code    TEXT DEFAULT 'pending',
-    promo          TEXT,
-    promo_discount INTEGER DEFAULT 0,
-    payment_method TEXT,
-    sender_name    TEXT,
-    email          TEXT,
-    user_id        BIGINT,
-    user_name      TEXT,
-    user_username  TEXT,
-    created_at     TIMESTAMPTZ DEFAULT NOW()
-  )`);
-  console.log('Таблица orders готова');
+  const query = `
+    CREATE TABLE IF NOT EXISTS orders (
+      id             SERIAL PRIMARY KEY,
+      order_number   BIGINT,
+      date           TEXT,
+      time           TEXT,
+      timestamp      TEXT,
+      items          TEXT,
+      total          INTEGER,
+      status         TEXT DEFAULT '🟡 Ожидает проверки',
+      status_code    TEXT DEFAULT 'pending',
+      promo          TEXT,
+      promo_discount INTEGER DEFAULT 0,
+      payment_method TEXT,
+      sender_name    TEXT,
+      email          TEXT,
+      user_id        BIGINT,
+      user_name      TEXT,
+      user_username  TEXT,
+      created_at     TIMESTAMPTZ DEFAULT NOW()
+    )
+  `;
+  
+  try {
+    await pool.query(query);
+    console.log('✅ Таблица orders готова');
+    
+    // Проверяем, есть ли уже заказы в базе
+    const result = await pool.query('SELECT COUNT(*) as count FROM orders');
+    console.log(`📦 В базе данных ${result.rows[0].count} заказов`);
+  } catch (err) {
+    console.error('❌ Ошибка при создании таблицы:', err.message);
+  }
 }
 
+// Форматирование цены
 function formatPrice(p) {
   return Math.round(p).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + 'руб';
 }
 
+// Уведомление админа о новом заказе
 async function notifyAdmin(bot, order) {
-  const items = JSON.parse(order.items || '[]');
-  const list = items.map(function(i) { return i.name + ' x' + i.qty; }).join('\n');
-  await bot.telegram.sendMessage(ADMIN_ID,
-    'НОВЫЙ ЗАКАЗ #' + order.order_number + '\n\n' +
-    'Покупатель: ' + (order.sender_name || '-') + '\n' +
-    'Email: ' + (order.email || '-') + '\n' +
-    'Оплата: ' + (order.payment_method || '-') + '\n\n' +
-    'Товары:\n' + list + '\n\n' +
-    'Итого: ' + order.total + ' руб\n' +
-    'Время: ' + order.date + ' ' + order.time
-  );
+  try {
+    const items = JSON.parse(order.items || '[]');
+    const list = items.map(i => `${i.name} x${i.qty}`).join('\n');
+    
+    await bot.telegram.sendMessage(
+      ADMIN_ID,
+      '🆕 НОВЫЙ ЗАКАЗ #' + order.order_number + '\n\n' +
+      '👤 Покупатель: ' + (order.sender_name || '-') + '\n' +
+      '📧 Email: ' + (order.email || '-') + '\n' +
+      '💳 Оплата: ' + (order.payment_method || '-') + '\n\n' +
+      '📦 Товары:\n' + list + '\n\n' +
+      '💰 Итого: ' + order.total + ' руб\n' +
+      '📅 Время: ' + order.date + ' ' + (order.time || '')
+    );
+    console.log('✅ Уведомление отправлено админу');
+  } catch (err) {
+    console.error('❌ Ошибка уведомления админа:', err.message);
+  }
 }
 
+// Уведомление пользователя о новом заказе
 async function notifyUser(bot, order) {
   if (!order.user_id) return;
-  const items = JSON.parse(order.items || '[]');
-  const list = items.map(function(i) { return i.name + ' x' + i.qty; }).join('\n');
-  await bot.telegram.sendMessage(order.user_id,
-    'Заказ #' + order.order_number + ' получен!\n\n' +
-    'Состав:\n' + list + '\n\n' +
-    'Сумма: ' + order.total + ' руб\n\n' +
-    'Администратор проверит оплату и свяжется с вами.'
-  );
+  
+  try {
+    const items = JSON.parse(order.items || '[]');
+    const list = items.map(i => `${i.name} x${i.qty}`).join('\n');
+    
+    await bot.telegram.sendMessage(
+      order.user_id,
+      '✅ Заказ #' + order.order_number + ' получен!\n\n' +
+      '📦 Состав:\n' + list + '\n\n' +
+      '💰 Сумма: ' + order.total + ' руб\n\n' +
+      '🔄 Администратор проверит оплату и свяжется с вами.'
+    );
+    console.log('✅ Уведомление отправлено пользователю');
+  } catch (err) {
+    console.error('❌ Ошибка уведомления пользователя:', err.message);
+  }
 }
 
-app.get('/api/status', async function(req, res) {
-  var result = await pool.query('SELECT COUNT(*) as count FROM orders');
-  res.json({ status: 'ok', bot: !!BOT_TOKEN, ordersCount: parseInt(result.rows[0].count) });
-});
+// ========== API ЭНДПОИНТЫ ==========
 
-app.get('/api/orders', async function(req, res) {
+// Проверка статуса сервера
+app.get('/api/status', async (req, res) => {
   try {
-    var result = await pool.query('SELECT * FROM orders ORDER BY id DESC');
-    res.json(result.rows);
+    const result = await pool.query('SELECT COUNT(*) as count FROM orders');
+    res.json({ 
+      status: 'ok', 
+      bot: !!BOT_TOKEN, 
+      ordersCount: parseInt(result.rows[0].count),
+      timestamp: new Date().toISOString()
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-app.get('/api/user-orders', async function(req, res) {
+// ПОЛУЧИТЬ ВСЕ ЗАКАЗЫ (для админа)
+app.get('/api/orders', async (req, res) => {
   try {
-    var userId = req.query.userId;
-    if (!userId) return res.json([]);
-    var result = await pool.query('SELECT * FROM orders WHERE user_id = $1 ORDER BY id DESC', [userId]);
+    console.log('📋 Запрос на получение всех заказов');
+    const result = await pool.query('SELECT * FROM orders ORDER BY id DESC');
+    console.log(`✅ Возвращаю ${result.rows.length} заказов`);
     res.json(result.rows);
   } catch (err) {
+    console.error('❌ Ошибка в /api/orders:', err.message);
     res.status(500).json({ error: err.message });
   }
 });
 
-app.post('/api/order', async function(req, res) {
+// ПОЛУЧИТЬ ЗАКАЗЫ ПОЛЬЗОВАТЕЛЯ
+app.get('/api/user-orders', async (req, res) => {
   try {
-    var o = req.body;
-    var result = await pool.query(
-      'INSERT INTO orders (order_number, date, time, timestamp, items, total, promo, promo_discount, payment_method, sender_name, email, user_id, user_name, user_username) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING *',
-      [o.orderNumber, o.date, o.time, o.timestamp, JSON.stringify(o.items), o.total, o.promo || null, o.promo_discount || 0, o.payment_method || null, o.sender_name || null, o.email || null, o.user_id || null, o.user_name || null, o.user_username || null]
-    );
-    var saved = result.rows[0];
-    console.log('Новый заказ #' + saved.order_number);
-    if (BOT_TOKEN) {
-      var bot = new Telegraf(BOT_TOKEN);
-      try { await notifyAdmin(bot, saved); } catch(e) { console.log('Ошибка уведомления админа: ' + e.message); }
-      try { await notifyUser(bot, saved); } catch(e) { console.log('Ошибка уведомления юзера: ' + e.message); }
+    const userId = req.query.userId;
+    if (!userId) {
+      return res.json([]);
     }
+    
+    console.log(`📋 Запрос заказов для пользователя ${userId}`);
+    const result = await pool.query('SELECT * FROM orders WHERE user_id = $1 ORDER BY id DESC', [userId]);
+    console.log(`✅ Возвращаю ${result.rows.length} заказов для пользователя`);
+    res.json(result.rows);
+  } catch (err) {
+    console.error('❌ Ошибка в /api/user-orders:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// СОЗДАТЬ НОВЫЙ ЗАКАЗ
+app.post('/api/order', async (req, res) => {
+  try {
+    const o = req.body;
+    console.log('📝 Получен новый заказ:', o.orderNumber);
+    
+    const result = await pool.query(
+      `INSERT INTO orders 
+       (order_number, date, time, timestamp, items, total, promo, promo_discount, 
+        payment_method, sender_name, email, user_id, user_name, user_username) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) 
+       RETURNING *`,
+      [
+        o.orderNumber, o.date, o.time, o.timestamp, 
+        JSON.stringify(o.items), o.total, 
+        o.promo || null, o.promo_discount || 0,
+        o.payment_method || null, o.sender_name || null, o.email || null,
+        o.user_id || null, o.user_name || null, o.user_username || null
+      ]
+    );
+    
+    const saved = result.rows[0];
+    console.log('✅ Заказ #' + saved.order_number + ' сохранён в БД');
+    
+    // Отправляем уведомления через бота
+    if (BOT_TOKEN) {
+      const bot = new Telegraf(BOT_TOKEN);
+      await notifyAdmin(bot, saved);
+      await notifyUser(bot, saved);
+    } else {
+      console.log('⚠️ BOT_TOKEN не задан, уведомления не отправлены');
+    }
+    
     res.json({ success: true, orderId: saved.id });
   } catch (err) {
-    console.log('Ошибка: ' + err.message);
+    console.error('❌ Ошибка при сохранении заказа:', err.message);
     res.status(500).json({ error: err.message });
   }
 });
 
-app.post('/api/update-status', async function(req, res) {
+// ОБНОВИТЬ СТАТУС ЗАКАЗА
+app.post('/api/update-status', async (req, res) => {
   try {
-    var orderId = req.body.orderId;
-    var status = req.body.status;
-    var statusCode = req.body.statusCode;
-    var result = await pool.query('UPDATE orders SET status=$1, status_code=$2 WHERE id=$3 RETURNING *', [status, statusCode, orderId]);
-    if (!result.rows.length) return res.status(404).json({ error: 'Заказ не найден' });
-    var order = result.rows[0];
-    if (BOT_TOKEN && order.user_id) {
-      var bot = new Telegraf(BOT_TOKEN);
-      try {
-        await bot.telegram.sendMessage(order.user_id, 'Статус заказа #' + order.order_number + ' изменён: ' + status);
-      } catch(e) { console.log('Ошибка уведомления: ' + e.message); }
+    const { orderId, status, statusCode } = req.body;
+    console.log(`🔄 Обновление статуса заказа #${orderId} -> ${status} (${statusCode})`);
+    
+    const result = await pool.query(
+      'UPDATE orders SET status = $1, status_code = $2 WHERE id = $3 RETURNING *',
+      [status, statusCode, orderId]
+    );
+    
+    if (!result.rows.length) {
+      console.log('❌ Заказ не найден');
+      return res.status(404).json({ error: 'Заказ не найден' });
     }
+    
+    const order = result.rows[0];
+    console.log('✅ Статус обновлён');
+    
+    // Отправляем уведомление пользователю об изменении статуса
+    if (BOT_TOKEN && order.user_id) {
+      const bot = new Telegraf(BOT_TOKEN);
+      try {
+        await bot.telegram.sendMessage(
+          order.user_id,
+          '🔄 Статус заказа #' + order.order_number + ' изменён: ' + status
+        );
+        console.log('✅ Уведомление об изменении статуса отправлено пользователю');
+      } catch (err) {
+        console.error('❌ Ошибка при уведомлении пользователя:', err.message);
+      }
+    }
+    
     res.json({ success: true });
   } catch (err) {
+    console.error('❌ Ошибка при обновлении статуса:', err.message);
     res.status(500).json({ error: err.message });
   }
 });
 
-initDB().then(function() {
-  app.listen(PORT, function() { console.log('Сервер запущен на порту ' + PORT); });
-}).catch(function(err) {
-  console.log('Ошибка БД: ' + err.message);
+// ========== ЗАПУСК СЕРВЕРА ==========
+
+initDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`🚀 Сервер запущен на порту ${PORT}`);
+    console.log(`📍 API доступен по адресу: http://localhost:${PORT}/api/status`);
+    console.log(`🤖 BOT_TOKEN: ${BOT_TOKEN ? '✅ установлен' : '❌ не установлен'}`);
+  });
+}).catch((err) => {
+  console.error('❌ Критическая ошибка при инициализации БД:', err.message);
   process.exit(1);
 });

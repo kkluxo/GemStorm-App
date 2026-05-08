@@ -43,7 +43,7 @@ function renderCatalog() {
 }
 
 function renderFilterModal() {
-  const cats = ["Все категории", "Brawl Stars", "Clash Royale"];
+  const cats = ["Все категории", "Brawl Stars"];
   const container = document.getElementById("filterOptionsContainer");
   if (!container) return;
   container.innerHTML = cats.map(cat => `<div class="filter-row" data-filter="${cat}"><span class="filter-text">${cat}</span><span class="check-mark">${currentFilter === cat ? '✓' : ''}</span></div>`).join("");

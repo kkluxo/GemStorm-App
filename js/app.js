@@ -19,6 +19,12 @@ function showPage(pageId) {
     renderProfilePage();
     checkoutBlock.style.display = "none";
   }
+  if (pageId === "admin") {
+    if (window.adminFunctions && window.adminFunctions.isAdmin()) {
+      window.adminFunctions.renderAdminPanel();
+    }
+    checkoutBlock.style.display = "none";
+  }
   if (pageId === "checkout") {
     renderCheckoutForm();
   }
@@ -33,7 +39,7 @@ function showPage(pageId) {
   }
   
   document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
-  if (["catalog", "cart", "orders", "profile"].includes(pageId)) {
+  if (["catalog", "cart", "orders", "profile", "admin"].includes(pageId)) {
     document.querySelector(`.menu-item[data-page="${pageId}"]`)?.classList.add("active");
   } else {
     document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));

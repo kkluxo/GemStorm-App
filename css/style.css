@@ -1,0 +1,32 @@
+// Товары
+const products = [
+  { id: 1, name: "Brawl Pass", price: 769, oldPrice: 799, image: "https://...", category: "Brawl Stars" },
+  { id: 2, name: "Улучш. до BP+", price: 429, oldPrice: 449, image: "https://...", category: "Brawl Stars" },
+  // ... все товары до 26
+];
+
+// Промокоды
+const promoCodes = {
+  "SALE10": 10,
+  "SALE20": 20,
+  "GELTAN": 15,
+  "WELCOME": 5
+};
+
+// Карты банков
+const cardNumbers = {
+  "Т-Банк": "2200 7019 3499 0208",
+  "ВТБ Банк": "2200 2418 6382 9697",
+  "Сбер Банк": "2202 2084 4441 4743",
+  "Ozon Банк": "2204 3203 9062 7166",
+  "Альфа Банк": "2200 1529 6836 2817"
+};
+
+// Способы оплаты
+const paymentMethodsOptions = [
+  { value: "tbank", label: "Т-Банк" },
+  { value: "vtb", label: "ВТБ Банк" },
+  { value: "sber", label: "Сбер Банк" },
+  { value: "ozon", label: "Ozon Банк" },
+  { value: "alfa", label: "Альфа Банк" }
+];

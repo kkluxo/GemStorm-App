@@ -1,6 +1,7 @@
 function showPage(pageId) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
-  document.getElementById(pageId + "-page")?.classList.add("active-page");
+  const targetPage = document.getElementById(pageId + "-page");
+  if (targetPage) targetPage.classList.add("active-page");
   
   const checkoutBlock = document.getElementById("cartCheckoutFixed");
   
@@ -20,8 +21,8 @@ function showPage(pageId) {
     checkoutBlock.style.display = "none";
   }
   if (pageId === "admin") {
-    if (window.adminFunctions && window.adminFunctions.isAdmin()) {
-      window.adminFunctions.renderAdminPanel();
+    if (typeof renderAdminPanel === 'function') {
+      renderAdminPanel();
     }
     checkoutBlock.style.display = "none";
   }
@@ -38,12 +39,11 @@ function showPage(pageId) {
     checkoutBlock.style.display = "none";
   }
   
+  // Активное состояние меню
   document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
-  if (["catalog", "cart", "orders", "profile", "admin"].includes(pageId)) {
-    document.querySelector(`.menu-item[data-page="${pageId}"]`)?.classList.add("active");
-  } else {
-    document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
-  }
+  const activeBtn = document.querySelector(`.menu-item[data-page="${pageId}"]`);
+  if (activeBtn) activeBtn.classList.add("active");
+  
   window.scrollTo({ top: 0 });
 }
 
@@ -98,3 +98,8 @@ renderOrdersPage();
 renderFilterModal();
 renderProfilePage();
 document.getElementById("cartCheckoutFixed").style.display = "none";
+
+// Запуск админ-панели (только для админа)
+if (typeof initAdmin === 'function') {
+  initAdmin();
+}

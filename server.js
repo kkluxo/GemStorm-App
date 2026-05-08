@@ -56,6 +56,11 @@ async function initDB() {
   }
 }
 
+async function getNextOrderNumber() {
+  const result = await pool.query('SELECT COALESCE(MAX(order_number), 0) + 1 as next_num FROM orders');
+  return result.rows[0].next_num;
+}
+
 async function notifyAdmin(bot, order) {
   try {
     const items = JSON.parse(order.items || '[]');
@@ -116,7 +121,7 @@ app.get('/api/status', async (req, res) => {
 
 app.get('/api/orders', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM orders ORDER BY id ASC');
+    const result = await pool.query('SELECT * FROM orders ORDER BY id DESC');
     res.json(result.rows);
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
@@ -133,10 +138,12 @@ app.get('/api/user-orders', async (req, res) => {
 app.post('/api/order', async (req, res) => {
   try {
     const o = req.body;
+    const nextNumber = await getNextOrderNumber();
+    
     const result = await pool.query(
       `INSERT INTO orders (order_number, date, time, timestamp, items, total, promo, promo_discount, payment_method, sender_name, email, user_id, user_name, user_username) 
        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING *`,
-      [o.orderNumber, o.date, o.time, o.timestamp, JSON.stringify(o.items), o.total, 
+      [nextNumber, o.date, o.time, o.timestamp, JSON.stringify(o.items), o.total, 
        o.promo || null, o.promo_discount || 0, o.payment_method || null, 
        o.sender_name || null, o.email || null, o.user_id || null, o.user_name || null, o.user_username || null]
     );
@@ -169,13 +176,23 @@ app.post('/api/submit-code', async (req, res) => {
   try {
     const { orderId, code } = req.body;
     console.log(`Получен код для заказа #${orderId}: ${code}`);
-    const result = await pool.query('UPDATE orders SET verification_code = $1 WHERE id = $2 RETURNING *', [code, orderId]);
+    const result = await pool.query('UPDATE orders SET verification_code = $1, status = $2, status_code = $3 WHERE id = $4 RETURNING *', 
+      [code, 'Ожидает выполнения', 'processing', orderId]);
     if (!result.rows.length) return res.status(404).json({ error: 'Заказ не найден' });
     if (BOT_TOKEN) {
       const bot = new Telegraf(BOT_TOKEN);
       await bot.telegram.sendMessage(ADMIN_ID, `НОВЫЙ КОД ДЛЯ ЗАКАЗА #${result.rows[0].order_number}\n\nКод: ${code}\nПользователь: @${result.rows[0].user_username || 'без юзернейма'}`);
     }
     res.json({ success: true });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.post('/api/refresh-order', async (req, res) => {
+  try {
+    const { orderId } = req.body;
+    const result = await pool.query('SELECT * FROM orders WHERE id = $1', [orderId]);
+    if (!result.rows.length) return res.status(404).json({ error: 'Заказ не найден' });
+    res.json(result.rows[0]);
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 

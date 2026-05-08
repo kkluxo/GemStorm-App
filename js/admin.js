@@ -1,8 +1,10 @@
+const ADMIN_ID = 7509324385;
+
 let adminOrders = [];
 let adminCurrentFilter = 'all';
 
 function initAdminPanel() {
-  console.log('Admin panel initialized');
+  console.log('🟢 Admin panel initialized, ADMIN_ID:', ADMIN_ID);
   loadAdminOrders();
   
   document.getElementById('adminRefreshBtn')?.addEventListener('click', () => {
@@ -39,23 +41,23 @@ async function loadAdminOrders() {
   }
   
   try {
-    // Пробуем получить заказы
+    console.log('🔄 Загрузка заказов с сервера...');
     const response = await fetch('https://gemstorm-app-production.up.railway.app/api/orders');
     
-    console.log('Response status:', response.status);
+    console.log('📡 Response status:', response.status);
     
     if (response.ok) {
       adminOrders = await response.json();
-      console.log('Заказов получено:', adminOrders.length);
-      console.log('Первый заказ:', adminOrders[0]);
+      console.log('✅ Получено заказов:', adminOrders.length);
+      console.log('📋 Первый заказ:', adminOrders[0]);
       updateAdminStats();
       renderAdminOrders();
     } else {
-      console.error('Ошибка сервера:', response.status);
+      console.error('❌ Ошибка сервера:', response.status);
       showAdminError('Ошибка загрузки заказов. Код: ' + response.status);
     }
   } catch (error) {
-    console.error('Ошибка загрузки заказов:', error);
+    console.error('❌ Ошибка загрузки заказов:', error);
     showAdminError('Ошибка соединения с сервером');
   }
   
@@ -70,13 +72,6 @@ function showAdminError(message) {
   if (container) {
     container.innerHTML = `<div style="text-align:center;padding:60px;color:#f87171">❌ ${message}</div>`;
   }
-  
-  const statTotal = document.getElementById('adminStatTotal');
-  if (statTotal) statTotal.textContent = '0';
-  const statPending = document.getElementById('adminStatPending');
-  if (statPending) statPending.textContent = '0';
-  const statDone = document.getElementById('adminStatDone');
-  if (statDone) statDone.textContent = '0';
 }
 
 function updateAdminStats() {
@@ -87,16 +82,26 @@ function updateAdminStats() {
   if (totalEl) totalEl.textContent = adminOrders.length;
   if (pendingEl) pendingEl.textContent = adminOrders.filter(o => o.status_code === 'pending').length;
   if (doneEl) doneEl.textContent = adminOrders.filter(o => o.status_code === 'done').length;
+  
+  console.log('📊 Статистика:', {
+    total: adminOrders.length,
+    pending: adminOrders.filter(o => o.status_code === 'pending').length,
+    done: adminOrders.filter(o => o.status_code === 'done').length
+  });
 }
 
 function renderAdminOrders() {
   const container = document.getElementById('adminOrdersList');
   if (!container) return;
   
+  console.log('🎨 Рендер заказов, фильтр:', adminCurrentFilter);
+  
   let filtered = adminOrders;
   if (adminCurrentFilter !== 'all') {
     filtered = adminOrders.filter(o => o.status_code === adminCurrentFilter);
   }
+  
+  console.log('📋 Отображаем заказов:', filtered.length);
   
   if (!filtered.length) {
     container.innerHTML = `<div style="text-align:center;padding:60px;color:#9e9e9e">📭 Заказов нет</div>`;
@@ -122,7 +127,7 @@ function renderAdminOrders() {
           <div class="admin-order-num">Заказ #${order.order_number}</div>
           <div class="admin-status ${statusClass}">${order.status || '🟡 Ожидает'}</div>
         </div>
-        <div class="admin-order-user">👤 ${escapeHtml(order.sender_name || '—')} | ${escapeHtml(order.user_username || 'без username')}</div>
+        <div class="admin-order-user">👤 ${escapeHtml(order.sender_name || '—')} | ID: ${order.user_id}</div>
         <div class="admin-order-user">📦 ${escapeHtml(itemsText)}</div>
         <div class="admin-order-user">📅 ${order.date} ${order.time || ''}</div>
         <div class="admin-order-total">${formatPrice(order.total)}</div>
@@ -161,7 +166,11 @@ function openAdminOrderModal(order) {
           <span>${escapeHtml(order.sender_name || '—')}</span>
         </div>
         <div style="display:flex;justify-content:space-between;padding:6px 0">
-          <span style="color:#9e9e9e">Telegram:</span>
+          <span style="color:#9e9e9e">Telegram ID:</span>
+          <span>${order.user_id || '—'}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:6px 0">
+          <span style="color:#9e9e9e">Username:</span>
           <span>${escapeHtml(order.user_username || '—')}</span>
         </div>
         <div style="display:flex;justify-content:space-between;padding:6px 0">
@@ -223,10 +232,10 @@ async function updateAdminOrderStatus(orderId, status, statusCode) {
     if (!response.ok) {
       alert('Ошибка при обновлении статуса');
     } else {
-      console.log('Статус обновлён');
+      console.log('✅ Статус обновлён');
     }
   } catch (error) {
-    console.error('Ошибка:', error);
+    console.error('❌ Ошибка:', error);
     alert('Ошибка соединения');
   }
 }

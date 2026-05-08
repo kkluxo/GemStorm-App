@@ -82,9 +82,9 @@ function showOrderDetail(order) {
   try { items = JSON.parse(order.items || '[]'); } catch(e) {}
   
   const itemsHtml = items.map(i => `
-    <div style="display:flex;justify-content:space-between;padding:10px 0;">
-      <span style="font-size:16px;font-weight:500;">${escapeHtml(i.name)} x${i.qty}</span>
-      <span style="color:#ffffff;font-size:16px;font-weight:500;">${formatPrice(i.price * i.qty)}</span>
+    <div style="display:flex;justify-content:space-between;padding:12px 0;">
+      <span style="font-size:16px;font-weight:500;color:white;">${escapeHtml(i.name)} x${i.qty}</span>
+      <span style="color:white;font-size:16px;font-weight:500;">${formatPrice(i.price * i.qty)}</span>
     </div>
   `).join('');
   
@@ -97,10 +97,10 @@ function showOrderDetail(order) {
       <div class="code-input-fixed">
         <div class="checkout-card" style="margin:0;padding:14px;">
           <div style="margin-bottom:10px;color:#cbd5e1;font-size:16px;">Введите код который вам пришел</div>
-          <div style="display:flex;gap:10px;">
-            <input type="text" id="verificationCodeInput" placeholder="Введите код" style="flex:1;background:#303032;border:1px solid #3a3a3e;border-radius:30px;padding:12px 16px;color:white;font-size:16px;outline:none;">
-            <button id="submitCodeBtn" style="background:#4cb4e9;border:none;border-radius:50px;width:48px;height:48px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <div class="promo-input-row">
+            <input type="text" id="verificationCodeInput" class="promo-input" placeholder="Введите код" style="flex:1;">
+            <button id="submitCodeBtn" class="promo-action-btn apply-btn" style="width:48px;height:48px;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
             </button>
           </div>
         </div>
@@ -116,12 +116,13 @@ function showOrderDetail(order) {
       <div class="order-detail-row"><span class="order-detail-label">Отправитель</span><span class="order-detail-value">${escapeHtml(order.sender_name || '—')}</span></div>
       <div class="order-detail-row"><span class="order-detail-label">Почта</span><span class="order-detail-value">${escapeHtml(order.email || '—')}</span></div>
       ${order.promo ? `<div class="order-detail-row"><span class="order-detail-label">Промокод</span><span class="order-detail-value">${order.promo} (скидка ${order.promo_discount}%)</span></div>` : ''}
+      ${order.verification_code ? `<div class="order-detail-row"><span class="order-detail-label">Код</span><span class="order-detail-value" style="color:#4ade80">${escapeHtml(order.verification_code)}</span></div>` : ''}
     </div>
     
     <div class="order-items-card">
       ${itemsHtml}
       <div style="display:flex;justify-content:space-between;padding:12px 0 0 0;margin-top:8px;font-weight:700;border-top:1px solid #2a2a2e;">
-        <span style="font-size:16px;font-weight:600;">Стоимость</span>
+        <span style="font-size:16px;font-weight:600;color:white;">Стоимость</span>
         <span style="color:#4cb4e9;font-size:16px;font-weight:600;">${formatPrice(order.total)}</span>
       </div>
     </div>

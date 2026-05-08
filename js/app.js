@@ -20,12 +20,6 @@ function showPage(pageId) {
     renderProfilePage();
     checkoutBlock.style.display = "none";
   }
-  if (pageId === "admin") {
-    if (typeof renderAdminPanel === 'function') {
-      renderAdminPanel();
-    }
-    checkoutBlock.style.display = "none";
-  }
   if (pageId === "checkout") {
     renderCheckoutForm();
   }

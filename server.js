@@ -6,16 +6,16 @@ const { Pool } = require('pg');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const BOT_TOKEN = process.env.BOT_TOKEN;
-const ADMIN_ID = 7509324385;
+const ADMIN_ID = 7509324385;  // Твой Telegram ID
 
-console.log('Запуск сервера...');
+console.log('🚀 Запуск сервера...');
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static('.'));
 
-// Подключение к базе данных PostgreSQL
+// Подключение к PostgreSQL
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
@@ -50,7 +50,6 @@ async function initDB() {
     await pool.query(query);
     console.log('✅ Таблица orders готова');
     
-    // Проверяем, есть ли уже заказы в базе
     const result = await pool.query('SELECT COUNT(*) as count FROM orders');
     console.log(`📦 В базе данных ${result.rows[0].count} заказов`);
   } catch (err) {
@@ -104,6 +103,49 @@ async function notifyUser(bot, order) {
   } catch (err) {
     console.error('❌ Ошибка уведомления пользователя:', err.message);
   }
+}
+
+// ========== ЗАПУСК БОТА ==========
+if (BOT_TOKEN) {
+  const bot = new Telegraf(BOT_TOKEN);
+  
+  // Команда /start
+  bot.start((ctx) => {
+    const userId = ctx.from.id;
+    const firstName = ctx.from.first_name || 'Пользователь';
+    
+    console.log(`📱 Пользователь ${userId} (${firstName}) открыл бота`);
+    
+    if (userId === ADMIN_ID) {
+      // АДМИН: отправляем на админ-панель
+      ctx.reply(`👑 Здравствуйте, Администратор ${firstName}!`, {
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: '📋 Управление заказами', web_app: { url: 'https://gemstorm-app-production.up.railway.app/admin-panel.html' } }]
+          ]
+        }
+      });
+    } else {
+      // ОБЫЧНЫЙ ПОЛЬЗОВАТЕЛЬ: отправляем в магазин
+      ctx.reply(`🛍️ Добро пожаловать в магазин, ${firstName}!`, {
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: '🛒 Открыть магазин', web_app: { url: 'https://gemstorm-app-production.up.railway.app/index.html' } }]
+          ]
+        }
+      });
+    }
+  });
+  
+  // Запускаем бота
+  bot.launch();
+  console.log('🤖 Бот запущен');
+  
+  // Остановка бота при завершении процесса
+  process.once('SIGINT', () => bot.stop('SIGINT'));
+  process.once('SIGTERM', () => bot.stop('SIGTERM'));
+} else {
+  console.log('⚠️ BOT_TOKEN не задан, бот не запущен');
 }
 
 // ========== API ЭНДПОИНТЫ ==========
@@ -235,12 +277,12 @@ app.post('/api/update-status', async (req, res) => {
 });
 
 // ========== ЗАПУСК СЕРВЕРА ==========
-
 initDB().then(() => {
   app.listen(PORT, () => {
     console.log(`🚀 Сервер запущен на порту ${PORT}`);
-    console.log(`📍 API доступен по адресу: http://localhost:${PORT}/api/status`);
+    console.log(`📍 API доступен по адресу: https://gemstorm-app-production.up.railway.app/api/status`);
     console.log(`🤖 BOT_TOKEN: ${BOT_TOKEN ? '✅ установлен' : '❌ не установлен'}`);
+    console.log(`👑 Администратор: ${ADMIN_ID}`);
   });
 }).catch((err) => {
   console.error('❌ Критическая ошибка при инициализации БД:', err.message);

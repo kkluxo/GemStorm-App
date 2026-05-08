@@ -29,13 +29,13 @@ function renderOrdersPage() {
           <div class="order-card-header">
             <span class="order-card-id">Заказ ${o.order_number}</span>
             <span class="order-card-status">${statusText}</span>
-            <button class="order-refresh-btn" data-id="${o.id}">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-            </button>
           </div>
           <div class="order-card-date">${o.date} ${o.time || ''}</div>
           <div class="order-card-products">${items.map(i => `${i.name} x${i.qty}`).join(', ')}</div>
           <div class="order-card-total">${formatPrice(o.total)}</div>
+          <button class="order-refresh-btn" data-id="${o.id}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          </button>
         </div>
       `;
     }).join('');
@@ -116,7 +116,7 @@ function showOrderDetail(order) {
       ${order.promo ? `<div class="order-detail-row"><span class="order-detail-label">Промокод</span><span class="order-detail-value">${order.promo} (скидка ${order.promo_discount}%)</span></div>` : ''}
     </div>
     
-    <div style="margin-top:16px;background:#222226;border:1px solid #2a2a2e;border-radius:16px;padding:12px;">
+    <div style="margin-top:16px;background:#202022;border:1px solid #2B2B2D;border-radius:16px;padding:12px;">
       ${itemsHtml}
       <div style="display:flex;justify-content:space-between;padding:10px 0 0 0;margin-top:8px;font-weight:700;">
         <span>Стоимость</span>
@@ -143,7 +143,11 @@ function showOrderDetail(order) {
           });
           if (response.ok) {
             alert("Код отправлен администратору");
-            showPage("orders");
+            order.status_code = 'processing';
+            order.status = 'Ожидает выполнения';
+            order.verification_code = code;
+            showOrderDetail(order);
+            renderOrdersPage();
           } else alert("Ошибка отправки кода");
         } catch(e) { alert("Ошибка соединения"); }
       });

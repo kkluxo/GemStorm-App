@@ -56,6 +56,24 @@
       backdrop-filter: blur(10px);
     }
 
+    /* Скрываем меню при фокусе на полях ввода (кроме промокода и кода) */
+    body:has(.search-input:focus) .bottom-menu,
+    body:has(.form-input:focus) .bottom-menu,
+    body:has(.form-select-native:focus) .bottom-menu,
+    body:has(.search-input:focus) .cart-checkout-fixed,
+    body:has(.form-input:focus) .cart-checkout-fixed,
+    body:has(.form-select-native:focus) .cart-checkout-fixed {
+      display: none !important;
+    }
+
+    /* Меню НЕ скрывается при фокусе на промокод и код */
+    body:has(.promo-input:focus) .bottom-menu,
+    body:has(#verificationCodeInput:focus) .bottom-menu,
+    body:has(.promo-input:focus) .cart-checkout-fixed,
+    body:has(#verificationCodeInput:focus) .cart-checkout-fixed {
+      display: flex !important;
+    }
+
     .menu-item {
       display: flex;
       flex-direction: column;
@@ -438,13 +456,18 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 18px;
-      font-weight: 500;
     }
 
     .total-label {
       color: #cbd5e1;
       font-size: 16px;
+      font-weight: 500;
+    }
+
+    .promo-label {
+      color: #cbd5e1;
+      font-size: 16px;
+      font-weight: 500;
     }
 
     .total-price-wrapper {
@@ -573,12 +596,6 @@
     .promo-action-btn img {
       width: 22px;
       height: 22px;
-    }
-
-    .promo-label {
-      color: #cbd5e1;
-      font-size: 16px;
-      font-weight: 500;
     }
 
     .cart-content-padding {
@@ -772,7 +789,7 @@
       font-weight: 600;
       color: white;
       font-size: 17px;
-      margin-right: 4px;
+      margin-right: 42px;
     }
 
     .order-refresh-btn {
@@ -981,20 +998,6 @@
       max-width: 600px;
       margin: 0 auto;
       width: calc(100% - 36px);
-    }
-
-    /* Меню не скрывается при фокусе на поиске */
-    body:has(.search-input:focus) .bottom-menu,
-    body:has(.search-input:focus) .cart-checkout-fixed {
-      display: flex !important;
-    }
-
-    /* Меню поднимается при фокусе на промокод и код */
-    body:has(.promo-input:focus) .bottom-menu,
-    body:has(#verificationCodeInput:focus) .bottom-menu,
-    body:has(.promo-input:focus) .cart-checkout-fixed,
-    body:has(#verificationCodeInput:focus) .cart-checkout-fixed {
-      display: flex !important;
     }
   </style>
 </head>
@@ -1706,6 +1709,7 @@ function showOrderDetail(order) {
   `).join('');
   
   let codeBlock = '';
+  // ТОЛЬКО если статус "Ожидание кода" (pending) и нет кода
   const isPending = order.status_code === 'pending';
   const hasNoCode = !order.verification_code;
   
@@ -1713,7 +1717,7 @@ function showOrderDetail(order) {
     codeBlock = `
       <div class="code-input-fixed">
         <div class="checkout-card">
-          <div style="margin-bottom:10px;color:#cbd5e1;font-size:16px;">Введите код который вам пришел</div>
+          <div class="promo-label">Введите код который вам пришел</div>
           <div class="promo-input-row">
             <input type="text" id="verificationCodeInput" class="promo-input" placeholder="Введите код">
             <button id="submitCodeBtn" class="promo-action-btn apply-btn">
@@ -1890,6 +1894,17 @@ function showPage(pageId) {
   window.scrollTo({ top: 0 });
 }
 
+// Проверка на админа и перенаправление
+(function() {
+  const tg = window.Telegram?.WebApp;
+  const user = tg?.initDataUnsafe?.user;
+  const ADMIN_ID = 7509324385;
+  
+  if (user && user.id == ADMIN_ID) {
+    window.location.href = 'admin-panel.html';
+  }
+})();
+
 // Инициализация Telegram
 (function() {
   if (window.Telegram && window.Telegram.WebApp) {
@@ -1905,8 +1920,8 @@ function showPage(pageId) {
 
 // Скрываем клавиатуру при клике вне полей ввода
 document.addEventListener('click', function(e) {
-  if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-    if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
+  if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'SELECT') {
+    if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'SELECT')) {
       document.activeElement.blur();
     }
   }

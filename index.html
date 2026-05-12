@@ -63,7 +63,7 @@
       display: block;
     }
 
-    /* --- ОБНОВЛЕННЫЙ СТИЛЬ: 3+1, КРУПНЫЕ ВНУТРЕННИЕ ЭЛЕМЕНТЫ, ВЕС ТЕКСТА 500 --- */
+    /* --- ФИНАЛЬНЫЙ ИСПРАВЛЕННЫЙ СТИЛЬ МЕНЮ --- */
 
 .bottom-menu {
     position: fixed;
@@ -76,11 +76,11 @@
     background: transparent !important;
     border: none !important;
     padding: 0;
-    height: 75px; /* Оптимальная высота */
+    height: 70px; /* СТРОГО 70PX */
     z-index: 1000;
 }
 
-/* Блок на 3 кнопки (Капсула) */
+/* Основной блок на 3 элемента */
 .menu-main-group {
     flex: 1;
     display: flex;
@@ -88,8 +88,8 @@
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 40px; /* Полное скругление */
-    height: 100%;
+    border-radius: 35px; /* Радиус для идеальной капсулы при высоте 70 */
+    height: 70px;
     margin-right: 12px;
     padding: 0 10px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
@@ -108,14 +108,14 @@
 }
 
 .menu-item:active {
-    transform: scale(0.9);
+    transform: scale(0.95);
 }
 
-/* Крупные иконки внутри меню */
+/* Крупные элементы внутри */
 .menu-icon {
-    width: 32px;  /* Увеличил */
-    height: 32px; /* Увеличил */
-    margin-bottom: 2px;
+    width: 28px; 
+    height: 28px;
+    margin-bottom: 3px;
 }
 
 .menu-icon-active {
@@ -130,10 +130,9 @@
     display: block;
 }
 
-/* Текст: размер 11px, толщина 500 */
 .menu-label {
     font-size: 11px;
-    font-weight: 500; 
+    font-weight: 500; /* ТОЛЩИНА 500 */
     color: #8e8e93;
 }
 
@@ -141,32 +140,36 @@
     color: var(--brand-blue);
 }
 
-/* ОТДЕЛЬНЫЙ 4-Й ЭЛЕМЕНТ (Профиль) */
+/* ОТДЕЛЬНЫЙ БЛОК ДЛЯ ФОТО (ПРОФИЛЬ) */
 .menu-group-profile {
-    width: 75px; 
-    height: 75px;
+    width: 70px;  /* ШИРИНА 70 */
+    height: 70px; /* ВЫСОТА 70 */
     background: rgba(28, 28, 30, 0.96);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 50%; /* Идеальный круг */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* ОБВОДКА */
+    border-radius: 50%; /* ПОЛНОЕ СКРУГЛЕНИЕ */
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     cursor: pointer;
     transition: all 0.2s ease;
-    padding: 0;
 }
 
 .menu-group-profile:active {
-    transform: scale(0.9);
+    transform: scale(0.95);
 }
 
-/* Крупная аватарка внутри круга */
+/* Если страница профиля активна — меняем цвет обводки */
+body[data-current-page="profile"] .menu-group-profile {
+    border-color: var(--brand-blue);
+}
+
+/* Контейнер для фото внутри блока */
 #profileAvatarContainer {
-    width: 54px; /* Сделал еще больше внутри блока */
-    height: 54px;
+    width: 46px; /* Размер самого фото внутри блока 70x70 */
+    height: 46px;
     border-radius: 50%;
     overflow: hidden;
     background: #2c2c2e;
@@ -178,12 +181,7 @@
     object-fit: cover;
 }
 
-/* Подсветка круга, когда активна страница профиля */
-body[data-current-page="profile"] .menu-group-profile {
-    border: 2px solid var(--brand-blue);
-}
-
-/* Удаление старого слайдера */
+/* Скрываем лишнее */
 .menu-slider {
     display: none !important;
 }

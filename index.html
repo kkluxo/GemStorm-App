@@ -65,64 +65,64 @@
 
     /* --- ПОЛНОСТЬЮ ОБНОВЛЕННЫЕ СТИЛИ МЕНЮ --- */
 
-/* Общий контейнер — теперь он прозрачный и служит только для позиционирования */
+/* --- ПОЛНОСТЬЮ ОБНОВЛЕННЫЕ СТИЛИ МЕНЮ (БОЛЬШИЕ И КРУГЛЫЕ) --- */
+
 .bottom-menu {
     position: fixed;
-    bottom: 25px; /* Отступ от низа экрана */
+    bottom: 25px; /* Отступ от низа */
     left: 15px;
     right: 15px;
     display: flex;
-    justify-content: space-between; /* Разносит блоки по краям */
+    justify-content: space-between;
     align-items: center;
-    background: transparent !important; /* Убираем общий фон */
+    background: transparent !important;
     border: none !important;
     padding: 0;
-    height: 70px;
+    height: 80px; /* Увеличили общую высоту */
     z-index: 1000;
 }
 
-/* Первый блок: Группа из 3-х кнопок */
+/* Левый блок (основной) — Полное скругление (Capsule) */
 .menu-main-group {
-    flex: 1; /* Занимает всё доступное пространство слева */
+    flex: 1;
     display: flex;
-    background: rgba(28, 28, 30, 0.9); /* Темный фон с размытием */
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 24px;
+    background: rgba(28, 28, 30, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50px; /* Сделали блок полностью круглым по бокам */
     height: 100%;
-    margin-right: 12px; /* Расстояние до блока профиля */
-    padding: 5px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    margin-right: 15px;
+    padding: 0 15px; /* Добавили отступы внутри по бокам */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-/* Элементы внутри группы */
+/* Кнопки внутри блока */
 .menu-item {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    position: relative;
     background: none;
     border: none;
     cursor: pointer;
-    transition: transform 0.1s ease;
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .menu-item:active {
-    transform: scale(0.92);
+    transform: scale(0.9);
 }
 
-/* Иконки и текст */
+/* Увеличенные иконки */
 .menu-icon {
-    width: 24px;
-    height: 24px;
-    margin-bottom: 4px;
+    width: 28px;  /* Было 24px */
+    height: 28px; /* Было 24px */
+    margin-bottom: 6px;
 }
 
 .menu-icon-active {
-    display: none; /* По умолчанию скрыта */
+    display: none;
 }
 
 .menu-item.active .menu-icon-inactive {
@@ -133,9 +133,10 @@
     display: block;
 }
 
+/* Увеличенный текст */
 .menu-label {
-    font-size: 10px;
-    font-weight: 500;
+    font-size: 11px; /* Чуть крупнее */
+    font-weight: 600;
     color: #8e8e93;
 }
 
@@ -143,35 +144,36 @@
     color: var(--brand-blue);
 }
 
-/* Второй блок: Отдельный квадрат для профиля */
+/* Правый блок (Профиль) — Круглый */
 .menu-profile-block {
-    width: 70px; /* Фиксированная ширина, чтобы был квадрат */
-    height: 70px;
-    background: rgba(28, 28, 30, 0.9);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 24px;
+    width: 80px;  /* Увеличили размер */
+    height: 80px; /* Увеличили размер */
+    background: rgba(28, 28, 30, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%; /* Сделали его идеально круглым */
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .menu-profile-block:active {
-    transform: scale(0.92);
+    transform: scale(0.9);
 }
 
-/* Рамка вокруг аватара, когда открыта страница профиля */
-body[data-current-page="profile"] .menu-profile-block {
+/* Активное состояние профиля */
+body[data-page="profile"] .menu-profile-block {
     border: 2px solid var(--brand-blue);
 }
 
-#profileAvatarContainer, .profile-circle {
-    width: 42px;
-    height: 42px;
+/* Аватарка внутри круга */
+#profileAvatarContainer {
+    width: 52px;  /* Увеличили аватар */
+    height: 52px;
     border-radius: 50%;
     overflow: hidden;
     background: #2c2c2e;
@@ -183,7 +185,7 @@ body[data-current-page="profile"] .menu-profile-block {
     object-fit: cover;
 }
 
-/* ПОЛНОСТЬЮ УДАЛЯЕМ СТАРЫЙ ПОЛЗУНОК (SLIDER) */
+/* Скрываем старый слайдер */
 .menu-slider {
     display: none !important;
 }

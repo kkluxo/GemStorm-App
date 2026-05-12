@@ -63,7 +63,7 @@
       display: block;
     }
 
-    /* НОВОЕ МЕНЮ */
+    /* НОВОЕ МЕНЮ - БЕЗ ОБЩЕГО БОЛЬШОГО БЛОКА */
     .bottom-menu {
       position: fixed;
       bottom: 18px;
@@ -81,18 +81,14 @@
       margin: 0 auto;
       width: calc(100% - 36px);
       backdrop-filter: blur(10px);
-      gap: 12px;
     }
 
-    /* Блок с 3 элементами (Каталог, Корзина, Заказы) */
-    .menu-group {
+    /* Контейнер для 3 элементов (Каталог, Корзина, Заказы) - НЕТ фона и обводки */
+    .menu-three-items {
       display: flex;
       flex: 1;
-      background: #2a2a2e;
-      border-radius: 50px;
-      padding: 3px;
+      gap: 4px;
       position: relative;
-      gap: 2px;
     }
 
     .menu-item {
@@ -107,7 +103,6 @@
       transition: all 0.1s;
       padding: 5px 0 2px 0;
       border-radius: 40px;
-      z-index: 2;
       position: relative;
     }
 
@@ -148,19 +143,19 @@
       color: #9e9e9e;
     }
 
-    /* Ползунок внутри блока с 3 элементами */
+    /* Ползунок - теперь внутри .menu-three-items */
     .menu-slider {
       position: absolute;
-      top: 3px;
-      bottom: 3px;
-      width: calc(33.33% - 2px);
+      top: 0;
+      bottom: 0;
+      width: calc(33.33% - 3px);
       background: #4cb4e9;
       border-radius: 40px;
       transition: transform 0.2s ease;
-      z-index: 1;
+      z-index: 0;
     }
 
-    /* Отдельный элемент профиля (круглый аватар) - СОВСЕМ ОТДЕЛЬНО, НЕ В ГРУППЕ */
+    /* Отдельный элемент профиля (круглый аватар) - СОВСЕМ ОТДЕЛЬНО */
     .profile-menu-item {
       width: 48px;
       height: 48px;
@@ -174,7 +169,7 @@
       transition: all 0.1s;
       flex-shrink: 0;
       overflow: hidden;
-      /* НЕТ margin-left, просто стоит справа от группы через gap */
+      margin-left: 8px;
     }
 
     .profile-menu-item:active {
@@ -1201,10 +1196,10 @@
 <!-- Фиксированная панель корзины -->
 <div id="cartCheckoutFixed" class="cart-checkout-fixed" style="display: none;"></div>
 
-<!-- НОВОЕ НИЖНЕЕ МЕНЮ -->
+<!-- НОВОЕ НИЖНЕЕ МЕНЮ - БЕЗ ОБЩЕГО БЛОКА -->
 <div class="bottom-menu">
-  <!-- Блок с 3 элементами (Каталог, Корзина, Заказы) - ВНУТРИ ползунок -->
-  <div class="menu-group">
+  <!-- Контейнер для 3 элементов (просто обёртка, без фона и обводки) -->
+  <div class="menu-three-items">
     <div class="menu-slider" id="menuSlider"></div>
     <button class="menu-item" data-page="catalog">
       <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/fa0bb410-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
@@ -1223,7 +1218,7 @@
     </button>
   </div>
   
-  <!-- Элемент профиля - СОВСЕМ ОТДЕЛЬНО, НЕ ВНУТРИ menu-group -->
+  <!-- Элемент профиля - СОВСЕМ ОТДЕЛЬНО, НЕ ВНУТРИ menu-three-items -->
   <div class="profile-menu-item" id="profileMenuBtn">
     <div id="profileAvatarContainer"></div>
   </div>
@@ -2021,8 +2016,9 @@ function showPage(pageId) {
 }
 
 // Функция обновления ползунка
+// Функция обновления ползунка (только для 3 элементов)
 function updateMenuSlider(activePage) {
-  const menuItems = document.querySelectorAll('.menu-item');
+  const menuItems = document.querySelectorAll('.menu-three-items .menu-item');
   const slider = document.getElementById('menuSlider');
   if (!slider || !menuItems.length) return;
   

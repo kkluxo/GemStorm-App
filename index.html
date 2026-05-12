@@ -81,10 +81,10 @@
       margin: 0 auto;
       width: calc(100% - 36px);
       backdrop-filter: blur(10px);
-      gap: 8px;
+      gap: 12px;
     }
 
-    /* Блок с 3 элементами */
+    /* Блок с 3 элементами (Каталог, Корзина, Заказы) */
     .menu-group {
       display: flex;
       flex: 1;
@@ -160,7 +160,7 @@
       z-index: 1;
     }
 
-    /* Отдельный элемент профиля (круглый аватар) - НЕ В ГРУППЕ */
+    /* Отдельный элемент профиля (круглый аватар) - СОВСЕМ ОТДЕЛЬНО, НЕ В ГРУППЕ */
     .profile-menu-item {
       width: 48px;
       height: 48px;
@@ -174,7 +174,7 @@
       transition: all 0.1s;
       flex-shrink: 0;
       overflow: hidden;
-      margin-left: 4px;
+      /* НЕТ margin-left, просто стоит справа от группы через gap */
     }
 
     .profile-menu-item:active {
@@ -1203,7 +1203,7 @@
 
 <!-- НОВОЕ НИЖНЕЕ МЕНЮ -->
 <div class="bottom-menu">
-  <!-- Блок с 3 элементами + ползунок -->
+  <!-- Блок с 3 элементами (Каталог, Корзина, Заказы) - ВНУТРИ ползунок -->
   <div class="menu-group">
     <div class="menu-slider" id="menuSlider"></div>
     <button class="menu-item" data-page="catalog">
@@ -1223,7 +1223,7 @@
     </button>
   </div>
   
-  <!-- Отдельный элемент профиля (НЕ в группе) -->
+  <!-- Элемент профиля - СОВСЕМ ОТДЕЛЬНО, НЕ ВНУТРИ menu-group -->
   <div class="profile-menu-item" id="profileMenuBtn">
     <div id="profileAvatarContainer"></div>
   </div>

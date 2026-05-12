@@ -26,6 +26,32 @@
       padding-bottom: 130px;
     }
 
+    /* Блокировка открытия вне Telegram */
+    .telegram-only {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #171719;
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    body:not(.telegram-valid) .telegram-only {
+      display: flex;
+    }
+    
+    body:not(.telegram-valid) .page,
+    body:not(.telegram-valid) .bottom-menu,
+    body:not(.telegram-valid) .cart-checkout-fixed {
+      display: none !important;
+    }
+
     .page {
       display: none;
       padding: 16px 14px 0 14px;
@@ -37,6 +63,7 @@
       display: block;
     }
 
+    /* НОВОЕ МЕНЮ */
     .bottom-menu {
       position: fixed;
       bottom: 18px;
@@ -46,7 +73,7 @@
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 60px;
       display: flex;
-      justify-content: space-around;
+      justify-content: space-between;
       align-items: center;
       padding: 5px 12px 8px 12px;
       z-index: 1001;
@@ -54,6 +81,118 @@
       margin: 0 auto;
       width: calc(100% - 36px);
       backdrop-filter: blur(10px);
+      gap: 8px;
+    }
+
+    .menu-group {
+      display: flex;
+      flex: 1;
+      background: #2a2a2e;
+      border-radius: 50px;
+      padding: 3px;
+      position: relative;
+    }
+
+    .menu-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.1s;
+      padding: 5px 0 2px 0;
+      border-radius: 40px;
+      z-index: 2;
+      position: relative;
+    }
+
+    .menu-item.active {
+      background: #4cb4e9;
+    }
+
+    .menu-item.active .menu-label {
+      color: white;
+    }
+
+    .menu-item.active .menu-icon-inactive {
+      display: none;
+    }
+
+    .menu-item.active .menu-icon-active {
+      display: block;
+      filter: brightness(0) invert(1);
+    }
+
+    .menu-icon {
+      width: 24px;
+      height: 24px;
+      transition: all 0.1s;
+    }
+
+    .menu-icon-inactive {
+      display: block;
+    }
+
+    .menu-icon-active {
+      display: none;
+    }
+
+    .menu-label {
+      font-size: 10px;
+      font-weight: 500;
+      color: #9e9e9e;
+    }
+
+    /* Ползунок */
+    .menu-slider {
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      width: calc(33.33% - 2px);
+      background: #4cb4e9;
+      border-radius: 40px;
+      transition: transform 0.2s ease;
+      z-index: 1;
+    }
+
+    /* Элемент профиля (круглый аватар) */
+    .profile-menu-item {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #2a2a2e;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.1s;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .profile-menu-item:active {
+      transform: scale(0.92);
+      opacity: 0.8;
+    }
+
+    .profile-avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .profile-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #9e9e9e;
     }
 
     /* Скрываем меню при фокусе на полях ввода (кроме промокода и кода) */
@@ -72,56 +211,6 @@
     body:has(.promo-input:focus) .cart-checkout-fixed,
     body:has(#verificationCodeInput:focus) .cart-checkout-fixed {
       display: flex !important;
-    }
-
-    .menu-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      transition: all 0.1s;
-      flex: 1;
-      padding: 5px 0 2px 0;
-    }
-
-    .menu-item:active {
-      transform: scale(0.92);
-      opacity: 0.8;
-    }
-
-    .menu-icon {
-      width: 28px;
-      height: 28px;
-      transition: all 0.1s;
-    }
-
-    .menu-icon-inactive {
-      display: block;
-    }
-
-    .menu-icon-active {
-      display: none;
-    }
-
-    .menu-item.active .menu-icon-inactive {
-      display: none;
-    }
-
-    .menu-item.active .menu-icon-active {
-      display: block;
-    }
-
-    .menu-label {
-      font-size: 11px;
-      font-weight: 500;
-      color: #9e9e9e;
-    }
-
-    .menu-item.active .menu-label {
-      color: #4cb4e9;
     }
 
     .header-row {
@@ -560,7 +649,7 @@
 
     .promo-input::placeholder {
       color: #a1a1aa;
-      font-size: 18px;
+      font-size: 16px;
     }
 
     .promo-input.error {
@@ -999,9 +1088,31 @@
       margin: 0 auto;
       width: calc(100% - 36px);
     }
+
+    .telegram-only-text {
+      text-align: center;
+    }
+    
+    .telegram-only-text h2 {
+      margin-bottom: 20px;
+      color: #4cb4e9;
+    }
+    
+    .telegram-only-text p {
+      color: #9e9e9e;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
+
+<div class="telegram-only">
+  <div class="telegram-only-text">
+    <h2>❌ Доступ запрещён</h2>
+    <p>Это приложение работает только в Telegram</p>
+    <p>Пожалуйста, откройте его через Telegram Web App</p>
+  </div>
+</div>
 
 <!-- Страница каталога -->
 <div id="catalog-page" class="page active-page">
@@ -1087,28 +1198,29 @@
 <!-- Фиксированная панель корзины -->
 <div id="cartCheckoutFixed" class="cart-checkout-fixed" style="display: none;"></div>
 
-<!-- Нижнее меню -->
+<!-- НОВОЕ НИЖНЕЕ МЕНЮ -->
 <div class="bottom-menu">
-  <button class="menu-item" data-page="catalog">
-    <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/fa0bb410-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
-    <img class="menu-icon menu-icon-active" src="https://storage.botpapa.me/files/fd86aa00-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
-    <span class="menu-label">Каталог</span>
-  </button>
-  <button class="menu-item" data-page="cart">
-    <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/00feb9c0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="cart">
-    <img class="menu-icon menu-icon-active" src="https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="cart">
-    <span class="menu-label">Корзина</span>
-  </button>
-  <button class="menu-item" data-page="orders">
-    <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/8a684130-49e6-11f1-bef9-f1ec7a2c6e45.png" alt="orders" style="width: 28px; height: 28px;">
-    <img class="menu-icon menu-icon-active" src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="orders" style="width: 28px; height: 28px;">
-    <span class="menu-label">Заказы</span>
-  </button>
-  <button class="menu-item" data-page="profile">
-    <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/1656bed0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="profile">
-    <img class="menu-icon menu-icon-active" src="https://storage.botpapa.me/files/12337af0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="profile">
-    <span class="menu-label">Профиль</span>
-  </button>
+  <div class="menu-group">
+    <div class="menu-slider" id="menuSlider"></div>
+    <button class="menu-item" data-page="catalog">
+      <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/fa0bb410-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
+      <img class="menu-icon menu-icon-active" src="https://storage.botpapa.me/files/fd86aa00-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
+      <span class="menu-label">Каталог</span>
+    </button>
+    <button class="menu-item" data-page="cart">
+      <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/00feb9c0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="cart">
+      <img class="menu-icon menu-icon-active" src="https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="cart">
+      <span class="menu-label">Корзина</span>
+    </button>
+    <button class="menu-item" data-page="orders">
+      <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/8a684130-49e6-11f1-bef9-f1ec7a2c6e45.png" alt="orders" style="width: 24px; height: 24px;">
+      <img class="menu-icon menu-icon-active" src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="orders" style="width: 24px; height: 24px;">
+      <span class="menu-label">Заказы</span>
+    </button>
+  </div>
+  <div class="profile-menu-item" id="profileMenuBtn">
+    <div id="profileAvatarContainer"></div>
+  </div>
 </div>
 
 <script>
@@ -1466,7 +1578,7 @@ let isSubmitting = false;
 
 async function sendOrderToServer(order) {
   try {
-    const response = await fetch('https://gemstorm-app-production.up.railway.app/api/order', {
+    const response = await fetch('https://gemstorm.up.railway.app/api/order', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(order)
@@ -1624,7 +1736,7 @@ async function loadUserOrders() {
   try {
     const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
     if (!tgUser?.id) return;
-    const r = await fetch(`https://gemstorm-app-production.up.railway.app/api/user-orders?userId=${tgUser.id}`);
+    const r = await fetch(`https://gemstorm.up.railway.app/api/user-orders?userId=${tgUser.id}`);
     if (r.ok) orders = await r.json();
   } catch(e) { console.error('Ошибка загрузки заказов:', e); }
 }
@@ -1680,7 +1792,7 @@ function renderOrdersPage() {
 
 async function refreshOrderStatus(orderId) {
   try {
-    const response = await fetch('https://gemstorm-app-production.up.railway.app/api/refresh-order', {
+    const response = await fetch('https://gemstorm.up.railway.app/api/refresh-order', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ orderId })
@@ -1709,7 +1821,6 @@ function showOrderDetail(order) {
   `).join('');
   
   let codeBlock = '';
-  // ТОЛЬКО если статус "Ожидание кода" (pending) и нет кода
   const isPending = order.status_code === 'pending';
   const hasNoCode = !order.verification_code;
   
@@ -1761,7 +1872,7 @@ function showOrderDetail(order) {
         if (!code) { alert("Введите код"); return; }
         hapticLight();
         try {
-          const response = await fetch('https://gemstorm-app-production.up.railway.app/api/submit-code', {
+          const response = await fetch('https://gemstorm.up.railway.app/api/submit-code', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ orderId: order.id, code: code })
@@ -1794,7 +1905,7 @@ function renderProfilePage() {
   const username = tgUser?.username ? "@" + tgUser.username : "@username";
   const photoUrl = tgUser?.photo_url || "";
   const userId = tgUser?.id || "0";
-  const refLink = `https://t.me/GemStormAppBot?start=ref${userId}`;
+  const refLink = `https://t.me/GemStormBot?start=ref${userId}`;
   
   container.innerHTML = `
     <div class="profile-card">
@@ -1887,11 +1998,53 @@ function showPage(pageId) {
     if (checkoutBlock) checkoutBlock.style.display = "none";
   }
   
-  document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
-  const activeBtn = document.querySelector(`.menu-item[data-page="${pageId}"]`);
-  if (activeBtn) activeBtn.classList.add("active");
+  // Обновляем активный класс у кнопок меню
+  const menuItems = document.querySelectorAll('.menu-item');
+  menuItems.forEach(item => {
+    if (item.dataset.page === pageId) {
+      item.classList.add('active');
+    } else {
+      item.classList.remove('active');
+    }
+  });
+  
+  // Обновляем ползунок
+  updateMenuSlider(pageId);
   
   window.scrollTo({ top: 0 });
+}
+
+// Функция обновления ползунка
+function updateMenuSlider(activePage) {
+  const menuItems = document.querySelectorAll('.menu-item');
+  const slider = document.getElementById('menuSlider');
+  if (!slider || !menuItems.length) return;
+  
+  let activeIndex = -1;
+  for (let i = 0; i < menuItems.length; i++) {
+    if (menuItems[i].dataset.page === activePage) {
+      activeIndex = i;
+      break;
+    }
+  }
+  
+  if (activeIndex >= 0) {
+    const itemWidth = 100 / menuItems.length;
+    slider.style.transform = `translateX(${activeIndex * itemWidth}%)`;
+  }
+}
+
+// Загрузка аватара в профиль меню
+function loadProfileAvatar() {
+  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  const container = document.getElementById('profileAvatarContainer');
+  if (!container) return;
+  
+  if (tgUser?.photo_url) {
+    container.innerHTML = `<img class="profile-avatar-img" src="${tgUser.photo_url}" alt="avatar">`;
+  } else {
+    container.innerHTML = `<div class="profile-placeholder">👤</div>`;
+  }
 }
 
 // Проверка на админа и перенаправление
@@ -1899,6 +2052,13 @@ function showPage(pageId) {
   const tg = window.Telegram?.WebApp;
   const user = tg?.initDataUnsafe?.user;
   const ADMIN_ID = 7509324385;
+  
+  // Проверка что открыто в Telegram
+  if (!tg || !tg.initDataUnsafe) {
+    document.body.classList.remove('telegram-valid');
+    return;
+  }
+  document.body.classList.add('telegram-valid');
   
   if (user && user.id == ADMIN_ID) {
     window.location.href = 'admin-panel.html';
@@ -1945,11 +2105,18 @@ if (searchInputEl) {
   });
 }
 
-document.querySelectorAll(".menu-item").forEach(btn => {
+// Обработчики кнопок меню
+document.querySelectorAll('.menu-item').forEach(btn => {
   btn.addEventListener("click", () => {
     hapticLight();
     showPage(btn.dataset.page);
   });
+});
+
+// Обработчик кнопки профиля (круглый аватар)
+document.getElementById('profileMenuBtn')?.addEventListener('click', () => {
+  hapticLight();
+  showPage('profile');
 });
 
 // Запуск
@@ -1958,12 +2125,15 @@ renderCartPage();
 renderOrdersPage();
 renderFilterModal();
 renderProfilePage();
+loadProfileAvatar();
 
 const checkoutBlock = document.getElementById("cartCheckoutFixed");
 if (checkoutBlock) checkoutBlock.style.display = "none";
 
+// Устанавливаем активный каталог и ползунок
 const catalogBtn = document.querySelector('.menu-item[data-page="catalog"]');
 if (catalogBtn) catalogBtn.classList.add("active");
+updateMenuSlider('catalog');
 </script>
 </body>
 </html>

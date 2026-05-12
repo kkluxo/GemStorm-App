@@ -63,7 +63,7 @@
       display: block;
     }
 
-    /* НОВОЕ МЕНЮ - БЕЗ ОБЩЕГО БОЛЬШОГО БЛОКА */
+    /* НОВОЕ МЕНЮ - ДВА ОТДЕЛЬНЫХ БЛОКА */
     .bottom-menu {
       position: fixed;
       bottom: 18px;
@@ -81,14 +81,17 @@
       margin: 0 auto;
       width: calc(100% - 36px);
       backdrop-filter: blur(10px);
+      gap: 10px;
     }
 
-    /* Контейнер для 3 элементов (Каталог, Корзина, Заказы) - НЕТ фона и обводки */
-    .menu-three-items {
+    /* ПЕРВЫЙ БЛОК - 3 элемента (Каталог, Корзина, Заказы) */
+    .menu-block {
       display: flex;
-      flex: 1;
       gap: 4px;
-      position: relative;
+      background: #2a2a2e;
+      border-radius: 50px;
+      padding: 4px;
+      flex: 1;
     }
 
     .menu-item {
@@ -103,7 +106,6 @@
       transition: all 0.1s;
       padding: 5px 0 2px 0;
       border-radius: 40px;
-      position: relative;
     }
 
     .menu-item.active {
@@ -143,54 +145,42 @@
       color: #9e9e9e;
     }
 
-    /* Ползунок - теперь внутри .menu-three-items */
-    .menu-slider {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: calc(33.33% - 3px);
-      background: #4cb4e9;
-      border-radius: 40px;
-      transition: transform 0.2s ease;
-      z-index: 0;
-    }
-
-    /* Отдельный элемент профиля (круглый аватар) - СОВСЕМ ОТДЕЛЬНО */
-    .profile-menu-item {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
+    /* ВТОРОЙ БЛОК - аватарка (ТАКИЕ ЖЕ СТИЛИ: фон, обводка, радиус) */
+    .profile-block {
       background: #2a2a2e;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 50px;
+      padding: 4px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       transition: all 0.1s;
       flex-shrink: 0;
-      overflow: hidden;
-      margin-left: 8px;
     }
 
-    .profile-menu-item:active {
-      transform: scale(0.92);
+    .profile-block:active {
+      transform: scale(0.95);
       opacity: 0.8;
     }
 
     .profile-avatar-img {
-      width: 100%;
-      height: 100%;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
       object-fit: cover;
+      display: block;
     }
 
     .profile-placeholder {
-      width: 100%;
-      height: 100%;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
+      font-size: 20px;
       color: #9e9e9e;
+      background: #3a3a3e;
     }
 
     /* Скрываем меню при фокусе на полях ввода (кроме промокода и кода) */
@@ -1999,7 +1989,7 @@ function showPage(pageId) {
     if (checkoutBlock) checkoutBlock.style.display = "none";
   }
   
-  // Обновляем активный класс у кнопок меню
+  // Обновляем активный класс у кнопок меню (БЕЗ ползунка)
   const menuItems = document.querySelectorAll('.menu-item');
   menuItems.forEach(item => {
     if (item.dataset.page === pageId) {
@@ -2009,31 +1999,7 @@ function showPage(pageId) {
     }
   });
   
-  // Обновляем ползунок
-  updateMenuSlider(pageId);
-  
   window.scrollTo({ top: 0 });
-}
-
-// Функция обновления ползунка
-// Функция обновления ползунка (только для 3 элементов)
-function updateMenuSlider(activePage) {
-  const menuItems = document.querySelectorAll('.menu-three-items .menu-item');
-  const slider = document.getElementById('menuSlider');
-  if (!slider || !menuItems.length) return;
-  
-  let activeIndex = -1;
-  for (let i = 0; i < menuItems.length; i++) {
-    if (menuItems[i].dataset.page === activePage) {
-      activeIndex = i;
-      break;
-    }
-  }
-  
-  if (activeIndex >= 0) {
-    const itemWidth = 100 / menuItems.length;
-    slider.style.transform = `translateX(${activeIndex * itemWidth}%)`;
-  }
 }
 
 // Загрузка аватара в профиль меню

@@ -84,6 +84,7 @@
       gap: 8px;
     }
 
+    /* Блок с 3 элементами */
     .menu-group {
       display: flex;
       flex: 1;
@@ -91,6 +92,7 @@
       border-radius: 50px;
       padding: 3px;
       position: relative;
+      gap: 2px;
     }
 
     .menu-item {
@@ -146,7 +148,7 @@
       color: #9e9e9e;
     }
 
-    /* Ползунок */
+    /* Ползунок внутри блока с 3 элементами */
     .menu-slider {
       position: absolute;
       top: 3px;
@@ -158,7 +160,7 @@
       z-index: 1;
     }
 
-    /* Элемент профиля (круглый аватар) */
+    /* Отдельный элемент профиля (круглый аватар) - НЕ В ГРУППЕ */
     .profile-menu-item {
       width: 48px;
       height: 48px;
@@ -172,6 +174,7 @@
       transition: all 0.1s;
       flex-shrink: 0;
       overflow: hidden;
+      margin-left: 4px;
     }
 
     .profile-menu-item:active {
@@ -1200,6 +1203,7 @@
 
 <!-- НОВОЕ НИЖНЕЕ МЕНЮ -->
 <div class="bottom-menu">
+  <!-- Блок с 3 элементами + ползунок -->
   <div class="menu-group">
     <div class="menu-slider" id="menuSlider"></div>
     <button class="menu-item" data-page="catalog">
@@ -1218,6 +1222,8 @@
       <span class="menu-label">Заказы</span>
     </button>
   </div>
+  
+  <!-- Отдельный элемент профиля (НЕ в группе) -->
   <div class="profile-menu-item" id="profileMenuBtn">
     <div id="profileAvatarContainer"></div>
   </div>

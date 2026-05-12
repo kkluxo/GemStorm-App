@@ -67,9 +67,11 @@
 
 /* --- ПОЛНОСТЬЮ ОБНОВЛЕННЫЕ СТИЛИ МЕНЮ (БОЛЬШИЕ И КРУГЛЫЕ) --- */
 
+/* --- ПОЛНОСТЬЮ ИСПРАВЛЕННЫЙ СТИЛЬ: КРУГЛЫЕ БЛОКИ + КРУПНЫЕ ЭЛЕМЕНТЫ ВНУТРИ --- */
+
 .bottom-menu {
     position: fixed;
-    bottom: 25px; /* Отступ от низа */
+    bottom: 25px; 
     left: 15px;
     right: 15px;
     display: flex;
@@ -78,26 +80,25 @@
     background: transparent !important;
     border: none !important;
     padding: 0;
-    height: 80px; /* Увеличили общую высоту */
+    height: 70px; /* Высота блока остается умеренной */
     z-index: 1000;
 }
 
-/* Левый блок (основной) — Полное скругление (Capsule) */
+/* Левый блок (3 элемента) — Полное скругление */
 .menu-main-group {
     flex: 1;
     display: flex;
-    background: rgba(28, 28, 30, 0.95);
+    background: rgba(28, 28, 30, 0.96);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 50px; /* Сделали блок полностью круглым по бокам */
+    border-radius: 40px; /* Идеально круглая «капсула» */
     height: 100%;
-    margin-right: 15px;
-    padding: 0 15px; /* Добавили отступы внутри по бокам */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    margin-right: 12px;
+    padding: 0 10px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
-/* Кнопки внутри блока */
 .menu-item {
     flex: 1;
     display: flex;
@@ -107,18 +108,19 @@
     background: none;
     border: none;
     cursor: pointer;
-    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.1s ease;
 }
 
 .menu-item:active {
     transform: scale(0.9);
 }
 
-/* Увеличенные иконки */
+/* --- УВЕЛИЧЕННЫЕ ЭЛЕМЕНТЫ ВНУТРИ --- */
+
 .menu-icon {
-    width: 28px;  /* Было 24px */
-    height: 28px; /* Было 24px */
-    margin-bottom: 6px;
+    width: 30px;  /* Максимально крупные иконки */
+    height: 30px;
+    margin-bottom: 2px; /* Меньше отступ, чтобы влезло */
 }
 
 .menu-icon-active {
@@ -133,10 +135,9 @@
     display: block;
 }
 
-/* Увеличенный текст */
 .menu-label {
-    font-size: 11px; /* Чуть крупнее */
-    font-weight: 600;
+    font-size: 12px; /* Увеличенный текст */
+    font-weight: 700; /* Жирнее, чтобы читалось */
     color: #8e8e93;
 }
 
@@ -144,36 +145,31 @@
     color: var(--brand-blue);
 }
 
-/* Правый блок (Профиль) — Круглый */
-.menu-profile-block {
-    width: 80px;  /* Увеличили размер */
-    height: 80px; /* Увеличили размер */
-    background: rgba(28, 28, 30, 0.95);
+/* Правый блок (Профиль) — Идеальный круг */
+.menu-group-profile {
+    width: 70px; 
+    height: 70px;
+    background: rgba(28, 28, 30, 0.96);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 50%; /* Сделали его идеально круглым */
+    border-radius: 50%; /* Полный круг */
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
-.menu-profile-block:active {
+.menu-group-profile:active {
     transform: scale(0.9);
 }
 
-/* Активное состояние профиля */
-body[data-page="profile"] .menu-profile-block {
-    border: 2px solid var(--brand-blue);
-}
-
-/* Аватарка внутри круга */
+/* Аватарка внутри тоже больше */
 #profileAvatarContainer {
-    width: 52px;  /* Увеличили аватар */
-    height: 52px;
+    width: 50px;  /* Было 40, теперь 50 */
+    height: 50px;
     border-radius: 50%;
     overflow: hidden;
     background: #2c2c2e;
@@ -185,7 +181,12 @@ body[data-page="profile"] .menu-profile-block {
     object-fit: cover;
 }
 
-/* Скрываем старый слайдер */
+/* Подсветка круга профиля */
+body[data-page="profile"] .menu-group-profile {
+    border: 2px solid var(--brand-blue);
+}
+
+/* Скрываем старый ползунок */
 .menu-slider {
     display: none !important;
 }

@@ -63,11 +63,7 @@
       display: block;
     }
 
-    /* --- ПОЛНОСТЬЮ ОБНОВЛЕННЫЕ СТИЛИ МЕНЮ --- */
-
-/* --- ПОЛНОСТЬЮ ОБНОВЛЕННЫЕ СТИЛИ МЕНЮ (БОЛЬШИЕ И КРУГЛЫЕ) --- */
-
-/* --- ПОЛНОСТЬЮ ИСПРАВЛЕННЫЙ СТИЛЬ: КРУГЛЫЕ БЛОКИ + КРУПНЫЕ ЭЛЕМЕНТЫ ВНУТРИ --- */
+    /* --- ОБНОВЛЕННЫЙ СТИЛЬ: 3+1, КРУПНЫЕ ВНУТРЕННИЕ ЭЛЕМЕНТЫ, ВЕС ТЕКСТА 500 --- */
 
 .bottom-menu {
     position: fixed;
@@ -80,11 +76,11 @@
     background: transparent !important;
     border: none !important;
     padding: 0;
-    height: 70px; /* Высота блока остается умеренной */
+    height: 75px; /* Оптимальная высота */
     z-index: 1000;
 }
 
-/* Левый блок (3 элемента) — Полное скругление */
+/* Блок на 3 кнопки (Капсула) */
 .menu-main-group {
     flex: 1;
     display: flex;
@@ -92,7 +88,7 @@
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 40px; /* Идеально круглая «капсула» */
+    border-radius: 40px; /* Полное скругление */
     height: 100%;
     margin-right: 12px;
     padding: 0 10px;
@@ -115,12 +111,11 @@
     transform: scale(0.9);
 }
 
-/* --- УВЕЛИЧЕННЫЕ ЭЛЕМЕНТЫ ВНУТРИ --- */
-
+/* Крупные иконки внутри меню */
 .menu-icon {
-    width: 30px;  /* Максимально крупные иконки */
-    height: 30px;
-    margin-bottom: 2px; /* Меньше отступ, чтобы влезло */
+    width: 32px;  /* Увеличил */
+    height: 32px; /* Увеличил */
+    margin-bottom: 2px;
 }
 
 .menu-icon-active {
@@ -135,9 +130,10 @@
     display: block;
 }
 
+/* Текст: размер 11px, толщина 500 */
 .menu-label {
-    font-size: 12px; /* Увеличенный текст */
-    font-weight: 700; /* Жирнее, чтобы читалось */
+    font-size: 11px;
+    font-weight: 500; 
     color: #8e8e93;
 }
 
@@ -145,31 +141,32 @@
     color: var(--brand-blue);
 }
 
-/* Правый блок (Профиль) — Идеальный круг */
+/* ОТДЕЛЬНЫЙ 4-Й ЭЛЕМЕНТ (Профиль) */
 .menu-group-profile {
-    width: 70px; 
-    height: 70px;
+    width: 75px; 
+    height: 75px;
     background: rgba(28, 28, 30, 0.96);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 50%; /* Полный круг */
+    border-radius: 50%; /* Идеальный круг */
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     cursor: pointer;
     transition: all 0.2s ease;
+    padding: 0;
 }
 
 .menu-group-profile:active {
     transform: scale(0.9);
 }
 
-/* Аватарка внутри тоже больше */
+/* Крупная аватарка внутри круга */
 #profileAvatarContainer {
-    width: 50px;  /* Было 40, теперь 50 */
-    height: 50px;
+    width: 54px; /* Сделал еще больше внутри блока */
+    height: 54px;
     border-radius: 50%;
     overflow: hidden;
     background: #2c2c2e;
@@ -181,12 +178,12 @@
     object-fit: cover;
 }
 
-/* Подсветка круга профиля */
-body[data-page="profile"] .menu-group-profile {
+/* Подсветка круга, когда активна страница профиля */
+body[data-current-page="profile"] .menu-group-profile {
     border: 2px solid var(--brand-blue);
 }
 
-/* Скрываем старый ползунок */
+/* Удаление старого слайдера */
 .menu-slider {
     display: none !important;
 }

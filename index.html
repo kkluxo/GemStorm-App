@@ -1937,7 +1937,6 @@ function updateMenuSlider(pageId) {
   const index = pages.indexOf(pageId);
   if (index === -1) { slider.style.opacity = "0"; return; }
   slider.style.opacity = "1";
-  slider.style.transform = "none";
   if (index === 0) {
     slider.style.left = "3px";
     slider.style.width = "calc(33.33% - 3px)";

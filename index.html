@@ -1939,11 +1939,14 @@ function updateMenuSlider(pageId) {
   slider.style.opacity = "1";
   requestAnimationFrame(() => {
     const menuBar = slider.parentElement;
-    const totalWidth = menuBar.getBoundingClientRect().width;
-    const sliderWidth = (totalWidth - 6) / 3;
-    slider.style.width = sliderWidth + "px";
-    const offset = index * (totalWidth / 3);
-    slider.style.transform = `translateX(${offset}px)`;
+    const buttons = menuBar.querySelectorAll(".menu-item");
+    if (!buttons[index]) return;
+    const barRect = menuBar.getBoundingClientRect();
+    const btnRect = buttons[index].getBoundingClientRect();
+    const left = btnRect.left - barRect.left;
+    const width = btnRect.width;
+    slider.style.width = width + "px";
+    slider.style.transform = `translateX(${left}px)`;
   });
 }
 

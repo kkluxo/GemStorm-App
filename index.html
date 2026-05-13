@@ -1611,11 +1611,12 @@ function renderOrdersPage() {
       const order = orders.find(o => o.id == orderId);
       if (order) showOrderDetail(order);
     }
-  } catch(e) {
+    } catch(e) {
     const order = orders.find(o => o.id == orderId);
     if (order) showOrderDetail(order);
   }
-});
+      });
+    });
     container.querySelectorAll(".order-refresh-btn").forEach(btn => {
       btn.addEventListener("click", async (e) => { e.stopPropagation(); const orderId = btn.dataset.id; await refreshOrderStatus(orderId); });
     });

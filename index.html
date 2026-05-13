@@ -1790,6 +1790,8 @@ async function refreshOrderStatus(orderId) {
 }
 
 function showOrderDetail(order) {
+  console.log("showOrderDetail вызван, статус заказа:", order.status_code); // Для отладки
+  
   document.getElementById("orderDetailTitle").textContent = `Заказ #${order.order_number}`;
   const container = document.getElementById("orderDetailContent");
   let items = [];
@@ -1802,11 +1804,15 @@ function showOrderDetail(order) {
     </div>
   `).join('');
   
+  // 🔥 ИСПРАВЛЕННАЯ ПРОВЕРКА - показываем блок если статус 'awaiting_code' И нет кода
   let codeBlock = '';
   const isAwaitingCode = order.status_code === 'awaiting_code';
   const hasNoCode = !order.verification_code;
   
+  console.log("isAwaitingCode:", isAwaitingCode, "hasNoCode:", hasNoCode); // Для отладки
+  
   if (isAwaitingCode && hasNoCode) {
+    console.log("Показываем блок ввода кода");
     codeBlock = `
       <div class="code-input-fixed">
         <div class="checkout-card">

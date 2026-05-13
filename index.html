@@ -188,8 +188,8 @@
       color: #4cb4e9;
     }
 
-    #profileMenuBtn.active {
-  background: rgba(255, 255, 255, 0.08) !important;
+    #profileMenuWrapper.active {
+  background: rgba(255, 255, 255, 0.15) !important;
 }
 
     .header-row {
@@ -1217,7 +1217,7 @@
       <span class="menu-label">Заказы</span>
     </button>
   </div>
-  <div style="background:#202023f9;border:1px solid rgba(255,255,255,0.15);border-radius:50%;backdrop-filter:blur(10px);padding:5px;flex:none;">
+  <div id="profileMenuWrapper" style="background:#202023f9;border:1px solid rgba(255,255,255,0.15);border-radius:50%;backdrop-filter:blur(10px);padding:3px;flex:none;transition:background 0.2s;">
     <button class="menu-item" data-page="profile" id="profileMenuBtn" style="width:56px;height:56px;min-width:56px;border-radius:50%;border:none;padding:0;overflow:hidden;background:transparent;">
       <img id="profileMenuAvatar" src="https://storage.botpapa.me/files/1656bed0-4a0d-11f1-bef9-f1ec7a2c6e45.png" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
     </button>
@@ -1842,10 +1842,10 @@ if (mainPages.includes(pageId)) {
   document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
 const activeBtn = document.querySelector(`.menu-item[data-page="${pageId}"]`);
 if (activeBtn) activeBtn.classList.add("active");
-const profileBtn = document.getElementById("profileMenuBtn");
-if (profileBtn) {
-  if (pageId === "profile") profileBtn.classList.add("active");
-  else profileBtn.classList.remove("active");
+const profileWrapper = document.getElementById("profileMenuWrapper");
+if (profileWrapper) {
+  if (pageId === "profile") profileWrapper.classList.add("active");
+  else profileWrapper.classList.remove("active");
 }
   saveCurrentPage(pageId);
   updateMenuSlider(pageId);
@@ -1940,9 +1940,9 @@ function updateMenuSlider(pageId) {
   requestAnimationFrame(() => {
     const menuBar = slider.parentElement;
     const totalWidth = menuBar.getBoundingClientRect().width;
-    const sliderWidth = (totalWidth - 2) / 3;
+    const sliderWidth = (totalWidth - 6) / 3;
     slider.style.width = sliderWidth + "px";
-    slider.style.transform = `translateX(${index * sliderWidth}px)`;
+    slider.style.transform = `translateX(${3 + index * sliderWidth}px)`;
   });
 }
 

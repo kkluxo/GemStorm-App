@@ -1927,6 +1927,17 @@ document.querySelectorAll(".menu-item").forEach(btn => {
   btn.addEventListener("click", () => { hapticLight(); showPage(btn.dataset.page); });
 });
 
+document.getElementById("profileMenuBtn")?.addEventListener("click", () => {
+  const btn = document.getElementById("profileMenuBtn");
+  if (btn) {
+    btn.style.boxShadow = "0 0 0 2px rgba(76, 180, 233, 0.5)";
+    btn.style.borderRadius = "50%";
+  }
+  document.querySelectorAll(".menu-item").forEach(b => {
+    if (b.id !== "profileMenuBtn") b.style.boxShadow = "";
+  });
+});
+
 function updateMenuSlider(pageId) {
   const slider = document.getElementById("menuSlider");
   if (!slider) return;
@@ -1935,10 +1946,13 @@ function updateMenuSlider(pageId) {
   if (index === -1) { slider.style.opacity = "0"; return; }
   slider.style.opacity = "1";
   const menuBar = slider.parentElement;
-  const totalWidth = menuBar.offsetWidth - 6;
-  const sliderWidth = totalWidth / 3;
+  const totalWidth = menuBar.offsetWidth;
+  const sliderWidth = (totalWidth - 6) / 3;
   slider.style.width = sliderWidth + "px";
-  const translateX = 3 + index * sliderWidth;
+  let translateX;
+  if (index === 0) translateX = 3;
+  else if (index === 1) translateX = 3 + sliderWidth;
+  else translateX = totalWidth - sliderWidth - 3;
   slider.style.transform = `translateX(${translateX}px)`;
 }
 

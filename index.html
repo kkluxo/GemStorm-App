@@ -1820,7 +1820,7 @@ function showOrderDetail(order) {
     ${codeBlock}
   `;
   
-  showPage("order-detail");
+  showPage("order-detail", true);
   
   setTimeout(() => {
     const submitBtn = document.getElementById("submitCodeBtn");
@@ -1924,13 +1924,13 @@ function renderProfilePage() {
   }, 0);
 }
 
-// ==================== APP.JS ====================
+// ==================== APP.JS (ПОЛНОСТЬЮ ИСПРАВЛЕННАЯ ВЕРСИЯ) ====================
 
-// ----- НОВАЯ ПЕРЕМЕННАЯ ДЛЯ ИСТОРИИ -----
+// ---------- ПЕРЕМЕННАЯ ДЛЯ ИСТОРИИ ----------
 let navigationHistory = [];
 
-// ---------- ПОЛНАЯ ИСПРАВЛЕННАЯ ФУНКЦИЯ showPage (ЗАМЕНИ ЕЁ ПОЛНОСТЬЮ) ----------
-function showPage(pageId) {
+// ---------- ИСПРАВЛЕННАЯ ФУНКЦИЯ showPage ----------
+function showPage(pageId, skipHistoryAdd = false) {
   // Получаем текущую активную страницу
   let currentPageId = null;
   for (const page of document.querySelectorAll(".page")) {
@@ -1943,17 +1943,17 @@ function showPage(pageId) {
   // ЛОГИКА ДОБАВЛЕНИЯ В ИСТОРИЮ:
   // Добавляем текущую страницу в историю ТОЛЬКО если:
   // 1. Есть текущая страница
-  // 2. Мы переходим на другую страницу (не на ту же)
-  // 3. Мы НЕ возвращаемся назад через кнопку (проверяем, не равна ли текущая страница последней в истории)
-  if (currentPageId && currentPageId !== pageId) {
+  // 2. Переход на другую страницу
+  // 3. Не пропущено через флаг skipHistoryAdd
+  // 4. Текущая страница не является последней в истории (избегаем дубликатов)
+  if (currentPageId && currentPageId !== pageId && !skipHistoryAdd) {
     const lastInHistory = navigationHistory[navigationHistory.length - 1];
-    // Добавляем только если последняя страница в истории не равна текущей
     if (lastInHistory !== currentPageId) {
       navigationHistory.push(currentPageId);
     }
   }
   
-  // Если переходим в каталог (главная) - очищаем историю
+  // Если переходим в каталог - очищаем историю
   if (pageId === "catalog") {
     navigationHistory = [];
   }
@@ -2001,7 +2001,7 @@ function showPage(pageId) {
     if (activeBtn) activeBtn.classList.add("active");
   }
   
-  // ----- УПРАВЛЕНИЕ СИСТЕМНОЙ КНОПКОЙ "НАЗАД" (Telegram) -----
+  // Управление системной кнопкой "Назад"
   if (window.Telegram && window.Telegram.WebApp) {
     const tg = window.Telegram.WebApp;
     
@@ -2015,20 +2015,20 @@ function showPage(pageId) {
   window.scrollTo({ top: 0 });
 }
 
-// ---------- ПОЛНАЯ ИСПРАВЛЕННАЯ ФУНКЦИЯ initBackButtonHandler (ЗАМЕНИ ЕЁ ПОЛНОСТЬЮ) ----------
+// ---------- ОБРАБОТЧИК КНОПКИ "НАЗАД" ----------
 function initBackButtonHandler() {
   if (window.Telegram && window.Telegram.WebApp) {
     const tg = window.Telegram.WebApp;
     
     tg.BackButton.onClick(function() {
-      // Проверяем, есть ли история
+      console.log("Нажата кнопка Назад, история:", navigationHistory);
+      
       if (navigationHistory.length > 0) {
-        // Забираем последнюю страницу из истории
         const previousPage = navigationHistory.pop();
-        // Переходим на неё
-        showPage(previousPage);
+        console.log("Возврат на страницу:", previousPage);
+        showPage(previousPage, true); // true = не добавлять в историю при возврате
       } else {
-        // Если истории нет - идём в каталог
+        console.log("История пуста, возврат в каталог");
         showPage("catalog");
       }
     });

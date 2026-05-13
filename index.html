@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+=-<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
@@ -34,7 +34,6 @@
       padding-bottom: 130px;
     }
 
-    /* Блокировка открытия в браузере */
     .browser-blocker {
       position: fixed;
       top: 0;
@@ -84,7 +83,6 @@
       display: block;
     }
 
-    /* Иконки в шапке - подняты на 2px */
     .header-icon-img {
       width: 26px;
       height: 26px;
@@ -111,7 +109,6 @@
       backdrop-filter: blur(10px);
     }
 
-    /* Скрываем меню при фокусе на полях ввода (кроме промокода и кода) */
     body:has(.search-input:focus) .bottom-menu,
     body:has(.form-input:focus) .bottom-menu,
     body:has(.form-select-native:focus) .bottom-menu,
@@ -121,7 +118,6 @@
       display: none !important;
     }
 
-    /* Меню НЕ скрывается при фокусе на промокод и код */
     body:has(.promo-input:focus) .bottom-menu,
     body:has(#verificationCodeInput:focus) .bottom-menu,
     body:has(.promo-input:focus) .cart-checkout-fixed,
@@ -659,7 +655,6 @@
       padding-bottom: 110px;
     }
 
-    /* ========== НОВЫЕ СТИЛИ ДЛЯ ОФОРМЛЕНИЯ И ОПЛАТЫ ========== */
     .content-card {
       background: #202022;
       border: 1px solid #2B2B2D;
@@ -767,7 +762,6 @@
       align-items: center;
     }
 
-    /* ========== СТИЛИ ДЛЯ ДЕТАЛЕЙ ЗАКАЗА ========== */
     .order-detail-row {
       display: flex;
       justify-content: space-between;
@@ -792,7 +786,6 @@
       font-size: 16px;
     }
 
-    /* Карточка данных заказа - убран большой отступ снизу */
     .order-data-card {
       background: #202022;
       border: 1px solid #2B2B2D;
@@ -801,7 +794,6 @@
       margin-bottom: 12px;
     }
 
-    /* Карточка товаров заказа */
     .order-items-card {
       background: #202022;
       border: 1px solid #2B2B2D;
@@ -850,27 +842,23 @@
       font-size: 17px;
     }
 
-    /* Стили для подложек статусов в карточках заказов */
+    /* Стили для статусов - гарантированно работают */
     .order-card-status {
       padding: 4px 12px;
       border-radius: 20px;
       font-size: 14px;
       font-weight: 500;
     }
-
-    /* Цвета текста статусов */
-    .status-text-pending { color: #4cb4e9; }
-    .status-text-awaiting_code { color: #eab308; }
-    .status-text-cancelled { color: #ef4444; }
-    .status-text-processing { color: #4cb4e9; }
-    .status-text-completed { color: #22c55e; }
-
-    /* Цвета подложек статусов в карточках заказов */
-    .status-bg-pending { background: rgba(76, 180, 233, 0.15); }
-    .status-bg-awaiting_code { background: rgba(234, 179, 8, 0.15); }
-    .status-bg-cancelled { background: rgba(239, 68, 68, 0.15); }
-    .status-bg-processing { background: rgba(76, 180, 233, 0.15); }
-    .status-bg-completed { background: rgba(34, 197, 94, 0.15); }
+    .status-pending-text { color: #4cb4e9; }
+    .status-pending-bg { background: rgba(76, 180, 233, 0.15); }
+    .status-awaiting_text { color: #eab308; }
+    .status-awaiting-bg { background: rgba(234, 179, 8, 0.15); }
+    .status-cancelled-text { color: #ef4444; }
+    .status-cancelled-bg { background: rgba(239, 68, 68, 0.15); }
+    .status-processing-text { color: #4cb4e9; }
+    .status-processing-bg { background: rgba(76, 180, 233, 0.15); }
+    .status-completed-text { color: #22c55e; }
+    .status-completed-bg { background: rgba(34, 197, 94, 0.15); }
 
     .order-card-date {
       color: #a1a1aa;
@@ -1102,7 +1090,6 @@
 </head>
 <body>
 
-<!-- Блокировка браузера -->
 <div id="browserBlocker" style="display: none;" class="browser-blocker">
   <div class="browser-blocker-content">
     <img class="browser-blocker-icon" src="https://storage.botpapa.me/files/fd86aa00-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="warning">
@@ -1111,7 +1098,6 @@
   </div>
 </div>
 
-<!-- Страница каталога -->
 <div id="catalog-page" class="page">
   <div class="header-row">
     <img class="header-icon-img" src="https://storage.botpapa.me/files/fd86aa00-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
@@ -1129,7 +1115,6 @@
   <div id="catalogGrid" class="products-grid"></div>
 </div>
 
-<!-- Страница корзины -->
 <div id="cart-page" class="page">
   <div class="header-row">
     <img class="header-icon-img" src="https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="cart">
@@ -1138,7 +1123,6 @@
   <div id="cartItemsList" class="cart-content-padding"></div>
 </div>
 
-<!-- Страница заказов -->
 <div id="orders-page" class="page">
   <div class="header-row">
     <img class="header-icon-img" src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="orders">
@@ -1147,7 +1131,6 @@
   <div id="ordersList"></div>
 </div>
 
-<!-- Страница профиля -->
 <div id="profile-page" class="page">
   <div class="header-row">
     <img class="header-icon-img" src="https://storage.botpapa.me/files/12337af0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="profile">
@@ -1156,7 +1139,6 @@
   <div id="profileContent"></div>
 </div>
 
-<!-- Страница фильтров -->
 <div id="filter-page" class="page">
   <div class="header-row">
     <img class="header-icon-img" src="https://storage.botpapa.me/files/9478fb40-49de-11f1-bef9-f1ec7a2c6e45.png" alt="filter">
@@ -1165,7 +1147,6 @@
   <div class="filter-options" id="filterOptionsContainer"></div>
 </div>
 
-<!-- Страница оформления -->
 <div id="checkout-page" class="page">
   <div class="header-row">
     <img class="header-icon-img" src="https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="cart">
@@ -1174,7 +1155,6 @@
   <div id="checkoutFormContent"></div>
 </div>
 
-<!-- Страница оплаты -->
 <div id="payment-page" class="page">
   <div class="header-row">
     <img class="header-icon-img" src="https://storage.botpapa.me/files/62edaf00-4a27-11f1-bef9-f1ec7a2c6e45.png" alt="payment">
@@ -1183,7 +1163,6 @@
   <div id="paymentContent"></div>
 </div>
 
-<!-- Страница деталей заказа -->
 <div id="order-detail-page" class="page">
   <div class="header-row">
     <img class="header-icon-img" src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="order">
@@ -1192,10 +1171,8 @@
   <div id="orderDetailContent"></div>
 </div>
 
-<!-- Фиксированная панель корзины -->
 <div id="cartCheckoutFixed" class="cart-checkout-fixed" style="display: none;"></div>
 
-<!-- Нижнее меню -->
 <div class="bottom-menu">
   <button class="menu-item" data-page="catalog">
     <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/fa0bb410-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
@@ -1220,7 +1197,7 @@
 </div>
 
 <script>
-// ==================== ПРЕДЗАГРУЗКА ИЗОБРАЖЕНИЙ ====================
+// Предзагрузка изображений
 const imagesToPreload = [
   'https://storage.botpapa.me/files/fd86aa00-4a0c-11f1-bef9-f1ec7a2c6e45.png',
   'https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png',
@@ -1229,42 +1206,21 @@ const imagesToPreload = [
   'https://storage.botpapa.me/files/fa0bb410-4a0c-11f1-bef9-f1ec7a2c6e45.png',
   'https://storage.botpapa.me/files/00feb9c0-4a0d-11f1-bef9-f1ec7a2c6e45.png',
   'https://storage.botpapa.me/files/8a684130-49e6-11f1-bef9-f1ec7a2c6e45.png',
-  'https://storage.botpapa.me/files/1656bed0-4a0d-11f1-bef9-f1ec7a2c6e45.png',
-  'https://storage.botpapa.me/files/bc7cbf30-49e0-11f1-bef9-f1ec7a2c6e45.png',
-  'https://storage.botpapa.me/files/9478fb40-49de-11f1-bef9-f1ec7a2c6e45.png',
-  'https://storage.botpapa.me/files/62edaf00-4a27-11f1-bef9-f1ec7a2c6e45.png',
-  'https://storage.botpapa.me/files/975c4510-49de-11f1-bef9-f1ec7a2c6e45.png',
-  'https://storage.botpapa.me/files/9a5d01f0-49de-11f1-bef9-f1ec7a2c6e45.png',
-  'https://storage.botpapa.me/files/b254ec20-4a13-11f1-bef9-f1ec7a2c6e45.png',
-  'https://storage.botpapa.me/files/af0747c0-4a13-11f1-bef9-f1ec7a2c6e45.png',
-  'https://storage.botpapa.me/files/a488c6d0-4a12-11f1-bef9-f1ec7a2c6e45.png',
-  'https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png',
-  'https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png'
+  'https://storage.botpapa.me/files/1656bed0-4a0d-11f1-bef9-f1ec7a2c6e45.png'
 ];
+imagesToPreload.forEach(src => { const img = new Image(); img.src = src; });
 
-function preloadImages(arr) {
-  arr.forEach(src => {
-    const img = new Image();
-    img.src = src;
-  });
-}
-preloadImages(imagesToPreload);
-
-// ==================== ПРОВЕРКА TELEGRAM WEB APP ====================
 (function checkTelegramContext() {
   const isTelegramWebApp = !!(window.Telegram?.WebApp?.initDataUnsafe);
   const blocker = document.getElementById('browserBlocker');
-  
   if (!isTelegramWebApp) {
     if (blocker) blocker.style.display = 'flex';
     document.body.style.overflow = 'hidden';
     return;
   }
-  
   if (blocker) blocker.style.display = 'none';
 })();
 
-// ==================== DATA.JS ====================
 const products = [
   { id: 1, name: "Brawl Pass", price: 769, oldPrice: 799, image: "https://storage.botpapa.me/files/6b57bf60-499a-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Brawl Stars" },
   { id: 2, name: "Улучш. до BP+", price: 429, oldPrice: 449, image: "https://storage.botpapa.me/files/6f97da10-499a-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Brawl Stars" },
@@ -1294,21 +1250,8 @@ const products = [
   { id: 26, name: "180 гемов", price: 169, oldPrice: 179, image: "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Brawl Stars" }
 ];
 
-const promoCodes = {
-  "SALE10": 10,
-  "SALE20": 20,
-  "GELTAN": 15,
-  "WELCOME": 5
-};
-
-const cardNumbers = {
-  "Т-Банк": "2200 7019 3499 0208",
-  "ВТБ Банк": "2200 2418 6382 9697",
-  "Сбер Банк": "2202 2084 4441 4743",
-  "Ozon Банк": "2204 3203 9062 7166",
-  "Альфа Банк": "2200 1529 6836 2817"
-};
-
+const promoCodes = { "SALE10": 10, "SALE20": 20, "GELTAN": 15, "WELCOME": 5 };
+const cardNumbers = { "Т-Банк": "2200 7019 3499 0208", "ВТБ Банк": "2200 2418 6382 9697", "Сбер Банк": "2202 2084 4441 4743", "Ozon Банк": "2204 3203 9062 7166", "Альфа Банк": "2200 1529 6836 2817" };
 const paymentMethodsOptions = [
   { value: "tbank", label: "Т-Банк" },
   { value: "vtb", label: "ВТБ Банк" },
@@ -1317,65 +1260,27 @@ const paymentMethodsOptions = [
   { value: "alfa", label: "Альфа Банк" }
 ];
 
-// ==================== UTILS.JS ====================
-function formatPrice(p) { 
-  return Math.round(p).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + "₽"; 
-}
+function formatPrice(p) { return Math.round(p).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + "₽"; }
+function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
+function hapticLight() { if (window.Telegram?.WebApp?.HapticFeedback) { window.Telegram.WebApp.HapticFeedback.impactOccurred("light"); } }
+function hapticMedium() { if (window.Telegram?.WebApp?.HapticFeedback) { window.Telegram.WebApp.HapticFeedback.impactOccurred("medium"); } }
+function getPaymentMethodLabel(value) { const opt = paymentMethodsOptions.find(o => o.value === value); return opt ? opt.label : ''; }
+function getBankFromValue(value) { const opt = paymentMethodsOptions.find(o => o.value === value); return opt ? opt.label : ''; }
+function getCardNumberFromValue(value) { const bank = getBankFromValue(value); return cardNumbers[bank] || ""; }
 
-function escapeHtml(str) { 
-  if (!str) return ''; 
-  return str.replace(/[&<>]/g, function(m) { 
-    if (m === '&') return '&amp;'; 
-    if (m === '<') return '&lt;'; 
-    if (m === '>') return '&gt;'; 
-    return m; 
-  }); 
-}
-
-function hapticLight() {
-  if (window.Telegram?.WebApp?.HapticFeedback) {
-    window.Telegram.WebApp.HapticFeedback.impactOccurred("light");
-  }
-}
-
-function hapticMedium() {
-  if (window.Telegram?.WebApp?.HapticFeedback) {
-    window.Telegram.WebApp.HapticFeedback.impactOccurred("medium");
-  }
-}
-
-function getPaymentMethodLabel(value) {
-  const opt = paymentMethodsOptions.find(o => o.value === value);
-  return opt ? opt.label : '';
-}
-
-function getBankFromValue(value) {
-  const opt = paymentMethodsOptions.find(o => o.value === value);
-  return opt ? opt.label : '';
-}
-
-function getCardNumberFromValue(value) {
-  const bank = getBankFromValue(value);
-  return cardNumbers[bank] || "";
-}
-
-// ==================== CART.JS ====================
 let cart = {};
+let appliedPromo = null;
+let isPromoMode = false;
+let checkoutData = { paymentMethod: "", senderName: "", email: "" };
+let isSubmitting = false;
+let currentFilter = "Brawl Stars";
+let searchQuery = "";
+let orders = [];
+let navigationHistory = [];
 
-function saveCartToLocalStorage() {
-  localStorage.setItem('cart', JSON.stringify(cart));
-}
-
-function loadCartFromLocalStorage() {
-  const savedCart = localStorage.getItem('cart');
-  if (savedCart) {
-    cart = JSON.parse(savedCart);
-  }
-}
-
-function getCartItemsCount() {
-  return Object.keys(cart).length;
-}
+function saveCartToLocalStorage() { localStorage.setItem('cart', JSON.stringify(cart)); }
+function loadCartFromLocalStorage() { const savedCart = localStorage.getItem('cart'); if (savedCart) { cart = JSON.parse(savedCart); } }
+function getCartItemsCount() { return Object.keys(cart).length; }
 
 function canAddToCart(productId) {
   if (productId <= 4) {
@@ -1418,16 +1323,10 @@ function handleCartAction(pid, isIncrement) {
     if (cart[pid] === 1) delete cart[pid];
     else if (cart[pid] > 0) cart[pid]--;
   }
-  if (document.getElementById("catalog-page").classList.contains("active-page")) {
-    updateSingleCard(pid);
-  }
-  if (document.getElementById("cart-page").classList.contains("active-page")) {
-    renderCartPage();
-  } else if (document.getElementById("checkout-page").classList.contains("active-page")) {
-    renderCheckoutForm();
-  } else {
-    document.getElementById("cartCheckoutFixed").style.display = "none";
-  }
+  if (document.getElementById("catalog-page").classList.contains("active-page")) { updateSingleCard(pid); }
+  if (document.getElementById("cart-page").classList.contains("active-page")) { renderCartPage(); }
+  else if (document.getElementById("checkout-page").classList.contains("active-page")) { renderCheckoutForm(); }
+  else { document.getElementById("cartCheckoutFixed").style.display = "none"; }
   saveCartToLocalStorage();
 }
 
@@ -1450,71 +1349,33 @@ function changeQty(pid, delta) {
 function renderCartPage() {
   const container = document.getElementById("cartItemsList");
   if (!container) return;
-  
   const items = Object.entries(cart);
   if (!items.length) { 
-    container.innerHTML = `
-      <div class="empty-state-icon">
-        <img class="empty-icon" src="https://storage.botpapa.me/files/00feb9c0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="empty cart">
-        <div class="empty-title">Корзина товаров пуста</div>
-        <button class="empty-catalog-btn" id="emptyCartToCatalog">Перейти в каталог</button>
-      </div>
-    `;
+    container.innerHTML = `<div class="empty-state-icon"><img class="empty-icon" src="https://storage.botpapa.me/files/00feb9c0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="empty cart"><div class="empty-title">Корзина товаров пуста</div><button class="empty-catalog-btn" id="emptyCartToCatalog">Перейти в каталог</button></div>`;
     document.getElementById("cartCheckoutFixed").style.display = "none";
     isPromoMode = false;
     appliedPromo = null;
     localStorage.removeItem('cart');
-    setTimeout(() => {
-      const btn = document.getElementById("emptyCartToCatalog");
-      if(btn) btn.addEventListener("click", () => showPage("catalog"));
-    }, 0);
+    setTimeout(() => { const btn = document.getElementById("emptyCartToCatalog"); if(btn) btn.addEventListener("click", () => showPage("catalog")); }, 0);
     return; 
   }
-  
   let html = '';
   for (let [id, qty] of items) {
     const prod = products.find(p => p.id == id);
     if (!prod) continue;
-    
-    html += `
-      <div class="cart-item">
-        <img class="cart-img" src="${prod.image}" alt="${escapeHtml(prod.name)}">
-        <div class="cart-info">
-          <div class="cart-product-name">${escapeHtml(prod.name)}</div>
-          <div class="cart-product-price">${formatPrice(prod.price)}</div>
-          <div class="cart-product-category">${escapeHtml(prod.category)}</div>
-        </div>
-        <div class="cart-actions">
-          <div class="cart-quantity">
-            <button class="cart-qty-btn" data-dec="${id}"><img src="https://storage.botpapa.me/files/975c4510-49de-11f1-bef9-f1ec7a2c6e45.png" alt="-"></button>
-            <span class="cart-qty-value">${qty}</span>
-            <button class="cart-qty-btn" data-inc="${id}"><img src="https://storage.botpapa.me/files/9a5d01f0-49de-11f1-bef9-f1ec7a2c6e45.png" alt="+"></button>
-          </div>
-        </div>
-      </div>
-    `;
+    html += `<div class="cart-item"><img class="cart-img" src="${prod.image}" alt="${escapeHtml(prod.name)}"><div class="cart-info"><div class="cart-product-name">${escapeHtml(prod.name)}</div><div class="cart-product-price">${formatPrice(prod.price)}</div><div class="cart-product-category">${escapeHtml(prod.category)}</div></div><div class="cart-actions"><div class="cart-quantity"><button class="cart-qty-btn" data-dec="${id}"><img src="https://storage.botpapa.me/files/975c4510-49de-11f1-bef9-f1ec7a2c6e45.png" alt="-"></button><span class="cart-qty-value">${qty}</span><button class="cart-qty-btn" data-inc="${id}"><img src="https://storage.botpapa.me/files/9a5d01f0-49de-11f1-bef9-f1ec7a2c6e45.png" alt="+"></button></div></div></div>`;
   }
   container.innerHTML = html;
-  
-  document.querySelectorAll("[data-dec]").forEach(btn => {
-    btn.addEventListener("click", () => changeQty(parseInt(btn.dataset.dec), -1));
-  });
-  document.querySelectorAll("[data-inc]").forEach(btn => {
-    btn.addEventListener("click", () => changeQty(parseInt(btn.dataset.inc), 1));
-  });
-  
-  if (document.getElementById("cart-page").classList.contains("active-page")) {
-    renderCheckoutBlock();
-  }
+  document.querySelectorAll("[data-dec]").forEach(btn => { btn.addEventListener("click", () => changeQty(parseInt(btn.dataset.dec), -1)); });
+  document.querySelectorAll("[data-inc]").forEach(btn => { btn.addEventListener("click", () => changeQty(parseInt(btn.dataset.inc), 1)); });
+  if (document.getElementById("cart-page").classList.contains("active-page")) { renderCheckoutBlock(); }
 }
 
 function updateAllCards() {
   document.querySelectorAll('.product-card').forEach(card => {
     const cardId = parseInt(card.dataset.id);
     const btnContainer = card.querySelector('.card-info > div:last-child');
-    if (btnContainer) {
-      btnContainer.outerHTML = renderCartButtonHtml(cardId);
-    }
+    if (btnContainer) { btnContainer.outerHTML = renderCartButtonHtml(cardId); }
   });
   attachCardEvents();
 }
@@ -1523,54 +1384,20 @@ function updateSingleCard(productId) {
   const card = document.querySelector(`.product-card[data-id="${productId}"]`);
   if (!card) return;
   const btnContainer = card.querySelector('.card-info > div:last-child');
-  if (btnContainer) {
-    btnContainer.outerHTML = renderCartButtonHtml(productId);
-    attachCardEvents();
-  }
+  if (btnContainer) { btnContainer.outerHTML = renderCartButtonHtml(productId); attachCardEvents(); }
 }
-
-// ==================== CATALOG.JS ====================
-let currentFilter = "Brawl Stars";
-let searchQuery = "";
 
 function renderCatalog() {
   const grid = document.getElementById("catalogGrid");
   if (!grid) return;
-  
   let filtered = products.filter(p => currentFilter === "Все категории" || p.category === currentFilter);
   if (searchQuery.trim()) filtered = filtered.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
-  
   if (!filtered.length) { 
-    grid.innerHTML = `
-      <div class="empty-state-icon">
-        <img class="empty-icon" src="https://storage.botpapa.me/files/fa0bb410-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="empty catalog">
-        <div class="empty-title">Товары не найдены</div>
-        <button class="empty-catalog-btn" id="resetFiltersBtn">Сбросить фильтры</button>
-      </div>
-    `;
-    setTimeout(() => {
-      const resetBtn = document.getElementById("resetFiltersBtn");
-      if(resetBtn) resetBtn.addEventListener("click", () => {
-        searchQuery = "";
-        document.getElementById("searchInput").value = "";
-        currentFilter = "Brawl Stars";
-        renderCatalog();
-        renderFilterModal();
-      });
-    }, 0);
+    grid.innerHTML = `<div class="empty-state-icon"><img class="empty-icon" src="https://storage.botpapa.me/files/fa0bb410-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="empty catalog"><div class="empty-title">Товары не найдены</div><button class="empty-catalog-btn" id="resetFiltersBtn">Сбросить фильтры</button></div>`;
+    setTimeout(() => { const resetBtn = document.getElementById("resetFiltersBtn"); if(resetBtn) resetBtn.addEventListener("click", () => { searchQuery = ""; document.getElementById("searchInput").value = ""; currentFilter = "Brawl Stars"; renderCatalog(); renderFilterModal(); }); }, 0);
     return; 
   }
-  
-  grid.innerHTML = filtered.map(p => `
-    <div class="product-card" data-id="${p.id}">
-      <img class="card-img" src="${p.image}" alt="${escapeHtml(p.name)}" loading="lazy">
-      <div class="card-info">
-        <div class="product-title">${escapeHtml(p.name)}</div>
-        <div class="price-row"><span class="current-price">${formatPrice(p.price)}</span><span class="old-price">${formatPrice(p.oldPrice)}</span></div>
-        ${renderCartButtonHtml(p.id)}
-      </div>
-    </div>
-  `).join("");
+  grid.innerHTML = filtered.map(p => `<div class="product-card" data-id="${p.id}"><img class="card-img" src="${p.image}" alt="${escapeHtml(p.name)}" loading="lazy"><div class="card-info"><div class="product-title">${escapeHtml(p.name)}</div><div class="price-row"><span class="current-price">${formatPrice(p.price)}</span><span class="old-price">${formatPrice(p.oldPrice)}</span></div>${renderCartButtonHtml(p.id)}</div></div>`).join("");
   attachCardEvents();
 }
 
@@ -1580,13 +1407,7 @@ function renderFilterModal() {
   if (!container) return;
   container.innerHTML = cats.map(cat => `<div class="filter-row" data-filter="${cat}"><span class="filter-text">${cat}</span><span class="check-mark">${currentFilter === cat ? '✓' : ''}</span></div>`).join("");
   document.querySelectorAll(".filter-row").forEach(row => {
-    row.addEventListener("click", () => { 
-      hapticLight();
-      currentFilter = row.dataset.filter; 
-      renderFilterModal(); 
-      renderCatalog(); 
-      showPage("catalog"); 
-    });
+    row.addEventListener("click", () => { hapticLight(); currentFilter = row.dataset.filter; renderFilterModal(); renderCatalog(); showPage("catalog"); });
   });
 }
 
@@ -1607,28 +1428,10 @@ function attachCardEvents() {
       const newMinus = actionBtn.querySelector('.counter-minus');
       const newPlus = actionBtn.querySelector('.counter-plus');
       newMinus?.addEventListener('click', (e) => { e.stopPropagation(); hapticLight(); handleCartAction(cardId, false); });
-      newPlus?.addEventListener('click', (e) => {
-        e.stopPropagation();
-        hapticLight();
-        if (cardId <= 4) {
-          alert("Максимум 1 шт.");
-          return;
-        }
-        handleCartAction(cardId, true);
-      });
+      newPlus?.addEventListener('click', (e) => { e.stopPropagation(); hapticLight(); if (cardId <= 4) { alert("Максимум 1 шт."); return; } handleCartAction(cardId, true); });
     }
   });
 }
-
-// ==================== CHECKOUT.JS ====================
-let appliedPromo = null;
-let isPromoMode = false;
-let checkoutData = {
-  paymentMethod: "",
-  senderName: "",
-  email: ""
-};
-let isSubmitting = false;
 
 async function sendOrderToServer(order) {
   try {
@@ -1638,10 +1441,7 @@ async function sendOrderToServer(order) {
       body: JSON.stringify(order)
     });
     return response.ok;
-  } catch (error) {
-    console.error('Ошибка:', error);
-    return false;
-  }
+  } catch (error) { console.error('Ошибка:', error); return false; }
 }
 
 function renderCheckoutBlock() {
@@ -1652,33 +1452,13 @@ function renderCheckoutBlock() {
   fixedBlock.style.display = "block";
   const rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
   const discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
-  
   if (isPromoMode) {
-    fixedBlock.innerHTML = `
-      <div class="checkout-card">
-        <div class="total-row">
-          <span class="promo-label">Введите промокод на скидку</span>
-        </div>
-        <div class="promo-input-row">
-          <input type="text" class="promo-input" id="promoInput" placeholder="Введите промокод" value="${appliedPromo ? appliedPromo.code : ''}">
-          <button class="promo-action-btn apply-btn" id="promoApplyBtn">
-            <img src="https://storage.botpapa.me/files/b254ec20-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="apply">
-          </button>
-          <button class="promo-action-btn back-btn" id="promoBackBtn">
-            <img src="https://storage.botpapa.me/files/af0747c0-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="back">
-          </button>
-        </div>
-      </div>
-    `;
+    fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="promo-label">Введите промокод на скидку</span></div><div class="promo-input-row"><input type="text" class="promo-input" id="promoInput" placeholder="Введите промокод" value="${appliedPromo ? appliedPromo.code : ''}"><button class="promo-action-btn apply-btn" id="promoApplyBtn"><img src="https://storage.botpapa.me/files/b254ec20-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="apply"></button><button class="promo-action-btn back-btn" id="promoBackBtn"><img src="https://storage.botpapa.me/files/af0747c0-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="back"></button></div></div>`;
     setTimeout(() => {
       const promoInput = document.getElementById("promoInput");
       const backBtn = document.getElementById("promoBackBtn");
       const applyBtn = document.getElementById("promoApplyBtn");
-      
-      if (promoInput) {
-        promoInput.focus();
-      }
-      
+      if (promoInput) promoInput.focus();
       if (backBtn) backBtn.addEventListener("click", () => { hapticLight(); if (appliedPromo) appliedPromo = null; isPromoMode = false; renderCheckoutBlock(); renderCartPage(); });
       if (applyBtn) applyBtn.addEventListener("click", () => { hapticLight(); const code = promoInput?.value.trim().toUpperCase(); if (promoCodes[code]) { appliedPromo = { code, discountPercent: promoCodes[code] }; isPromoMode = false; renderCheckoutBlock(); renderCartPage(); } else if (promoInput) { promoInput.classList.add("error"); promoInput.value = "Промокод не найден"; setTimeout(() => { promoInput.classList.remove("error"); promoInput.value = appliedPromo ? appliedPromo.code : ""; }, 2000); } });
       if (promoInput) promoInput.addEventListener("keypress", (e) => { if (e.key === "Enter") applyBtn?.click(); });
@@ -1698,13 +1478,10 @@ function renderCheckoutForm() {
   if (!items.length) { container.innerHTML = '<div class="empty-state">Корзина пуста</div>'; return; }
   const rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
   const discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
-  
   container.innerHTML = `<div class="content-card"><div class="form-section"><div class="form-label">Почта от аккаунта</div><input type="email" class="form-input" id="emailInput" placeholder="Укажите почту аккаунта" value="${escapeHtml(checkoutData.email)}"></div><div class="form-section"><div class="form-label">Способ оплаты</div><select class="form-select-native" id="paymentMethodSelect"><option value="" disabled ${!checkoutData.paymentMethod ? 'selected' : ''}>Нажмите для выбора</option>${paymentMethodsOptions.map(o => `<option value="${o.value}" ${checkoutData.paymentMethod === o.value ? 'selected' : ''}>${o.label}</option>`).join('')}</select></div><div class="form-section"><div class="form-label">Данные отправителя</div><input type="text" class="form-input" id="senderNameInput" placeholder="Укажите имя отправителя" value="${escapeHtml(checkoutData.senderName)}"></div></div>`;
-  
   const fixedBlock = document.getElementById("cartCheckoutFixed");
   fixedBlock.style.display = "block";
   fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${appliedPromo ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="payBtn">Перейти к оплате</button><button class="promo-btn" id="helpBtn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь"></button></div></div>`;
-  
   setTimeout(() => {
     const paymentSelect = document.getElementById("paymentMethodSelect");
     paymentSelect?.addEventListener("change", function() { checkoutData.paymentMethod = this.value; this.classList.remove("error"); });
@@ -1722,79 +1499,30 @@ function renderPaymentPage() {
   const items = Object.entries(cart);
   const rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
   const discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
-  
   container.innerHTML = `<div class="content-card"><div class="form-section"><div class="form-label">Номер карты</div><div class="form-select-readonly card-number-row"><span class="card-number-text">${cardNum}</span><img class="copy-icon" id="copyCardBtn" src="https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png" alt="copy"></div></div><div class="form-section"><div class="form-label">Получатель</div><div class="form-select-readonly"><span>Азат Ф.</span></div></div><div class="form-section"><div class="form-label">Банк получателя</div><div class="form-select-readonly"><span>${bank}</span></div></div></div>`;
-  
   const fixedBlock = document.getElementById("cartCheckoutFixed");
   fixedBlock.style.display = "block";
   fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${appliedPromo ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="paidBtn">Я оплатил</button><button class="promo-btn" id="helpBtn2"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь"></button></div></div>`;
-  
   setTimeout(() => {
     const copyBtn = document.getElementById("copyCardBtn");
-    copyBtn?.addEventListener("click", async () => { 
-      if (navigator.clipboard) {
-        copyBtn.style.transform = "scale(0.85)";
-        await navigator.clipboard.writeText(cardNum.replace(/\s/g, ""));
-        setTimeout(() => {
-          copyBtn.style.transform = "scale(1)";
-        }, 150);
-        hapticLight();
-      }
-    });
+    copyBtn?.addEventListener("click", async () => { if (navigator.clipboard) { copyBtn.style.transform = "scale(0.85)"; await navigator.clipboard.writeText(cardNum.replace(/\s/g, "")); setTimeout(() => { copyBtn.style.transform = "scale(1)"; }, 150); hapticLight(); } });
     document.getElementById("helpBtn2")?.addEventListener("click", () => { hapticLight(); window.open("https://t.me/GemStormHelp", "_blank"); });
     document.getElementById("paidBtn")?.addEventListener("click", async () => {
       if (isSubmitting) return;
       isSubmitting = true;
       const btn = document.getElementById("paidBtn");
       if (btn) { btn.disabled = true; btn.textContent = "Обработка..."; }
-      
       hapticMedium();
-      let tgUser = null; 
-      if (window.Telegram?.WebApp?.initDataUnsafe?.user) tgUser = window.Telegram.WebApp.initDataUnsafe.user;
-      const items = Object.entries(cart); 
-      let total = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0); 
-      if (appliedPromo) total = Math.round(total * (1 - appliedPromo.discountPercent / 100));
-      const order = { 
-        orderNumber: 0, 
-        date: new Date().toLocaleDateString('ru-RU'), 
-        time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }), 
-        timestamp: new Date().toISOString(), 
-        items: items.map(([id, qty]) => ({ id: parseInt(id), name: products.find(p => p.id == id).name, qty, price: products.find(p => p.id == id).price })), 
-        total: total, 
-        status: "Ожидание проверки", 
-        status_code: "pending", 
-        promo: appliedPromo ? appliedPromo.code : null, 
-        promo_discount: appliedPromo ? appliedPromo.discountPercent : 0, 
-        payment_method: getPaymentMethodLabel(checkoutData.paymentMethod), 
-        sender_name: checkoutData.senderName, 
-        email: checkoutData.email, 
-        user_id: tgUser?.id, 
-        user_name: tgUser?.first_name, 
-        user_username: tgUser?.username 
-      };
-      
+      let tgUser = null; if (window.Telegram?.WebApp?.initDataUnsafe?.user) tgUser = window.Telegram.WebApp.initDataUnsafe.user;
+      const items = Object.entries(cart); let total = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0); if (appliedPromo) total = Math.round(total * (1 - appliedPromo.discountPercent / 100));
+      const order = { orderNumber: 0, date: new Date().toLocaleDateString('ru-RU'), time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }), timestamp: new Date().toISOString(), items: items.map(([id, qty]) => ({ id: parseInt(id), name: products.find(p => p.id == id).name, qty, price: products.find(p => p.id == id).price })), total: total, status: "Ожидание проверки", status_code: "pending", promo: appliedPromo ? appliedPromo.code : null, promo_discount: appliedPromo ? appliedPromo.discountPercent : 0, payment_method: getPaymentMethodLabel(checkoutData.paymentMethod), sender_name: checkoutData.senderName, email: checkoutData.email, user_id: tgUser?.id, user_name: tgUser?.first_name, user_username: tgUser?.username };
       const success = await sendOrderToServer(order);
-      if (success) { 
-        cart = {}; 
-        appliedPromo = null; 
-        isPromoMode = false; 
-        checkoutData = { paymentMethod: "", senderName: "", email: "" }; 
-        updateAllCards(); 
-        renderCartPage(); 
-        showPage("orders"); 
-      } else { 
-        if (window.Telegram?.WebApp) window.Telegram.WebApp.showAlert("Ошибка при оформлении заказа"); 
-        else alert("Ошибка при оформлении заказа"); 
-      }
-      
+      if (success) { cart = {}; appliedPromo = null; isPromoMode = false; checkoutData = { paymentMethod: "", senderName: "", email: "" }; updateAllCards(); renderCartPage(); showPage("orders"); } else { if (window.Telegram?.WebApp) window.Telegram.WebApp.showAlert("Ошибка при оформлении заказа"); else alert("Ошибка при оформлении заказа"); }
       if (btn) { btn.disabled = false; btn.textContent = "Я оплатил"; }
       isSubmitting = false;
     });
   }, 0);
 }
-
-// ==================== ORDERS.JS ====================
-let orders = [];
 
 async function loadUserOrders() {
   try {
@@ -1805,25 +1533,25 @@ async function loadUserOrders() {
   } catch(e) { console.error('Ошибка загрузки заказов:', e); }
 }
 
-// В функции renderOrdersPage() - правильное определение классов для статуса "completed"
+// Функции для получения классов статусов
 function getStatusTextClass(statusCode) {
   switch(statusCode) {
-    case 'pending': return 'status-text-pending';
-    case 'awaiting_code': return 'status-text-awaiting_code';
-    case 'cancelled': return 'status-text-cancelled';
-    case 'processing': return 'status-text-processing';
-    case 'completed': return 'status-text-completed';  // ← зелёный текст
+    case 'pending': return 'status-pending-text';
+    case 'awaiting_code': return 'status-awaiting_text';
+    case 'cancelled': return 'status-cancelled-text';
+    case 'processing': return 'status-processing-text';
+    case 'completed': return 'status-completed-text';
     default: return '';
   }
 }
 
 function getStatusBgClass(statusCode) {
   switch(statusCode) {
-    case 'pending': return 'status-bg-pending';
-    case 'awaiting_code': return 'status-bg-awaiting_code';
-    case 'cancelled': return 'status-bg-cancelled';
-    case 'processing': return 'status-bg-processing';
-    case 'completed': return 'status-bg-completed';   // ← зелёная подложка с прозрачностью
+    case 'pending': return 'status-pending-bg';
+    case 'awaiting_code': return 'status-awaiting-bg';
+    case 'cancelled': return 'status-cancelled-bg';
+    case 'processing': return 'status-processing-bg';
+    case 'completed': return 'status-completed-bg';
     default: return '';
   }
 }
@@ -1834,7 +1562,7 @@ function getStatusDisplayText(statusCode, originalStatus) {
     case 'awaiting_code': return 'Ожидание кода';
     case 'cancelled': return 'Отменен';
     case 'processing': return 'Ожидает выполнения';
-    case 'completed': return 'Заказ выполнен';  // ← правильный текст
+    case 'completed': return 'Заказ выполнен';
     default: return originalStatus?.replace(/[🟡✅❌🔵⚙⏳]/g, '').trim() || 'Ожидание проверки';
   }
 }
@@ -1842,61 +1570,32 @@ function getStatusDisplayText(statusCode, originalStatus) {
 function renderOrdersPage() {
   const container = document.getElementById("ordersList");
   if (!container) return;
-  
   loadUserOrders().then(() => {
     if (!orders.length) {
       container.innerHTML = `<div class="empty-state-icon"><img class="empty-icon" src="https://storage.botpapa.me/files/8a684130-49e6-11f1-bef9-f1ec7a2c6e45.png" alt=""><div class="empty-title">Заказов еще нет</div><button class="empty-catalog-btn" id="emptyOrdersToCatalog">Перейти в каталог</button></div>`;
       setTimeout(() => { document.getElementById("emptyOrdersToCatalog")?.addEventListener("click", () => showPage("catalog")); }, 0);
       return;
     }
-    
     container.innerHTML = orders.map((o) => {
       let items = [];
       try { items = JSON.parse(o.items || '[]'); } catch(e) {}
       const statusDisplay = getStatusDisplayText(o.status_code, o.status);
       const textClass = getStatusTextClass(o.status_code);
       const bgClass = getStatusBgClass(o.status_code);
-      return `
-        <div class="order-card" data-order-id="${o.id}">
-          <div class="order-card-header">
-            <span class="order-card-id">Заказ #${o.order_number}</span>
-            <span class="order-card-status ${textClass} ${bgClass}">${statusDisplay}</span>
-          </div>
-          <div class="order-card-date">${o.date} ${o.time || ''}</div>
-          <div class="order-card-products">${items.map(i => `${i.name} x${i.qty}`).join(', ')}</div>
-          <div class="order-card-total">${formatPrice(o.total)}</div>
-          <button class="order-refresh-btn" data-id="${o.id}">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-          </button>
-        </div>
-      `;
+      return `<div class="order-card" data-order-id="${o.id}"><div class="order-card-header"><span class="order-card-id">Заказ #${o.order_number}</span><span class="order-card-status ${textClass} ${bgClass}">${statusDisplay}</span></div><div class="order-card-date">${o.date} ${o.time || ''}</div><div class="order-card-products">${items.map(i => `${i.name} x${i.qty}`).join(', ')}</div><div class="order-card-total">${formatPrice(o.total)}</div><button class="order-refresh-btn" data-id="${o.id}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></button></div>`;
     }).join('');
-    
     container.querySelectorAll(".order-card").forEach(card => {
-      card.addEventListener("click", (e) => {
-        if (e.target.closest('.order-refresh-btn')) return;
-        const order = orders.find(o => o.id == card.dataset.orderId);
-        if (order) showOrderDetail(order);
-      });
+      card.addEventListener("click", (e) => { if (e.target.closest('.order-refresh-btn')) return; const order = orders.find(o => o.id == card.dataset.orderId); if (order) showOrderDetail(order); });
     });
-    
     container.querySelectorAll(".order-refresh-btn").forEach(btn => {
-      btn.addEventListener("click", async (e) => {
-        e.stopPropagation();
-        const orderId = btn.dataset.id;
-        await refreshOrderStatus(orderId);
-      });
+      btn.addEventListener("click", async (e) => { e.stopPropagation(); const orderId = btn.dataset.id; await refreshOrderStatus(orderId); });
     });
   });
 }
 
 async function refreshOrderStatus(orderId) {
   try {
-    const response = await fetch('https://gemstorm.up.railway.app/api/refresh-order', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ orderId })
-    });
+    const response = await fetch('https://gemstorm.up.railway.app/api/refresh-order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderId }) });
     if (response.ok) {
       const updatedOrder = await response.json();
       const index = orders.findIndex(o => o.id == orderId);
@@ -1912,34 +1611,13 @@ function showOrderDetail(order) {
   const container = document.getElementById("orderDetailContent");
   let items = [];
   try { items = JSON.parse(order.items || '[]'); } catch(e) {}
-  
-  const itemsHtml = items.map(i => `
-    <div class="order-detail-row">
-      <span class="order-detail-label">${escapeHtml(i.name)} x${i.qty}</span>
-      <span class="order-detail-value">${formatPrice(i.price * i.qty)}</span>
-    </div>
-  `).join('');
-  
+  const itemsHtml = items.map(i => `<div class="order-detail-row"><span class="order-detail-label">${escapeHtml(i.name)} x${i.qty}</span><span class="order-detail-value">${formatPrice(i.price * i.qty)}</span></div>`).join('');
   let codeBlock = '';
   const isAwaitingCode = order.status_code === 'awaiting_code';
   const hasNoCode = !order.verification_code;
-  
   if (isAwaitingCode && hasNoCode) {
-    codeBlock = `
-      <div class="code-input-fixed">
-        <div class="checkout-card">
-          <div class="promo-label">Введите код который вам пришел</div>
-          <div class="promo-input-row">
-            <input type="text" id="verificationCodeInput" class="promo-input" placeholder="Введите код">
-            <button id="submitCodeBtn" class="promo-action-btn apply-btn">
-              <img src="https://storage.botpapa.me/files/b254ec20-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="submit">
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
+    codeBlock = `<div class="code-input-fixed"><div class="checkout-card"><div class="promo-label">Введите код который вам пришел</div><div class="promo-input-row"><input type="text" id="verificationCodeInput" class="promo-input" placeholder="Введите код"><button id="submitCodeBtn" class="promo-action-btn apply-btn"><img src="https://storage.botpapa.me/files/b254ec20-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="submit"></button></div></div></div>`;
   }
-  
   const statusDisplay = getStatusDisplayText(order.status_code, order.status);
   const statusColor = (() => {
     switch(order.status_code) {
@@ -1951,27 +1629,8 @@ function showOrderDetail(order) {
       default: return '#4cb4e9';
     }
   })();
-  
-  container.innerHTML = `
-    <div class="order-data-card">
-      <div class="order-detail-row"><span class="order-detail-label">Статус</span><span class="order-detail-value" style="color:${statusColor}">${statusDisplay}</span></div>
-      <div class="order-detail-row"><span class="order-detail-label">Дата</span><span class="order-detail-value">${order.date} ${order.time || ''}</span></div>
-      <div class="order-detail-row"><span class="order-detail-label">Способ оплаты</span><span class="order-detail-value">${order.payment_method || '—'}</span></div>
-      <div class="order-detail-row"><span class="order-detail-label">Отправитель</span><span class="order-detail-value">${escapeHtml(order.sender_name || '—')}</span></div>
-      <div class="order-detail-row"><span class="order-detail-label">Почта</span><span class="order-detail-value">${escapeHtml(order.email || '—')}</span></div>
-      ${order.promo ? `<div class="order-detail-row"><span class="order-detail-label">Промокод</span><span class="order-detail-value">${order.promo} (скидка ${order.promo_discount}%)</span></div>` : ''}
-      ${order.verification_code ? `<div class="order-detail-row"><span class="order-detail-label">Код</span><span class="order-detail-value" style="color:#ffffff;">${escapeHtml(order.verification_code)}</span></div>` : ''}
-      <div class="order-detail-row" style="margin-top:4px;"><span class="order-detail-label" style="font-weight:400;">Стоимость</span><span class="order-detail-value" style="color:#ffffff; font-weight:500;">${formatPrice(order.total)}</span></div>
-    </div>
-    
-    <div class="order-items-card">
-      ${itemsHtml}
-    </div>
-    ${codeBlock}
-  `;
-  
+  container.innerHTML = `<div class="order-data-card"><div class="order-detail-row"><span class="order-detail-label">Статус</span><span class="order-detail-value" style="color:${statusColor}">${statusDisplay}</span></div><div class="order-detail-row"><span class="order-detail-label">Дата</span><span class="order-detail-value">${order.date} ${order.time || ''}</span></div><div class="order-detail-row"><span class="order-detail-label">Способ оплаты</span><span class="order-detail-value">${order.payment_method || '—'}</span></div><div class="order-detail-row"><span class="order-detail-label">Отправитель</span><span class="order-detail-value">${escapeHtml(order.sender_name || '—')}</span></div><div class="order-detail-row"><span class="order-detail-label">Почта</span><span class="order-detail-value">${escapeHtml(order.email || '—')}</span></div>${order.promo ? `<div class="order-detail-row"><span class="order-detail-label">Промокод</span><span class="order-detail-value">${order.promo} (скидка ${order.promo_discount}%)</span></div>` : ''}${order.verification_code ? `<div class="order-detail-row"><span class="order-detail-label">Код</span><span class="order-detail-value" style="color:#ffffff;">${escapeHtml(order.verification_code)}</span></div>` : ''}<div class="order-detail-row" style="margin-top:4px;"><span class="order-detail-label" style="font-weight:400;">Стоимость</span><span class="order-detail-value" style="color:#ffffff; font-weight:500;">${formatPrice(order.total)}</span></div></div><div class="order-items-card">${itemsHtml}</div>${codeBlock}`;
   showPage("order-detail", true);
-  
   setTimeout(() => {
     const submitBtn = document.getElementById("submitCodeBtn");
     if (submitBtn) {
@@ -1981,127 +1640,33 @@ function showOrderDetail(order) {
         if (!code) { alert("Введите код"); return; }
         hapticLight();
         try {
-          const response = await fetch('https://gemstorm.up.railway.app/api/submit-code', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ orderId: order.id, code: code })
-          });
-          if (response.ok) {
-            alert("Код отправлен администратору");
-            order.status_code = 'processing';
-            order.status = 'Ожидает выполнения';
-            order.verification_code = code;
-            showOrderDetail(order);
-            renderOrdersPage();
-          } else alert("Ошибка отправки кода");
+          const response = await fetch('https://gemstorm.up.railway.app/api/submit-code', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderId: order.id, code: code }) });
+          if (response.ok) { alert("Код отправлен администратору"); order.status_code = 'processing'; order.status = 'Ожидает выполнения'; order.verification_code = code; showOrderDetail(order); renderOrdersPage(); } else alert("Ошибка отправки кода");
         } catch(e) { alert("Ошибка соединения"); }
       });
     }
   }, 100);
 }
 
-function getColorByStatus(statusCode) {
-  switch(statusCode) {
-    case 'pending': return '#4cb4e9';
-    case 'awaiting_code': return '#eab308';
-    case 'cancelled': return '#ef4444';
-    case 'processing': return '#4cb4e9';
-    case 'completed': return '#22c55e';
-    default: return '#4cb4e9';
-  }
-}
-
-// ==================== PROFILE.JS ====================
 function renderProfilePage() {
   const container = document.getElementById("profileContent");
   if (!container) return;
-  
   let tgUser = null;
-  if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
-    tgUser = window.Telegram.WebApp.initDataUnsafe.user;
-  }
-  
+  if (window.Telegram?.WebApp?.initDataUnsafe?.user) { tgUser = window.Telegram.WebApp.initDataUnsafe.user; }
   const nickname = tgUser?.first_name || "Пользователь";
   const username = tgUser?.username ? "@" + tgUser.username : "@username";
   const photoUrl = tgUser?.photo_url || "";
   const userId = tgUser?.id || "0";
   const refLink = `https://t.me/GemStormAppBot?start=ref${userId}`;
-  
-  container.innerHTML = `
-    <div class="profile-card">
-      ${photoUrl ? `<img class="profile-avatar" src="${photoUrl}" alt="avatar">` : '<div class="profile-avatar" style="background:#303032;display:flex;align-items:center;justify-content:center;font-size:24px;color:#9e9e9e;">👤</div>'}
-      <div class="profile-info">
-        <div class="profile-nickname">${escapeHtml(nickname)}</div>
-        <div class="profile-username">${escapeHtml(username)}</div>
-      </div>
-    </div>
-    
-    <div class="subscribe-card" id="subscribeChannelBtn">
-      <div class="subscribe-info">
-        <div class="subscribe-title">Подпишитесь на наш канал</div>
-        <div class="subscribe-text">Следите за новостями и акциями</div>
-      </div>
-      <svg class="telegram-logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.6-1.38-.97-2.23-1.56-.99-.67-.35-1.04.22-1.64.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.09-.06-.13-.07-.04-.16-.02-.23-.01-.1.02-1.7 1.08-4.8 3.17-.45.31-.86.46-1.23.45-.4-.01-1.18-.23-1.76-.42-.7-.23-1.26-.35-1.21-.74.03-.2.3-.41.83-.63 3.27-1.42 5.45-2.36 6.54-2.82 3.11-1.31 3.76-1.53 4.18-1.54.09 0 .3.02.43.12.11.09.14.2.16.32.02.12 0 .25-.02.38z" fill="#4cb4e9"/>
-      </svg>
-    </div>
-    
-    <div class="referral-card">
-      <div class="referral-title">Реферальная программа</div>
-      <div class="referral-subtitle">Приглашайте друзей и получайте бонусы</div>
-      
-      <div class="referral-stats">
-        <div class="referral-stat">
-          <div class="referral-stat-value">0</div>
-          <div class="referral-stat-label">Приглашено</div>
-        </div>
-        <div class="referral-stat">
-          <div class="referral-stat-value">0 ₽</div>
-          <div class="referral-stat-label">Заработано</div>
-        </div>
-      </div>
-      
-      <div class="referral-link-row">
-        <input type="text" class="referral-link-input" id="refLinkInput" value="${refLink}" readonly>
-        <button class="referral-copy-circle" id="refCopyBtn">
-          <img src="https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png" alt="copy">
-        </button>
-      </div>
-    </div>
-  `;
-  
+  container.innerHTML = `<div class="profile-card">${photoUrl ? `<img class="profile-avatar" src="${photoUrl}" alt="avatar">` : '<div class="profile-avatar" style="background:#303032;display:flex;align-items:center;justify-content:center;font-size:24px;color:#9e9e9e;">👤</div>'}<div class="profile-info"><div class="profile-nickname">${escapeHtml(nickname)}</div><div class="profile-username">${escapeHtml(username)}</div></div></div><div class="subscribe-card" id="subscribeChannelBtn"><div class="subscribe-info"><div class="subscribe-title">Подпишитесь на наш канал</div><div class="subscribe-text">Следите за новостями и акциями</div></div><svg class="telegram-logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.6-1.38-.97-2.23-1.56-.99-.67-.35-1.04.22-1.64.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.09-.06-.13-.07-.04-.16-.02-.23-.01-.1.02-1.7 1.08-4.8 3.17-.45.31-.86.46-1.23.45-.4-.01-1.18-.23-1.76-.42-.7-.23-1.26-.35-1.21-.74.03-.2.3-.41.83-.63 3.27-1.42 5.45-2.36 6.54-2.82 3.11-1.31 3.76-1.53 4.18-1.54.09 0 .3.02.43.12.11.09.14.2.16.32.02.12 0 .25-.02.38z" fill="#4cb4e9"/></svg></div><div class="referral-card"><div class="referral-title">Реферальная программа</div><div class="referral-subtitle">Приглашайте друзей и получайте бонусы</div><div class="referral-stats"><div class="referral-stat"><div class="referral-stat-value">0</div><div class="referral-stat-label">Приглашено</div></div><div class="referral-stat"><div class="referral-stat-value">0 ₽</div><div class="referral-stat-label">Заработано</div></div></div><div class="referral-link-row"><input type="text" class="referral-link-input" id="refLinkInput" value="${refLink}" readonly><button class="referral-copy-circle" id="refCopyBtn"><img src="https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png" alt="copy"></button></div></div>`;
   setTimeout(() => {
-    document.getElementById("refCopyBtn")?.addEventListener("click", () => {
-      const refInput = document.getElementById("refLinkInput");
-      if (refInput && navigator.clipboard) {
-        navigator.clipboard.writeText(refInput.value);
-      }
-      hapticLight();
-    });
-    document.getElementById("subscribeChannelBtn")?.addEventListener("click", () => {
-      hapticLight();
-      window.open("https://t.me/GemStormStore", "_blank");
-    });
+    document.getElementById("refCopyBtn")?.addEventListener("click", () => { const refInput = document.getElementById("refLinkInput"); if (refInput && navigator.clipboard) { navigator.clipboard.writeText(refInput.value); } hapticLight(); });
+    document.getElementById("subscribeChannelBtn")?.addEventListener("click", () => { hapticLight(); window.open("https://t.me/GemStormStore", "_blank"); });
   }, 0);
 }
 
-// ==================== APP.JS ====================
-
-let navigationHistory = [];
-let isInitialLoad = true;
-
-function saveCurrentPage(pageId) {
-  localStorage.setItem('lastPage', pageId);
-}
-
-function getLastPage() {
-  const savedPage = localStorage.getItem('lastPage');
-  const validPages = ['catalog', 'cart', 'orders', 'profile'];
-  if (savedPage && validPages.includes(savedPage)) {
-    return savedPage;
-  }
-  return 'catalog';
-}
+function saveCurrentPage(pageId) { localStorage.setItem('lastPage', pageId); }
+function getLastPage() { const savedPage = localStorage.getItem('lastPage'); const validPages = ['catalog', 'cart', 'orders', 'profile']; if (savedPage && validPages.includes(savedPage)) { return savedPage; } return 'catalog'; }
 
 function showPage(pageId, skipHistoryAdd = false) {
   let currentPageId = null;
@@ -2111,57 +1676,24 @@ function showPage(pageId, skipHistoryAdd = false) {
       break;
     }
   }
-  
   if (currentPageId && currentPageId !== pageId && !skipHistoryAdd) {
     const lastInHistory = navigationHistory[navigationHistory.length - 1];
-    if (lastInHistory !== currentPageId) {
-      navigationHistory.push(currentPageId);
-    }
+    if (lastInHistory !== currentPageId) { navigationHistory.push(currentPageId); }
   }
-  
-  if (pageId === "catalog") {
-    navigationHistory = [];
-  }
-  
-  if (isPromoMode) {
-    isPromoMode = false;
-    appliedPromo = null;
-  }
-  
+  if (pageId === "catalog") { navigationHistory = []; }
+  if (isPromoMode) { isPromoMode = false; appliedPromo = null; }
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
   const targetPage = document.getElementById(pageId + "-page");
   if (targetPage) targetPage.classList.add("active-page");
-  
   const checkoutBlock = document.getElementById("cartCheckoutFixed");
-  
-  if (pageId === "catalog") {
-    renderCatalog();
-    if (checkoutBlock) checkoutBlock.style.display = "none";
-  }
-  if (pageId === "cart") {
-    renderCartPage();
-  }
-  if (pageId === "orders") {
-    renderOrdersPage();
-    if (checkoutBlock) checkoutBlock.style.display = "none";
-  }
-  if (pageId === "profile") {
-    renderProfilePage();
-    if (checkoutBlock) checkoutBlock.style.display = "none";
-  }
-  if (pageId === "checkout") {
-    renderCheckoutForm();
-  }
-  if (pageId === "payment") {
-    renderPaymentPage();
-  }
-  if (pageId === "filter") {
-    if (checkoutBlock) checkoutBlock.style.display = "none";
-  }
-  if (pageId === "order-detail") {
-    if (checkoutBlock) checkoutBlock.style.display = "none";
-  }
-  
+  if (pageId === "catalog") { renderCatalog(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
+  if (pageId === "cart") { renderCartPage(); }
+  if (pageId === "orders") { renderOrdersPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
+  if (pageId === "profile") { renderProfilePage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
+  if (pageId === "checkout") { renderCheckoutForm(); }
+  if (pageId === "payment") { renderPaymentPage(); }
+  if (pageId === "filter") { if (checkoutBlock) checkoutBlock.style.display = "none"; }
+  if (pageId === "order-detail") { if (checkoutBlock) checkoutBlock.style.display = "none"; }
   const mainPages = ["catalog", "cart", "orders", "profile"];
   if (mainPages.includes(pageId)) {
     document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
@@ -2169,16 +1701,10 @@ function showPage(pageId, skipHistoryAdd = false) {
     if (activeBtn) activeBtn.classList.add("active");
     saveCurrentPage(pageId);
   }
-  
   if (window.Telegram && window.Telegram.WebApp) {
     const tg = window.Telegram.WebApp;
-    if (pageId === "catalog") {
-      tg.BackButton.hide();
-    } else {
-      tg.BackButton.show();
-    }
+    if (pageId === "catalog") { tg.BackButton.hide(); } else { tg.BackButton.show(); }
   }
-  
   window.scrollTo({ top: 0 });
 }
 
@@ -2186,12 +1712,7 @@ function initBackButtonHandler() {
   if (window.Telegram && window.Telegram.WebApp) {
     const tg = window.Telegram.WebApp;
     tg.BackButton.onClick(function() {
-      if (navigationHistory.length > 0) {
-        const previousPage = navigationHistory.pop();
-        showPage(previousPage, true);
-      } else {
-        showPage("catalog");
-      }
+      if (navigationHistory.length > 0) { const previousPage = navigationHistory.pop(); showPage(previousPage, true); } else { showPage("catalog"); }
     });
   }
 }
@@ -2202,34 +1723,24 @@ function initApp() {
   showPage(lastPage);
 }
 
-// Проверка на админа и перенаправление
 (function() {
   const tg = window.Telegram?.WebApp;
   const user = tg?.initDataUnsafe?.user;
   const ADMIN_ID = 7509324385;
-  
-  if (user && user.id == ADMIN_ID) {
-    window.location.href = 'admin-panel.html';
-  }
+  if (user && user.id == ADMIN_ID) { window.location.href = 'admin-panel.html'; }
 })();
 
-// Инициализация Telegram
 (function() {
   if (window.Telegram && window.Telegram.WebApp) {
     const tg = window.Telegram.WebApp;
     tg.ready();
     tg.expand();
-    try {
-      tg.setHeaderColor('#171719');
-      tg.setBackgroundColor('#171719');
-    } catch(e) {}
-    
+    try { tg.setHeaderColor('#171719'); tg.setBackgroundColor('#171719'); } catch(e) {}
     initBackButtonHandler();
     tg.BackButton.hide();
   }
 })();
 
-// Скрываем клавиатуру при клике вне полей ввода
 document.addEventListener('click', function(e) {
   if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'SELECT') {
     if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'SELECT')) {
@@ -2238,37 +1749,22 @@ document.addEventListener('click', function(e) {
   }
 });
 
-// События
 const openFilterBtn = document.getElementById("openFilterBtn");
 if (openFilterBtn) {
-  openFilterBtn.addEventListener("click", () => { 
-    hapticLight();
-    renderFilterModal(); 
-    showPage("filter"); 
-  });
+  openFilterBtn.addEventListener("click", () => { hapticLight(); renderFilterModal(); showPage("filter"); });
 }
-
 const searchInputEl = document.getElementById("searchInput");
 if (searchInputEl) {
-  searchInputEl.addEventListener("input", (e) => { 
-    searchQuery = e.target.value; 
-    renderCatalog();
-  });
+  searchInputEl.addEventListener("input", (e) => { searchQuery = e.target.value; renderCatalog(); });
 }
-
 document.querySelectorAll(".menu-item").forEach(btn => {
-  btn.addEventListener("click", () => {
-    hapticLight();
-    showPage(btn.dataset.page);
-  });
+  btn.addEventListener("click", () => { hapticLight(); showPage(btn.dataset.page); });
 });
 
-// ЗАПУСК ПРИЛОЖЕНИЯ
 document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
 renderFilterModal();
 renderProfilePage();
 initApp();
 </script>
-
 </body>
 </html>

@@ -1163,6 +1163,14 @@
   <div id="paymentContent"></div>
 </div>
 
+<div id="referral-page" class="page">
+  <div class="header-row">
+    <img class="header-icon-img" src="https://storage.botpapa.me/files/12337af0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="referral">
+    <div class="page-title">Рефералы</div>
+  </div>
+  <div id="referralContent"></div>
+</div>
+
 <div id="order-detail-page" class="page">
   <div class="header-row">
     <img class="header-icon-img" src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="order">
@@ -1671,6 +1679,71 @@ if (fixedBlock) {
   }, 100);
 }
 
+async function renderReferralPage() {
+  const container = document.getElementById("referralContent");
+  if (!container) return;
+  container.innerHTML = `<div style="text-align:center;padding:40px 0;color:#9e9e9e;">Загрузка...</div>`;
+  const tg = window.Telegram?.WebApp;
+  const userId = tg?.initDataUnsafe?.user?.id;
+  if (!userId) { container.innerHTML = `<div style="text-align:center;padding:40px 0;color:#9e9e9e;">Ошибка авторизации</div>`; return; }
+  const stats = await fetch(`https://gemstorm.up.railway.app/api/referral-stats?userId=${userId}`).then(r => r.json()).catch(() => ({ count: 0, balance: 0, referrals: [] }));
+  const refLink = `https://t.me/GemStormAppBot/app?startapp=ref${userId}`;
+  const referralsHtml = stats.referrals?.length ? stats.referrals.map(r => `
+    <div class="order-detail-row">
+      <span class="order-detail-label">ID: ${r.user_id}</span>
+      <span class="order-detail-value" style="color:#22c55e;">+${r.earned}₽</span>
+    </div>`).join('') : `<div style="color:#9e9e9e;font-size:15px;text-align:center;padding:10px 0;">Пока никого нет</div>`;
+  container.innerHTML = `
+    <div class="order-data-card" style="margin-bottom:14px;">
+      <div class="order-detail-row">
+        <span class="order-detail-label">Приглашено друзей</span>
+        <span class="order-detail-value">${stats.count}</span>
+      </div>
+      <div class="order-detail-row" style="padding-bottom:4px;">
+        <span class="order-detail-label">Баланс</span>
+        <span class="order-detail-value" style="color:#22c55e;">${stats.balance}₽</span>
+      </div>
+    </div>
+    <div class="order-data-card" style="margin-bottom:14px;">
+      <div style="font-size:16px;font-weight:500;color:#cbd5e1;margin-bottom:10px;">Ваши рефералы</div>
+      ${referralsHtml}
+    </div>
+    <div class="order-data-card" style="margin-bottom:14px;">
+      <div style="font-size:16px;font-weight:500;color:#cbd5e1;margin-bottom:10px;">Реферальная ссылка</div>
+      <div class="referral-link-row">
+        <input type="text" class="referral-link-input" id="refLinkInput2" value="${refLink}" readonly>
+        <button class="referral-copy-circle" id="refCopyBtn2"><img src="https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png" alt="copy"></button>
+      </div>
+    </div>
+    ${stats.balance > 0 ? `
+    <div class="order-data-card">
+      <div style="font-size:16px;font-weight:500;color:#cbd5e1;margin-bottom:6px;">Конвертация баланса</div>
+      <div style="font-size:14px;color:#9e9e9e;margin-bottom:14px;">Конвертируйте ${stats.balance}₽ в промокод на скидку</div>
+      <button class="checkout-button" id="convertBalanceBtn" style="width:100%;height:48px;">Получить промокод на ${stats.balance}₽</button>
+    </div>` : ''}`;
+  setTimeout(() => {
+    document.getElementById("refCopyBtn2")?.addEventListener("click", () => {
+      const input = document.getElementById("refLinkInput2");
+      if (input && navigator.clipboard) navigator.clipboard.writeText(input.value);
+      hapticLight();
+    });
+    document.getElementById("convertBalanceBtn")?.addEventListener("click", async () => {
+      hapticMedium();
+      const res = await fetch('https://gemstorm.up.railway.app/api/convert-balance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId })
+      }).then(r => r.json()).catch(() => ({ success: false }));
+      if (res.success) {
+        alert(`Ваш промокод: ${res.code}\nСкидка: ${res.amount}₽\nПрименить можно только один раз`);
+        renderReferralPage();
+      } else {
+        alert('Ошибка конвертации');
+      }
+    });
+  }, 0);
+}
+
 function renderProfilePage() {
   const container = document.getElementById("profileContent");
   if (!container) return;
@@ -1681,7 +1754,7 @@ function renderProfilePage() {
   const photoUrl = tgUser?.photo_url || "";
   const userId = tgUser?.id || "0";
   const refLink = `https://t.me/DeathGunBrawlBot?startapp=ref${userId}`;
-  container.innerHTML = `<div class="profile-card">${photoUrl ? `<img class="profile-avatar" src="${photoUrl}" alt="avatar">` : '<div class="profile-avatar" style="background:#303032;display:flex;align-items:center;justify-content:center;font-size:24px;color:#9e9e9e;">👤</div>'}<div class="profile-info"><div class="profile-nickname">${escapeHtml(nickname)}</div><div class="profile-username">${escapeHtml(username)}</div></div></div><div class="subscribe-card" id="subscribeChannelBtn"><div class="subscribe-info"><div class="subscribe-title">Подпишитесь на канал</div><div class="subscribe-text">Следите за новостями и акциями</div></div><svg class="telegram-logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.6-1.38-.97-2.23-1.56-.99-.67-.35-1.04.22-1.64.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.09-.06-.13-.07-.04-.16-.02-.23-.01-.1.02-1.7 1.08-4.8 3.17-.45.31-.86.46-1.23.45-.4-.01-1.18-.23-1.76-.42-.7-.23-1.26-.35-1.21-.74.03-.2.3-.41.83-.63 3.27-1.42 5.45-2.36 6.54-2.82 3.11-1.31 3.76-1.53 4.18-1.54.09 0 .3.02.43.12.11.09.14.2.16.32.02.12 0 .25-.02.38z" fill="#4cb4e9"/></svg></div><div class="referral-card"><div class="referral-title">Реферальная программа</div><div class="referral-subtitle">Приглашайте друзей и получайте бонусы</div><div class="referral-stats"><div class="referral-stat"><div class="referral-stat-value" id="refCount">0</div><div class="referral-stat-label">Приглашено</div></div><div class="referral-stat"><div class="referral-stat-value" id="refEarned">0 ₽</div><div class="referral-stat-label">Заработано</div></div></div><div class="referral-link-row"><input type="text" class="referral-link-input" id="refLinkInput" value="${refLink}" readonly><button class="referral-copy-circle" id="refCopyBtn"><img src="https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png" alt="copy"></button></div></div>`;
+  container.innerHTML = `<div class="profile-card">${photoUrl ? `<img class="profile-avatar" src="${photoUrl}" alt="avatar">` : '<div class="profile-avatar" style="background:#303032;display:flex;align-items:center;justify-content:center;font-size:24px;color:#9e9e9e;">👤</div>'}<div class="profile-info"><div class="profile-nickname">${escapeHtml(nickname)}</div><div class="profile-username">${escapeHtml(username)}</div></div></div><div class="subscribe-card" id="subscribeChannelBtn"><div class="subscribe-info"><div class="subscribe-title">Подпишитесь на канал</div><div class="subscribe-text">Следите за новостями и акциями</div></div><svg class="telegram-logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.6-1.38-.97-2.23-1.56-.99-.67-.35-1.04.22-1.64.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.09-.06-.13-.07-.04-.16-.02-.23-.01-.1.02-1.7 1.08-4.8 3.17-.45.31-.86.46-1.23.45-.4-.01-1.18-.23-1.76-.42-.7-.23-1.26-.35-1.21-.74.03-.2.3-.41.83-.63 3.27-1.42 5.45-2.36 6.54-2.82 3.11-1.31 3.76-1.53 4.18-1.54.09 0 .3.02.43.12.11.09.14.2.16.32.02.12 0 .25-.02.38z" fill="#4cb4e9"/></svg></div><div class="referral-card" id="openReferralPage" style="cursor:pointer;"><div class="referral-title">Реферальная программа</div><div class="referral-subtitle">Приглашайте друзей и получайте 2% с их покупок</div><div class="referral-stats"><div class="referral-stat"><div class="referral-stat-value" id="refCount">—</div><div class="referral-stat-label">Приглашено</div></div><div class="referral-stat"><div class="referral-stat-value" id="refEarned">—</div><div class="referral-stat-label">Баланс</div></div></div></div>`;
   fetch(`https://gemstorm.up.railway.app/api/referral-stats?userId=${userId}`)
   .then(r => r.json())
   .then(stats => {
@@ -1692,8 +1765,25 @@ function renderProfilePage() {
   })
   .catch(() => {});
   setTimeout(() => {
-    document.getElementById("refCopyBtn")?.addEventListener("click", () => { const refInput = document.getElementById("refLinkInput"); if (refInput && navigator.clipboard) { navigator.clipboard.writeText(refInput.value); } hapticLight(); });
     document.getElementById("subscribeChannelBtn")?.addEventListener("click", () => { hapticLight(); window.open("https://t.me/GemStormStore", "_blank"); });
+    fetch(`https://gemstorm.up.railway.app/api/referral-stats?userId=${userId}`)
+      .then(r => r.json())
+      .then(stats => {
+        const countEl = document.getElementById('refCount');
+        const earnedEl = document.getElementById('refEarned');
+        if (countEl) countEl.textContent = stats.count;
+        if (earnedEl) earnedEl.textContent = (stats.balance || 0) + '₽';
+        document.getElementById('openReferralPage')?.addEventListener('click', () => {
+          hapticLight();
+          showPage('referral');
+        });
+      })
+      .catch(() => {
+        document.getElementById('openReferralPage')?.addEventListener('click', () => {
+          hapticLight();
+          showPage('referral');
+        });
+      });
   }, 0);
 }
 
@@ -1726,6 +1816,7 @@ function showPage(pageId, skipHistoryAdd = false) {
   if (pageId === "payment") { renderPaymentPage(); }
   if (pageId === "filter") { if (checkoutBlock) checkoutBlock.style.display = "none"; }
   if (pageId === "order-detail") { if (checkoutBlock) checkoutBlock.style.display = "none"; }
+  if (pageId === "referral") { renderReferralPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
   const mainPages = ["catalog", "cart", "orders", "profile"];
   if (mainPages.includes(pageId)) {
     document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));

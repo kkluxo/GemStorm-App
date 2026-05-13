@@ -84,6 +84,14 @@
       display: block;
     }
 
+    /* Иконки в шапке - подняты на 2px */
+    .header-icon-img {
+      width: 26px;
+      height: 26px;
+      object-fit: contain;
+      margin-top: -2px;
+    }
+
     .bottom-menu {
       position: fixed;
       bottom: 18px;
@@ -181,12 +189,6 @@
     .page-title {
       font-size: 25px;
       font-weight: 500;
-    }
-
-    .header-icon-img {
-      width: 26px;
-      height: 26px;
-      object-fit: contain;
     }
 
     .search-section {
@@ -661,7 +663,7 @@
     .content-card {
       background: #202022;
       border: 1px solid #2B2B2D;
-      border-radius: 32px; /* +4px */
+      border-radius: 32px;
       padding: 18px;
       margin-bottom: 16px;
     }
@@ -765,12 +767,12 @@
       align-items: center;
     }
 
-    /* ========== СТИЛИ ДЛЯ ДЕТАЛЕЙ ЗАКАЗА (уменьшены отступы, скругления) ========== */
+    /* ========== СТИЛИ ДЛЯ ДЕТАЛЕЙ ЗАКАЗА ========== */
     .order-detail-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 0; /* было 12px → 10px (уменьшили на 2px) */
+      padding: 10px 0;
     }
 
     .order-detail-row:first-child {
@@ -790,20 +792,20 @@
       font-size: 16px;
     }
 
-    /* Карточка данных заказа - новый стиль */
+    /* Карточка данных заказа - убран большой отступ снизу */
     .order-data-card {
       background: #202022;
       border: 1px solid #2B2B2D;
-      border-radius: 30px; /* +2px */
+      border-radius: 30px;
       padding: 18px;
-      margin-bottom: 12px; /* уменьшен отступ снизу */
+      margin-bottom: 12px;
     }
 
-    /* Карточка товаров заказа - единый стиль с карточкой данных */
+    /* Карточка товаров заказа */
     .order-items-card {
       background: #202022;
       border: 1px solid #2B2B2D;
-      border-radius: 30px; /* +2px */
+      border-radius: 30px;
       padding: 18px;
       margin-bottom: 16px;
     }
@@ -848,20 +850,27 @@
       font-size: 17px;
     }
 
+    /* Стили для подложек статусов в карточках заказов */
     .order-card-status {
-      background: #202B32;
       padding: 4px 12px;
       border-radius: 20px;
       font-size: 14px;
       font-weight: 500;
     }
 
-    /* Цвета статусов */
-    .status-pending { color: #4cb4e9; }
-    .status-awaiting_code { color: #eab308; }
-    .status-cancelled { color: #ef4444; }
-    .status-processing { color: #4cb4e9; }
-    .status-completed { color: #22c55e; }
+    /* Цвета текста статусов */
+    .status-text-pending { color: #4cb4e9; }
+    .status-text-awaiting_code { color: #eab308; }
+    .status-text-cancelled { color: #ef4444; }
+    .status-text-processing { color: #4cb4e9; }
+    .status-text-completed { color: #22c55e; }
+
+    /* Цвета подложек статусов в карточках заказов */
+    .status-bg-pending { background: rgba(76, 180, 233, 0.15); }
+    .status-bg-awaiting_code { background: rgba(234, 179, 8, 0.15); }
+    .status-bg-cancelled { background: rgba(239, 68, 68, 0.15); }
+    .status-bg-processing { background: rgba(76, 180, 233, 0.15); }
+    .status-bg-completed { background: rgba(34, 197, 94, 0.15); }
 
     .order-card-date {
       color: #a1a1aa;
@@ -938,11 +947,10 @@
       color: #4cb4e9;
     }
 
-    /* Реферальная карточка - скругление увеличено на 2px */
     .referral-card {
       background: #202022;
       border: 1px solid #2B2B2D;
-      border-radius: 30px; /* +2px */
+      border-radius: 30px;
       padding: 18px;
       margin-bottom: 16px;
     }
@@ -1212,6 +1220,36 @@
 </div>
 
 <script>
+// ==================== ПРЕДЗАГРУЗКА ИЗОБРАЖЕНИЙ ====================
+const imagesToPreload = [
+  'https://storage.botpapa.me/files/fd86aa00-4a0c-11f1-bef9-f1ec7a2c6e45.png',
+  'https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png',
+  'https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png',
+  'https://storage.botpapa.me/files/12337af0-4a0d-11f1-bef9-f1ec7a2c6e45.png',
+  'https://storage.botpapa.me/files/fa0bb410-4a0c-11f1-bef9-f1ec7a2c6e45.png',
+  'https://storage.botpapa.me/files/00feb9c0-4a0d-11f1-bef9-f1ec7a2c6e45.png',
+  'https://storage.botpapa.me/files/8a684130-49e6-11f1-bef9-f1ec7a2c6e45.png',
+  'https://storage.botpapa.me/files/1656bed0-4a0d-11f1-bef9-f1ec7a2c6e45.png',
+  'https://storage.botpapa.me/files/bc7cbf30-49e0-11f1-bef9-f1ec7a2c6e45.png',
+  'https://storage.botpapa.me/files/9478fb40-49de-11f1-bef9-f1ec7a2c6e45.png',
+  'https://storage.botpapa.me/files/62edaf00-4a27-11f1-bef9-f1ec7a2c6e45.png',
+  'https://storage.botpapa.me/files/975c4510-49de-11f1-bef9-f1ec7a2c6e45.png',
+  'https://storage.botpapa.me/files/9a5d01f0-49de-11f1-bef9-f1ec7a2c6e45.png',
+  'https://storage.botpapa.me/files/b254ec20-4a13-11f1-bef9-f1ec7a2c6e45.png',
+  'https://storage.botpapa.me/files/af0747c0-4a13-11f1-bef9-f1ec7a2c6e45.png',
+  'https://storage.botpapa.me/files/a488c6d0-4a12-11f1-bef9-f1ec7a2c6e45.png',
+  'https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png',
+  'https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png'
+];
+
+function preloadImages(arr) {
+  arr.forEach(src => {
+    const img = new Image();
+    img.src = src;
+  });
+}
+preloadImages(imagesToPreload);
+
 // ==================== ПРОВЕРКА TELEGRAM WEB APP ====================
 (function checkTelegramContext() {
   const isTelegramWebApp = !!(window.Telegram?.WebApp?.initDataUnsafe);
@@ -1324,7 +1362,6 @@ function getCardNumberFromValue(value) {
 // ==================== CART.JS ====================
 let cart = {};
 
-// ==================== СОХРАНЕНИЕ КОРЗИНЫ В LOCALSTORAGE ====================
 function saveCartToLocalStorage() {
   localStorage.setItem('cart', JSON.stringify(cart));
 }
@@ -1662,7 +1699,6 @@ function renderCheckoutForm() {
   const rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
   const discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
   
-  // Используем обновленный класс content-card с новым border-radius
   container.innerHTML = `<div class="content-card"><div class="form-section"><div class="form-label">Почта от аккаунта</div><input type="email" class="form-input" id="emailInput" placeholder="Укажите почту аккаунта" value="${escapeHtml(checkoutData.email)}"></div><div class="form-section"><div class="form-label">Способ оплаты</div><select class="form-select-native" id="paymentMethodSelect"><option value="" disabled ${!checkoutData.paymentMethod ? 'selected' : ''}>Нажмите для выбора</option>${paymentMethodsOptions.map(o => `<option value="${o.value}" ${checkoutData.paymentMethod === o.value ? 'selected' : ''}>${o.label}</option>`).join('')}</select></div><div class="form-section"><div class="form-label">Данные отправителя</div><input type="text" class="form-input" id="senderNameInput" placeholder="Укажите имя отправителя" value="${escapeHtml(checkoutData.senderName)}"></div></div>`;
   
   const fixedBlock = document.getElementById("cartCheckoutFixed");
@@ -1687,7 +1723,6 @@ function renderPaymentPage() {
   const rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
   const discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
   
-  // Используем обновленный класс content-card с новым border-radius
   container.innerHTML = `<div class="content-card"><div class="form-section"><div class="form-label">Номер карты</div><div class="form-select-readonly card-number-row"><span class="card-number-text">${cardNum}</span><img class="copy-icon" id="copyCardBtn" src="https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png" alt="copy"></div></div><div class="form-section"><div class="form-label">Получатель</div><div class="form-select-readonly"><span>Азат Ф.</span></div></div><div class="form-section"><div class="form-label">Банк получателя</div><div class="form-select-readonly"><span>${bank}</span></div></div></div>`;
   
   const fixedBlock = document.getElementById("cartCheckoutFixed");
@@ -1698,7 +1733,6 @@ function renderPaymentPage() {
     const copyBtn = document.getElementById("copyCardBtn");
     copyBtn?.addEventListener("click", async () => { 
       if (navigator.clipboard) {
-        // Анимация нажатия
         copyBtn.style.transform = "scale(0.85)";
         await navigator.clipboard.writeText(cardNum.replace(/\s/g, ""));
         setTimeout(() => {
@@ -1771,14 +1805,36 @@ async function loadUserOrders() {
   } catch(e) { console.error('Ошибка загрузки заказов:', e); }
 }
 
-function getStatusClass(statusCode) {
+function getStatusTextClass(statusCode) {
   switch(statusCode) {
-    case 'pending': return 'status-pending';
-    case 'awaiting_code': return 'status-awaiting_code';
-    case 'cancelled': return 'status-cancelled';
-    case 'processing': return 'status-processing';
-    case 'completed': return 'status-completed';
+    case 'pending': return 'status-text-pending';
+    case 'awaiting_code': return 'status-text-awaiting_code';
+    case 'cancelled': return 'status-text-cancelled';
+    case 'processing': return 'status-text-processing';
+    case 'completed': return 'status-text-completed';
     default: return '';
+  }
+}
+
+function getStatusBgClass(statusCode) {
+  switch(statusCode) {
+    case 'pending': return 'status-bg-pending';
+    case 'awaiting_code': return 'status-bg-awaiting_code';
+    case 'cancelled': return 'status-bg-cancelled';
+    case 'processing': return 'status-bg-processing';
+    case 'completed': return 'status-bg-completed';
+    default: return '';
+  }
+}
+
+function getStatusDisplayText(statusCode, originalStatus) {
+  switch(statusCode) {
+    case 'pending': return 'Ожидание проверки';
+    case 'awaiting_code': return 'Ожидание кода';
+    case 'cancelled': return 'Отменен';
+    case 'processing': return 'Ожидает выполнения';
+    case 'completed': return 'Заказ выполнен';
+    default: return originalStatus?.replace(/[🟡✅❌🔵⚙⏳]/g, '').trim() || 'Ожидание проверки';
   }
 }
 
@@ -1796,13 +1852,14 @@ function renderOrdersPage() {
     container.innerHTML = orders.map((o) => {
       let items = [];
       try { items = JSON.parse(o.items || '[]'); } catch(e) {}
-      let statusText = (o.status || 'Ожидание проверки').replace(/[🟡✅❌🔵⚙⏳]/g, '').trim();
-      const statusClass = getStatusClass(o.status_code);
+      const statusDisplay = getStatusDisplayText(o.status_code, o.status);
+      const textClass = getStatusTextClass(o.status_code);
+      const bgClass = getStatusBgClass(o.status_code);
       return `
         <div class="order-card" data-order-id="${o.id}">
           <div class="order-card-header">
             <span class="order-card-id">Заказ #${o.order_number}</span>
-            <span class="order-card-status ${statusClass}">${statusText}</span>
+            <span class="order-card-status ${textClass} ${bgClass}">${statusDisplay}</span>
           </div>
           <div class="order-card-date">${o.date} ${o.time || ''}</div>
           <div class="order-card-products">${items.map(i => `${i.name} x${i.qty}`).join(', ')}</div>
@@ -1855,7 +1912,6 @@ function showOrderDetail(order) {
   let items = [];
   try { items = JSON.parse(order.items || '[]'); } catch(e) {}
   
-  // Единый стиль для карточки товаров (отступы и размеры как в карточке данных)
   const itemsHtml = items.map(i => `
     <div class="order-detail-row">
       <span class="order-detail-label">${escapeHtml(i.name)} x${i.qty}</span>
@@ -1883,10 +1939,21 @@ function showOrderDetail(order) {
     `;
   }
   
-  // Карточка данных с уменьшенными отступами и добавленной строкой "Стоимость" (белый цвет суммы, текст не жирный)
+  const statusDisplay = getStatusDisplayText(order.status_code, order.status);
+  const statusColor = (() => {
+    switch(order.status_code) {
+      case 'pending': return '#4cb4e9';
+      case 'awaiting_code': return '#eab308';
+      case 'cancelled': return '#ef4444';
+      case 'processing': return '#4cb4e9';
+      case 'completed': return '#22c55e';
+      default: return '#4cb4e9';
+    }
+  })();
+  
   container.innerHTML = `
     <div class="order-data-card">
-      <div class="order-detail-row"><span class="order-detail-label">Статус</span><span class="order-detail-value" style="color:${getColorByStatus(order.status_code)}">${(order.status || 'Ожидание проверки').replace(/[🟡✅❌🔵⚙⏳]/g, '').trim()}</span></div>
+      <div class="order-detail-row"><span class="order-detail-label">Статус</span><span class="order-detail-value" style="color:${statusColor}">${statusDisplay}</span></div>
       <div class="order-detail-row"><span class="order-detail-label">Дата</span><span class="order-detail-value">${order.date} ${order.time || ''}</span></div>
       <div class="order-detail-row"><span class="order-detail-label">Способ оплаты</span><span class="order-detail-value">${order.payment_method || '—'}</span></div>
       <div class="order-detail-row"><span class="order-detail-label">Отправитель</span><span class="order-detail-value">${escapeHtml(order.sender_name || '—')}</span></div>

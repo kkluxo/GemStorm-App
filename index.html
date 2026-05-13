@@ -1929,6 +1929,7 @@ function renderProfilePage() {
 // ----- НОВАЯ ПЕРЕМЕННАЯ ДЛЯ ИСТОРИИ -----
 let navigationHistory = [];
 
+// ---------- ПОЛНАЯ ИСПРАВЛЕННАЯ ФУНКЦИЯ showPage (ЗАМЕНИ ЕЁ ПОЛНОСТЬЮ) ----------
 function showPage(pageId) {
   // Получаем текущую активную страницу
   let currentPageId = null;
@@ -1939,9 +1940,22 @@ function showPage(pageId) {
     }
   }
   
-  // Добавляем в историю, если переход на другую страницу
-  if (currentPageId && currentPageId !== pageId && navigationHistory[navigationHistory.length - 1] !== currentPageId) {
-    navigationHistory.push(currentPageId);
+  // ЛОГИКА ДОБАВЛЕНИЯ В ИСТОРИЮ:
+  // Добавляем текущую страницу в историю ТОЛЬКО если:
+  // 1. Есть текущая страница
+  // 2. Мы переходим на другую страницу (не на ту же)
+  // 3. Мы НЕ возвращаемся назад через кнопку (проверяем, не равна ли текущая страница последней в истории)
+  if (currentPageId && currentPageId !== pageId) {
+    const lastInHistory = navigationHistory[navigationHistory.length - 1];
+    // Добавляем только если последняя страница в истории не равна текущей
+    if (lastInHistory !== currentPageId) {
+      navigationHistory.push(currentPageId);
+    }
+  }
+  
+  // Если переходим в каталог (главная) - очищаем историю
+  if (pageId === "catalog") {
+    navigationHistory = [];
   }
   
   // Переключаем страницы
@@ -1979,10 +1993,13 @@ function showPage(pageId) {
     if (checkoutBlock) checkoutBlock.style.display = "none";
   }
   
-  // Обновляем активный пункт меню
-  document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
-  const activeBtn = document.querySelector(`.menu-item[data-page="${pageId}"]`);
-  if (activeBtn) activeBtn.classList.add("active");
+  // Обновляем активный пункт нижнего меню (только для главных страниц)
+  const mainPages = ["catalog", "cart", "orders", "profile"];
+  if (mainPages.includes(pageId)) {
+    document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
+    const activeBtn = document.querySelector(`.menu-item[data-page="${pageId}"]`);
+    if (activeBtn) activeBtn.classList.add("active");
+  }
   
   // ----- УПРАВЛЕНИЕ СИСТЕМНОЙ КНОПКОЙ "НАЗАД" (Telegram) -----
   if (window.Telegram && window.Telegram.WebApp) {
@@ -1990,7 +2007,6 @@ function showPage(pageId) {
     
     if (pageId === "catalog") {
       tg.BackButton.hide();
-      navigationHistory = []; // Очищаем историю на главной
     } else {
       tg.BackButton.show();
     }
@@ -1999,16 +2015,20 @@ function showPage(pageId) {
   window.scrollTo({ top: 0 });
 }
 
-// ----- ОБРАБОТЧИК КНОПКИ "НАЗАД" -----
+// ---------- ПОЛНАЯ ИСПРАВЛЕННАЯ ФУНКЦИЯ initBackButtonHandler (ЗАМЕНИ ЕЁ ПОЛНОСТЬЮ) ----------
 function initBackButtonHandler() {
   if (window.Telegram && window.Telegram.WebApp) {
     const tg = window.Telegram.WebApp;
     
     tg.BackButton.onClick(function() {
+      // Проверяем, есть ли история
       if (navigationHistory.length > 0) {
+        // Забираем последнюю страницу из истории
         const previousPage = navigationHistory.pop();
+        // Переходим на неё
         showPage(previousPage);
       } else {
+        // Если истории нет - идём в каталог
         showPage("catalog");
       }
     });

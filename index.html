@@ -1754,6 +1754,20 @@ function renderOrdersPage() {
       `;
     }).join('');
     
+    // Внутри renderOrdersPage(), после container.innerHTML = ... добавь:
+
+// ВРЕМЕННАЯ КНОПКА ДЛЯ ДЕБАГА НА ТЕЛЕФОНЕ
+const debugBtn = document.createElement('button');
+debugBtn.textContent = '🔍 ПОКАЗАТЬ ДАННЫЕ ЗАКАЗА';
+debugBtn.style.cssText = 'position:fixed;bottom:100px;right:10px;z-index:9999;background:#4cb4e9;border:none;border-radius:30px;padding:10px 15px;color:white;font-weight:bold;';
+debugBtn.onclick = () => {
+  orders.forEach(o => {
+    console.log('Заказ #' + o.order_number, 'статус:', o.status, 'status_code:', o.status_code);
+    alert('Заказ #' + o.order_number + '\nstatus: ' + o.status + '\nstatus_code: ' + o.status_code);
+  });
+};
+container.appendChild(debugBtn);
+    
     container.querySelectorAll(".order-card").forEach(card => {
       card.addEventListener("click", (e) => {
         if (e.target.closest('.order-refresh-btn')) return;

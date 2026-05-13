@@ -74,6 +74,17 @@ await pool.query(`
     created_at TIMESTAMPTZ DEFAULT NOW()
   )
 `);
+
+await pool.query(`
+  CREATE TABLE IF NOT EXISTS referral_conversions (
+    id SERIAL PRIMARY KEY,
+    user_id BIGINT,
+    code TEXT,
+    amount INTEGER,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+  )
+`);
+
     console.log('Таблицы referral_balances и referral_promocodes готовы');
     const result = await pool.query('SELECT COUNT(*) as count FROM orders');
     console.log(`В базе данных ${result.rows[0].count} заказов`);
@@ -342,7 +353,7 @@ app.post('/api/convert-balance', async (req, res) => {
     const balance = balanceResult.rows[0]?.balance || 0;
     if (balance <= 0) return res.status(400).json({ error: 'Баланс пуст' });
 
-    const code = 'REF' + userId + '_' + Date.now();
+    const code = 'REF' + Math.random().toString(36).substring(2, 7).toUpperCase();
 
     await pool.query(
       'INSERT INTO referral_promocodes (user_id, code, amount) VALUES ($1, $2, $3)',
@@ -353,6 +364,11 @@ app.post('/api/convert-balance', async (req, res) => {
       'UPDATE referral_balances SET balance = 0 WHERE user_id = $1',
       [userId]
     );
+
+    await pool.query(
+  'INSERT INTO referral_conversions (user_id, code, amount) VALUES ($1, $2, $3)',
+  [userId, code, balance]
+);
 
     res.json({ success: true, code, amount: balance });
   } catch (err) { res.status(500).json({ error: err.message }); }
@@ -384,6 +400,21 @@ app.post('/api/use-referral-promo', async (req, res) => {
     if (!result.rows.length) return res.json({ success: false });
     res.json({ success: true, amount: result.rows[0].amount });
   } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.get('/api/conversion-history', async (req, res) => {
+  try {
+    const userId = req.query.userId;
+    if (!userId) return res.json([]);
+    const result = await pool.query(
+      `SELECT rc.code, rc.amount, rc.created_at, rp.used 
+       FROM referral_conversions rc
+       LEFT JOIN referral_promocodes rp ON rp.code = rc.code
+       WHERE rc.user_id = $1 ORDER BY rc.created_at DESC`,
+      [userId]
+    );
+    res.json(result.rows);
+  } catch(err) { res.status(500).json({ error: err.message }); }
 });
 
 initDB().then(() => {

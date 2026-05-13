@@ -1705,17 +1705,26 @@ async function renderReferralPage() {
   const tg = window.Telegram?.WebApp;
   const userId = tg?.initDataUnsafe?.user?.id;
   if (!userId) { container.innerHTML = `<div style="text-align:center;padding:40px 0;color:#9e9e9e;">Ошибка авторизации</div>`; return; }
-  const stats = await fetch(`https://gemstorm.up.railway.app/api/referral-stats?userId=${userId}`).then(r => r.json()).catch(() => ({ count: 0, balance: 0, referrals: [] }));
+
+  const [stats, history] = await Promise.all([
+    fetch(`https://gemstorm.up.railway.app/api/referral-stats?userId=${userId}`).then(r => r.json()).catch(() => ({ count: 0, balance: 0, referrals: [] })),
+    fetch(`https://gemstorm.up.railway.app/api/conversion-history?userId=${userId}`).then(r => r.json()).catch(() => [])
+  ]);
+
   const refLink = `https://t.me/GemStormAppBot/app?startapp=ref${userId}`;
   const referralsHtml = stats.referrals?.length ? stats.referrals.map(r => `
     <div class="order-detail-row">
       <span class="order-detail-label">ID: ${r.user_id}</span>
       <span class="order-detail-value" style="color:#22c55e;">+${r.earned}₽</span>
     </div>`).join('') : `<div style="color:#9e9e9e;font-size:15px;text-align:center;padding:10px 0;">Пока никого нет</div>`;
-  container.innerHTML = const [stats, history] = await Promise.all([
-  fetch(`https://gemstorm.up.railway.app/api/referral-stats?userId=${userId}`).then(r => r.json()).catch(() => ({ count: 0, balance: 0, referrals: [] })),
-  fetch(`https://gemstorm.up.railway.app/api/conversion-history?userId=${userId}`).then(r => r.json()).catch(() => [])
-]);`
+
+  const historyHtml = history.length ? history.map(h => `
+    <div class="order-detail-row">
+      <span class="order-detail-label" style="font-family:monospace;font-size:15px;">${h.code}</span>
+      <span class="order-detail-value" style="color:${h.used ? '#9e9e9e' : '#22c55e'};">${h.used ? 'Использован' : h.amount + '₽'}</span>
+    </div>`).join('') : `<div style="color:#9e9e9e;font-size:15px;text-align:center;padding:10px 0;">Нет истории</div>`;
+
+  container.innerHTML = `
     <div class="order-data-card" style="margin-bottom:14px;">
       <div class="order-detail-row">
         <span class="order-detail-label">Приглашено друзей</span>
@@ -1738,11 +1747,16 @@ async function renderReferralPage() {
       </div>
     </div>
     ${stats.balance > 0 ? `
-    <div class="order-data-card">
+    <div class="order-data-card" style="margin-bottom:14px;">
       <div style="font-size:16px;font-weight:500;color:#cbd5e1;margin-bottom:6px;">Конвертация баланса</div>
       <div style="font-size:14px;color:#9e9e9e;margin-bottom:14px;">Конвертируйте ${stats.balance}₽ в промокод на скидку</div>
       <button class="checkout-button" id="convertBalanceBtn" style="width:100%;height:48px;">Получить промокод на ${stats.balance}₽</button>
-    </div>` : ''}`;
+    </div>` : ''}
+    <div class="order-data-card">
+      <div style="font-size:16px;font-weight:500;color:#cbd5e1;margin-bottom:10px;">История промокодов</div>
+      ${historyHtml}
+    </div>`;
+
   setTimeout(() => {
     document.getElementById("refCopyBtn2")?.addEventListener("click", () => {
       const input = document.getElementById("refLinkInput2");

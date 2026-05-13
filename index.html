@@ -1927,7 +1927,15 @@ function updateMenuSlider(pageId) {
   const index = pages.indexOf(pageId);
   if (index === -1) { slider.style.opacity = "0"; return; }
   slider.style.opacity = "1";
-  slider.style.transform = `translateX(calc(${index} * (100% + 6px)))`;
+  const menuBar = slider.parentElement;
+  const buttons = menuBar.querySelectorAll(".menu-item");
+  if (!buttons[index]) return;
+  const barRect = menuBar.getBoundingClientRect();
+  const btnRect = buttons[index].getBoundingClientRect();
+  const btnCenter = btnRect.left + btnRect.width / 2 - barRect.left;
+  const sliderWidth = btnRect.width + 16;
+  slider.style.width = sliderWidth + "px";
+  slider.style.transform = `translateX(${btnCenter - sliderWidth / 2}px)`;
 }
 
 document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));

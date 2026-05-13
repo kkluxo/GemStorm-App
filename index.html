@@ -2137,6 +2137,18 @@ document.querySelectorAll(".menu-item").forEach(btn => {
   });
 });
 
+function initApp() {
+  const lastPage = getLastPage();
+  
+  if (lastPage === "order-detail") {
+    loadUserOrders().then(() => {
+      showPage("orders");
+    });
+  } else {
+    showPage(lastPage);
+  }
+}
+
 // Запуск с восстановлением последней страницы
 initApp();
 renderFilterModal();

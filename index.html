@@ -1937,17 +1937,17 @@ function updateMenuSlider(pageId) {
   const index = pages.indexOf(pageId);
   if (index === -1) { slider.style.opacity = "0"; return; }
   slider.style.opacity = "1";
-  requestAnimationFrame(() => {
-    const menuBar = slider.parentElement;
-    const buttons = menuBar.querySelectorAll(".menu-item");
-    if (!buttons[index]) return;
-    const barRect = menuBar.getBoundingClientRect();
-    const btnRect = buttons[index].getBoundingClientRect();
-    const left = btnRect.left - barRect.left;
-    const width = btnRect.width;
-    slider.style.width = width + "px";
-    slider.style.transform = `translateX(${left}px)`;
-  });
+  slider.style.transform = "none";
+  if (index === 0) {
+    slider.style.left = "3px";
+    slider.style.width = "calc(33.33% - 3px)";
+  } else if (index === 2) {
+    slider.style.left = "calc(66.66% + 1px)";
+    slider.style.width = "calc(33.33% - 4px)";
+  } else {
+    slider.style.left = "calc(33.33% + 2px)";
+    slider.style.width = "calc(33.33% - 4px)";
+  }
 }
 
 document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));

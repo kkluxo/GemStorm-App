@@ -1780,7 +1780,6 @@ function showOrderDetail(order) {
   `).join('');
   
   let codeBlock = '';
-  // ПОКАЗЫВАЕМ ТОЛЬКО если статус_code === 'awaiting_code' (Ожидание кода)
   const isAwaitingCode = order.status_code === 'awaiting_code';
   const hasNoCode = !order.verification_code;
   
@@ -1926,7 +1925,26 @@ function renderProfilePage() {
 }
 
 // ==================== APP.JS ====================
+
+// ----- НОВАЯ ПЕРЕМЕННАЯ ДЛЯ ИСТОРИИ -----
+let navigationHistory = [];
+
 function showPage(pageId) {
+  // Получаем текущую активную страницу
+  let currentPageId = null;
+  for (const page of document.querySelectorAll(".page")) {
+    if (page.classList.contains("active-page")) {
+      currentPageId = page.id.replace("-page", "");
+      break;
+    }
+  }
+  
+  // Добавляем в историю, если переход на другую страницу
+  if (currentPageId && currentPageId !== pageId && navigationHistory[navigationHistory.length - 1] !== currentPageId) {
+    navigationHistory.push(currentPageId);
+  }
+  
+  // Переключаем страницы
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
   const targetPage = document.getElementById(pageId + "-page");
   if (targetPage) targetPage.classList.add("active-page");
@@ -1957,12 +1975,44 @@ function showPage(pageId) {
   if (pageId === "filter") {
     if (checkoutBlock) checkoutBlock.style.display = "none";
   }
+  if (pageId === "order-detail") {
+    if (checkoutBlock) checkoutBlock.style.display = "none";
+  }
   
+  // Обновляем активный пункт меню
   document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
   const activeBtn = document.querySelector(`.menu-item[data-page="${pageId}"]`);
   if (activeBtn) activeBtn.classList.add("active");
   
+  // ----- УПРАВЛЕНИЕ СИСТЕМНОЙ КНОПКОЙ "НАЗАД" (Telegram) -----
+  if (window.Telegram && window.Telegram.WebApp) {
+    const tg = window.Telegram.WebApp;
+    
+    if (pageId === "catalog") {
+      tg.BackButton.hide();
+      navigationHistory = []; // Очищаем историю на главной
+    } else {
+      tg.BackButton.show();
+    }
+  }
+  
   window.scrollTo({ top: 0 });
+}
+
+// ----- ОБРАБОТЧИК КНОПКИ "НАЗАД" -----
+function initBackButtonHandler() {
+  if (window.Telegram && window.Telegram.WebApp) {
+    const tg = window.Telegram.WebApp;
+    
+    tg.BackButton.onClick(function() {
+      if (navigationHistory.length > 0) {
+        const previousPage = navigationHistory.pop();
+        showPage(previousPage);
+      } else {
+        showPage("catalog");
+      }
+    });
+  }
 }
 
 // Проверка на админа и перенаправление
@@ -1986,6 +2036,12 @@ function showPage(pageId) {
       tg.setHeaderColor('#171719');
       tg.setBackgroundColor('#171719');
     } catch(e) {}
+    
+    // Инициализируем обработчик кнопки "Назад"
+    initBackButtonHandler();
+    
+    // При старте кнопка скрыта (мы на каталоге)
+    tg.BackButton.hide();
   }
 })();
 

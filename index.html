@@ -1942,7 +1942,7 @@ function updateMenuSlider(pageId) {
     const totalWidth = menuBar.getBoundingClientRect().width;
     const sliderWidth = (totalWidth - 6) / 3;
     slider.style.width = sliderWidth + "px";
-    const offset = index === 0 ? 0 : index === 2 ? (totalWidth - sliderWidth) : (totalWidth / 2 - sliderWidth / 2);
+    const offset = index * (totalWidth / 3);
     slider.style.transform = `translateX(${offset}px)`;
   });
 }

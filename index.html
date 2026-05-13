@@ -189,9 +189,8 @@
       color: #4cb4e9;
     }
 
-    #profileMenuBtn.active img {
-  box-shadow: 0 0 0 2px rgba(76, 180, 233, 0.5);
-  border-radius: 50%;
+    #profileMenuBtn.active {
+  background: rgba(76, 180, 233, 0.15) !important;
 }
 
     .header-row {
@@ -1842,8 +1841,13 @@ function showPage(pageId, skipHistoryAdd = false) {
   const mainPages = ["catalog", "cart", "orders", "profile"];
 if (mainPages.includes(pageId)) {
   document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
-  const activeBtn = document.querySelector(`.menu-item[data-page="${pageId}"]`);
-  if (activeBtn) activeBtn.classList.add("active");
+const activeBtn = document.querySelector(`.menu-item[data-page="${pageId}"]`);
+if (activeBtn) activeBtn.classList.add("active");
+const profileBtn = document.getElementById("profileMenuBtn");
+if (profileBtn) {
+  if (pageId === "profile") profileBtn.classList.add("active");
+  else profileBtn.classList.remove("active");
+}
   saveCurrentPage(pageId);
   updateMenuSlider(pageId);
 }
@@ -1945,15 +1949,20 @@ function updateMenuSlider(pageId) {
   const index = pages.indexOf(pageId);
   if (index === -1) { slider.style.opacity = "0"; return; }
   slider.style.opacity = "1";
-  const menuBar = slider.parentElement;
-  const totalWidth = menuBar.offsetWidth;
-  const sliderWidth = (totalWidth - 6) / 3;
-  slider.style.width = sliderWidth + "px";
-  let translateX;
-  if (index === 0) translateX = 3;
-  else if (index === 1) translateX = 3 + sliderWidth;
-  else translateX = totalWidth - sliderWidth - 3;
-  slider.style.transform = `translateX(${translateX}px)`;
+  
+  requestAnimationFrame(() => {
+    const menuBar = slider.parentElement;
+    const totalWidth = menuBar.getBoundingClientRect().width;
+    const sliderWidth = (totalWidth - 6) / 3;
+    slider.style.width = sliderWidth + "px";
+    
+    let translateX;
+    if (index === 0) translateX = 3;
+    else if (index === 1) translateX = 3 + sliderWidth;
+    else translateX = 3 + sliderWidth * 2;
+    
+    slider.style.transform = `translateX(${translateX}px)`;
+  });
 }
 
 document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));

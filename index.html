@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
@@ -658,20 +657,17 @@
       padding-bottom: 110px;
     }
 
+    /* ========== НОВЫЕ СТИЛИ ДЛЯ ОФОРМЛЕНИЯ И ОПЛАТЫ ========== */
     .content-card {
       background: #202022;
       border: 1px solid #2B2B2D;
-      border-radius: 28px;
+      border-radius: 32px; /* +4px */
       padding: 18px;
       margin-bottom: 16px;
     }
 
-    .order-items-card {
-      background: #202022;
-      border: 1px solid #2B2B2D;
-      border-radius: 28px;
-      padding: 12px;
-      margin-bottom: 16px;
+    .form-section:last-child {
+      margin-bottom: 0;
     }
 
     .form-section {
@@ -737,11 +733,11 @@
       width: 22px;
       height: 22px;
       cursor: pointer;
+      transition: transform 0.1s ease;
     }
 
     .copy-icon:active {
       transform: scale(0.85);
-      opacity: 0.6;
     }
 
     .card-number-row {
@@ -769,11 +765,12 @@
       align-items: center;
     }
 
+    /* ========== СТИЛИ ДЛЯ ДЕТАЛЕЙ ЗАКАЗА (уменьшены отступы, скругления) ========== */
     .order-detail-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 0;
+      padding: 10px 0; /* было 12px → 10px (уменьшили на 2px) */
     }
 
     .order-detail-row:first-child {
@@ -783,6 +780,7 @@
     .order-detail-label {
       color: #cbd5e1;
       font-size: 16px;
+      font-weight: 500;
     }
 
     .order-detail-value {
@@ -790,6 +788,36 @@
       font-weight: 500;
       text-align: right;
       font-size: 16px;
+    }
+
+    /* Карточка данных заказа - новый стиль */
+    .order-data-card {
+      background: #202022;
+      border: 1px solid #2B2B2D;
+      border-radius: 30px; /* +2px */
+      padding: 18px;
+      margin-bottom: 12px; /* уменьшен отступ снизу */
+    }
+
+    /* Карточка товаров заказа - единый стиль с карточкой данных */
+    .order-items-card {
+      background: #202022;
+      border: 1px solid #2B2B2D;
+      border-radius: 30px; /* +2px */
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .order-items-card .order-detail-row {
+      padding: 10px 0;
+    }
+
+    .order-items-card .order-detail-row:first-child {
+      padding-top: 0;
+    }
+
+    .order-items-card .order-detail-row:last-child {
+      padding-bottom: 0;
     }
 
     .order-card {
@@ -822,12 +850,18 @@
 
     .order-card-status {
       background: #202B32;
-      color: #4cb4e9;
       padding: 4px 12px;
       border-radius: 20px;
       font-size: 14px;
       font-weight: 500;
     }
+
+    /* Цвета статусов */
+    .status-pending { color: #4cb4e9; }
+    .status-awaiting_code { color: #eab308; }
+    .status-cancelled { color: #ef4444; }
+    .status-processing { color: #4cb4e9; }
+    .status-completed { color: #22c55e; }
 
     .order-card-date {
       color: #a1a1aa;
@@ -904,10 +938,11 @@
       color: #4cb4e9;
     }
 
+    /* Реферальная карточка - скругление увеличено на 2px */
     .referral-card {
       background: #202022;
       border: 1px solid #2B2B2D;
-      border-radius: 28px;
+      border-radius: 30px; /* +2px */
       padding: 18px;
       margin-bottom: 16px;
     }
@@ -1627,6 +1662,7 @@ function renderCheckoutForm() {
   const rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
   const discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
   
+  // Используем обновленный класс content-card с новым border-radius
   container.innerHTML = `<div class="content-card"><div class="form-section"><div class="form-label">Почта от аккаунта</div><input type="email" class="form-input" id="emailInput" placeholder="Укажите почту аккаунта" value="${escapeHtml(checkoutData.email)}"></div><div class="form-section"><div class="form-label">Способ оплаты</div><select class="form-select-native" id="paymentMethodSelect"><option value="" disabled ${!checkoutData.paymentMethod ? 'selected' : ''}>Нажмите для выбора</option>${paymentMethodsOptions.map(o => `<option value="${o.value}" ${checkoutData.paymentMethod === o.value ? 'selected' : ''}>${o.label}</option>`).join('')}</select></div><div class="form-section"><div class="form-label">Данные отправителя</div><input type="text" class="form-input" id="senderNameInput" placeholder="Укажите имя отправителя" value="${escapeHtml(checkoutData.senderName)}"></div></div>`;
   
   const fixedBlock = document.getElementById("cartCheckoutFixed");
@@ -1651,6 +1687,7 @@ function renderPaymentPage() {
   const rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
   const discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
   
+  // Используем обновленный класс content-card с новым border-radius
   container.innerHTML = `<div class="content-card"><div class="form-section"><div class="form-label">Номер карты</div><div class="form-select-readonly card-number-row"><span class="card-number-text">${cardNum}</span><img class="copy-icon" id="copyCardBtn" src="https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png" alt="copy"></div></div><div class="form-section"><div class="form-label">Получатель</div><div class="form-select-readonly"><span>Азат Ф.</span></div></div><div class="form-section"><div class="form-label">Банк получателя</div><div class="form-select-readonly"><span>${bank}</span></div></div></div>`;
   
   const fixedBlock = document.getElementById("cartCheckoutFixed");
@@ -1658,7 +1695,18 @@ function renderPaymentPage() {
   fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${appliedPromo ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="paidBtn">Я оплатил</button><button class="promo-btn" id="helpBtn2"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь"></button></div></div>`;
   
   setTimeout(() => {
-    document.getElementById("copyCardBtn")?.addEventListener("click", () => { if (navigator.clipboard) navigator.clipboard.writeText(cardNum.replace(/\s/g, "")); hapticLight(); });
+    const copyBtn = document.getElementById("copyCardBtn");
+    copyBtn?.addEventListener("click", async () => { 
+      if (navigator.clipboard) {
+        // Анимация нажатия
+        copyBtn.style.transform = "scale(0.85)";
+        await navigator.clipboard.writeText(cardNum.replace(/\s/g, ""));
+        setTimeout(() => {
+          copyBtn.style.transform = "scale(1)";
+        }, 150);
+        hapticLight();
+      }
+    });
     document.getElementById("helpBtn2")?.addEventListener("click", () => { hapticLight(); window.open("https://t.me/GemStormHelp", "_blank"); });
     document.getElementById("paidBtn")?.addEventListener("click", async () => {
       if (isSubmitting) return;
@@ -1723,6 +1771,17 @@ async function loadUserOrders() {
   } catch(e) { console.error('Ошибка загрузки заказов:', e); }
 }
 
+function getStatusClass(statusCode) {
+  switch(statusCode) {
+    case 'pending': return 'status-pending';
+    case 'awaiting_code': return 'status-awaiting_code';
+    case 'cancelled': return 'status-cancelled';
+    case 'processing': return 'status-processing';
+    case 'completed': return 'status-completed';
+    default: return '';
+  }
+}
+
 function renderOrdersPage() {
   const container = document.getElementById("ordersList");
   if (!container) return;
@@ -1737,12 +1796,13 @@ function renderOrdersPage() {
     container.innerHTML = orders.map((o) => {
       let items = [];
       try { items = JSON.parse(o.items || '[]'); } catch(e) {}
-      let statusText = (o.status || 'Ожидание кода').replace(/[🟡✅❌🔵⚙⏳]/g, '').trim();
+      let statusText = (o.status || 'Ожидание проверки').replace(/[🟡✅❌🔵⚙⏳]/g, '').trim();
+      const statusClass = getStatusClass(o.status_code);
       return `
         <div class="order-card" data-order-id="${o.id}">
           <div class="order-card-header">
             <span class="order-card-id">Заказ #${o.order_number}</span>
-            <span class="order-card-status">${statusText}</span>
+            <span class="order-card-status ${statusClass}">${statusText}</span>
           </div>
           <div class="order-card-date">${o.date} ${o.time || ''}</div>
           <div class="order-card-products">${items.map(i => `${i.name} x${i.qty}`).join(', ')}</div>
@@ -1790,29 +1850,24 @@ async function refreshOrderStatus(orderId) {
 }
 
 function showOrderDetail(order) {
-  console.log("showOrderDetail вызван, статус заказа:", order.status_code); // Для отладки
-  
   document.getElementById("orderDetailTitle").textContent = `Заказ #${order.order_number}`;
   const container = document.getElementById("orderDetailContent");
   let items = [];
   try { items = JSON.parse(order.items || '[]'); } catch(e) {}
   
+  // Единый стиль для карточки товаров (отступы и размеры как в карточке данных)
   const itemsHtml = items.map(i => `
-    <div style="display:flex;justify-content:space-between;padding:10px 0;">
-      <span style="font-size:16px;font-weight:500;color:white;">${escapeHtml(i.name)} x${i.qty}</span>
-      <span style="color:white;font-size:16px;font-weight:500;">${formatPrice(i.price * i.qty)}</span>
+    <div class="order-detail-row">
+      <span class="order-detail-label">${escapeHtml(i.name)} x${i.qty}</span>
+      <span class="order-detail-value">${formatPrice(i.price * i.qty)}</span>
     </div>
   `).join('');
   
-  // 🔥 ИСПРАВЛЕННАЯ ПРОВЕРКА - показываем блок если статус 'awaiting_code' И нет кода
   let codeBlock = '';
   const isAwaitingCode = order.status_code === 'awaiting_code';
   const hasNoCode = !order.verification_code;
   
-  console.log("isAwaitingCode:", isAwaitingCode, "hasNoCode:", hasNoCode); // Для отладки
-  
   if (isAwaitingCode && hasNoCode) {
-    console.log("Показываем блок ввода кода");
     codeBlock = `
       <div class="code-input-fixed">
         <div class="checkout-card">
@@ -1828,23 +1883,21 @@ function showOrderDetail(order) {
     `;
   }
   
+  // Карточка данных с уменьшенными отступами и добавленной строкой "Стоимость" (белый цвет суммы, текст не жирный)
   container.innerHTML = `
-    <div class="content-card">
-      <div class="order-detail-row"><span class="order-detail-label">Статус</span><span class="order-detail-value" style="color:#4cb4e9">${(order.status || 'Ожидание кода').replace(/[🟡✅❌🔵⚙⏳]/g, '').trim()}</span></div>
+    <div class="order-data-card">
+      <div class="order-detail-row"><span class="order-detail-label">Статус</span><span class="order-detail-value" style="color:${getColorByStatus(order.status_code)}">${(order.status || 'Ожидание проверки').replace(/[🟡✅❌🔵⚙⏳]/g, '').trim()}</span></div>
       <div class="order-detail-row"><span class="order-detail-label">Дата</span><span class="order-detail-value">${order.date} ${order.time || ''}</span></div>
       <div class="order-detail-row"><span class="order-detail-label">Способ оплаты</span><span class="order-detail-value">${order.payment_method || '—'}</span></div>
       <div class="order-detail-row"><span class="order-detail-label">Отправитель</span><span class="order-detail-value">${escapeHtml(order.sender_name || '—')}</span></div>
       <div class="order-detail-row"><span class="order-detail-label">Почта</span><span class="order-detail-value">${escapeHtml(order.email || '—')}</span></div>
       ${order.promo ? `<div class="order-detail-row"><span class="order-detail-label">Промокод</span><span class="order-detail-value">${order.promo} (скидка ${order.promo_discount}%)</span></div>` : ''}
-      ${order.verification_code ? `<div class="order-detail-row"><span class="order-detail-label">Код</span><span class="order-detail-value" style="color:#4ade80">${escapeHtml(order.verification_code)}</span></div>` : ''}
+      ${order.verification_code ? `<div class="order-detail-row"><span class="order-detail-label">Код</span><span class="order-detail-value" style="color:#ffffff;">${escapeHtml(order.verification_code)}</span></div>` : ''}
+      <div class="order-detail-row" style="margin-top:4px;"><span class="order-detail-label" style="font-weight:400;">Стоимость</span><span class="order-detail-value" style="color:#ffffff; font-weight:500;">${formatPrice(order.total)}</span></div>
     </div>
     
     <div class="order-items-card">
       ${itemsHtml}
-      <div style="display:flex;justify-content:space-between;padding:12px 0 0 0;margin-top:8px;border-top:1px solid #2a2a2e;">
-        <span style="font-size:16px;font-weight:600;color:white;">Стоимость</span>
-        <span style="color:#4cb4e9;font-size:16px;font-weight:600;">${formatPrice(order.total)}</span>
-      </div>
     </div>
     ${codeBlock}
   `;
@@ -1877,6 +1930,17 @@ function showOrderDetail(order) {
       });
     }
   }, 100);
+}
+
+function getColorByStatus(statusCode) {
+  switch(statusCode) {
+    case 'pending': return '#4cb4e9';
+    case 'awaiting_code': return '#eab308';
+    case 'cancelled': return '#ef4444';
+    case 'processing': return '#4cb4e9';
+    case 'completed': return '#22c55e';
+    default: return '#4cb4e9';
+  }
 }
 
 // ==================== PROFILE.JS ====================
@@ -1953,7 +2017,7 @@ function renderProfilePage() {
   }, 0);
 }
 
-// ==================== APP.JS (ПОЛНОСТЬЮ ИСПРАВЛЕННАЯ ВЕРСИЯ) ====================
+// ==================== APP.JS ====================
 
 let navigationHistory = [];
 let isInitialLoad = true;
@@ -1991,8 +2055,6 @@ function showPage(pageId, skipHistoryAdd = false) {
     navigationHistory = [];
   }
   
-  // 🔥 ГЛАВНОЕ ИСПРАВЛЕНИЕ: Сбрасываем промокод ПРИ ЛЮБОМ переходе
-  // Просто сбрасываем всегда, а потом если нужно - восстановим
   if (isPromoMode) {
     isPromoMode = false;
     appliedPromo = null;
@@ -2067,7 +2129,7 @@ function initBackButtonHandler() {
 }
 
 function initApp() {
-  loadCartFromLocalStorage();  // Добавь эту строку
+  loadCartFromLocalStorage();
   const lastPage = getLastPage();
   showPage(lastPage);
 }
@@ -2133,7 +2195,7 @@ document.querySelectorAll(".menu-item").forEach(btn => {
   });
 });
 
-// ЗАПУСК ПРИЛОЖЕНИЯ - сначала скрываем все страницы, чтобы не было мигания
+// ЗАПУСК ПРИЛОЖЕНИЯ
 document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
 renderFilterModal();
 renderProfilePage();

@@ -1639,16 +1639,17 @@ if (isAwaitingCode) {
       default: return '#4cb4e9';
     }
   })();
-  const reviewBlock = (order.status_code === 'done' || order.status_code === 'completed') ? `
-  <div class="content-card" style="margin-bottom:16px;">
-    <div style="font-size:17px;font-weight:500;color:white;margin-bottom:14px;">Оставьте отзыв к заказу #${order.order_number}</div>
-    <div style="display:flex;gap:8px;align-items:center;">
-      <button onclick="window.open('https://t.me/GemStormReviews','_blank')" style="flex:1;background:#4cb4e9;border:none;border-radius:34px;padding:12px;color:white;font-weight:550;font-size:18px;cursor:pointer;height:48px;">Оставить отзыв</button>
-      <button onclick="window.open('https://t.me/GemStormHelp','_blank')" style="width:48px;height:48px;min-width:48px;border-radius:50%;background:#202B32;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" style="width:24px;height:24px;"></button>
-    </div>
-  </div>` : '';
-  container.innerHTML = `<div class="order-data-card"><div class="order-detail-row"><span class="order-detail-label">Статус</span><span class="order-detail-value" style="color:${statusColor}">${statusDisplay}</span></div><div class="order-detail-row"><span class="order-detail-label">Дата</span><span class="order-detail-value">${order.date} ${order.time || ''}</span></div><div class="order-detail-row"><span class="order-detail-label">Способ оплаты</span><span class="order-detail-value">${order.payment_method || '—'}</span></div><div class="order-detail-row"><span class="order-detail-label">Отправитель</span><span class="order-detail-value">${escapeHtml(order.sender_name || '—')}</span></div><div class="order-detail-row"><span class="order-detail-label">Почта</span><span class="order-detail-value">${escapeHtml(order.email || '—')}</span></div>${order.promo ? `<div class="order-detail-row"><span class="order-detail-label">Промокод</span><span class="order-detail-value">${order.promo} (скидка ${order.promo_discount}%)</span></div>` : ''}${order.verification_code ? `<div class="order-detail-row"><span class="order-detail-label">Код</span><span class="order-detail-value" style="color:#ffffff;">${escapeHtml(order.verification_code)}</span></div>` : ''}<div class="order-detail-row" style="margin-top:4px;"><span class="order-detail-label" style="font-weight:400;">Стоимость</span><span class="order-detail-value" style="color:#ffffff; font-weight:500;">${formatPrice(order.total)}</span></div></div><div class="order-items-card">${itemsHtml}</div>${codeBlock}${reviewBlock}`;
+  container.innerHTML = `<div class="order-data-card"><div class="order-detail-row"><span class="order-detail-label">Статус</span><span class="order-detail-value" style="color:${statusColor}">${statusDisplay}</span></div><div class="order-detail-row"><span class="order-detail-label">Дата</span><span class="order-detail-value">${order.date} ${order.time || ''}</span></div><div class="order-detail-row"><span class="order-detail-label">Способ оплаты</span><span class="order-detail-value">${order.payment_method || '—'}</span></div><div class="order-detail-row"><span class="order-detail-label">Отправитель</span><span class="order-detail-value">${escapeHtml(order.sender_name || '—')}</span></div><div class="order-detail-row"><span class="order-detail-label">Почта</span><span class="order-detail-value">${escapeHtml(order.email || '—')}</span></div>${order.promo ? `<div class="order-detail-row"><span class="order-detail-label">Промокод</span><span class="order-detail-value">${order.promo} (скидка ${order.promo_discount}%)</span></div>` : ''}${order.verification_code ? `<div class="order-detail-row"><span class="order-detail-label">Код</span><span class="order-detail-value" style="color:#ffffff;">${escapeHtml(order.verification_code)}</span></div>` : ''}<div class="order-detail-row" style="margin-top:4px;"><span class="order-detail-label" style="font-weight:400;">Стоимость</span><span class="order-detail-value" style="color:#ffffff; font-weight:500;">${formatPrice(order.total)}</span></div></div><div class="order-items-card">${itemsHtml}</div>${codeBlock}`;
   showPage("order-detail", true);
+  const fixedBlock = document.getElementById("cartCheckoutFixed");
+if (fixedBlock) {
+  if (order.status_code === 'done' || order.status_code === 'completed') {
+    fixedBlock.style.display = "block";
+    fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-label" style="padding-left:3px;">Оставьте отзыв к заказу #${order.order_number}</div><div class="checkout-buttons-row"><button onclick="window.open('https://t.me/GemStormReviews','_blank')" class="checkout-button">Оставить отзыв</button><button onclick="window.open('https://t.me/GemStormHelp','_blank')" class="promo-btn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" style="width:24px;height:24px;"></button></div></div>`;
+  } else {
+    fixedBlock.style.display = "none";
+  }
+}
   setTimeout(() => {
     const submitBtn = document.getElementById("submitCodeBtn");
     if (submitBtn) {

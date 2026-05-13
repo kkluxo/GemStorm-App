@@ -8,6 +8,14 @@
   <meta name="theme-color" content="#171719">
   <title>GemStorm Store</title>
   <style>
+  /* Скрываем все страницы до загрузки JS */
+  .page {
+    display: none !important;
+  }
+  .page.active-page {
+    display: block !important;
+  }
+  
     * {
       margin: 0;
       padding: 0;
@@ -1061,7 +1069,7 @@
 </div>
 
 <!-- Страница каталога -->
-<div id="catalog-page" class="page active-page">
+<div id="catalog-page" class="page">
   <div class="header-row">
     <img class="header-icon-img" src="https://storage.botpapa.me/files/fd86aa00-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
     <div class="page-title">Каталог</div>
@@ -1281,6 +1289,18 @@ function getCardNumberFromValue(value) {
 // ==================== CART.JS ====================
 let cart = {};
 
+// ==================== СОХРАНЕНИЕ КОРЗИНЫ В LOCALSTORAGE ====================
+function saveCartToLocalStorage() {
+  localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+function loadCartFromLocalStorage() {
+  const savedCart = localStorage.getItem('cart');
+  if (savedCart) {
+    cart = JSON.parse(savedCart);
+  }
+}
+
 function getCartItemsCount() {
   return Object.keys(cart).length;
 }
@@ -1336,6 +1356,7 @@ function handleCartAction(pid, isIncrement) {
   } else {
     document.getElementById("cartCheckoutFixed").style.display = "none";
   }
+  saveCartToLocalStorage();
 }
 
 function changeQty(pid, delta) {
@@ -1351,6 +1372,7 @@ function changeQty(pid, delta) {
   }
   updateSingleCard(pid);
   renderCartPage();
+  saveCartToLocalStorage();
 }
 
 function renderCartPage() {
@@ -1369,6 +1391,7 @@ function renderCartPage() {
     document.getElementById("cartCheckoutFixed").style.display = "none";
     isPromoMode = false;
     appliedPromo = null;
+    localStorage.removeItem('cart');
     setTimeout(() => {
       const btn = document.getElementById("emptyCartToCatalog");
       if(btn) btn.addEventListener("click", () => showPage("catalog"));
@@ -2038,8 +2061,8 @@ function initBackButtonHandler() {
 }
 
 function initApp() {
+  loadCartFromLocalStorage();  // Добавь эту строку
   const lastPage = getLastPage();
-  // Сразу показываем сохранённую страницу, без промежуточного каталога
   showPage(lastPage);
 }
 

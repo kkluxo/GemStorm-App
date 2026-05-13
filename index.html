@@ -1533,38 +1533,43 @@ async function loadUserOrders() {
   } catch(e) { console.error('Ошибка загрузки заказов:', e); }
 }
 
-// Функции для получения классов статусов
 function getStatusTextClass(statusCode) {
-  switch(statusCode) {
-    case 'pending': return 'status-pending-text';
-    case 'awaiting_code': return 'status-awaiting_text';
-    case 'cancelled': return 'status-cancelled-text';
-    case 'processing': return 'status-processing-text';
-    case 'completed': return 'status-completed-text';
-    default: return '';
-  }
+  const map = {
+    'pending': 'status-pending-text',
+    'awaiting_code': 'status-awaiting_text',
+    'cancelled': 'status-cancelled-text',
+    'notfound': 'status-cancelled-text',
+    'processing': 'status-processing-text',
+    'completed': 'status-completed-text',
+    'done': 'status-completed-text',
+  };
+  return map[statusCode?.toLowerCase()] || '';
 }
 
 function getStatusBgClass(statusCode) {
-  switch(statusCode) {
-    case 'pending': return 'status-pending-bg';
-    case 'awaiting_code': return 'status-awaiting-bg';
-    case 'cancelled': return 'status-cancelled-bg';
-    case 'processing': return 'status-processing-bg';
-    case 'completed': return 'status-completed-bg';
-    default: return '';
-  }
+  const map = {
+    'pending': 'status-pending-bg',
+    'awaiting_code': 'status-awaiting-bg',
+    'cancelled': 'status-cancelled-bg',
+    'notfound': 'status-cancelled-bg',
+    'processing': 'status-processing-bg',
+    'completed': 'status-completed-bg',
+    'done': 'status-completed-bg',
+  };
+  return map[statusCode?.toLowerCase()] || '';
 }
 
 function getStatusDisplayText(statusCode, originalStatus) {
-  switch(statusCode) {
-    case 'pending': return 'Ожидание проверки';
-    case 'awaiting_code': return 'Ожидание кода';
-    case 'cancelled': return 'Отменен';
-    case 'processing': return 'Ожидает выполнения';
-    case 'completed': return 'Заказ выполнен';
-    default: return originalStatus?.replace(/[🟡✅❌🔵⚙⏳]/g, '').trim() || 'Ожидание проверки';
-  }
+  const map = {
+    'pending': 'Ожидание проверки',
+    'awaiting_code': 'Ожидание кода',
+    'cancelled': 'Отменен',
+    'notfound': 'Перевод не найден',
+    'processing': 'Ожидает выполнения',
+    'completed': 'Заказ выполнен',
+    'done': 'Заказ выполнен',
+  };
+  return map[statusCode?.toLowerCase()] || originalStatus || 'Ожидание проверки';
 }
 
 function renderOrdersPage() {
@@ -1586,17 +1591,6 @@ function renderOrdersPage() {
       const bgClass = getStatusBgClass(status);
       return `<div class="order-card" data-order-id="${o.id}"><div class="order-card-header"><span class="order-card-id">Заказ #${o.order_number}</span><span class="order-card-status ${textClass} ${bgClass}">${statusDisplay}</span></div><div class="order-card-date">${o.date} ${o.time || ''}</div><div class="order-card-products">${items.map(i => `${i.name} x${i.qty}`).join(', ')}</div><div class="order-card-total">${formatPrice(o.total)}</div><button class="order-refresh-btn" data-id="${o.id}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></button></div>`;
     }).join('');
-    
-    // Добавь отдельную кнопку для дебага вверху списка
-const debugBtn = document.createElement('button');
-debugBtn.textContent = 'Проверить статусы';
-debugBtn.style.cssText = 'background:#303032;color:#4cb4e9;border:none;border-radius:34px;padding:10px 20px;font-size:16px;margin-bottom:14px;width:100%;cursor:pointer;';
-debugBtn.addEventListener('click', () => {
-  const info = orders.map(o => `#${o.order_number}: status="${o.status}" | status_code="${o.status_code}"`).join('\n');
-  alert(info);
-});
-container.prepend(debugBtn);
-
     
     container.querySelectorAll(".order-card").forEach(card => {
       card.addEventListener("click", (e) => { if (e.target.closest('.order-refresh-btn')) return; const order = orders.find(o => o.id == card.dataset.orderId); if (order) showOrderDetail(order); });

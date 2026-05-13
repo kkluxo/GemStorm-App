@@ -189,6 +189,11 @@
       color: #4cb4e9;
     }
 
+    #profileMenuBtn.active img {
+  box-shadow: 0 0 0 2px rgba(76, 180, 233, 0.5);
+  border-radius: 50%;
+}
+
     .header-row {
       display: flex;
       align-items: center;
@@ -1930,10 +1935,10 @@ function updateMenuSlider(pageId) {
   if (index === -1) { slider.style.opacity = "0"; return; }
   slider.style.opacity = "1";
   const menuBar = slider.parentElement;
-  const totalWidth = menuBar.offsetWidth;
+  const totalWidth = menuBar.offsetWidth - 6;
   const sliderWidth = totalWidth / 3;
   slider.style.width = sliderWidth + "px";
-  const translateX = index * sliderWidth;
+  const translateX = 3 + index * sliderWidth;
   slider.style.transform = `translateX(${translateX}px)`;
 }
 

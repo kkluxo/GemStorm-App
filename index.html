@@ -109,6 +109,18 @@
       backdrop-filter: blur(10px);
     }
 
+    .menu-slider {
+  position: absolute;
+  top: 3px;
+  height: calc(100% - 6px);
+  width: calc(33.33% - 6px);
+  background: rgba(76, 180, 233, 0.15);
+  border-radius: 50px;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  left: 3px;
+}
+
     body:has(.search-input:focus) .bottom-menu,
     body:has(.form-input:focus) .bottom-menu,
     body:has(.form-select-native:focus) .bottom-menu,
@@ -1183,7 +1195,8 @@
 
 <div style="position:fixed;bottom:18px;left:18px;right:18px;z-index:1001;max-width:600px;margin:0 auto;width:calc(100% - 36px);display:flex;gap:10px;align-items:center;">
   <div style="flex:1;background:#202023f9;border:1px solid rgba(255,255,255,0.15);border-radius:60px;display:flex;justify-content:space-around;align-items:center;padding:5px 12px 8px 12px;backdrop-filter:blur(10px);">
-    <button class="menu-item" data-page="catalog">
+   <div class="menu-slider" id="menuSlider"></div>
+     <button class="menu-item" data-page="catalog">
       <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/fa0bb410-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
       <img class="menu-icon menu-icon-active" src="https://storage.botpapa.me/files/fd86aa00-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
       <span class="menu-label">Каталог</span>
@@ -1820,12 +1833,13 @@ function showPage(pageId, skipHistoryAdd = false) {
   if (pageId === "order-detail") { if (checkoutBlock) checkoutBlock.style.display = "none"; }
   if (pageId === "referral") { renderReferralPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
   const mainPages = ["catalog", "cart", "orders", "profile"];
-  if (mainPages.includes(pageId)) {
-    document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
-    const activeBtn = document.querySelector(`.menu-item[data-page="${pageId}"]`);
-    if (activeBtn) activeBtn.classList.add("active");
-    saveCurrentPage(pageId);
-  }
+if (mainPages.includes(pageId)) {
+  document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
+  const activeBtn = document.querySelector(`.menu-item[data-page="${pageId}"]`);
+  if (activeBtn) activeBtn.classList.add("active");
+  saveCurrentPage(pageId);
+  updateMenuSlider(pageId);
+}
   if (window.Telegram && window.Telegram.WebApp) {
     const tg = window.Telegram.WebApp;
     if (pageId === "catalog") { tg.BackButton.hide(); } else { tg.BackButton.show(); }
@@ -1905,6 +1919,16 @@ if (searchInputEl) {
 document.querySelectorAll(".menu-item").forEach(btn => {
   btn.addEventListener("click", () => { hapticLight(); showPage(btn.dataset.page); });
 });
+
+function updateMenuSlider(pageId) {
+  const slider = document.getElementById("menuSlider");
+  if (!slider) return;
+  const pages = ["catalog", "cart", "orders"];
+  const index = pages.indexOf(pageId);
+  if (index === -1) { slider.style.opacity = "0"; return; }
+  slider.style.opacity = "1";
+  slider.style.transform = `translateX(calc(${index} * (100% + 6px)))`;
+}
 
 document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
 renderFilterModal();

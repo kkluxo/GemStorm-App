@@ -1593,29 +1593,7 @@ function renderOrdersPage() {
     }).join('');
     
     container.querySelectorAll(".order-card").forEach(card => {
-      card.addEventListener("click", async (e) => {
-  if (e.target.closest('.order-refresh-btn')) return;
-  const orderId = card.dataset.orderId;
-  try {
-    const response = await fetch('https://gemstorm.up.railway.app/api/refresh-order', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ orderId })
-    });
-    if (response.ok) {
-      const updatedOrder = await response.json();
-      const index = orders.findIndex(o => o.id == orderId);
-      if (index !== -1) orders[index] = updatedOrder;
-      showOrderDetail(updatedOrder);
-    } else {
-      const order = orders.find(o => o.id == orderId);
-      if (order) showOrderDetail(order);
-    }
-    } catch(e) {
-    const order = orders.find(o => o.id == orderId);
-    if (order) showOrderDetail(order);
-  }
-      });
+      card.addEventListener("click", (e) => { if (e.target.closest('.order-refresh-btn')) return; const order = orders.find(o => o.id == card.dataset.orderId); if (order) showOrderDetail(order); });
     });
     container.querySelectorAll(".order-refresh-btn").forEach(btn => {
       btn.addEventListener("click", async (e) => { e.stopPropagation(); const orderId = btn.dataset.id; await refreshOrderStatus(orderId); });
@@ -1644,8 +1622,8 @@ function showOrderDetail(order) {
   const itemsHtml = items.map(i => `<div class="order-detail-row"><span class="order-detail-label">${escapeHtml(i.name)} x${i.qty}</span><span class="order-detail-value">${formatPrice(i.price * i.qty)}</span></div>`).join('');
   let codeBlock = '';
   const isAwaitingCode = order.status_code === 'awaiting_code';
-  const hasNoCode = !order.verification_code;
-  if (isAwaitingCode && hasNoCode) {
+const hasNoCode = !order.verification_code || order.verification_code.trim() === '';
+if (isAwaitingCode) {
     codeBlock = `<div class="code-input-fixed"><div class="checkout-card"><div class="promo-label">Введите код который вам пришел</div><div class="promo-input-row"><input type="text" id="verificationCodeInput" class="promo-input" placeholder="Введите код"><button id="submitCodeBtn" class="promo-action-btn apply-btn"><img src="https://storage.botpapa.me/files/b254ec20-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="submit"></button></div></div></div>`;
   }
   const statusDisplay = getStatusDisplayText(order.status_code, order.status);

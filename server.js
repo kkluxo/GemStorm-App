@@ -162,8 +162,10 @@ app.post('/api/update-status', async (req, res) => {
   try {
     const { orderId, status, statusCode } = req.body;
     
-    // 🔥 ДОБАВЛЯЕМ АВТОМАТИЧЕСКОЕ ОПРЕДЕЛЕНИЕ status_code ПО ТЕКСТУ СТАТУСА
+    // 🔥 АВТОМАТИЧЕСКОЕ ОПРЕДЕЛЕНИЕ status_code ПО ТЕКСТУ СТАТУСА
     let finalStatusCode = statusCode;
+    
+    // Если statusCode не передан или равен 'pending' - определяем по тексту статуса
     if (!finalStatusCode || finalStatusCode === 'pending') {
       const statusMap = {
         'Ожидание проверки': 'pending',
@@ -173,8 +175,17 @@ app.post('/api/update-status', async (req, res) => {
         'Выполнен': 'completed',
         'Отменён': 'cancelled'
       };
-      finalStatusCode = statusMap[status] || 'pending';
+      
+      // Ищем соответствие
+      for (const [key, value] of Object.entries(statusMap)) {
+        if (status === key || status.includes(key)) {
+          finalStatusCode = value;
+          break;
+        }
+      }
     }
+    
+    console.log(`Обновление заказа #${orderId}: статус="${status}" → status_code="${finalStatusCode}"`);
     
     const result = await pool.query(
       'UPDATE orders SET status=$1, status_code=$2 WHERE id=$3 RETURNING *', 
@@ -184,12 +195,12 @@ app.post('/api/update-status', async (req, res) => {
     if (!result.rows.length) return res.status(404).json({ error: 'Заказ не найден' });
     
     const order = result.rows[0];
-    console.log(`Заказ #${order.order_number}: статус изменён на "${status}" (${finalStatusCode})`);
     
     if (BOT_TOKEN && order.user_id) {
       const bot = new Telegraf(BOT_TOKEN);
       await bot.telegram.sendMessage(order.user_id, 'Статус заказа #' + order.order_number + ' изменён: ' + status);
     }
+    
     res.json({ success: true, order: order });
   } catch (err) { 
     console.error('Ошибка update-status:', err.message);

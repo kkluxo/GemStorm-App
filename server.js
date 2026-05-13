@@ -56,7 +56,25 @@ async function initDB() {
     created_at TIMESTAMPTZ DEFAULT NOW()
   )
 `);
+await pool.query(`
+  CREATE TABLE IF NOT EXISTS referral_balances (
+    id SERIAL PRIMARY KEY,
+    user_id BIGINT UNIQUE,
+    balance INTEGER DEFAULT 0
+  )
+`);
 
+await pool.query(`
+  CREATE TABLE IF NOT EXISTS referral_promocodes (
+    id SERIAL PRIMARY KEY,
+    user_id BIGINT,
+    code TEXT UNIQUE,
+    amount INTEGER,
+    used BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+  )
+`);
+    console.log('Таблицы referral_balances и referral_promocodes готовы');
     const result = await pool.query('SELECT COUNT(*) as count FROM orders');
     console.log(`В базе данных ${result.rows[0].count} заказов`);
   } catch (err) {
@@ -209,6 +227,32 @@ app.post('/api/update-status', async (req, res) => {
       await bot.telegram.sendMessage(order.user_id, 'Статус заказа #' + order.order_number + ' изменён: ' + status);
     }
     
+    if (finalStatusCode === 'done' || finalStatusCode === 'completed') {
+  try {
+    const refRow = await pool.query(
+      'SELECT referred_by FROM referrals WHERE user_id = $1',
+      [order.user_id]
+    );
+    if (refRow.rows.length && refRow.rows[0].referred_by) {
+      const referrerId = refRow.rows[0].referred_by;
+      const bonus = Math.round(order.total * 0.02);
+      if (bonus > 0) {
+        await pool.query(`
+          INSERT INTO referral_balances (user_id, balance)
+          VALUES ($1, $2)
+          ON CONFLICT (user_id) DO UPDATE SET balance = referral_balances.balance + $2
+        `, [referrerId, bonus]);
+        if (BOT_TOKEN) {
+          const bot = new Telegraf(BOT_TOKEN);
+          await bot.telegram.sendMessage(referrerId,
+            `💰 Вам начислено ${bonus}₽ за покупку вашего реферала (заказ #${order.order_number})`
+          );
+        }
+      }
+    }
+  } catch(e) { console.error('Ошибка начисления бонуса:', e.message); }
+}
+
     res.json({ success: true, order: order });
   } catch (err) { 
     console.error('Ошибка update-status:', err.message);
@@ -263,6 +307,96 @@ app.get('/api/referral-stats', async (req, res) => {
     const count = parseInt(result.rows[0].count);
     const earned = count * 50;
     res.json({ count, earned });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.get('/api/referral-stats', async (req, res) => {
+  try {
+    const userId = req.query.userId;
+    if (!userId) return res.json({ count: 0, balance: 0, referrals: [] });
+
+    const countResult = await pool.query(
+      'SELECT COUNT(*) as count FROM referrals WHERE referred_by = $1',
+      [userId]
+    );
+
+    const balanceResult = await pool.query(
+      'SELECT balance FROM referral_balances WHERE user_id = $1',
+      [userId]
+    );
+
+    const referralsResult = await pool.query(`
+      SELECT r.user_id, r.created_at,
+        COALESCE(SUM(CASE WHEN o.status_code IN ('done','completed') THEN ROUND(o.total * 0.02) ELSE 0 END), 0) as earned
+      FROM referrals r
+      LEFT JOIN orders o ON o.user_id = r.user_id AND o.status_code IN ('done','completed')
+      WHERE r.referred_by = $1
+      GROUP BY r.user_id, r.created_at
+      ORDER BY r.created_at DESC
+    `, [userId]);
+
+    res.json({
+      count: parseInt(countResult.rows[0].count),
+      balance: balanceResult.rows[0]?.balance || 0,
+      referrals: referralsResult.rows
+    });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.post('/api/convert-balance', async (req, res) => {
+  try {
+    const { userId } = req.body;
+    if (!userId) return res.status(400).json({ error: 'userId required' });
+
+    const balanceResult = await pool.query(
+      'SELECT balance FROM referral_balances WHERE user_id = $1',
+      [userId]
+    );
+
+    const balance = balanceResult.rows[0]?.balance || 0;
+    if (balance <= 0) return res.status(400).json({ error: 'Баланс пуст' });
+
+    const code = 'REF' + userId + '_' + Date.now();
+
+    await pool.query(
+      'INSERT INTO referral_promocodes (user_id, code, amount) VALUES ($1, $2, $3)',
+      [userId, code, balance]
+    );
+
+    await pool.query(
+      'UPDATE referral_balances SET balance = 0 WHERE user_id = $1',
+      [userId]
+    );
+
+    res.json({ success: true, code, amount: balance });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.post('/api/check-referral-promo', async (req, res) => {
+  try {
+    const { code, userId } = req.body;
+    if (!code || !userId) return res.status(400).json({ error: 'Нет данных' });
+
+    const result = await pool.query(
+      'SELECT * FROM referral_promocodes WHERE code = $1 AND user_id = $2 AND used = FALSE',
+      [code, userId]
+    );
+
+    if (!result.rows.length) return res.json({ valid: false });
+
+    res.json({ valid: true, amount: result.rows[0].amount });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.post('/api/use-referral-promo', async (req, res) => {
+  try {
+    const { code, userId } = req.body;
+    const result = await pool.query(
+      'UPDATE referral_promocodes SET used = TRUE WHERE code = $1 AND user_id = $2 AND used = FALSE RETURNING *',
+      [code, userId]
+    );
+    if (!result.rows.length) return res.json({ success: false });
+    res.json({ success: true, amount: result.rows[0].amount });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 

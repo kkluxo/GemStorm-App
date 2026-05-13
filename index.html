@@ -1962,9 +1962,11 @@ function showPage(pageId, skipHistoryAdd = false) {
     navigationHistory = [];
   }
   
-  // Сбрасываем промокод при переходе на любую страницу, кроме корзины
-  if (pageId !== "cart" && isPromoMode) {
+  // 🔥 ГЛАВНОЕ ИСПРАВЛЕНИЕ: Сбрасываем промокод ПРИ ЛЮБОМ переходе
+  // Просто сбрасываем всегда, а потом если нужно - восстановим
+  if (isPromoMode) {
     isPromoMode = false;
+    appliedPromo = null;
   }
   
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
@@ -2037,6 +2039,7 @@ function initBackButtonHandler() {
 
 function initApp() {
   const lastPage = getLastPage();
+  // Сразу показываем сохранённую страницу, без промежуточного каталога
   showPage(lastPage);
 }
 
@@ -2101,7 +2104,8 @@ document.querySelectorAll(".menu-item").forEach(btn => {
   });
 });
 
-// ЗАПУСК ПРИЛОЖЕНИЯ
+// ЗАПУСК ПРИЛОЖЕНИЯ - сначала скрываем все страницы, чтобы не было мигания
+document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
 renderFilterModal();
 renderProfilePage();
 initApp();

@@ -1645,7 +1645,7 @@ if (isAwaitingCode) {
 if (fixedBlock) {
   if (order.status_code === 'done' || order.status_code === 'completed') {
     fixedBlock.style.display = "block";
-    fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-label" style="padding-left:3px;">Оставьте отзыв к заказу #${order.order_number}</div><div class="checkout-buttons-row"><button onclick="window.open('https://t.me/GemStormReviews','_blank')" class="checkout-button">Оставить отзыв</button><button onclick="window.open('https://t.me/GemStormHelp','_blank')" class="promo-btn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" style="width:24px;height:24px;"></button></div></div>`;
+    fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-label" style="padding-left:3px;">Спасибо за покупку в GemStorm!</div><div class="checkout-buttons-row"><button onclick="window.open('https://t.me/GemStormReviews','_blank')" class="checkout-button">Оставить отзыв</button><button onclick="window.open('https://t.me/GemStormHelp','_blank')" class="promo-btn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" style="width:24px;height:24px;"></button></div></div>`;
   } else {
     fixedBlock.style.display = "none";
   }

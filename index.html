@@ -114,7 +114,7 @@
   top: 3px;
   height: calc(100% - 6px);
   width: calc(33.33% - 6px);
-  background: rgba(76, 180, 233, 0.15);
+  background: rgba(76, 180, 233, 0.1);
   border-radius: 50px;
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
@@ -1927,11 +1927,19 @@ function updateMenuSlider(pageId) {
   const index = pages.indexOf(pageId);
   if (index === -1) { slider.style.opacity = "0"; return; }
   slider.style.opacity = "1";
-  const offset = index * (100 / 3);
-  slider.style.left = `calc(${offset}% + 3px)`;
-  slider.style.width = `calc(33.33% - 6px)`;
+  if (index === 0) {
+    slider.style.left = "3px";
+    slider.style.width = "calc(33.33% - 3px)";
+  } else if (index === 2) {
+    slider.style.left = `calc(66.66%)`;
+    slider.style.width = "calc(33.33% - 3px)";
+  } else {
+    slider.style.left = "calc(33.33% + 3px)";
+    slider.style.width = "calc(33.33% - 6px)";
+  }
   slider.style.transform = "none";
 }
+
 
 document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
 renderFilterModal();

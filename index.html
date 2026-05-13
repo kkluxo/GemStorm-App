@@ -1805,13 +1805,14 @@ async function loadUserOrders() {
   } catch(e) { console.error('Ошибка загрузки заказов:', e); }
 }
 
+// В функции renderOrdersPage() - правильное определение классов для статуса "completed"
 function getStatusTextClass(statusCode) {
   switch(statusCode) {
     case 'pending': return 'status-text-pending';
     case 'awaiting_code': return 'status-text-awaiting_code';
     case 'cancelled': return 'status-text-cancelled';
     case 'processing': return 'status-text-processing';
-    case 'completed': return 'status-text-completed';
+    case 'completed': return 'status-text-completed';  // ← зелёный текст
     default: return '';
   }
 }
@@ -1822,7 +1823,7 @@ function getStatusBgClass(statusCode) {
     case 'awaiting_code': return 'status-bg-awaiting_code';
     case 'cancelled': return 'status-bg-cancelled';
     case 'processing': return 'status-bg-processing';
-    case 'completed': return 'status-bg-completed';
+    case 'completed': return 'status-bg-completed';   // ← зелёная подложка с прозрачностью
     default: return '';
   }
 }
@@ -1833,7 +1834,7 @@ function getStatusDisplayText(statusCode, originalStatus) {
     case 'awaiting_code': return 'Ожидание кода';
     case 'cancelled': return 'Отменен';
     case 'processing': return 'Ожидает выполнения';
-    case 'completed': return 'Заказ выполнен';
+    case 'completed': return 'Заказ выполнен';  // ← правильный текст
     default: return originalStatus?.replace(/[🟡✅❌🔵⚙⏳]/g, '').trim() || 'Ожидание проверки';
   }
 }

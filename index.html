@@ -1,4 +1,4 @@
-=-<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
@@ -1580,8 +1580,10 @@ function renderOrdersPage() {
       let items = [];
       try { items = JSON.parse(o.items || '[]'); } catch(e) {}
       const statusDisplay = getStatusDisplayText(o.status_code, o.status);
-      const textClass = getStatusTextClass(o.status_code);
-      const bgClass = getStatusBgClass(o.status_code);
+      const status = String(o.status_code).trim().toLowerCase();
+
+      const textClass = getStatusTextClass(status);
+      const bgClass = getStatusBgClass(status);
       return `<div class="order-card" data-order-id="${o.id}"><div class="order-card-header"><span class="order-card-id">Заказ #${o.order_number}</span><span class="order-card-status ${textClass} ${bgClass}">${statusDisplay}</span></div><div class="order-card-date">${o.date} ${o.time || ''}</div><div class="order-card-products">${items.map(i => `${i.name} x${i.qty}`).join(', ')}</div><div class="order-card-total">${formatPrice(o.total)}</div><button class="order-refresh-btn" data-id="${o.id}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></button></div>`;
     }).join('');
     container.querySelectorAll(".order-card").forEach(card => {

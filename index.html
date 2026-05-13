@@ -114,12 +114,11 @@
   top: 3px;
   left: 3px;
   height: calc(100% - 6px);
-  width: calc(33.33% - 2px);
+  width: calc(33.33% - 3px);
   background: rgba(76, 180, 233, 0.15);
   border-radius: 50px;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
-  will-change: transform;
 }
 
     body:has(.search-input:focus) .bottom-menu,

@@ -1181,26 +1181,26 @@
 
 <div id="cartCheckoutFixed" class="cart-checkout-fixed" style="display: none;"></div>
 
-<div class="bottom-menu">
-  <button class="menu-item" data-page="catalog">
-    <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/fa0bb410-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
-    <img class="menu-icon menu-icon-active" src="https://storage.botpapa.me/files/fd86aa00-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
-    <span class="menu-label">Каталог</span>
-  </button>
-  <button class="menu-item" data-page="cart">
-    <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/00feb9c0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="cart">
-    <img class="menu-icon menu-icon-active" src="https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="cart">
-    <span class="menu-label">Корзина</span>
-  </button>
-  <button class="menu-item" data-page="orders">
-    <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/8a684130-49e6-11f1-bef9-f1ec7a2c6e45.png" alt="orders" style="width: 28px; height: 28px;">
-    <img class="menu-icon menu-icon-active" src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="orders" style="width: 28px; height: 28px;">
-    <span class="menu-label">Заказы</span>
-  </button>
-  <button class="menu-item" data-page="profile">
-    <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/1656bed0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="profile">
-    <img class="menu-icon menu-icon-active" src="https://storage.botpapa.me/files/12337af0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="profile">
-    <span class="menu-label">Профиль</span>
+<div class="bottom-menu" style="justify-content:space-between;padding:5px 8px 8px 8px;">
+  <div style="display:flex;flex:1;justify-content:space-around;">
+    <button class="menu-item" data-page="catalog">
+      <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/fa0bb410-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
+      <img class="menu-icon menu-icon-active" src="https://storage.botpapa.me/files/fd86aa00-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
+      <span class="menu-label">Каталог</span>
+    </button>
+    <button class="menu-item" data-page="cart">
+      <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/00feb9c0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="cart">
+      <img class="menu-icon menu-icon-active" src="https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="cart">
+      <span class="menu-label">Корзина</span>
+    </button>
+    <button class="menu-item" data-page="orders">
+      <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/8a684130-49e6-11f1-bef9-f1ec7a2c6e45.png" alt="orders" style="width:28px;height:28px;">
+      <img class="menu-icon menu-icon-active" src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="orders" style="width:28px;height:28px;">
+      <span class="menu-label">Заказы</span>
+    </button>
+  </div>
+  <button class="menu-item" data-page="profile" id="profileMenuBtn" style="width:52px;height:52px;min-width:52px;border-radius:50%;background:#202023f9;border:1px solid rgba(255,255,255,0.15);padding:0;overflow:hidden;flex:none;">
+    <img id="profileMenuAvatar" src="https://storage.botpapa.me/files/1656bed0-4a0d-11f1-bef9-f1ec7a2c6e45.png" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
   </button>
 </div>
 
@@ -1844,6 +1844,11 @@ function initApp() {
   loadCartFromLocalStorage();
   const lastPage = getLastPage();
   showPage(lastPage);
+  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+if (tgUser?.photo_url) {
+  const avatar = document.getElementById('profileMenuAvatar');
+  if (avatar) avatar.src = tgUser.photo_url;
+}
 
   const tg = window.Telegram?.WebApp;
   const startParam = tg?.initDataUnsafe?.start_param || new URLSearchParams(window.location.search).get('startapp');

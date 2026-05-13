@@ -117,7 +117,7 @@
   width: calc(33.33% - 3px);
   background: rgba(76, 180, 233, 0.15);
   border-radius: 50px;
-  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: left 0.2s cubic-bezier(0.4, 0, 0.2, 1), width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
 }
 
@@ -1216,11 +1216,11 @@
       <span class="menu-label">Заказы</span>
     </button>
   </div>
-  <div id="profileMenuWrapper" style="background:#202023f9;border:1px solid rgba(255,255,255,0.15);border-radius:50%;backdrop-filter:blur(10px);padding:3px;flex:none;transition:background 0.2s;">
-    <button class="menu-item" data-page="profile" id="profileMenuBtn" style="width:56px;height:56px;min-width:56px;border-radius:50%;border:none;padding:0;overflow:hidden;background:transparent;">
-      <img id="profileMenuAvatar" src="https://storage.botpapa.me/files/1656bed0-4a0d-11f1-bef9-f1ec7a2c6e45.png" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
-    </button>
-  </div>
+  <div id="profileMenuWrapper" style="background:#202023f9;border:1px solid rgba(255,255,255,0.15);border-radius:50px;backdrop-filter:blur(10px);padding:3px;flex:none;transition:background 0.2s;display:flex;align-items:center;">
+  <button class="menu-item" data-page="profile" id="profileMenuBtn" style="width:56px;height:100%;min-width:56px;border-radius:50px;border:none;padding:0;overflow:hidden;background:transparent;">
+    <img id="profileMenuAvatar" src="https://storage.botpapa.me/files/1656bed0-4a0d-11f1-bef9-f1ec7a2c6e45.png" style="width:56px;height:56px;object-fit:cover;border-radius:50%;">
+  </button>
+</div>
 </div>
 
 <script>

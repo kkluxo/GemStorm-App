@@ -161,15 +161,40 @@ app.post('/api/order', async (req, res) => {
 app.post('/api/update-status', async (req, res) => {
   try {
     const { orderId, status, statusCode } = req.body;
-    const result = await pool.query('UPDATE orders SET status=$1, status_code=$2 WHERE id=$3 RETURNING *', [status, statusCode, orderId]);
+    
+    // 🔥 ДОБАВЛЯЕМ АВТОМАТИЧЕСКОЕ ОПРЕДЕЛЕНИЕ status_code ПО ТЕКСТУ СТАТУСА
+    let finalStatusCode = statusCode;
+    if (!finalStatusCode || finalStatusCode === 'pending') {
+      const statusMap = {
+        'Ожидание проверки': 'pending',
+        'Проверка перевода': 'pending',
+        'Ожидание кода': 'awaiting_code',
+        'Ожидает выполнения': 'processing',
+        'Выполнен': 'completed',
+        'Отменён': 'cancelled'
+      };
+      finalStatusCode = statusMap[status] || 'pending';
+    }
+    
+    const result = await pool.query(
+      'UPDATE orders SET status=$1, status_code=$2 WHERE id=$3 RETURNING *', 
+      [status, finalStatusCode, orderId]
+    );
+    
     if (!result.rows.length) return res.status(404).json({ error: 'Заказ не найден' });
+    
     const order = result.rows[0];
+    console.log(`Заказ #${order.order_number}: статус изменён на "${status}" (${finalStatusCode})`);
+    
     if (BOT_TOKEN && order.user_id) {
       const bot = new Telegraf(BOT_TOKEN);
       await bot.telegram.sendMessage(order.user_id, 'Статус заказа #' + order.order_number + ' изменён: ' + status);
     }
-    res.json({ success: true });
-  } catch (err) { res.status(500).json({ error: err.message }); }
+    res.json({ success: true, order: order });
+  } catch (err) { 
+    console.error('Ошибка update-status:', err.message);
+    res.status(500).json({ error: err.message }); 
+  }
 });
 
 app.post('/api/submit-code', async (req, res) => {

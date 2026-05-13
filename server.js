@@ -48,7 +48,15 @@ async function initDB() {
     await pool.query(query);
     console.log('Таблица orders готова');
     await pool.query(`ALTER TABLE orders ADD COLUMN IF NOT EXISTS verification_code TEXT`);
-    
+    await pool.query(`
+  CREATE TABLE IF NOT EXISTS referrals (
+    id SERIAL PRIMARY KEY,
+    user_id BIGINT UNIQUE,
+    referred_by BIGINT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+  )
+`);
+
     const result = await pool.query('SELECT COUNT(*) as count FROM orders');
     console.log(`В базе данных ${result.rows[0].count} заказов`);
   } catch (err) {
@@ -229,6 +237,32 @@ app.post('/api/refresh-order', async (req, res) => {
     const result = await pool.query('SELECT * FROM orders WHERE id = $1', [orderId]);
     if (!result.rows.length) return res.status(404).json({ error: 'Заказ не найден' });
     res.json(result.rows[0]);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.post('/api/register-referral', async (req, res) => {
+  try {
+    const { userId, referrerId } = req.body;
+    if (!userId || !referrerId || userId === referrerId) return res.json({ success: false });
+    await pool.query(
+      `INSERT INTO referrals (user_id, referred_by) VALUES ($1, $2) ON CONFLICT (user_id) DO NOTHING`,
+      [userId, referrerId]
+    );
+    res.json({ success: true });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.get('/api/referral-stats', async (req, res) => {
+  try {
+    const userId = req.query.userId;
+    if (!userId) return res.json({ count: 0, earned: 0 });
+    const result = await pool.query(
+      'SELECT COUNT(*) as count FROM referrals WHERE referred_by = $1',
+      [userId]
+    );
+    const count = parseInt(result.rows[0].count);
+    const earned = count * 50;
+    res.json({ count, earned });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 

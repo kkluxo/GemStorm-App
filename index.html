@@ -1359,13 +1359,16 @@ function renderCartPage() {
   
   const items = Object.entries(cart);
   if (!items.length) { 
-    container.innerHTML = `...`;
+    container.innerHTML = `
+      <div class="empty-state-icon">
+        <img class="empty-icon" src="https://storage.botpapa.me/files/00feb9c0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="empty cart">
+        <div class="empty-title">Корзина товаров пуста</div>
+        <button class="empty-catalog-btn" id="emptyCartToCatalog">Перейти в каталог</button>
+      </div>
+    `;
     document.getElementById("cartCheckoutFixed").style.display = "none";
-    
-    // 🔥 ДОБАВЬ ЭТИ ДВЕ СТРОЧКИ, ЕСЛИ ИХ НЕТ:
     isPromoMode = false;
     appliedPromo = null;
-    
     setTimeout(() => {
       const btn = document.getElementById("emptyCartToCatalog");
       if(btn) btn.addEventListener("click", () => showPage("catalog"));
@@ -1817,7 +1820,7 @@ function showOrderDetail(order) {
     ${codeBlock}
   `;
   
-  showPage("order-detail");
+  showPage("order-detail", true);
   
   setTimeout(() => {
     const submitBtn = document.getElementById("submitCodeBtn");
@@ -1923,28 +1926,23 @@ function renderProfilePage() {
 
 // ==================== APP.JS (ПОЛНОСТЬЮ ИСПРАВЛЕННАЯ ВЕРСИЯ) ====================
 
-// ---------- ПЕРЕМЕННАЯ ДЛЯ ИСТОРИИ ----------
 let navigationHistory = [];
+let isInitialLoad = true;
 
-// ---------- ФУНКЦИЯ СОХРАНЕНИЯ ТЕКУЩЕЙ СТРАНИЦЫ ----------
 function saveCurrentPage(pageId) {
   localStorage.setItem('lastPage', pageId);
 }
 
-// ---------- ФУНКЦИЯ ВОССТАНОВЛЕНИЯ ПОСЛЕДНЕЙ СТРАНИЦЫ ----------
 function getLastPage() {
   const savedPage = localStorage.getItem('lastPage');
-  // Проверяем, что сохранённая страница существует и это не страница оформления/оплаты
-  const validPages = ['catalog', 'cart', 'orders', 'profile', 'order-detail'];
+  const validPages = ['catalog', 'cart', 'orders', 'profile'];
   if (savedPage && validPages.includes(savedPage)) {
     return savedPage;
   }
   return 'catalog';
 }
 
-// ---------- ИСПРАВЛЕННАЯ ФУНКЦИЯ showPage ----------
 function showPage(pageId, skipHistoryAdd = false) {
-  // Получаем текущую активную страницу
   let currentPageId = null;
   for (const page of document.querySelectorAll(".page")) {
     if (page.classList.contains("active-page")) {
@@ -1953,7 +1951,6 @@ function showPage(pageId, skipHistoryAdd = false) {
     }
   }
   
-  // ЛОГИКА ДОБАВЛЕНИЯ В ИСТОРИЮ:
   if (currentPageId && currentPageId !== pageId && !skipHistoryAdd) {
     const lastInHistory = navigationHistory[navigationHistory.length - 1];
     if (lastInHistory !== currentPageId) {
@@ -1961,20 +1958,15 @@ function showPage(pageId, skipHistoryAdd = false) {
     }
   }
   
-  // Если переходим в каталог - очищаем историю
   if (pageId === "catalog") {
     navigationHistory = [];
   }
   
-  // 🔥 ВАЖНО: Сбрасываем режим промокода при переходе НА ЛЮБУЮ страницу, кроме корзины
-  // Это решает проблему с "прилипанием" промокода
-  if (pageId !== "cart") {
-    if (isPromoMode) {
-      isPromoMode = false;
-    }
+  // Сбрасываем промокод при переходе на любую страницу, кроме корзины
+  if (pageId !== "cart" && isPromoMode) {
+    isPromoMode = false;
   }
   
-  // Переключаем страницы
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
   const targetPage = document.getElementById(pageId + "-page");
   if (targetPage) targetPage.classList.add("active-page");
@@ -2009,24 +2001,16 @@ function showPage(pageId, skipHistoryAdd = false) {
     if (checkoutBlock) checkoutBlock.style.display = "none";
   }
   
-  // Обновляем активный пункт нижнего меню (только для главных страниц)
   const mainPages = ["catalog", "cart", "orders", "profile"];
   if (mainPages.includes(pageId)) {
     document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
     const activeBtn = document.querySelector(`.menu-item[data-page="${pageId}"]`);
     if (activeBtn) activeBtn.classList.add("active");
-  }
-  
-  // 🔥 СОХРАНЯЕМ ТЕКУЩУЮ СТРАНИЦУ (кроме страниц оформления и оплаты)
-  const dontSavePages = ["checkout", "payment", "filter"];
-  if (!dontSavePages.includes(pageId)) {
     saveCurrentPage(pageId);
   }
   
-  // Управление системной кнопкой "Назад"
   if (window.Telegram && window.Telegram.WebApp) {
     const tg = window.Telegram.WebApp;
-    
     if (pageId === "catalog") {
       tg.BackButton.hide();
     } else {
@@ -2037,11 +2021,9 @@ function showPage(pageId, skipHistoryAdd = false) {
   window.scrollTo({ top: 0 });
 }
 
-// ---------- ОБРАБОТЧИК КНОПКИ "НАЗАД" ----------
 function initBackButtonHandler() {
   if (window.Telegram && window.Telegram.WebApp) {
     const tg = window.Telegram.WebApp;
-    
     tg.BackButton.onClick(function() {
       if (navigationHistory.length > 0) {
         const previousPage = navigationHistory.pop();
@@ -2053,25 +2035,10 @@ function initBackButtonHandler() {
   }
 }
 
-// ---------- ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ (ВОССТАНОВЛЕНИЕ СТРАНИЦЫ) ----------
 function initApp() {
-  // Восстанавливаем последнюю страницу
   const lastPage = getLastPage();
-  
-  // Если последняя страница - детали заказа, нужно загрузить заказы сначала
-  if (lastPage === "order-detail") {
-    loadUserOrders().then(() => {
-      // Здесь нужно восстановить конкретный заказ, но для простоты покажем список заказов
-      showPage("orders");
-    });
-  } else {
-    showPage(lastPage);
-  }
+  showPage(lastPage);
 }
-
-// ---------- ОСТАЛЬНОЙ КОД (НИЖЕ ВСЁ БЕЗ ИЗМЕНЕНИЙ) ----------
-// ... (весь остальной твой код: renderCatalog, renderCartPage и т.д.)
-// НО нужно найти строку в renderCheckoutBlock и renderCartPage где сбрасывается isPromoMode
 
 // Проверка на админа и перенаправление
 (function() {
@@ -2095,10 +2062,7 @@ function initApp() {
       tg.setBackgroundColor('#171719');
     } catch(e) {}
     
-    // Инициализируем обработчик кнопки "Назад"
     initBackButtonHandler();
-    
-    // При старте кнопка скрыта (мы на каталоге)
     tg.BackButton.hide();
   }
 })();
@@ -2137,28 +2101,10 @@ document.querySelectorAll(".menu-item").forEach(btn => {
   });
 });
 
-function initApp() {
-  const lastPage = getLastPage();
-  
-  if (lastPage === "order-detail") {
-    loadUserOrders().then(() => {
-      showPage("orders");
-    });
-  } else {
-    showPage(lastPage);
-  }
-}
-
-// Запуск с восстановлением последней страницы
-initApp();
+// ЗАПУСК ПРИЛОЖЕНИЯ
 renderFilterModal();
 renderProfilePage();
-
-const checkoutBlock = document.getElementById("cartCheckoutFixed");
-if (checkoutBlock) checkoutBlock.style.display = "none";
-
-const catalogBtn = document.querySelector('.menu-item[data-page="catalog"]');
-if (catalogBtn) catalogBtn.classList.add("active");
+initApp();
 </script>
 
 </body>

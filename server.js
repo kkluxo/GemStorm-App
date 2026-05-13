@@ -299,20 +299,6 @@ app.post('/api/register-referral', async (req, res) => {
 app.get('/api/referral-stats', async (req, res) => {
   try {
     const userId = req.query.userId;
-    if (!userId) return res.json({ count: 0, earned: 0 });
-    const result = await pool.query(
-      'SELECT COUNT(*) as count FROM referrals WHERE referred_by = $1',
-      [userId]
-    );
-    const count = parseInt(result.rows[0].count);
-    const earned = count * 50;
-    res.json({ count, earned });
-  } catch (err) { res.status(500).json({ error: err.message }); }
-});
-
-app.get('/api/referral-stats', async (req, res) => {
-  try {
-    const userId = req.query.userId;
     if (!userId) return res.json({ count: 0, balance: 0, referrals: [] });
 
     const countResult = await pool.query(

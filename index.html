@@ -112,14 +112,16 @@
     .menu-slider {
   position: absolute;
   top: 3px;
-  height: calc(100% - 6px);
-  width: calc(33.33% - 6px);
-  background: rgba(76, 180, 233, 0.1);
-  border-radius: 50px;
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  pointer-events: none;
   left: 3px;
+  height: calc(100% - 6px);
+  width: calc(33.33% - 3px);
+  background: rgba(76, 180, 233, 0.15);
+  border-radius: 50px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  will-change: transform;
 }
+
 
     body:has(.search-input:focus) .bottom-menu,
     body:has(.form-input:focus) .bottom-menu,
@@ -1927,19 +1929,13 @@ function updateMenuSlider(pageId) {
   const index = pages.indexOf(pageId);
   if (index === -1) { slider.style.opacity = "0"; return; }
   slider.style.opacity = "1";
-  if (index === 0) {
-    slider.style.left = "3px";
-    slider.style.width = "calc(33.33% - 3px)";
-  } else if (index === 2) {
-    slider.style.left = `calc(66.66%)`;
-    slider.style.width = "calc(33.33% - 3px)";
-  } else {
-    slider.style.left = "calc(33.33% + 3px)";
-    slider.style.width = "calc(33.33% - 6px)";
-  }
-  slider.style.transform = "none";
+  const menuBar = slider.parentElement;
+  const totalWidth = menuBar.offsetWidth;
+  const sliderWidth = totalWidth / 3;
+  slider.style.width = sliderWidth + "px";
+  const translateX = index * sliderWidth;
+  slider.style.transform = `translateX(${translateX}px)`;
 }
-
 
 document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
 renderFilterModal();

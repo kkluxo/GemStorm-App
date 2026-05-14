@@ -23,12 +23,12 @@
     }
 
     :root {
-      --tg-theme-bg-color: #171719 !important;
+      --tg-theme-bg-color: #161618 !important;
       --brand-blue: #4cb4e9;
     }
 
     body {
-      background-color: #171719;
+      background-color: #161618;
       font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       color: #ffffff;
       padding-bottom: 130px;
@@ -2170,8 +2170,6 @@ function initBackButtonHandler() {
 }
 
 function initApp() {
-  window.onbeforeunload = null;
-  
   loadCartFromLocalStorage();
   const lastPage = getLastPage();
   showPage(lastPage);

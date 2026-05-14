@@ -1102,35 +1102,6 @@
       width: calc(100% - 36px);
     }
 
-    /* ===== PROFILE PAGE REDESIGN ===== */
-
-    /* Рейтинговый бейдж рядом с юзернеймом */
-    .rank-badge {
-      display: inline-flex;
-      align-items: center;
-      background: rgba(234, 179, 8, 0.15);
-      border-radius: 20px;
-      padding: 6px 14px;
-      font-size: 15px;
-      font-weight: 600;
-      color: #eab308;
-      margin-left: 8px;
-    }
-
-    /* Карточка рейтинга — выезжает из-под карточки профиля */
-    .profile-card-wrapper {
-      position: relative;
-      margin-bottom: 0;
-      z-index: 2;
-    }
-
-    .profile-card-wrapper .profile-card {
-      margin-bottom: 0;
-      position: relative;
-      z-index: 2;
-      border-radius: 28px;
-    }
-
     /* Группировочная карточка для действий */
 .profile-actions-group {
   background: #1a1a1c;
@@ -2084,11 +2055,6 @@ async function loadReviewsList() {
   }
 }
 
-function getRankLabel(rank) {
-  if (!rank || rank > 10) return "#10+";
-  return "#" + rank;
-}
-
 async function renderProfilePage() {
   const container = document.getElementById("profileContent");
   if (!container) return;
@@ -2100,17 +2066,14 @@ async function renderProfilePage() {
   const userId = tgUser?.id || "0";
 
   container.innerHTML = `
-    <div class="profile-card-wrapper">
       <div class="profile-card">
         ${photoUrl ? `<img class="profile-avatar" src="${photoUrl}" alt="avatar">` : '<div class="profile-avatar" style="background:#303032;display:flex;align-items:center;justify-content:center;font-size:24px;color:#9e9e9e;">👤</div>'}
         <div class="profile-info">
           <div class="profile-nickname">${escapeHtml(nickname)}</div>
           <div style="display:flex;align-items:center;gap:0;flex-wrap:wrap;margin-top:4px;">
             <div class="profile-username">${escapeHtml(username)}</div>
-            <span class="rank-badge" id="profileRankBadge">...</span>
           </div>
         </div>
-      </div>
 
     <div class="profile-actions-group">
       <div class="profile-action-item" id="subscribeChannelBtn">
@@ -2135,14 +2098,6 @@ async function renderProfilePage() {
         ${arrowSvg}
       </div>
     </div>`;
-
-  getUserRank(userId).then(rank => {
-    const label = rank ? getRankLabel(rank) : "#10+";
-    const badgeEl = document.getElementById("profileRankBadge");
-    const valueEl = document.getElementById("profileRankValue");
-    if (badgeEl) badgeEl.textContent = label;
-    if (valueEl) valueEl.textContent = label;
-  });
 
   setTimeout(() => {
     document.getElementById("subscribeChannelBtn")?.addEventListener("click", () => { hapticLight(); window.open("https://t.me/GemStormStore", "_blank"); });

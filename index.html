@@ -16,7 +16,6 @@
     display: block !important;
   }
 
-```
 * {
   margin: 0;
   padding: 0;
@@ -112,8 +111,6 @@ body {
 }
 
 .menu-slider {
-```
-
 position: absolute;
 top: 3px;
 left: 3px;
@@ -125,7 +122,6 @@ transition: left 0.2s cubic-bezier(0.4, 0, 0.2, 1), width 0.2s cubic-bezier(0.4,
 pointer-events: none;
 }
 
-```
 body:has(.search-input:focus) .bottom-menu,
 body:has(.form-input:focus) .bottom-menu,
 body:has(.form-select-native:focus) .bottom-menu,
@@ -193,12 +189,9 @@ body:has(#verificationCodeInput:focus) .cart-checkout-fixed {
 }
 
 #profileMenuWrapper.active {
-```
-
 background: rgba(200, 200, 212, 0.1) !important;
 }
 
-```
 .header-row {
   display: flex;
   align-items: center;
@@ -1440,7 +1433,6 @@ background: rgba(200, 200, 212, 0.1) !important;
   color: #9e9e9e;
   font-size: 15px;
 }
-```
 
   </style>
 </head>
@@ -2184,12 +2176,9 @@ async function renderReviewsPage() {
       <div class="review-compose-label">Оставить отзыв</div>
       <div class="review-stars-select" id="reviewStarsRow">${starsHtml}</div>
       <textarea class="review-textarea" id="reviewTextarea" placeholder="Напишите ваш отзыв..." maxlength="500"></textarea>
-
-```
   <button class="review-submit-btn" id="reviewSubmitBtn">Отправить отзыв</button>
 </div>
 <div id="reviewsList"><div class="review-empty">Загрузка отзывов...</div></div>`;
-```
 
 // Звёзды
 setTimeout(() => {
@@ -2203,7 +2192,6 @@ hapticLight();
 });
 });
 
-```
 document.getElementById('reviewSubmitBtn')?.addEventListener('click', async () => {
   const text = document.getElementById('reviewTextarea')?.value.trim();
   if (!text) { alert('Напишите текст отзыва'); return; }
@@ -2234,8 +2222,6 @@ document.getElementById('reviewSubmitBtn')?.addEventListener('click', async () =
 });
 
 loadReviewsList();
-```
-
 }, 0);
 }
 

@@ -1198,12 +1198,6 @@
       gap: 2px;
     }
 
-    .review-text {
-      font-size: 15px;
-      color: #cbd5e1;
-      line-height: 1.5;
-    }
-
     .review-compose-card {
       background: #1a1a1c;
       border: 1px solid #2B2B2D;
@@ -1284,6 +1278,29 @@
       color: #9e9e9e;
       font-size: 15px;
     }
+    
+    .review-order-badge {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(76, 180, 233, 0.12);
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4cb4e9;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.review-text {
+  font-size: 15px;
+  color: #cbd5e1;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
   </style>
 </head>
 <body>
@@ -1383,6 +1400,14 @@
     <div class="page-title">Отзывы</div>
   </div>
   <div id="reviewsContent"></div>
+</div>
+
+<div id="write-review-page" class="page">
+  <div class="header-row">
+    <img class="header-icon-img" src="https://storage.botpapa.me/files/69f8dfe0-4f72-11f1-bef9-f1ec7a2c6e45.png" alt="reviews">
+    <div class="page-title">Оставить отзыв</div>
+  </div>
+  <div id="writeReviewContent"></div>
 </div>
 
 <div id="cartCheckoutFixed" class="cart-checkout-fixed" style="display: none;"></div>
@@ -1973,83 +1998,156 @@ async function renderReviewsPage() {
   const container = document.getElementById("reviewsContent");
   if (!container) return;
   const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-  const nickname = tgUser?.first_name || "Пользователь";
-  const photoUrl = tgUser?.photo_url || "";
+  const userId = tgUser?.id;
 
-  const starsHtml = [1,2,3,4,5].map(n =>
-    `<button class="review-star-btn ${n <= selectedReviewStars ? 'active' : ''}" data-star="${n}">★</button>`
-  ).join('');
+  let hasCompletedOrder = false;
+  if (userId) {
+    try {
+      const r = await fetch(`https://gemstorm.up.railway.app/api/user-orders?userId=${userId}`);
+      const userOrders = await r.json();
+      hasCompletedOrder = userOrders.some(o => o.status_code === 'done' || o.status_code === 'completed');
+    } catch(e) {}
+  }
+
+  const actionBlock = hasCompletedOrder ? `
+    <div class="checkout-card" style="margin-bottom:14px;">
+      <div class="checkout-buttons-row">
+        <button class="checkout-button" id="goWriteReviewBtn">Оставить отзыв</button>
+        <button onclick="hapticLight();window.open('https://t.me/GemStormHelp','_blank')" class="promo-btn">
+          <img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" style="width:24px;height:24px;">
+        </button>
+      </div>
+    </div>` : '';
 
   container.innerHTML = `
-    <div class="review-compose-card">
-      <div class="review-compose-label">Оставить отзыв</div>
-      <div class="review-stars-select" id="reviewStarsRow">${starsHtml}</div>
-      <textarea class="review-textarea" id="reviewTextarea" placeholder="Напишите ваш отзыв..." maxlength="500"></textarea>
-      <button class="review-submit-btn" id="reviewSubmitBtn">Отправить отзыв</button>
-    </div>
+    ${actionBlock}
     <div id="reviewsList"><div class="review-empty">Загрузка отзывов...</div></div>`;
 
   setTimeout(() => {
-    document.querySelectorAll(".review-star-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        selectedReviewStars = parseInt(btn.dataset.star);
-        document.querySelectorAll(".review-star-btn").forEach((b, i) => {
-          b.classList.toggle("active", (i+1) <= selectedReviewStars);
-        });
-        hapticLight();
-      });
+    document.getElementById('goWriteReviewBtn')?.addEventListener('click', () => {
+      hapticLight();
+      showPage('write-review');
     });
-
-    document.getElementById("reviewSubmitBtn")?.addEventListener("click", async () => {
-      const text = document.getElementById("reviewTextarea")?.value.trim();
-      if (!text) { alert("Напишите текст отзыва"); return; }
-      hapticMedium();
-      const btn = document.getElementById("reviewSubmitBtn");
-      if (btn) { btn.disabled = true; btn.textContent = "Отправка..."; }
-      try {
-        const res = await fetch("https://gemstorm.up.railway.app/api/reviews", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            userId: tgUser?.id,
-            userName: nickname,
-            photoUrl: photoUrl,
-            text: text,
-            stars: selectedReviewStars
-          })
-        });
-        if (res.ok) {
-          document.getElementById("reviewTextarea").value = "";
-          selectedReviewStars = 5;
-          loadReviewsList();
-        } else {
-          alert("Ошибка при отправке");
-        }
-      } catch(e) { alert("Ошибка соединения"); }
-      if (btn) { btn.disabled = false; btn.textContent = "Отправить отзыв"; }
-    });
-
     loadReviewsList();
   }, 0);
 }
 
+async function renderWriteReviewPage() {
+  const container = document.getElementById("writeReviewContent");
+  if (!container) return;
+  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  const userId = tgUser?.id;
+  const nickname = tgUser?.first_name || "Пользователь";
+  const photoUrl = tgUser?.photo_url || "";
+
+  let completedOrders = [];
+  try {
+    const r = await fetch(`https://gemstorm.up.railway.app/api/user-orders?userId=${userId}`);
+    const all = await r.json();
+    completedOrders = all.filter(o => o.status_code === 'done' || o.status_code === 'completed');
+  } catch(e) {}
+
+  const orderOptions = completedOrders.map(o =>
+    `<option value="${o.id}" data-num="${o.order_number}">Заказ #${o.order_number}</option>`
+  ).join('');
+
+  container.innerHTML = `
+    <div class="order-data-card">
+      <div style="font-size:16px;font-weight:600;color:#fff;margin-bottom:14px;">Оставьте отзыв заказу</div>
+      <div class="form-section">
+        <div class="form-label">Выберите заказ</div>
+        <select class="form-select-native" id="reviewOrderSelect">
+          ${orderOptions}
+        </select>
+      </div>
+      <div class="form-section" style="margin-bottom:0;">
+        <div class="form-label">Ваш отзыв <span id="reviewCharCount" style="color:#9e9e9e;font-weight:400;font-size:14px;">0/60</span></div>
+        <textarea class="review-textarea" id="reviewTextarea" placeholder="Напишите ваш отзыв..." maxlength="60" rows="3"></textarea>
+      </div>
+      <button class="checkout-button" id="reviewSubmitBtn" style="width:100%;height:48px;margin-top:10px;">Отправить отзыв</button>
+    </div>`;
+
+  setTimeout(() => {
+    const textarea = document.getElementById('reviewTextarea');
+    const counter = document.getElementById('reviewCharCount');
+
+    textarea?.addEventListener('input', () => {
+      let val = textarea.value.replace(/[\r\n]/g, '');
+      if (val !== textarea.value) textarea.value = val;
+      if (counter) counter.textContent = `${val.length}/60`;
+    });
+
+    textarea?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') e.preventDefault();
+    });
+
+    document.getElementById('reviewSubmitBtn')?.addEventListener('click', async () => {
+      const text = textarea?.value.trim();
+      if (!text) { alert('Напишите текст отзыва'); return; }
+      const selectEl = document.getElementById('reviewOrderSelect');
+      const orderId = selectEl?.value;
+      const orderNum = selectEl?.options[selectEl.selectedIndex]?.dataset.num;
+      if (!orderId) { alert('Выберите заказ'); return; }
+      hapticMedium();
+      const btn = document.getElementById('reviewSubmitBtn');
+      if (btn) { btn.disabled = true; btn.textContent = 'Отправка...'; }
+      try {
+        const res = await fetch('https://gemstorm.up.railway.app/api/reviews', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: userId,
+            userName: nickname,
+            photoUrl: photoUrl,
+            text: text,
+            orderId: orderId,
+            orderNumber: orderNum
+          })
+        });
+        if (res.ok) {
+          hapticLight();
+          showPage('reviews');
+        } else {
+          alert('Ошибка при отправке');
+        }
+      } catch(e) { alert('Ошибка соединения'); }
+      if (btn) { btn.disabled = false; btn.textContent = 'Отправить отзыв'; }
+    });
+  }, 0);
+}
+
 async function loadReviewsList() {
-  const container = document.getElementById("reviewsList");
+  const container = document.getElementById('reviewsList');
   if (!container) return;
   container.innerHTML = `<div class="review-empty">Загрузка...</div>`;
   try {
-    const r = await fetch("https://gemstorm.up.railway.app/api/reviews");
+    const r = await fetch('https://gemstorm.up.railway.app/api/reviews');
     if (!r.ok) throw new Error();
     const list = await r.json();
-    if (!list.length) { container.innerHTML = `<div class="review-empty">Пока нет отзывов. Будьте первым!</div>`; return; }
+    if (!list.length) { container.innerHTML = `<div class="review-empty">Пока нет отзывов</div>`; return; }
     container.innerHTML = list.map(rv => {
-      const stars = "★".repeat(rv.stars || 5) + "☆".repeat(5 - (rv.stars || 5));
       const avatar = rv.photo_url
-        ? `<img class="review-avatar" src="${rv.photo_url}" style="width:38px;height:38px;border-radius:50%;object-fit:cover;" alt="avatar">`
+        ? `<img style="width:38px;height:38px;border-radius:50%;object-fit:cover;flex-shrink:0;" src="${rv.photo_url}" alt="avatar">`
         : `<div class="review-avatar">👤</div>`;
-      const date = rv.created_at ? new Date(rv.created_at).toLocaleDateString("ru-RU") : "";
-      return `<div class="review-card"> <div class="review-header"> ${avatar} <div> <div class="review-author-name">${escapeHtml(rv.user_name || 'Пользователь')}</div> <div class="review-date">${date}</div> </div> <div class="review-stars" style="color:#eab308;margin-left:auto;letter-spacing:1px;">${stars}</div> </div> <div class="review-text">${escapeHtml(rv.text)}</div> </div>`;
-    }).join("");
+      const dt = rv.created_at ? new Date(rv.created_at) : null;
+      const dateStr = dt
+        ? `${dt.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})} ${dt.toLocaleDateString('ru-RU')}`
+        : '';
+      const orderBadge = rv.order_number
+        ? `<span class="review-order-badge">Заказ #${rv.order_number}</span>`
+        : '';
+      return `<div class="review-card">
+        <div class="review-header">
+          ${avatar}
+          <div>
+            <div class="review-author-name">${escapeHtml(rv.user_name || 'Пользователь')}</div>
+            <div class="review-date">${dateStr}</div>
+          </div>
+          ${orderBadge}
+        </div>
+        <div class="review-text">${escapeHtml(rv.text)}</div>
+      </div>`;
+    }).join('');
   } catch(e) {
     container.innerHTML = `<div class="review-empty">Не удалось загрузить отзывы</div>`;
   }
@@ -2065,15 +2163,18 @@ async function renderProfilePage() {
   const photoUrl = tgUser?.photo_url || "";
   const userId = tgUser?.id || "0";
 
+    const arrowSvg = `<svg style="width:18px;height:18px;opacity:0.4;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>`;
+
   container.innerHTML = `
-      <div class="profile-card">
-        ${photoUrl ? `<img class="profile-avatar" src="${photoUrl}" alt="avatar">` : '<div class="profile-avatar" style="background:#303032;display:flex;align-items:center;justify-content:center;font-size:24px;color:#9e9e9e;">👤</div>'}
-        <div class="profile-info">
-          <div class="profile-nickname">${escapeHtml(nickname)}</div>
-          <div style="display:flex;align-items:center;gap:0;flex-wrap:wrap;margin-top:4px;">
-            <div class="profile-username">${escapeHtml(username)}</div>
-          </div>
+    <div class="profile-card">
+      ${photoUrl ? `<img class="profile-avatar" src="${photoUrl}" alt="avatar">` : '<div class="profile-avatar" style="background:#303032;display:flex;align-items:center;justify-content:center;font-size:24px;color:#9e9e9e;">👤</div>'}
+      <div class="profile-info">
+        <div class="profile-nickname">${escapeHtml(nickname)}</div>
+        <div style="margin-top:4px;">
+          <div class="profile-username">${escapeHtml(username)}</div>
         </div>
+      </div>
+    </div>
 
     <div class="profile-actions-group">
       <div class="profile-action-item" id="subscribeChannelBtn">
@@ -2137,6 +2238,7 @@ function showPage(pageId, skipHistoryAdd = false) {
   if (pageId === "order-detail") { if (checkoutBlock) checkoutBlock.style.display = "none"; }
   if (pageId === "referral") { renderReferralPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
   if (pageId === "reviews") { renderReviewsPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
+  if (pageId === "write-review") { renderWriteReviewPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
   const mainPages = ["catalog", "cart", "orders", "profile"];
   if (mainPages.includes(pageId)) {
     document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));

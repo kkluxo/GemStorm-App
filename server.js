@@ -35,11 +35,9 @@ await pool.query(`CREATE TABLE IF NOT EXISTS referral_conversions ( id SERIAL PR
 
 await pool.query(`CREATE TABLE IF NOT EXISTS reviews ( id SERIAL PRIMARY KEY, user_id BIGINT, user_name TEXT, photo_url TEXT, text TEXT, stars INTEGER DEFAULT 5, created_at TIMESTAMPTZ DEFAULT NOW() )`);
 
-```
 console.log('Таблицы referral_balances и referral_promocodes готовы');
 const result = await pool.query('SELECT COUNT(*) as count FROM orders');
 console.log(`В базе данных ${result.rows[0].count} заказов`);
-```
 
 } catch (err) {
 console.error(‘Ошибка:’, err.message);
@@ -130,7 +128,6 @@ try {
 const o = req.body;
 const nextNumber = await getNextOrderNumber();
 
-```
 const result = await pool.query(
   `INSERT INTO orders (order_number, date, time, timestamp, items, total, promo, promo_discount, payment_method, sender_name, email, user_id, user_name, user_username) 
    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING *`,
@@ -146,7 +143,6 @@ if (BOT_TOKEN) {
   await notifyUser(bot, saved);
 }
 res.json({ success: true, orderId: saved.id });
-```
 
 } catch (err) { res.status(500).json({ error: err.message }); }
 });
@@ -155,7 +151,6 @@ app.post(’/api/update-status’, async (req, res) => {
 try {
 const { orderId, status, statusCode } = req.body;
 
-```
 // 🔥 АВТОМАТИЧЕСКОЕ ОПРЕДЕЛЕНИЕ status_code ПО ТЕКСТУ СТАТУСА
 let finalStatusCode = statusCode;
 
@@ -196,7 +191,6 @@ if (BOT_TOKEN && order.user_id) {
 }
 
 if (finalStatusCode === 'done' || finalStatusCode === 'completed') {
-```
 
 try {
 const refRow = await pool.query(
@@ -219,9 +213,7 @@ await bot.telegram.sendMessage(referrerId,
 } catch(e) { console.error(‘Ошибка начисления бонуса:’, e.message); }
 }
 
-```
 res.json({ success: true, order: order });
-```
 
 } catch (err) {
 console.error(‘Ошибка update-status:’, err.message);
@@ -270,7 +262,6 @@ try {
 const userId = req.query.userId;
 if (!userId) return res.json({ count: 0, balance: 0, referrals: [] });
 
-```
 const countResult = await pool.query(
   'SELECT COUNT(*) as count FROM referrals WHERE referred_by = $1',
   [userId]
@@ -296,7 +287,6 @@ res.json({
   balance: balanceResult.rows[0]?.balance || 0,
   referrals: referralsResult.rows
 });
-```
 
 } catch (err) { res.status(500).json({ error: err.message }); }
 });
@@ -306,7 +296,6 @@ try {
 const { userId } = req.body;
 if (!userId) return res.status(400).json({ error: ‘userId required’ });
 
-```
 const balanceResult = await pool.query(
   'SELECT balance FROM referral_balances WHERE user_id = $1',
   [userId]
@@ -328,15 +317,12 @@ await pool.query(
 );
 
 await pool.query(
-```
 
 ‘INSERT INTO referral_conversions (user_id, code, amount) VALUES ($1, $2, $3)’,
 [userId, code, balance]
 );
 
-```
 res.json({ success: true, code, amount: balance });
-```
 
 } catch (err) { res.status(500).json({ error: err.message }); }
 });
@@ -346,7 +332,6 @@ try {
 const { code, userId } = req.body;
 if (!code || !userId) return res.status(400).json({ error: ‘Нет данных’ });
 
-```
 const result = await pool.query(
   'SELECT * FROM referral_promocodes WHERE code = $1 AND user_id = $2 AND used = FALSE',
   [code, userId]
@@ -355,7 +340,6 @@ const result = await pool.query(
 if (!result.rows.length) return res.json({ valid: false });
 
 res.json({ valid: true, amount: result.rows[0].amount });
-```
 
 } catch (err) { res.status(500).json({ error: err.message }); }
 });

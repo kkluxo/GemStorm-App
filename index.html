@@ -1077,7 +1077,7 @@
     .review-card {
       background: #202022;
       border: 1px solid #2B2B2D;
-      border-radius: 26px;
+      border-radius: 28px;
       padding: 16px;
       margin-bottom: 10px;
     }
@@ -1213,7 +1213,7 @@
     .review-order-badge {
   display: inline-flex;
   align-items: center;
-  background: rgba(76, 180, 233, 0.12);
+  background: rgba(76, 180, 233, 0.08);
   border-radius: 20px;
   padding: 4px 10px;
   font-size: 17px;
@@ -1224,8 +1224,8 @@
 }
 
 .review-text {
-  font-size: 15px;
-  color: #cbd5e1;
+  font-size: 16px;
+  color: #cbcdcd;
   line-height: 1.5;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -1931,7 +1931,7 @@ async function renderWriteReviewPage() {
 
   container.innerHTML = `
     <div class="order-data-card">
-      <div style="font-size:16px;font-weight:600;color:#fff;margin-bottom:14px;">Оставьте отзыв заказу</div>
+      <div style="font-size:19px;font-weight:600;color:#fff;margin-bottom:14px;">Оставьте отзыв к заказу</div>
       <div class="form-section">
         <div class="form-label">Выберите заказ</div>
         <select class="form-select-native" id="reviewOrderSelect">
@@ -1940,7 +1940,7 @@ async function renderWriteReviewPage() {
       </div>
       <div class="form-section" style="margin-bottom:0;">
         <div class="form-label">Ваш отзыв <span id="reviewCharCount" style="color:#9e9e9e;font-weight:400;font-size:14px;">0/70</span></div>
-        <textarea class="review-textarea" id="reviewTextarea" placeholder="Напишите ваш отзыв..." maxlength="70" rows="3"></textarea>
+        <textarea class="review-textarea" id="reviewTextarea" placeholder="Напишите ваш отзыв..." maxlength="80" rows="3"></textarea>
       </div>
       <button class="checkout-button" id="reviewSubmitBtn" style="width:100%;height:48px;margin-top:10px;">Отправить отзыв</button>
     </div>`;

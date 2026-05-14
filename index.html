@@ -1131,174 +1131,56 @@
       border-radius: 28px;
     }
 
-    .rating-peek-card {
-      background: #1a1a1c;
-      border: 1px solid #2B2B2D;
-      border-radius: 28px;
-      padding: 16px 18px;
-      margin-top: -4px;
-      margin-bottom: 16px;
-      position: relative;
-      z-index: 1;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      transition: opacity 0.12s;
-      padding-top: 22px;
-    }
-
-    .rating-peek-card:active {
-      opacity: 0.8;
-    }
-
-    .rating-peek-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .rating-peek-icon {
-      width: 28px;
-      height: 28px;
-      object-fit: contain;
-    }
-
-    .rating-peek-text {
-      font-size: 15px;
-      font-weight: 500;
-      color: #cbd5e1;
-    }
-
-    .rating-peek-right {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .rating-peek-value {
-      font-size: 15px;
-      font-weight: 600;
-      color: #ffffff;
-    }
-
-    .rating-arrow {
-      width: 18px;
-      height: 18px;
-      opacity: 0.5;
-    }
-
     /* Группировочная карточка для действий */
-    .profile-actions-group {
-      background: #1a1a1c;
-      border: 1px solid #2B2B2D;
-      border-radius: 28px;
-      padding: 12px;
-      margin-bottom: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
+.profile-actions-group {
+  background: #1a1a1c;
+  border: 1px solid #2B2B2D;
+  border-radius: 28px;
+  padding: 12px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 
-    .profile-action-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 10px;
-      cursor: pointer;
-      border-radius: 18px;
-      transition: background 0.12s;
-    }
+.profile-action-item {
+  background: #202022;
+  border: 1px solid #2B2B2D;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: opacity 0.12s;
+}
 
-    .profile-action-item:active {
-      background: rgba(255, 255, 255, 0.04);
-    }
+.profile-action-item:active {
+  opacity: 0.7;
+}
 
-    .profile-action-item + .profile-action-item {
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 0;
-    }
+.profile-action-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
 
-    .profile-action-item:first-child {
-      border-radius: 18px 18px 0 0;
-    }
+.profile-action-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #ffffff;
+}
 
-    .profile-action-item:last-child {
-      border-radius: 0 0 18px 18px;
-    }
+.profile-action-subtitle {
+  font-size: 13px;
+  color: #9e9e9e;
+}
 
-    .profile-action-item:only-child {
-      border-radius: 18px;
-    }
-
-    .profile-action-left {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .profile-action-title {
-      font-size: 16px;
-      font-weight: 500;
-      color: #ffffff;
-    }
-
-    .profile-action-subtitle {
-      font-size: 13px;
-      color: #9e9e9e;
-    }
-
-    .profile-action-arrow {
-      width: 18px;
-      height: 18px;
-      opacity: 0.4;
-    }
-
-    /* ===== RATING PAGE ===== */
-    .rating-user-card {
-      background: #202022;
-      border: 1px solid #2B2B2D;
-      border-radius: 28px;
-      padding: 16px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .rating-user-rank {
-      font-size: 18px;
-      font-weight: 700;
-      color: #eab308;
-      min-width: 30px;
-    }
-
-    .rating-user-avatar {
-      width: 46px;
-      height: 46px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-
-    .rating-user-info {
-      flex: 1;
-    }
-
-    .rating-user-name {
-      font-size: 16px;
-      font-weight: 600;
-      color: #ffffff;
-    }
-
-    .rating-user-volume {
-      font-size: 13px;
-      color: #9e9e9e;
-      margin-top: 2px;
-    }
-
-    .rating-crown {
-      font-size: 20px;
-    }
+.profile-action-arrow {
+  width: 18px;
+  height: 18px;
+  opacity: 0.4;
+}
 
     /* ===== REVIEWS PAGE ===== */
     .review-card {
@@ -1522,14 +1404,6 @@
     <div class="page-title" id="orderDetailTitle">Заказ</div>
   </div>
   <div id="orderDetailContent"></div>
-</div>
-
-<div id="rating-page" class="page">
-  <div class="header-row">
-    <img class="header-icon-img" src="https://storage.botpapa.me/files/6e429780-4f72-11f1-bef9-f1ec7a2c6e45.png" alt="rating">
-    <div class="page-title">Рейтинг</div>
-  </div>
-  <div id="ratingContent"></div>
 </div>
 
 <div id="reviews-page" class="page">
@@ -2124,38 +1998,6 @@ async function renderReferralPage() {
   }, 0);
 }
 
-async function renderRatingPage() {
-  const container = document.getElementById("ratingContent");
-  if (!container) return;
-  container.innerHTML = `<div class="review-empty">Загрузка...</div>`;
-  try {
-    const r = await fetch('https://gemstorm.up.railway.app/api/rating');
-    if (!r.ok) throw new Error();
-    const list = await r.json();
-    if (!list.length) { container.innerHTML = `<div class="review-empty">Рейтинг пока пуст</div>`; return; }
-    container.innerHTML = list.slice(0, 50).map((u, i) => {
-      const rank = i + 1;
-      const crown = rank === 1 ? '👑' : '';
-      const name = escapeHtml(u.user_name || 'Пользователь');
-      const vol = formatPrice(u.total_volume || 0);
-      const avatar = u.photo_url ? `<img class="rating-user-avatar" src="${u.photo_url}" alt="avatar">` : `<div class="rating-user-avatar" style="background:#303032;display:flex;align-items:center;justify-content:center;font-size:18px;">👤</div>`;
-      return `<div class="rating-user-card">
-        <div class="rating-user-rank">${rank <= 10 ? '#'+rank : '#10+'}</div>
-        ${avatar}
-        <div class="rating-user-info">
-          <div class="rating-user-name">${name}</div>
-          <div class="rating-user-volume">Объём: ${vol}</div>
-        </div>
-        ${crown ? `<span class="rating-crown">${crown}</span>` : ''}
-      </div>`;
-    }).join('');
-  } catch(e) {
-    container.innerHTML = `<div class="review-empty">Не удалось загрузить рейтинг</div>`;
-  }
-}
-
-let selectedReviewStars = 5;
-
 async function renderReviewsPage() {
   const container = document.getElementById("reviewsContent");
   if (!container) return;
@@ -2247,17 +2089,6 @@ function getRankLabel(rank) {
   return "#" + rank;
 }
 
-async function getUserRank(userId) {
-  try {
-    const r = await fetch("https://gemstorm.up.railway.app/api/rating");
-    if (!r.ok) return null;
-    const list = await r.json();
-    const idx = list.findIndex(u => String(u.user_id) === String(userId));
-    if (idx === -1) return null;
-    return idx + 1;
-  } catch(e) { return null; }
-}
-
 async function renderProfilePage() {
   const container = document.getElementById("profileContent");
   if (!container) return;
@@ -2267,8 +2098,6 @@ async function renderProfilePage() {
   const username = tgUser?.username ? "@" + tgUser.username : "@username";
   const photoUrl = tgUser?.photo_url || "";
   const userId = tgUser?.id || "0";
-
-  const arrowSvg = `<svg class="rating-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>`;
 
   container.innerHTML = `
     <div class="profile-card-wrapper">
@@ -2282,17 +2111,6 @@ async function renderProfilePage() {
           </div>
         </div>
       </div>
-      <div class="rating-peek-card" id="openRatingPage">
-        <div class="rating-peek-left">
-          <img class="rating-peek-icon" src="https://storage.botpapa.me/files/6e429780-4f72-11f1-bef9-f1ec7a2c6e45.png" alt="rating">
-          <span class="rating-peek-text">Ваше место в рейтинге</span>
-        </div>
-        <div class="rating-peek-right">
-          <span class="rating-peek-value" id="profileRankValue">...</span>
-          ${arrowSvg}
-        </div>
-      </div>
-    </div>
 
     <div class="profile-actions-group">
       <div class="profile-action-item" id="subscribeChannelBtn">
@@ -2329,7 +2147,6 @@ async function renderProfilePage() {
   setTimeout(() => {
     document.getElementById("subscribeChannelBtn")?.addEventListener("click", () => { hapticLight(); window.open("https://t.me/GemStormStore", "_blank"); });
     document.getElementById("openReferralPage")?.addEventListener("click", () => { hapticLight(); showPage("referral"); });
-    document.getElementById("openRatingPage")?.addEventListener("click", () => { hapticLight(); showPage("rating"); });
     document.getElementById("openReviewsPage")?.addEventListener("click", () => { hapticLight(); showPage("reviews"); });
   }, 0);
 }
@@ -2364,7 +2181,6 @@ function showPage(pageId, skipHistoryAdd = false) {
   if (pageId === "filter") { if (checkoutBlock) checkoutBlock.style.display = "none"; }
   if (pageId === "order-detail") { if (checkoutBlock) checkoutBlock.style.display = "none"; }
   if (pageId === "referral") { renderReferralPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
-  if (pageId === "rating") { renderRatingPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
   if (pageId === "reviews") { renderReviewsPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
   const mainPages = ["catalog", "cart", "orders", "profile"];
   if (mainPages.includes(pageId)) {

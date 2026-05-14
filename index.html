@@ -2170,6 +2170,8 @@ function initBackButtonHandler() {
 }
 
 function initApp() {
+  window.onbeforeunload = null;
+  
   loadCartFromLocalStorage();
   const lastPage = getLastPage();
   showPage(lastPage);

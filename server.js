@@ -131,7 +131,9 @@ async function initDB() {
                 created_at TIMESTAMP DEFAULT NOW()
             )
         `);
-        
+        await pool.query(`ALTER TABLE reviews ADD COLUMN IF NOT EXISTS order_id INTEGER`);
+        await pool.query(`ALTER TABLE reviews ADD COLUMN IF NOT EXISTS order_number INTEGER`);
+
         console.log('Все таблицы готовы');
         
         const result = await pool.query('SELECT COUNT(*) as count FROM orders');
@@ -500,18 +502,16 @@ app.get('/api/reviews', async (req, res) => {
 // Отзывы - добавить новый
 app.post('/api/reviews', async (req, res) => {
     try {
-        const { userId, userName, photoUrl, text, stars } = req.body;
+        const { userId, userName, photoUrl, text, orderId, orderNumber } = req.body;
         
         if (!text || !text.trim()) {
             return res.status(400).json({ error: 'Текст обязателен' });
         }
         
-        const starsVal = Math.min(5, Math.max(1, parseInt(stars) || 5));
-        
         await pool.query(
-            'INSERT INTO reviews (user_id, user_name, photo_url, text, stars) VALUES ($1,$2,$3,$4,$5)',
-            [userId || null, userName || 'Пользователь', photoUrl || null, text.trim(), starsVal]
-        );
+  'INSERT INTO reviews (user_id, user_name, photo_url, text, order_id, order_number) VALUES ($1,$2,$3,$4,$5,$6)',
+  [userId || null, userName || 'Пользователь', photoUrl || null, text.trim(), orderId || null, orderNumber || null]
+);
         
         // Уведомить админа об отзыве
         if (BOT_TOKEN) {

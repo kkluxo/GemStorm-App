@@ -2039,7 +2039,7 @@ async function renderProfilePage() {
   const nickname = tgUser?.first_name || "Пользователь";
   const username = tgUser?.username ? "@" + tgUser.username : "@username";
   const photoUrl = tgUser?.photo_url || "";
-  const userId = tgUser?.id || "0";
+
   const arrowSvg = `<svg style="width:18px;height:18px;opacity:0.4;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>`;
 
   container.innerHTML = `
@@ -2069,25 +2069,28 @@ async function renderProfilePage() {
       ${arrowSvg}
     </div>
 
-    <div class="referral-card">
-      <div class="referral-title">Связаться с поддержкой</div>
-      <div id="supportChannelBtn" style="background:#202B32;border-radius:20px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-bottom:10px;">
-        <div>
-          <div style="font-size:16px;font-weight:500;color:#fff;">В сообщениях канала</div>
-          <div style="font-size:13px;color:#9e9e9e;margin-top:2px;">Перейти в канал GemStorm</div>
-        </div>
-        ${arrowSvg}
+    <div class="subscribe-card" id="openFaqBtn">
+      <div class="subscribe-info">
+        <div class="subscribe-title">Ответы на вопросы</div>
+        <div class="subscribe-text">Перейти к ответам на вопросы</div>
       </div>
-      <button class="checkout-button" id="openSupportBtn" style="width:100%;height:48px;">Чат с GemStormHelp</button>
+      ${arrowSvg}
+    </div>
+
+    <div class="subscribe-card" id="openSupportBtn">
+      <div class="subscribe-info">
+        <div class="subscribe-title">Связаться с поддержкой</div>
+        <div class="subscribe-text">Получить помощь по заказам</div>
+      </div>
+      ${arrowSvg}
     </div>`;
 
   setTimeout(() => {
     document.getElementById("subscribeChannelBtn")?.addEventListener("click", () => { hapticLight(); window.open("https://t.me/GemStormStore", "_blank"); });
     document.getElementById("openReviewsPage")?.addEventListener("click", () => { hapticLight(); showPage("reviews"); });
-    document.getElementById("supportChannelBtn")?.addEventListener("click", () => { hapticLight(); window.open("https://t.me/GemStormStore", "_blank"); });
+    document.getElementById("openFaqBtn")?.addEventListener("click", () => { hapticLight(); window.open("https://app.botpapa.me/@DeathGunBrawlBot", "_blank"); });
     document.getElementById("openSupportBtn")?.addEventListener("click", () => { hapticLight(); window.open("https://t.me/GemStormHelp", "_blank"); });
   }, 0);
-  
 }
 
 function saveCurrentPage(pageId) { localStorage.setItem("lastPage", pageId); }

@@ -1938,10 +1938,27 @@ function showOrderDetail(order) {
     // Проверяем оставлен ли уже отзыв к этому заказу
 const tgUserForReview = window.Telegram?.WebApp?.initDataUnsafe?.user;
 const isCompleted = order.status_code === 'done' || order.status_code === 'completed';
-if (!isCompleted) {
+if (!isCompleted || isAwaitingCode) {
   fixedBlock.style.display = "none";
 } else {
   fetch('https://gemstorm.up.railway.app/api/reviews').then(r => r.json()).then(allReviews => {
+    if (isAwaitingCode) { fixedBlock.style.display = "none"; return; }
+    const alreadyReviewed = allReviews.some(rv =>
+      String(rv.user_id) === String(tgUserForReview?.id) && String(rv.order_id) === String(order.id)
+    );
+    if (alreadyReviewed) {
+      fixedBlock.style.display = "none";
+    } else {
+      fixedBlock.style.display = "block";
+      fixedBlock.innerHTML = `<div class="checkout-card"><div class="checkout-buttons-row"><button onclick="hapticMedium();showPage('write-review')" class="checkout-button">Оставить отзыв</button><button onclick="hapticLight();window.open('https://t.me/GemStormHelp','_blank')" class="promo-btn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" style="width:24px;height:24px;"></button></div></div>`;
+    }
+  }).catch(() => {
+    if (!isAwaitingCode) {
+      fixedBlock.style.display = "block";
+      fixedBlock.innerHTML = `<div class="checkout-card"><div class="checkout-buttons-row"><button onclick="hapticMedium();showPage('write-review')" class="checkout-button">Оставить отзыв</button><button onclick="hapticLight();window.open('https://t.me/GemStormHelp','_blank')" class="promo-btn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" style="width:24px;height:24px;"></button></div></div>`;
+    }
+  });
+}
     const alreadyReviewed = allReviews.some(rv =>
       String(rv.user_id) === String(tgUserForReview?.id) && String(rv.order_id) === String(order.id)
     );
@@ -1967,10 +1984,13 @@ if (!isCompleted) {
         hapticLight();
         document.getElementById("cartCheckoutFixed").style.display = "none";
         const block = document.getElementById("codeActionBlock");
-        if (block) {
-           block.innerHTML = `<div class="checkout-card"><div class="promo-label">Введите код который вам пришел</div><div class="promo-input-row"><input type="text" id="verificationCodeInput" class="promo-input" placeholder="Введите код"><button id="submitCodeBtn" class="promo-action-btn apply-btn"><img src="https://storage.botpapa.me/files/b254ec20-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="submit"></button></div></div>`;
-        setTimeout(() => {
-            document.getElementById("verificationCodeInput")?.focus();
+                  setTimeout(() => {
+            const inp = document.getElementById("verificationCodeInput");
+            if (inp) {
+              inp.removeAttribute("readonly");
+              inp.click();
+              inp.focus();
+            }
             document.getElementById("submitCodeBtn")?.addEventListener("click", async () => {
               const codeInput = document.getElementById("verificationCodeInput");
               const code = codeInput?.value.trim();

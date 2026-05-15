@@ -1913,11 +1913,7 @@ function showOrderDetail(order) {
   let items = [];
   try { items = JSON.parse(order.items || '[]'); } catch(e) {}
   const itemsHtml = items.map(i => `<div class="order-detail-row"><span class="order-detail-label">${escapeHtml(i.name)} x${i.qty}</span><span class="order-detail-value">${formatPrice(i.price * i.qty)}</span></div>`).join('');
-  let codeBlock = '';
   const isAwaitingCode = order.status_code === 'awaiting_code';
-  if (isAwaitingCode) {
-    codeBlock = `<div class="code-input-fixed" id="codeActionBlock"><div class="checkout-card"><div class="checkout-buttons-row"><button class="checkout-button" id="showCodeInputBtn">Указать код</button><button onclick="hapticLight();window.open('https://t.me/GemStormHelp','_blank')" class="promo-btn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь"></button></div></div></div>`;
-  }
   const statusDisplay = getStatusDisplayText(order.status_code, order.status);
   const statusColor = (() => {
     switch(order.status_code) {
@@ -1931,13 +1927,16 @@ function showOrderDetail(order) {
       default: return '#4cb4e9';
     }
   })();
-  container.innerHTML = `<div class="order-data-card"><div class="order-detail-row"><span class="order-detail-label">Статус</span><span class="order-detail-value" style="color:${statusColor}">${statusDisplay}</span></div><div class="order-detail-row"><span class="order-detail-label">Дата</span><span class="order-detail-value">${order.date} ${order.time || ''}</span></div><div class="order-detail-row"><span class="order-detail-label">Способ оплаты</span><span class="order-detail-value">${order.payment_method || '—'}</span></div><div class="order-detail-row"><span class="order-detail-label">Отправитель</span><span class="order-detail-value">${escapeHtml(order.sender_name || '—')}</span></div><div class="order-detail-row"><span class="order-detail-label">Почта</span><span class="order-detail-value">${escapeHtml(order.email || '—')}</span></div>${order.promo ? `<div class="order-detail-row"><span class="order-detail-label">Промокод</span><span class="order-detail-value">${order.promo} (скидка ${order.promo_discount}%)</span></div>` : ''}${order.verification_code ? `<div class="order-detail-row"><span class="order-detail-label">Код</span><span class="order-detail-value" style="color:#ffffff;">${escapeHtml(order.verification_code)}</span></div>` : ''}<div class="order-detail-row" style="padding-bottom:4px;"><span class="order-detail-label" style="font-weight:400;">Стоимость</span><span class="order-detail-value" style="color:#ffffff; font-weight:500;">${formatPrice(order.total)}</span></div></div><div class="order-items-card">${itemsHtml}</div>${codeBlock}`;
+  container.innerHTML = `<div class="order-data-card"><div class="order-detail-row"><span class="order-detail-label">Статус</span><span class="order-detail-value" style="color:${statusColor}">${statusDisplay}</span></div><div class="order-detail-row"><span class="order-detail-label">Дата</span><span class="order-detail-value">${order.date} ${order.time || ''}</span></div><div class="order-detail-row"><span class="order-detail-label">Способ оплаты</span><span class="order-detail-value">${order.payment_method || '—'}</span></div><div class="order-detail-row"><span class="order-detail-label">Отправитель</span><span class="order-detail-value">${escapeHtml(order.sender_name || '—')}</span></div><div class="order-detail-row"><span class="order-detail-label">Почта</span><span class="order-detail-value">${escapeHtml(order.email || '—')}</span></div>${order.promo ? `<div class="order-detail-row"><span class="order-detail-label">Промокод</span><span class="order-detail-value">${order.promo} (скидка ${order.promo_discount}%)</span></div>` : ''}${order.verification_code ? `<div class="order-detail-row"><span class="order-detail-label">Код</span><span class="order-detail-value" style="color:#ffffff;">${escapeHtml(order.verification_code)}</span></div>` : ''}<div class="order-detail-row" style="padding-bottom:4px;"><span class="order-detail-label" style="font-weight:400;">Стоимость</span><span class="order-detail-value" style="color:#ffffff; font-weight:500;">${formatPrice(order.total)}</span></div></div><div class="order-items-card">${itemsHtml}</div>`;
   showPage("order-detail", true);
     const fixedBlock = document.getElementById("cartCheckoutFixed");
   if (fixedBlock) {
     const tgUserForReview = window.Telegram?.WebApp?.initDataUnsafe?.user;
     const isCompleted = order.status_code === 'done' || order.status_code === 'completed';
-    if (!isCompleted || isAwaitingCode) {
+    if (isAwaitingCode) {
+      fixedBlock.style.display = "block";
+      fixedBlock.innerHTML = `<div id="codeActionBlock" class="checkout-card"><div class="checkout-buttons-row"><button class="checkout-button" id="showCodeInputBtn">Указать код</button><button onclick="hapticLight();window.open('https://t.me/GemStormHelp','_blank')" class="promo-btn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь"></button></div></div>`;
+    } else if (!isCompleted) {
       fixedBlock.style.display = "none";
     } else {
       fetch('https://gemstorm.up.railway.app/api/reviews').then(r => r.json()).then(allReviews => {

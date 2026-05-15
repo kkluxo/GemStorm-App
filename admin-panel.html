@@ -382,17 +382,22 @@
     }
 
     .support-circle-btn {
-      width: 52px;
-      height: 52px;
-      min-width: 52px;
-      border-radius: 50%;
-      background: #202B32;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  border-radius: 50%;
+  background: #202B32;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  /* Добавь эти строки: */
+  border: none; 
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
 
     .support-circle-btn:active {
       opacity: 0.8;

@@ -39,12 +39,16 @@ async function notifyAdmin(bot, order) {
 
 // Уведомление пользователя
 async function notifyUser(bot, order) {
-    const message = `✅ Ваш заказ #${order.order_number} принят!\n\n` +
-        `Сумма: ${order.total} руб.\n` +
-        `Статус: ${order.status || 'Ожидает проверки'}\n\n` +
-        `Спасибо за покупку!`;
-    
-    await bot.telegram.sendMessage(order.user_id, message);
+    try {
+        const message = `✅ Ваш заказ #${order.order_number} принят!\n\n` +
+            `Сумма: ${order.total} руб.\n` +
+            `Статус: ${order.status || 'Ожидает проверки'}\n\n` +
+            `Спасибо за покупку!`;
+        
+        await bot.telegram.sendMessage(order.user_id, message);
+    } catch(e) {
+        console.error('Не удалось уведомить пользователя:', e.message);
+    }
 }
 
 // Инициализация базы данных
@@ -249,12 +253,16 @@ app.post('/api/update-status', async (req, res) => {
         
         const order = result.rows[0];
         
-        if (BOT_TOKEN && order.user_id) {
-            const bot = new Telegraf(BOT_TOKEN);
-            await bot.telegram.sendMessage(
-                order.user_id, 
-                `📦 Статус заказа #${order.order_number} изменён: ${status}`
-            );
+                if (BOT_TOKEN && order.user_id) {
+            try {
+                const bot = new Telegraf(BOT_TOKEN);
+                await bot.telegram.sendMessage(
+                    order.user_id, 
+                    `📦 Статус заказа #${order.order_number} изменён: ${status}`
+                );
+            } catch(e) {
+                console.error('Не удалось уведомить пользователя:', e.message);
+            }
         }
         
         if (finalStatusCode === 'completed') {

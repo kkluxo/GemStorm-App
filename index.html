@@ -1965,7 +1965,7 @@ function showOrderDetail(order) {
         hapticLight();
         const fixedBlock = document.getElementById("cartCheckoutFixed");
         if (fixedBlock) {
-          fixedBlock.innerHTML = `<div id="codeActionBlock" class="checkout-card"><div class="promo-label">Введите код который вам пришел</div><div class="promo-input-row"><input type="text" id="verificationCodeInput" class="promo-input" placeholder="Введите код"><button id="submitCodeBtn" class="promo-action-btn apply-btn"><img src="https://storage.botpapa.me/files/b254ec20-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="submit"></button></div></div>`;
+          fixedBlock.innerHTML = `<div id="codeActionBlock" class="checkout-card" style="width: 100%; box-sizing: border-box;"><div class="promo-label">Введите код который вам пришел</div><div class="promo-input-row" style="display: flex; gap: 10px; width: 100%;"><input type="text" id="verificationCodeInput" class="promo-input" placeholder="Введите код" style="flex: 1; min-width: 0; box-sizing: border-box;"><button id="submitCodeBtn" class="promo-action-btn apply-btn" style="flex-shrink: 0;"><img src="https://storage.botpapa.me/files/b254ec20-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="submit"></button></div></div>`;
           setTimeout(() => {
             const inp = document.getElementById("verificationCodeInput");
             if (inp) {

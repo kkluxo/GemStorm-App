@@ -1968,7 +1968,7 @@ if (!isCompleted) {
         document.getElementById("cartCheckoutFixed").style.display = "none";
         const block = document.getElementById("codeActionBlock");
         if (block) {
-          block.innerHTML = `<div class="checkout-card">...`
+           block.innerHTML = `<div class="checkout-card"><div class="promo-label">Введите код который вам пришел</div><div class="promo-input-row"><input type="text" id="verificationCodeInput" class="promo-input" placeholder="Введите код"><button id="submitCodeBtn" class="promo-action-btn apply-btn"><img src="https://storage.botpapa.me/files/b254ec20-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="submit"></button></div></div>`;
         setTimeout(() => {
             document.getElementById("verificationCodeInput")?.focus();
             document.getElementById("submitCodeBtn")?.addEventListener("click", async () => {

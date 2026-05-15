@@ -27,9 +27,11 @@ async function getNextOrderNumber() {
 
 // Уведомление администратора
 async function notifyAdmin(bot, order) {
+    const usernameText = order.user_username ? `@${order.user_username}` : 'Нет юзернейма';
+    
     const message = `🆕 НОВЫЙ ЗАКАЗ #${order.order_number}\n\n` +
         `Сумма: ${order.total} руб.\n` +
-        `Клиент: ${order.user_name || 'Не указан'}\n` +
+        `Клиент: ${order.user_name || 'Не указан'} (${usernameText})\n` + // Добавили юзернейм
         `ID: ${order.user_id || 'Не указан'}\n` +
         `Метод оплаты: ${order.payment_method || 'Не указан'}\n` +
         `Дата: ${order.date} ${order.time}`;
@@ -77,6 +79,9 @@ async function initDB() {
             )
         `);
         console.log('Таблица orders готова');
+        
+        // Внутри функции initDB после создания таблицы orders
+        await pool.query('ALTER TABLE orders ADD COLUMN IF NOT EXISTS user_username TEXT');
 
         // Добавление колонки verification_code если её нет
         await pool.query('ALTER TABLE orders ADD COLUMN IF NOT EXISTS verification_code TEXT');
@@ -191,12 +196,13 @@ app.post('/api/order', async (req, res) => {
         const result = await pool.query(
             `INSERT INTO orders (
                 order_number, date, time, timestamp, items, total, promo, 
-                promo_discount, payment_method, sender_name, email, user_id, user_name
-            ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) RETURNING *`,
+                promo_discount, payment_method, sender_name, email, user_id, user_name, user_username
+            ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING *`,
             [
                 nextNumber, o.date, o.time, o.timestamp, JSON.stringify(o.items), o.total, 
                 o.promo || null, o.promo_discount || 0, o.payment_method || null,
-                o.sender_name || null, o.email || null, o.user_id || null, o.user_name || null
+                o.sender_name || null, o.email || null, o.user_id || null, o.user_name || null,
+                o.user_username || null // <-- Добавляем это поле
             ]
         );
         

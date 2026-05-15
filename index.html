@@ -1786,9 +1786,13 @@ function renderCatalog() {
   if (!grid) return;
   let filtered = products.filter(p => currentFilter === "Все категории" || p.category === currentFilter);
   if (searchQuery.trim()) filtered = filtered.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
-  if (!filtered.length) { 
-  grid.innerHTML = `<div class="empty-message"><img class="empty-icon" src="https://storage.botpapa.me/files/fa0bb410-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="empty catalog"><div class="empty-title">Товары не найдены</div><button class="empty-catalog-btn" id="resetFiltersBtn">Сбросить фильтры</button></div>`;    return; 
+    if (!filtered.length) {
+    grid.style.display = "flex";
+    grid.innerHTML = `<div class="empty-state-icon" style="width:100%;"><img class="empty-icon" src="https://storage.botpapa.me/files/fa0bb410-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="empty catalog"><div class="empty-title">Товары не найдены</div><button class="empty-catalog-btn" id="resetFiltersBtn">Сбросить фильтры</button></div>`;
+    setTimeout(() => { const resetBtn = document.getElementById("resetFiltersBtn"); if(resetBtn) resetBtn.addEventListener("click", () => { searchQuery = ""; document.getElementById("searchInput").value = ""; currentFilter = "Brawl Stars"; grid.style.display = ""; renderCatalog(); renderFilterModal(); }); }, 0);
+    return;
   }
+  grid.style.display = "";
   grid.innerHTML = filtered.map(p => `<div class="product-card" data-id="${p.id}"><img class="card-img" src="${p.image}" alt="${escapeHtml(p.name)}" loading="lazy"><div class="card-info"><div class="product-title">${escapeHtml(p.name)}</div><div class="price-row"><span class="current-price">${formatPrice(p.price)}</span><span class="old-price">${formatPrice(p.oldPrice)}</span></div>${renderCartButtonHtml(p.id)}</div></div>`).join("");
   attachCardEvents();
 }

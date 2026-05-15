@@ -2188,16 +2188,11 @@ async function loadReviewsList() {
           hapticLight();
           const orderNum = badge.dataset.orderNum;
           const userName = badge.dataset.userName;
-          const overlay = document.createElement('div');
-          overlay.className = 'review-popup-overlay';
-          overlay.innerHTML = `<div class="review-popup-card">
-            <div class="review-popup-title">Отзыв к заказу #${orderNum}</div>
-            <div class="review-popup-row">Покупатель: ${escapeHtml(userName)}</div>
-            <button class="review-popup-close" id="closeReviewPopup">Закрыть</button>
-          </div>`;
-          document.body.appendChild(overlay);
-          overlay.querySelector('#closeReviewPopup').addEventListener('click', () => overlay.remove());
-          overlay.addEventListener('click', (ev) => { if (ev.target === overlay) overlay.remove(); });
+          if (window.Telegram?.WebApp) {
+            window.Telegram.WebApp.showAlert(`Отзыв к заказу #${orderNum}\nПокупатель: ${userName}`);
+          } else {
+            alert(`Отзыв к заказу #${orderNum}\nПокупатель: ${userName}`);
+          }
         });
       });
     }, 0);

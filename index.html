@@ -2159,8 +2159,10 @@ async function loadReviewsList() {
       let itemsHtml = '';
       const linkedOrder = orders.find(o => String(o.order_number) === String(rv.order_number));
       if (linkedOrder) {
-        let items = [];
-        try { items = JSON.parse(linkedOrder.items || '[]'); } catch(e) {}
+              let itemsHtml = '';
+      let items = [];
+      try { items = JSON.parse(rv.order_items || '[]'); } catch(e) {}
+      if (items.length) {
         itemsHtml = items.map(i => `
           <div class="review-item-row">
             <span class="review-item-name">${escapeHtml(i.name)}</span>

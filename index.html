@@ -1933,53 +1933,35 @@ function showOrderDetail(order) {
   })();
   container.innerHTML = `<div class="order-data-card"><div class="order-detail-row"><span class="order-detail-label">Статус</span><span class="order-detail-value" style="color:${statusColor}">${statusDisplay}</span></div><div class="order-detail-row"><span class="order-detail-label">Дата</span><span class="order-detail-value">${order.date} ${order.time || ''}</span></div><div class="order-detail-row"><span class="order-detail-label">Способ оплаты</span><span class="order-detail-value">${order.payment_method || '—'}</span></div><div class="order-detail-row"><span class="order-detail-label">Отправитель</span><span class="order-detail-value">${escapeHtml(order.sender_name || '—')}</span></div><div class="order-detail-row"><span class="order-detail-label">Почта</span><span class="order-detail-value">${escapeHtml(order.email || '—')}</span></div>${order.promo ? `<div class="order-detail-row"><span class="order-detail-label">Промокод</span><span class="order-detail-value">${order.promo} (скидка ${order.promo_discount}%)</span></div>` : ''}${order.verification_code ? `<div class="order-detail-row"><span class="order-detail-label">Код</span><span class="order-detail-value" style="color:#ffffff;">${escapeHtml(order.verification_code)}</span></div>` : ''}<div class="order-detail-row" style="padding-bottom:4px;"><span class="order-detail-label" style="font-weight:400;">Стоимость</span><span class="order-detail-value" style="color:#ffffff; font-weight:500;">${formatPrice(order.total)}</span></div></div><div class="order-items-card">${itemsHtml}</div>${codeBlock}`;
   showPage("order-detail", true);
-  const fixedBlock = document.getElementById("cartCheckoutFixed");
+    const fixedBlock = document.getElementById("cartCheckoutFixed");
   if (fixedBlock) {
-    // Проверяем оставлен ли уже отзыв к этому заказу
-const tgUserForReview = window.Telegram?.WebApp?.initDataUnsafe?.user;
-const isCompleted = order.status_code === 'done' || order.status_code === 'completed';
-if (!isCompleted || isAwaitingCode) {
-  fixedBlock.style.display = "none";
-} else {
-  fetch('https://gemstorm.up.railway.app/api/reviews').then(r => r.json()).then(allReviews => {
-    if (isAwaitingCode) { fixedBlock.style.display = "none"; return; }
-    const alreadyReviewed = allReviews.some(rv =>
-      String(rv.user_id) === String(tgUserForReview?.id) && String(rv.order_id) === String(order.id)
-    );
-    if (alreadyReviewed) {
+    const tgUserForReview = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    const isCompleted = order.status_code === 'done' || order.status_code === 'completed';
+    if (!isCompleted || isAwaitingCode) {
       fixedBlock.style.display = "none";
     } else {
-      fixedBlock.style.display = "block";
-      fixedBlock.innerHTML = `<div class="checkout-card"><div class="checkout-buttons-row"><button onclick="hapticMedium();showPage('write-review')" class="checkout-button">Оставить отзыв</button><button onclick="hapticLight();window.open('https://t.me/GemStormHelp','_blank')" class="promo-btn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" style="width:24px;height:24px;"></button></div></div>`;
+      fetch('https://gemstorm.up.railway.app/api/reviews').then(r => r.json()).then(allReviews => {
+        if (isAwaitingCode) { fixedBlock.style.display = "none"; return; }
+        const alreadyReviewed = allReviews.some(rv =>
+          String(rv.user_id) === String(tgUserForReview?.id) && String(rv.order_id) === String(order.id)
+        );
+        if (alreadyReviewed) {
+          fixedBlock.style.display = "none";
+        } else {
+          fixedBlock.style.display = "block";
+          fixedBlock.innerHTML = `<div class="checkout-card"><div class="checkout-buttons-row"><button onclick="hapticMedium();showPage('write-review')" class="checkout-button">Оставить отзыв</button><button onclick="hapticLight();window.open('https://t.me/GemStormHelp','_blank')" class="promo-btn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" style="width:24px;height:24px;"></button></div></div>`;
+        }
+      }).catch(() => {
+        if (!isAwaitingCode) {
+          fixedBlock.style.display = "block";
+          fixedBlock.innerHTML = `<div class="checkout-card"><div class="checkout-buttons-row"><button onclick="hapticMedium();showPage('write-review')" class="checkout-button">Оставить отзыв</button><button onclick="hapticLight();window.open('https://t.me/GemStormHelp','_blank')" class="promo-btn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" style="width:24px;height:24px;"></button></div></div>`;
+        }
+      });
     }
-  }).catch(() => {
-    if (!isAwaitingCode) {
-      fixedBlock.style.display = "block";
-      fixedBlock.innerHTML = `<div class="checkout-card"><div class="checkout-buttons-row"><button onclick="hapticMedium();showPage('write-review')" class="checkout-button">Оставить отзыв</button><button onclick="hapticLight();window.open('https://t.me/GemStormHelp','_blank')" class="promo-btn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" style="width:24px;height:24px;"></button></div></div>`;
-    }
-  });
-}
-    const alreadyReviewed = allReviews.some(rv =>
-      String(rv.user_id) === String(tgUserForReview?.id) && String(rv.order_id) === String(order.id)
-    );
-    if (alreadyReviewed) {
-      fixedBlock.style.display = "none";
-    } else {
-      fixedBlock.style.display = "block";
-      fixedBlock.innerHTML = `<div class="checkout-card"><div class="checkout-buttons-row"><button onclick="hapticMedium();showPage('write-review')" class="checkout-button">Оставить отзыв</button><button onclick="hapticLight();window.open('https://t.me/GemStormHelp','_blank')" class="promo-btn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" style="width:24px;height:24px;"></button></div></div>`;
-    }
-  }).catch(() => {
-    fixedBlock.style.display = "block";
-    fixedBlock.innerHTML = `<div class="checkout-card"><div class="checkout-buttons-row"><button onclick="hapticMedium();showPage('write-review')" class="checkout-button">Оставить отзыв</button><button onclick="hapticLight();window.open('https://t.me/GemStormHelp','_blank')" class="promo-btn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" style="width:24px;height:24px;"></button></div></div>`;
-  });
-}
-  }
-    if (isAwaitingCode) {
-    fixedBlock.style.display = "none";
   }
   setTimeout(() => {
         const showCodeInputBtn = document.getElementById("showCodeInputBtn");
-    if (showCodeInputBtn) {
+        if (showCodeInputBtn) {
             showCodeInputBtn.addEventListener("click", () => {
         hapticLight();
         document.getElementById("cartCheckoutFixed").style.display = "none";

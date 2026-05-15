@@ -2157,9 +2157,6 @@ async function loadReviewsList() {
         ? `<span class="review-order-badge" data-order-num="${rv.order_number}" data-user-name="${escapeHtml(rv.user_name || 'Пользователь')}">#${rv.order_number}</span>`
         : '';
       let itemsHtml = '';
-      const linkedOrder = orders.find(o => String(o.order_number) === String(rv.order_number));
-      if (linkedOrder) {
-              let itemsHtml = '';
       let items = [];
       try { items = JSON.parse(rv.order_items || '[]'); } catch(e) {}
       if (items.length) {

@@ -949,6 +949,41 @@
       font-weight: 500;
       color: #4cb4e9;
     }
+    
+    .profile-stats-card {
+  background: #202022;
+  border: 1px solid #2B2B2D;
+  border-radius: 30px;
+  padding: 18px;
+  margin-bottom: 19px;
+}
+
+.stats-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.stats-row:first-child {
+  padding-top: 0;
+}
+
+.stats-row:last-child {
+  padding-bottom: 0;
+}
+
+.stats-label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #cbd5e1;
+}
+
+.stats-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: #4cb4e9;
+}
 
     .filter-options {
       margin-top: 20px;
@@ -1826,6 +1861,28 @@ async function loadUserOrders() {
   } catch(e) { console.error('Ошибка загрузки заказов:', e); }
 }
 
+async function getUserTotalSpent() {
+  try {
+    const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    if (!tgUser?.id) return 0;
+    
+    const response = await fetch(`https://gemstorm.up.railway.app/api/user-orders?userId=${tgUser.id}`);
+    if (!response.ok) return 0;
+    
+    const userOrders = await response.json();
+    
+    // Суммируем только выполненные заказы (status_code = 'completed' или 'done')
+    const totalSpent = userOrders
+      .filter(order => order.status_code === 'completed' || order.status_code === 'done')
+      .reduce((sum, order) => sum + (order.total || 0), 0);
+    
+    return totalSpent;
+  } catch(e) {
+    console.error('Ошибка получения суммы заказов:', e);
+    return 0;
+  }
+}
+
 function getStatusTextClass(statusCode) {
   const map = {
     'pending': 'status-pending-text',
@@ -2211,7 +2268,9 @@ async function renderProfilePage() {
   const nickname = tgUser?.first_name || "Пользователь";
   const username = tgUser?.username ? "@" + tgUser.username : "@username";
   const photoUrl = tgUser?.photo_url || "";
-
+  
+  // Получаем сумму выполненных заказов
+  const totalSpent = await getUserTotalSpent();
   const arrowSvg = `<svg style="width:18px;height:18px;opacity:0.4;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>`;
 
   container.innerHTML = `
@@ -2222,6 +2281,14 @@ async function renderProfilePage() {
         <div style="margin-top:4px;">
           <div class="profile-username">${escapeHtml(username)}</div>
         </div>
+      </div>
+    </div>
+
+    <!-- НОВАЯ КАРТОЧКА СО СТАТИСТИКОЙ -->
+    <div class="profile-stats-card">
+      <div class="stats-row">
+        <span class="stats-label">Объем заказов</span>
+        <span class="stats-value">${formatPrice(totalSpent)}</span>
       </div>
     </div>
 

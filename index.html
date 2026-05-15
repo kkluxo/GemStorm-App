@@ -1420,10 +1420,10 @@
   height: 60vh !important;
 }
 
-   /* Карточка заказа с выпадающим списком товаров */
+/* Карточка заказа с выпадающим списком товаров */
 .order-wrapper {
   position: relative;
-  margin-bottom: 24px;
+  margin-bottom: 14px;
 }
 
 .order-main-card {
@@ -1453,6 +1453,38 @@
   font-weight: 600;
   color: #4cb4e9;
   font-size: 17px;
+}
+
+.order-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.order-refresh-btn {
+  background: rgba(32, 32, 34, 0.9);
+  border: 1px solid #2B2B2D;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #4cb4e9;
+  opacity: 0.7;
+  transition: 0.1s;
+  flex-shrink: 0;
+}
+
+.order-refresh-btn:active {
+  transform: scale(0.9);
+  opacity: 1;
+}
+
+.order-refresh-btn svg {
+  width: 14px;
+  height: 14px;
 }
 
 .order-date {
@@ -2088,7 +2120,6 @@ function renderOrdersPage() {
       const textClass = getStatusTextClass(status);
       const bgClass = getStatusBgClass(status);
       
-      // Формируем HTML для товаров в нижней карточке
       const itemsHtml = items.map(i => `
         <div class="order-item-row">
           <span class="order-item-name">${escapeHtml(i.name)} ${i.qty > 1 ? `x${i.qty}` : ''}</span>
@@ -2100,7 +2131,15 @@ function renderOrdersPage() {
         <div class="order-main-card">
           <div class="order-header">
             <span class="order-id">Заказ #${o.order_number}</span>
-            <span class="order-card-status ${textClass} ${bgClass}">${statusDisplay}</span>
+            <div class="order-header-right">
+              <span class="order-card-status ${textClass} ${bgClass}">${statusDisplay}</span>
+              <button class="order-refresh-btn" data-id="${o.id}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M23 4v6h-6M1 20v-6h6"/>
+                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                </svg>
+              </button>
+            </div>
           </div>
           <div class="order-date">${o.date} ${o.time || ''}</div>
           <div class="order-total">${formatPrice(o.total)}</div>
@@ -2111,12 +2150,21 @@ function renderOrdersPage() {
       </div>`;
     }).join('');
     
-    // Добавляем обработчик клика на каждую карточку заказа
+    // Обработчик клика на карточку
     container.querySelectorAll(".order-wrapper").forEach(wrapper => {
       const order = orders.find(o => o.id == wrapper.dataset.orderId);
       wrapper.querySelector(".order-main-card")?.addEventListener("click", (e) => {
         if (e.target.closest('.order-refresh-btn')) return;
         if (order) showOrderDetail(order);
+      });
+    });
+    
+    // Обработчик кнопки обновления
+    container.querySelectorAll(".order-refresh-btn").forEach(btn => {
+      btn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        const orderId = btn.dataset.id;
+        await refreshOrderStatus(orderId);
       });
     });
   });
@@ -2140,7 +2188,14 @@ function showOrderDetail(order) {
   const container = document.getElementById("orderDetailContent");
   let items = [];
   try { items = JSON.parse(order.items || '[]'); } catch(e) {}
-  const itemsHtml = items.map(i => `<div class="order-detail-row"><span class="order-detail-label">${escapeHtml(i.name)} x${i.qty}</span><span class="order-detail-value">${formatPrice(i.price * i.qty)}</span></div>`).join('');
+  
+  const itemsHtml = items.map(i => `
+    <div class="order-item-row">
+      <span class="order-item-name">${escapeHtml(i.name)} ${i.qty > 1 ? `x${i.qty}` : ''}</span>
+      <span class="order-item-price">${formatPrice(i.price * i.qty)}</span>
+    </div>
+  `).join('');
+  
   const isAwaitingCode = order.status_code === 'awaiting_code';
   const statusDisplay = getStatusDisplayText(order.status_code, order.status);
   const statusColor = (() => {
@@ -2155,9 +2210,50 @@ function showOrderDetail(order) {
       default: return '#4cb4e9';
     }
   })();
-  container.innerHTML = `<div class="order-data-card"><div class="order-detail-row"><span class="order-detail-label">Статус</span><span class="order-detail-value" style="color:${statusColor}">${statusDisplay}</span></div><div class="order-detail-row"><span class="order-detail-label">Дата</span><span class="order-detail-value">${order.date} ${order.time || ''}</span></div><div class="order-detail-row"><span class="order-detail-label">Способ оплаты</span><span class="order-detail-value">${order.payment_method || '—'}</span></div><div class="order-detail-row"><span class="order-detail-label">Отправитель</span><span class="order-detail-value">${escapeHtml(order.sender_name || '—')}</span></div><div class="order-detail-row"><span class="order-detail-label">Почта</span><span class="order-detail-value">${escapeHtml(order.email || '—')}</span></div>${order.promo ? `<div class="order-detail-row"><span class="order-detail-label">Промокод</span><span class="order-detail-value">${order.promo} (скидка ${order.promo_discount}%)</span></div>` : ''}${order.verification_code ? `<div class="order-detail-row"><span class="order-detail-label">Код</span><span class="order-detail-value" style="color:#ffffff;">${escapeHtml(order.verification_code)}</span></div>` : ''}<div class="order-detail-row" style="padding-bottom:4px;"><span class="order-detail-label" style="font-weight:400;">Стоимость</span><span class="order-detail-value" style="color:#ffffff; font-weight:500;">${formatPrice(order.total)}</span></div></div><div class="order-items-card">${itemsHtml}</div>`;
+  
+  container.innerHTML = `
+    <div class="order-data-card">
+      <div class="order-detail-row">
+        <span class="order-detail-label">Статус</span>
+        <span class="order-detail-value" style="color:${statusColor}">${statusDisplay}</span>
+      </div>
+      <div class="order-detail-row">
+        <span class="order-detail-label">Дата</span>
+        <span class="order-detail-value">${order.date} ${order.time || ''}</span>
+      </div>
+      <div class="order-detail-row">
+        <span class="order-detail-label">Способ оплаты</span>
+        <span class="order-detail-value">${order.payment_method || '—'}</span>
+      </div>
+      <div class="order-detail-row">
+        <span class="order-detail-label">Отправитель</span>
+        <span class="order-detail-value">${escapeHtml(order.sender_name || '—')}</span>
+      </div>
+      <div class="order-detail-row">
+        <span class="order-detail-label">Почта</span>
+        <span class="order-detail-value">${escapeHtml(order.email || '—')}</span>
+      </div>
+      ${order.promo ? `<div class="order-detail-row">
+        <span class="order-detail-label">Промокод</span>
+        <span class="order-detail-value">${order.promo} (скидка ${order.promo_discount}%)</span>
+      </div>` : ''}
+      ${order.verification_code ? `<div class="order-detail-row">
+        <span class="order-detail-label">Код</span>
+        <span class="order-detail-value" style="color:#ffffff;">${escapeHtml(order.verification_code)}</span>
+      </div>` : ''}
+      <div class="order-detail-row" style="padding-bottom:4px;">
+        <span class="order-detail-label" style="font-weight:400;">Стоимость</span>
+        <span class="order-detail-value" style="color:#ffffff; font-weight:500;">${formatPrice(order.total)}</span>
+      </div>
+    </div>
+    <div class="order-items-card" style="margin-top: -28px; padding-top: 36px;">
+      ${itemsHtml}
+    </div>
+  `;
+  
   showPage("order-detail", true);
-    const fixedBlock = document.getElementById("cartCheckoutFixed");
+  
+  const fixedBlock = document.getElementById("cartCheckoutFixed");
   if (fixedBlock) {
     const tgUserForReview = window.Telegram?.WebApp?.initDataUnsafe?.user;
     const isCompleted = order.status_code === 'done' || order.status_code === 'completed';
@@ -2168,7 +2264,6 @@ function showOrderDetail(order) {
       fixedBlock.style.display = "none";
     } else {
       fetch('https://gemstorm.up.railway.app/api/reviews').then(r => r.json()).then(allReviews => {
-        if (isAwaitingCode) { fixedBlock.style.display = "none"; return; }
         const alreadyReviewed = allReviews.some(rv =>
           String(rv.user_id) === String(tgUserForReview?.id) && String(rv.order_id) === String(order.id)
         );
@@ -2179,14 +2274,13 @@ function showOrderDetail(order) {
           fixedBlock.innerHTML = `<div class="checkout-card"><div class="checkout-buttons-row"><button onclick="hapticMedium();showPage('write-review')" class="checkout-button">Оставить отзыв</button><button onclick="hapticLight();window.open('https://t.me/GemStormHelp','_blank')" class="promo-btn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" style="width:24px;height:24px;"></button></div></div>`;
         }
       }).catch(() => {
-        if (!isAwaitingCode) {
-          fixedBlock.style.display = "block";
-          fixedBlock.innerHTML = `<div class="checkout-card"><div class="checkout-buttons-row"><button onclick="hapticMedium();showPage('write-review')" class="checkout-button">Оставить отзыв</button><button onclick="hapticLight();window.open('https://t.me/GemStormHelp','_blank')" class="promo-btn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" style="width:24px;height:24px;"></button></div></div>`;
-        }
+        fixedBlock.style.display = "block";
+        fixedBlock.innerHTML = `<div class="checkout-card"><div class="checkout-buttons-row"><button onclick="hapticMedium();showPage('write-review')" class="checkout-button">Оставить отзыв</button><button onclick="hapticLight();window.open('https://t.me/GemStormHelp','_blank')" class="promo-btn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" style="width:24px;height:24px;"></button></div></div>`;
       });
     }
   }
-      setTimeout(() => {
+  
+  setTimeout(() => {
     const showCodeInputBtn = document.getElementById("showCodeInputBtn");
     if (showCodeInputBtn) {
       showCodeInputBtn.addEventListener("click", () => {

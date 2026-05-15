@@ -387,7 +387,6 @@
       min-width: 52px;
       border-radius: 50%;
       background: #202B32;
-      border: 1px solid rgba(76, 180, 233, 0.3);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -675,153 +674,154 @@
   }
 
   async function showOrderDetail(order) {
-    currentDetailOrder = order;
-    saveState();
-    
-    document.getElementById('detailTitle').textContent = `Заказ #${order.order_number}`;
-    
-    let items = [];
-    try { items = JSON.parse(order.items || '[]'); } catch(e) {}
-    
-    const statusCode = order.status_code;
-    const statusDisplay = getStatusDisplayText(statusCode);
-    const statusColor = (() => {
-      switch(statusCode) {
-        case 'pending': return '#4cb4e9';
-        case 'awaiting_code': return '#eab308';
-        case 'processing': return '#4cb4e9';
-        case 'completed': return '#22c55e';
-        case 'done': return '#22c55e';
-        case 'notfound': return '#ef4444';
-        default: return '#4cb4e9';
-      }
-    })();
-    
-    const itemsHtml = items.map(i => `
-      <div class="order-item-row">
-        <span class="order-item-name">${escapeHtml(i.name)} ${i.qty > 1 ? `x${i.qty}` : ''}</span>
-        <span class="order-item-price">${formatPrice(i.price * i.qty)}</span>
+  currentDetailOrder = order;
+  saveState();
+  
+  document.getElementById('detailTitle').textContent = `Заказ #${order.order_number}`;
+  
+  let items = [];
+  try { items = JSON.parse(order.items || '[]'); } catch(e) {}
+  
+  const statusCode = order.status_code;
+  const statusDisplay = getStatusDisplayText(statusCode);
+  const statusColor = (() => {
+    switch(statusCode) {
+      case 'pending': return '#4cb4e9';
+      case 'awaiting_code': return '#eab308';
+      case 'processing': return '#4cb4e9';
+      case 'completed': return '#22c55e';
+      case 'done': return '#22c55e';
+      case 'notfound': return '#ef4444';
+      default: return '#4cb4e9';
+    }
+  })();
+  
+  const itemsHtml = items.map(i => `
+    <div class="order-item-row">
+      <span class="order-item-name">${escapeHtml(i.name)} ${i.qty > 1 ? `x${i.qty}` : ''}</span>
+      <span class="order-item-price">${formatPrice(i.price * i.qty)}</span>
+    </div>
+  `).join('');
+  
+  document.getElementById('detailContent').innerHTML = `
+    <div class="order-data-card">
+      <div class="order-detail-row">
+        <span class="order-detail-label">Статус</span>
+        <span class="order-detail-value" style="color:${statusColor}">${statusDisplay}</span>
       </div>
-    `).join('');
-    
-    document.getElementById('detailContent').innerHTML = `
-      <div class="order-data-card">
-        <div class="order-detail-row">
-          <span class="order-detail-label">Статус</span>
-          <span class="order-detail-value" style="color:${statusColor}">${statusDisplay}</span>
-        </div>
-        <div class="order-detail-row">
-          <span class="order-detail-label">Дата</span>
-          <span class="order-detail-value">${order.date} ${order.time || ''}</span>
-        </div>
-        <div class="order-detail-row">
-          <span class="order-detail-label">Способ оплаты</span>
-          <span class="order-detail-value">${order.payment_method || '—'}</span>
-        </div>
-        <div class="order-detail-row">
-          <span class="order-detail-label">Отправитель</span>
-          <span class="order-detail-value">${escapeHtml(order.sender_name || '—')}</span>
-        </div>
-        <div class="order-detail-row">
-          <span class="order-detail-label">Почта</span>
-          <span class="order-detail-value">${escapeHtml(order.email || '—')}</span>
-        </div>
-        ${order.promo ? `<div class="order-detail-row">
-          <span class="order-detail-label">Промокод</span>
-          <span class="order-detail-value">${order.promo} (скидка ${order.promo_discount}%)</span>
-        </div>` : ''}
-        ${order.verification_code ? `<div class="order-detail-row">
-          <span class="order-detail-label">Код</span>
-          <span class="order-detail-value" style="color:#ffffff;">${escapeHtml(order.verification_code)}</span>
-        </div>` : ''}
-        <div class="order-detail-row" style="padding-bottom:4px;">
-          <span class="order-detail-label" style="font-weight:400;">Сумма заказа</span>
-          <span class="order-detail-value" style="color:#ffffff; font-weight:500;">${formatPrice(order.total)}</span>
-        </div>
+      <div class="order-detail-row">
+        <span class="order-detail-label">Дата</span>
+        <span class="order-detail-value">${order.date} ${order.time || ''}</span>
       </div>
-      <div class="detail-items-card">
-        ${itemsHtml}
+      <div class="order-detail-row">
+        <span class="order-detail-label">Способ оплаты</span>
+        <span class="order-detail-value">${order.payment_method || '—'}</span>
       </div>
-    `;
-    
-    // Удаляем старый фиксированный блок если есть
-    const oldFixed = document.getElementById('adminFixedBar');
-    if (oldFixed) oldFixed.remove();
-    
-    // Создаем закрепленный блок снизу
-    const fixedBar = document.createElement('div');
-    fixedBar.id = 'adminFixedBar';
-    fixedBar.className = 'fixed-bottom-bar';
-    fixedBar.innerHTML = `
-      <div class="action-card">
-        <select class="status-select" id="adminStatusSelect">
-          <option value="awaiting_code" ${order.status_code === 'awaiting_code' ? 'selected' : ''}>Ожидание кода</option>
-          <option value="processing" ${order.status_code === 'processing' ? 'selected' : ''}>Ожидает выполнения</option>
-          <option value="done" ${(order.status_code === 'done' || order.status_code === 'completed') ? 'selected' : ''}>Заказ выполнен</option>
-          <option value="notfound" ${order.status_code === 'notfound' ? 'selected' : ''}>Перевод не найден</option>
-        </select>
-        <div class="action-buttons-row">
-          <button class="update-status-btn" id="adminUpdateStatusBtn">Сохранить статус</button>
-          <button class="support-circle-btn" id="adminSupportBtn">
-            <img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="support">
-          </button>
-        </div>
+      <div class="order-detail-row">
+        <span class="order-detail-label">Отправитель</span>
+        <span class="order-detail-value">${escapeHtml(order.sender_name || '—')}</span>
       </div>
-    `;
-    document.body.appendChild(fixedBar);
+      <div class="order-detail-row">
+        <span class="order-detail-label">Почта</span>
+        <span class="order-detail-value">${escapeHtml(order.email || '—')}</span>
+      </div>
+      ${order.promo ? `<div class="order-detail-row">
+        <span class="order-detail-label">Промокод</span>
+        <span class="order-detail-value">${order.promo} (скидка ${order.promo_discount}%)</span>
+      </div>` : ''}
+      ${order.verification_code ? `<div class="order-detail-row">
+        <span class="order-detail-label">Код</span>
+        <span class="order-detail-value" style="color:#ffffff;">${escapeHtml(order.verification_code)}</span>
+      </div>` : ''}
+      <div class="order-detail-row" style="padding-bottom:4px;">
+        <span class="order-detail-label" style="font-weight:400;">Сумма заказа</span>
+        <span class="order-detail-value" style="color:#ffffff; font-weight:500;">${formatPrice(order.total)}</span>
+      </div>
+    </div>
+    <div class="detail-items-card">
+      ${itemsHtml}
+    </div>
+  `;
+  
+  // Удаляем старый фиксированный блок если есть
+  const oldFixed = document.getElementById('adminFixedBar');
+  if (oldFixed) oldFixed.remove();
+  
+  // Создаем закрепленный блок снизу
+  const fixedBar = document.createElement('div');
+  fixedBar.id = 'adminFixedBar';
+  fixedBar.className = 'fixed-bottom-bar';
+  fixedBar.innerHTML = `
+    <div class="action-card">
+      <select class="status-select" id="adminStatusSelect">
+        <option value="awaiting_code" ${order.status_code === 'awaiting_code' ? 'selected' : ''}>Ожидание кода</option>
+        <option value="processing" ${order.status_code === 'processing' ? 'selected' : ''}>Ожидает выполнения</option>
+        <option value="done" ${(order.status_code === 'done' || order.status_code === 'completed') ? 'selected' : ''}>Заказ выполнен</option>
+        <option value="notfound" ${order.status_code === 'notfound' ? 'selected' : ''}>Перевод не найден</option>
+      </select>
+      <div class="action-buttons-row">
+        <button class="update-status-btn" id="adminUpdateStatusBtn">Сохранить статус</button>
+        <button class="support-circle-btn" id="adminSupportBtn">
+          <img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="support">
+        </button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(fixedBar);
+  
+  document.getElementById('adminUpdateStatusBtn').addEventListener('click', async () => {
+    const select = document.getElementById('adminStatusSelect');
+    const newStatusCode = select.value;
+    let newStatus = '';
+    const statusMap = {
+      'awaiting_code': 'Ожидание кода',
+      'processing': 'Ожидает выполнения',
+      'done': 'Заказ выполнен',
+      'notfound': 'Перевод не найден'
+    };
+    newStatus = statusMap[newStatusCode];
     
-    document.getElementById('adminUpdateStatusBtn').addEventListener('click', async () => {
-      const select = document.getElementById('adminStatusSelect');
-      const newStatusCode = select.value;
-      let newStatus = '';
-      const statusMap = {
-        'awaiting_code': 'Ожидание кода',
-        'processing': 'Ожидает выполнения',
-        'done': 'Заказ выполнен',
-        'notfound': 'Перевод не найден'
-      };
-      newStatus = statusMap[newStatusCode];
-      
-      hapticMedium();
-      try {
-        const response = await fetch(`${API}/api/update-status`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ orderId: order.id, status: newStatus, statusCode: newStatusCode })
-        });
-        if (response.ok) {
-          await loadOrders();
-          const updatedOrder = allOrders.find(o => o.id === order.id);
-          if (updatedOrder) showOrderDetail(updatedOrder);
-        } else {
-          alert('Ошибка при обновлении статуса');
-        }
-      } catch(e) { alert('Ошибка соединения'); }
-    });
-    
-    document.getElementById('adminSupportBtn').addEventListener('click', () => {
-      hapticLight();
-      const username = order.user_username;
-      const userId = order.user_id;
-      const userName = order.user_name || 'Пользователь';
-      
-      let alertText = `Имя: ${userName}\nID: ${userId || 'не указан'}`;
-      if (username && username !== '—' && username !== 'null' && username.trim() !== '') {
-        let cleanUsername = username.replace('@', '').trim();
-        if (cleanUsername) {
-          alertText += `\nUs: @${cleanUsername}`;
-        }
-      }
-      
-      if (window.Telegram?.WebApp) {
-        window.Telegram.WebApp.showAlert(alertText);
+    hapticMedium();
+    try {
+      const response = await fetch(`${API}/api/update-status`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId: order.id, status: newStatus, statusCode: newStatusCode })
+      });
+      if (response.ok) {
+        await loadOrders();
+        const updatedOrder = allOrders.find(o => o.id === order.id);
+        if (updatedOrder) showOrderDetail(updatedOrder);
       } else {
-        alert(alertText);
+        alert('Ошибка при обновлении статуса');
       }
-    });
+    } catch(e) { alert('Ошибка соединения'); }
+  });
+  
+  document.getElementById('adminSupportBtn').addEventListener('click', () => {
+    hapticLight();
+    const username = order.user_username;
+    const userId = order.user_id;
+    const userName = order.user_name || 'Пользователь';
     
-    showPage('detail-page');
-  }
+    let cleanUsername = null;
+    if (username && username !== '—' && username !== 'null' && username.trim() !== '') {
+      cleanUsername = username.replace('@', '').trim();
+    }
+    
+    const usText = cleanUsername ? `@${cleanUsername}` : '@none';
+    
+    const alertText = `Имя: ${userName}\nID: ${userId || 'не указан'}\nUs: ${usText}`;
+    
+    if (window.Telegram?.WebApp) {
+      window.Telegram.WebApp.showAlert(alertText);
+    } else {
+      alert(alertText);
+    }
+  });
+  
+  showPage('detail-page');
+}
 
   // Инициализация табов
   function initTabs() {

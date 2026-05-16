@@ -153,6 +153,18 @@ async function initDB() {
         work_end TEXT DEFAULT '23:59'
     )
 `);
+        
+        await pool.query(`
+    CREATE TABLE IF NOT EXISTS app_users (
+        id SERIAL PRIMARY KEY,
+        user_id TEXT UNIQUE,
+        user_name TEXT,
+        user_username TEXT,
+        photo_url TEXT,
+        first_seen TIMESTAMP DEFAULT NOW(),
+        last_seen TIMESTAMP DEFAULT NOW()
+    )
+`);
 
         console.log('Все таблицы готовы');
         
@@ -498,20 +510,50 @@ app.get('/api/conversion-history', async (req, res) => {
     }
 });
 
+// Регистрация/обновление пользователя при входе в приложение
+app.post('/api/track-user', async (req, res) => {
+    try {
+        const { userId, userName, userUsername, photoUrl } = req.body;
+        if (!userId) return res.json({ success: false });
+        await pool.query(`
+            INSERT INTO app_users (user_id, user_name, user_username, photo_url, last_seen)
+            VALUES ($1, $2, $3, $4, NOW())
+            ON CONFLICT (user_id) DO UPDATE SET
+                user_name = EXCLUDED.user_name,
+                user_username = EXCLUDED.user_username,
+                photo_url = EXCLUDED.photo_url,
+                last_seen = NOW()
+        `, [userId, userName || null, userUsername || null, photoUrl || null]);
+        res.json({ success: true });
+    } catch(err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // Получить всех пользователей
 app.get('/api/users', async (req, res) => {
     try {
         const result = await pool.query(`
             SELECT 
-                user_id,
-                user_name,
-                user_username,
-                COUNT(*) as orders_count,
-                COALESCE(SUM(CASE WHEN status_code IN ('completed','done') THEN total ELSE 0 END), 0) as total_spent
-            FROM orders
-            WHERE user_id IS NOT NULL
-            GROUP BY user_id, user_name, user_username
-            ORDER BY total_spent DESC
+                au.user_id,
+                au.user_name,
+                au.user_username,
+                au.photo_url,
+                au.first_seen,
+                au.last_seen,
+                COALESCE(o.orders_count, 0) as orders_count,
+                COALESCE(o.total_spent, 0) as total_spent
+            FROM app_users au
+            LEFT JOIN (
+                SELECT 
+                    user_id,
+                    COUNT(*) as orders_count,
+                    SUM(total) as total_spent
+                FROM orders
+                WHERE user_id IS NOT NULL
+                GROUP BY user_id
+            ) o ON au.user_id = o.user_id
+            ORDER BY o.total_spent DESC NULLS LAST, au.first_seen DESC
         `);
         res.json(result.rows);
     } catch(err) {
@@ -547,6 +589,16 @@ app.post('/api/settings', async (req, res) => {
     }
 });
 
+app.delete('/api/orders/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        await pool.query('DELETE FROM orders WHERE id = $1', [id]);
+        res.json({ success: true });
+    } catch(err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // Удалить отзыв
 app.delete('/api/reviews/:id', async (req, res) => {
     try {
@@ -570,6 +622,61 @@ app.get('/api/rating', async (req, res) => {
              LIMIT 100`
         );
         res.json(result.rows);
+    } catch(err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.get('/api/stats', async (req, res) => {
+    try {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const week = new Date(today); week.setDate(week.getDate() - 7);
+
+        const todayStr = today.toLocaleDateString('ru-RU');
+        const weekAgo = week.toISOString();
+
+        // Статистика за день
+        const dayOrders = await pool.query(`SELECT COUNT(*) as count, COALESCE(SUM(total),0) as revenue FROM orders WHERE date = $1`, [todayStr]);
+        const dayUsers = await pool.query(`SELECT COUNT(DISTINCT user_id) as count FROM orders WHERE date = $1`, [todayStr]);
+
+        // Статистика за 7 дней
+        const weekOrders = await pool.query(`SELECT COUNT(*) as count, COALESCE(SUM(total),0) as revenue FROM orders WHERE timestamp >= $1`, [weekAgo]);
+        const weekUsers = await pool.query(`SELECT COUNT(DISTINCT user_id) as count FROM orders WHERE timestamp >= $1`, [weekAgo]);
+
+        // Всё время
+        const allOrders = await pool.query(`SELECT COUNT(*) as count, COALESCE(SUM(total),0) as revenue FROM orders`);
+        const allUsers = await pool.query(`SELECT COUNT(*) as count FROM app_users`);
+        const activeUsers = await pool.query(`SELECT COUNT(DISTINCT user_id) as count FROM orders WHERE user_id IS NOT NULL`);
+        const avgOrder = await pool.query(`SELECT COALESCE(AVG(total),0) as avg FROM orders`);
+        const topProduct = await pool.query(`
+            SELECT name, SUM(qty) as total_qty FROM (
+                SELECT jsonb_array_elements(items::jsonb)->>'name' as name,
+                       (jsonb_array_elements(items::jsonb)->>'qty')::int as qty
+                FROM orders
+            ) t GROUP BY name ORDER BY total_qty DESC LIMIT 1
+        `);
+
+        res.json({
+            day: {
+                orders: parseInt(dayOrders.rows[0].count),
+                revenue: parseInt(dayOrders.rows[0].revenue),
+                users: parseInt(dayUsers.rows[0].count)
+            },
+            week: {
+                orders: parseInt(weekOrders.rows[0].count),
+                revenue: parseInt(weekOrders.rows[0].revenue),
+                users: parseInt(weekUsers.rows[0].count)
+            },
+            all: {
+                orders: parseInt(allOrders.rows[0].count),
+                revenue: parseInt(allOrders.rows[0].revenue),
+                total_users: parseInt(allUsers.rows[0].count),
+                active_users: parseInt(activeUsers.rows[0].count),
+                avg_order: Math.round(parseFloat(avgOrder.rows[0].avg)),
+                top_product: topProduct.rows[0]?.name || '—'
+            }
+        });
     } catch(err) {
         res.status(500).json({ error: err.message });
     }

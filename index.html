@@ -2255,7 +2255,7 @@ function showOrderDetail(order) {
       </div>
       ${order.promo ? `<div class="order-detail-row">
         <span class="order-detail-label">Промокод</span>
-        <span class="order-detail-value">${order.promo} (скидка ${order.promo_discount}%)</span>
+        <span class="order-detail-value">${order.promo} (${order.promo_discount}%)</span>
       </div>` : ''}
       ${order.verification_code ? `<div class="order-detail-row">
         <span class="order-detail-label">Код</span>

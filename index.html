@@ -1812,6 +1812,7 @@ let searchQuery = "";
 let orders = [];
 let navigationHistory = [];
 let orderMode = "cart"; // "cart" или "promo_deal"
+let afterPaymentBackPage = "cart"; // куда возвращаться после заказов
 let promoOrderData = { deal: null, name: "", category: "" };
 
 const promoDeals = [
@@ -2168,7 +2169,9 @@ if (success) {
     renderCartPage();
   }
   checkoutData = { paymentMethod: "", senderName: "", email: "" };
-  showPage("orders");
+  // Очищаем историю навигации и задаём правильную точку возврата
+  navigationHistory = [afterPaymentBackPage];
+  showPage("orders", true);
 }
      if (btn) { btn.disabled = false; btn.textContent = "Я оплатил"; }
       isSubmitting = false;
@@ -2511,9 +2514,13 @@ async function renderReviewsPage() {
 function renderBuyPromoPage() {
   const container = document.getElementById("buyPromoContent");
   if (!container) return;
+    // Устанавливаем акцию по умолчанию если ещё не выбрана
+  if (!promoOrderData.deal) {
+    promoOrderData.deal = promoDeals[0];
+  }
 
   const dealOptions = promoDeals.map((d, i) =>
-    `<option value="${i}" ${promoOrderData.deal && promoOrderData.deal.label === d.label ? 'selected' : ''}>${d.label} — ${formatPrice(d.price)}</option>`
+    `<option value="${i}" ${promoOrderData.deal && promoOrderData.deal.label === d.label ? 'selected' : (i === 0 && !promoOrderData.deal ? 'selected' : '')}>${d.label} — ${formatPrice(d.price)}</option>`
   ).join('');
 
   const categoryOptions = promoCategories.map(c =>
@@ -2548,12 +2555,12 @@ function renderBuyPromoPage() {
 
   function updateFixedBlock() {
     const selectedIndex = document.getElementById("promoDealSelect")?.value;
-    const deal = selectedIndex !== "" && selectedIndex !== null ? promoDeals[parseInt(selectedIndex)] : promoOrderData.deal;
+    const deal = (selectedIndex !== "" && selectedIndex !== null && selectedIndex !== undefined) ? promoDeals[parseInt(selectedIndex)] : promoOrderData.deal || promoDeals[0];
     const priceText = deal ? formatPrice(deal.price) : "—";
     fixedBlock.innerHTML = `
       <div class="checkout-card">
         <div class="total-row">
-          <span class="total-label">Стоимость:</span>
+           <span class="total-label">Общая стоимость:</span>
           <span class="total-price-wrapper"><span class="total-price">${priceText}</span></span>
         </div>
         <div class="checkout-buttons-row">
@@ -2884,6 +2891,7 @@ function showPage(pageId, skipHistoryAdd = false) {
   if (pageId === "reviews") { renderReviewsPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
   if (pageId === "write-review") { renderWriteReviewPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
   if (pageId === "buy-promo") { renderBuyPromoPage(); }
+  if (pageId === "checkout") { afterPaymentBackPage = orderMode === "promo_deal" ? "buy-promo" : "cart"; }
   const mainPages = ["catalog", "cart", "orders", "profile"];
   if (mainPages.includes(pageId)) {
     document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));

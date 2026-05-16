@@ -2033,7 +2033,33 @@ function renderCheckoutBlock() {
   } else {
     fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${appliedPromo ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="checkoutBtn">Перейти к оформлению</button><button class="promo-btn" id="openPromoBtn"><img src="https://storage.botpapa.me/files/a488c6d0-4a12-11f1-bef9-f1ec7a2c6e45.png" alt="Промокод"></button></div></div>`;
     setTimeout(() => {
-      document.getElementById("checkoutBtn")?.addEventListener("click", () => { hapticMedium(); showPage("checkout"); });
+      document.getElementById("checkoutBtn")?.addEventListener("click", async () => {
+  hapticMedium();
+  try {
+    const r = await fetch('https://gemstorm.up.railway.app/api/settings');
+    const s = await r.json();
+    const status = s.bot_status || 'open';
+
+    if (status === 'closed') {
+      alert('Оформить заказ временно не получится, попробуйте позже');
+      return;
+    }
+    if (status === 'maintenance') {
+      alert('Оформить заказ временно не получится, проводятся технические работы');
+      return;
+    }
+    if (status === 'auto') {
+      // Время по МСК = UTC+3
+      const nowUtc = new Date();
+      const mskHour = (nowUtc.getUTCHours() + 3) % 24;
+      if (mskHour >= 0 && mskHour < 10) {
+        alert('Оформить заказ временно не получится, возвращайтесь в 10:00 по московскому времени');
+        return;
+      }
+    }
+  } catch(e) {}
+  showPage("checkout");
+});
       document.getElementById("openPromoBtn")?.addEventListener("click", () => { hapticLight(); isPromoMode = true; renderCheckoutBlock(); });
     }, 0);
   }
@@ -2596,10 +2622,24 @@ function renderBuyPromoPage() {
       }
       if (hasError) return;
       promoOrderData.deal = promoDeals[parseInt(idx)];
-      promoOrderData.name = nameVal;
-      promoOrderData.category = catVal;
-      orderMode = "promo_deal";
-      showPage("checkout");
+promoOrderData.name = nameVal;
+promoOrderData.category = catVal;
+orderMode = "promo_deal";
+// Проверка статуса
+(async () => {
+  try {
+    const r = await fetch('https://gemstorm.up.railway.app/api/settings');
+    const s = await r.json();
+    const status = s.bot_status || 'open';
+    if (status === 'closed') { alert('Оформить заказ временно не получится, попробуйте позже'); return; }
+    if (status === 'maintenance') { alert('Оформить заказ временно не получится, проводятся технические работы'); return; }
+    if (status === 'auto') {
+      const mskHour = (new Date().getUTCHours() + 3) % 24;
+      if (mskHour >= 0 && mskHour < 10) { alert('Оформить заказ временно не получится, возвращайтесь в 10:00 по московскому времени'); return; }
+    }
+  } catch(e) {}
+  showPage("checkout");
+})();
     });
   }
 
@@ -2923,6 +2963,20 @@ function initBackButtonHandler() {
 
 function initApp() {
   loadCartFromLocalStorage();
+  // Трекинг пользователя
+const tgU = window.Telegram?.WebApp?.initDataUnsafe?.user;
+if (tgU?.id) {
+  fetch('https://gemstorm.up.railway.app/api/track-user', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      userId: String(tgU.id),
+      userName: tgU.first_name || null,
+      userUsername: tgU.username || null,
+      photoUrl: tgU.photo_url || null
+    })
+  }).catch(() => {});
+}
   const savedCheckout = localStorage.getItem('checkoutData');
 if (savedCheckout) {
   try {

@@ -735,6 +735,14 @@
         <span class="order-detail-label">Промокод</span>
         <span class="order-detail-value">${order.promo} (${order.promo_discount}%)</span>
       </div>` : ''}
+      ${order.promo_item_name ? `<div class="order-detail-row">
+        <span class="order-detail-label">Название</span>
+        <span class="order-detail-value">${escapeHtml(order.promo_item_name)}</span>
+      </div>` : ''}
+      ${order.promo_item_category ? `<div class="order-detail-row">
+        <span class="order-detail-label">Категория</span>
+        <span class="order-detail-value">${escapeHtml(order.promo_item_category)}</span>
+      </div>` : ''}
       ${order.verification_code ? `<div class="order-detail-row">
         <span class="order-detail-label">Код</span>
         <span class="order-detail-value" style="color:#ffffff;">${escapeHtml(order.verification_code)}</span>

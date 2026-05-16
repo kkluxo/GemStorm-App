@@ -1636,6 +1636,14 @@
   <div id="reviewsContent"></div>
 </div>
 
+<div id="buy-promo-page" class="page">
+  <div class="header-row">
+    <img class="header-icon-img" src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="promo">
+    <div class="page-title">Покупка акции</div>
+  </div>
+  <div id="buyPromoContent"></div>
+</div>
+
 <div id="write-review-page" class="page">
   <div class="header-row">
     <img class="header-icon-img" src="https://storage.botpapa.me/files/f665c4e0-510f-11f1-bef9-f1ec7a2c6e45.png" alt="reviews">
@@ -1803,6 +1811,36 @@ let currentFilter = "Все категории";
 let searchQuery = "";
 let orders = [];
 let navigationHistory = [];
+let orderMode = "cart"; // "cart" или "promo_deal"
+let promoOrderData = { deal: null, name: "", category: "" };
+
+const promoDeals = [
+  { label: "Акция за 0.99$", price: 89 },
+  { label: "Акция за 1.99$", price: 169 },
+  { label: "Акция за 2.99$", price: 249 },
+  { label: "Акция за 3.99$", price: 339 },
+  { label: "Акция за 4.99$", price: 429 },
+  { label: "Акция за 5.99$", price: 509 },
+  { label: "Акция за 6.99$", price: 589 },
+  { label: "Акция за 7.99$", price: 679 },
+  { label: "Акция за 8.99$", price: 769 },
+  { label: "Акция за 9.99$", price: 849 },
+  { label: "Акция за 10.99$", price: 929 },
+  { label: "Акция за 11.99$", price: 1019 },
+  { label: "Акция за 12.99$", price: 1099 },
+  { label: "Акция за 13.99$", price: 1189 },
+  { label: "Акция за 14.99$", price: 1269 },
+  { label: "Акция за 15.99$", price: 1359 },
+  { label: "Акция за 16.99$", price: 1439 },
+  { label: "Акция за 17.99$", price: 1529 },
+  { label: "Акция за 18.99$", price: 1609 },
+  { label: "Акция за 19.99$", price: 1699 },
+];
+
+const promoCategories = [
+  "Кристаллы", "Скины", "Набор скинов", "Блинги", "Монеты",
+  "Очки силы", "Ресурсы", "Набор Esport", "Значки", "Иконки", "Другое"
+];
 
 function saveCartToLocalStorage() { localStorage.setItem('cart', JSON.stringify(cart)); }
 function loadCartFromLocalStorage() { const savedCart = localStorage.getItem('cart'); if (savedCart) { cart = JSON.parse(savedCart); } }
@@ -2002,21 +2040,43 @@ function renderCheckoutBlock() {
 
 function renderCheckoutForm() {
   const container = document.getElementById("checkoutFormContent");
-  const items = Object.entries(cart);
-  if (!items.length) { container.innerHTML = '<div class="empty-state">Корзина пуста</div>'; return; }
-  const rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
-  const discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
+
+  let rawTotal = 0;
+  let discountedTotal = 0;
+
+  if (orderMode === "promo_deal") {
+    if (!promoOrderData.deal) { container.innerHTML = '<div class="empty-state">Акция не выбрана</div>'; return; }
+    rawTotal = promoOrderData.deal.price;
+    discountedTotal = rawTotal;
+  } else {
+    const items = Object.entries(cart);
+    if (!items.length) { container.innerHTML = '<div class="empty-state">Корзина пуста</div>'; return; }
+    rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
+    discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
+  }
   container.innerHTML = `<div class="content-card"><div class="form-section"><div class="form-label">Почта от аккаунта</div><input type="email" class="form-input" id="emailInput" placeholder="Укажите почту аккаунта" value="${escapeHtml(checkoutData.email)}"></div><div class="form-section"><div class="form-label">Способ оплаты</div><select class="form-select-native" id="paymentMethodSelect"><option value="" disabled ${!checkoutData.paymentMethod ? 'selected' : ''}>Нажмите для выбора</option>${paymentMethodsOptions.map(o => `<option value="${o.value}" ${checkoutData.paymentMethod === o.value ? 'selected' : ''}>${o.label}</option>`).join('')}</select></div><div class="form-section"><div class="form-label">Данные отправителя</div><input type="text" class="form-input" id="senderNameInput" placeholder="Укажите имя отправителя" value="${escapeHtml(checkoutData.senderName)}"></div></div>`;
   const fixedBlock = document.getElementById("cartCheckoutFixed");
   fixedBlock.style.display = "block";
   fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${appliedPromo ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="payBtn">Перейти к оплате</button><button class="promo-btn" id="helpBtn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь"></button></div></div>`;
   setTimeout(() => {
     const paymentSelect = document.getElementById("paymentMethodSelect");
-    paymentSelect?.addEventListener("change", function() { checkoutData.paymentMethod = this.value; this.classList.remove("error"); });
+    paymentSelect?.addEventListener("change", function() {
+  checkoutData.paymentMethod = this.value;
+  this.classList.remove("error");
+  localStorage.setItem('checkoutData', JSON.stringify(checkoutData));
+});
     document.getElementById("helpBtn")?.addEventListener("click", () => { hapticLight(); window.open("https://t.me/GemStormHelp", "_blank"); });
     document.getElementById("payBtn")?.addEventListener("click", () => { hapticMedium(); let hasError = false; const senderInput = document.getElementById("senderNameInput"); const emailInput = document.getElementById("emailInput"); if (!checkoutData.paymentMethod) { paymentSelect.classList.add("error"); hasError = true; } if (!senderInput.value.trim()) { senderInput.classList.add("error"); hasError = true; } else { senderInput.classList.remove("error"); checkoutData.senderName = senderInput.value.trim(); } if (!emailInput.value.trim()) { emailInput.classList.add("error"); hasError = true; } else { emailInput.classList.remove("error"); checkoutData.email = emailInput.value.trim(); } if (!hasError) showPage("payment"); });
-    document.getElementById("senderNameInput")?.addEventListener("input", function() { checkoutData.senderName = this.value; this.classList.remove("error"); });
-    document.getElementById("emailInput")?.addEventListener("input", function() { checkoutData.email = this.value; this.classList.remove("error"); });
+    document.getElementById("senderNameInput")?.addEventListener("input", function() {
+  checkoutData.senderName = this.value;
+  this.classList.remove("error");
+  localStorage.setItem('checkoutData', JSON.stringify(checkoutData));
+});
+document.getElementById("emailInput")?.addEventListener("input", function() {
+  checkoutData.email = this.value;
+  this.classList.remove("error");
+  localStorage.setItem('checkoutData', JSON.stringify(checkoutData));
+});
   }, 0);
 }
 
@@ -2024,9 +2084,18 @@ function renderPaymentPage() {
   const container = document.getElementById("paymentContent");
   const cardNum = getCardNumberFromValue(checkoutData.paymentMethod);
   const bank = getBankFromValue(checkoutData.paymentMethod);
-  const items = Object.entries(cart);
-  const rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
-  const discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
+
+  let discountedTotal = 0;
+  let rawTotal = 0;
+
+  if (orderMode === "promo_deal") {
+    rawTotal = promoOrderData.deal.price;
+    discountedTotal = rawTotal;
+  } else {
+    const items = Object.entries(cart);
+    rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
+    discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
+  }
   container.innerHTML = `<div class="content-card"><div class="form-section"><div class="form-label">Номер карты</div><div class="form-select-readonly card-number-row"><span class="card-number-text">${cardNum}</span><img class="copy-icon" id="copyCardBtn" src="https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png" alt="copy"></div></div><div class="form-section"><div class="form-label">Получатель</div><div class="form-select-readonly"><span>Азат Ф.</span></div></div><div class="form-section"><div class="form-label">Банк получателя</div><div class="form-select-readonly"><span>${bank}</span></div></div></div>`;
   const fixedBlock = document.getElementById("cartCheckoutFixed");
   fixedBlock.style.display = "block";
@@ -2041,12 +2110,67 @@ function renderPaymentPage() {
       const btn = document.getElementById("paidBtn");
       if (btn) { btn.disabled = true; btn.textContent = "Обработка..."; }
       hapticMedium();
-      let tgUser = null; if (window.Telegram?.WebApp?.initDataUnsafe?.user) tgUser = window.Telegram.WebApp.initDataUnsafe.user;
-      const items = Object.entries(cart); let total = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0); if (appliedPromo) total = Math.round(total * (1 - appliedPromo.discountPercent / 100));
-      const order = { orderNumber: 0, date: new Date().toLocaleDateString('ru-RU'), time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }), timestamp: new Date().toISOString(), items: items.map(([id, qty]) => ({ id: parseInt(id), name: products.find(p => p.id == id).name, qty, price: products.find(p => p.id == id).price })), total: total, status: "Ожидание проверки", status_code: "pending", promo: appliedPromo ? appliedPromo.code : null, promo_discount: appliedPromo ? appliedPromo.discountPercent : 0, payment_method: getPaymentMethodLabel(checkoutData.paymentMethod), sender_name: checkoutData.senderName, email: checkoutData.email, user_id: tgUser?.id, user_name: tgUser?.first_name, user_username: tgUser?.username };
-      const success = await sendOrderToServer(order);
-      if (success) { cart = {}; appliedPromo = null; isPromoMode = false; checkoutData = { paymentMethod: "", senderName: "", email: "" }; updateAllCards(); renderCartPage(); showPage("orders"); } else { if (window.Telegram?.WebApp) window.Telegram.WebApp.showAlert("Ошибка при оформлении заказа"); else alert("Ошибка при оформлении заказа"); }
-      if (btn) { btn.disabled = false; btn.textContent = "Я оплатил"; }
+      let tgUser = null;
+if (window.Telegram?.WebApp?.initDataUnsafe?.user) tgUser = window.Telegram.WebApp.initDataUnsafe.user;
+
+let orderItems = [];
+let total = 0;
+let orderPromo = null;
+let orderPromoDiscount = 0;
+let orderPromoItemName = null;
+let orderPromoItemCategory = null;
+
+if (orderMode === "promo_deal") {
+  orderItems = [{ id: 0, name: promoOrderData.deal.label, qty: 1, price: promoOrderData.deal.price }];
+  total = promoOrderData.deal.price;
+  orderPromoItemName = promoOrderData.name;
+  orderPromoItemCategory = promoOrderData.category;
+} else {
+  const cartItems = Object.entries(cart);
+  total = cartItems.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
+  if (appliedPromo) total = Math.round(total * (1 - appliedPromo.discountPercent / 100));
+  orderItems = cartItems.map(([id, qty]) => ({ id: parseInt(id), name: products.find(p => p.id == id).name, qty, price: products.find(p => p.id == id).price }));
+  orderPromo = appliedPromo ? appliedPromo.code : null;
+  orderPromoDiscount = appliedPromo ? appliedPromo.discountPercent : 0;
+}
+
+const order = {
+  orderNumber: 0,
+  date: new Date().toLocaleDateString('ru-RU'),
+  time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+  timestamp: new Date().toISOString(),
+  items: orderItems,
+  total: total,
+  status: "Ожидание проверки",
+  status_code: "pending",
+  promo: orderPromo,
+  promo_discount: orderPromoDiscount,
+  payment_method: getPaymentMethodLabel(checkoutData.paymentMethod),
+  sender_name: checkoutData.senderName,
+  email: checkoutData.email,
+  user_id: tgUser?.id,
+  user_name: tgUser?.first_name,
+  user_username: tgUser?.username,
+  promo_item_name: orderPromoItemName,
+  promo_item_category: orderPromoItemCategory
+};
+
+const success = await sendOrderToServer(order);
+if (success) {
+  if (orderMode === "promo_deal") {
+    promoOrderData = { deal: null, name: "", category: "" };
+    orderMode = "cart";
+  } else {
+    cart = {};
+    appliedPromo = null;
+    isPromoMode = false;
+    updateAllCards();
+    renderCartPage();
+  }
+  checkoutData = { paymentMethod: "", senderName: "", email: "" };
+  showPage("orders");
+}
+     if (btn) { btn.disabled = false; btn.textContent = "Я оплатил"; }
       isSubmitting = false;
     });
   }, 0);
@@ -2384,6 +2508,113 @@ async function renderReviewsPage() {
   loadReviewsList();
 }
 
+function renderBuyPromoPage() {
+  const container = document.getElementById("buyPromoContent");
+  if (!container) return;
+
+  const dealOptions = promoDeals.map((d, i) =>
+    `<option value="${i}" ${promoOrderData.deal && promoOrderData.deal.label === d.label ? 'selected' : ''}>${d.label} — ${formatPrice(d.price)}</option>`
+  ).join('');
+
+  const categoryOptions = promoCategories.map(c =>
+    `<option value="${c}" ${promoOrderData.category === c ? 'selected' : ''}>${c}</option>`
+  ).join('');
+
+  container.innerHTML = `
+    <div class="content-card">
+      <div class="form-section">
+        <div class="form-label">Стоимость акции</div>
+        <select class="form-select-native" id="promoDealSelect">
+          <option value="" disabled ${!promoOrderData.deal ? 'selected' : ''}>Выберите акцию</option>
+          ${dealOptions}
+        </select>
+      </div>
+      <div class="form-section">
+        <div class="form-label">Название акции</div>
+        <input type="text" class="form-input" id="promoNameInput" placeholder="Укажите название акции" value="${escapeHtml(promoOrderData.name)}">
+      </div>
+      <div class="form-section" style="margin-bottom:0;">
+        <div class="form-label">Категория акции</div>
+        <select class="form-select-native" id="promoCategorySelect">
+          <option value="" disabled ${!promoOrderData.category ? 'selected' : ''}>Выберите категорию</option>
+          ${categoryOptions}
+        </select>
+      </div>
+    </div>
+  `;
+
+  const fixedBlock = document.getElementById("cartCheckoutFixed");
+  fixedBlock.style.display = "block";
+
+  function updateFixedBlock() {
+    const selectedIndex = document.getElementById("promoDealSelect")?.value;
+    const deal = selectedIndex !== "" && selectedIndex !== null ? promoDeals[parseInt(selectedIndex)] : promoOrderData.deal;
+    const priceText = deal ? formatPrice(deal.price) : "—";
+    fixedBlock.innerHTML = `
+      <div class="checkout-card">
+        <div class="total-row">
+          <span class="total-label">Стоимость:</span>
+          <span class="total-price-wrapper"><span class="total-price">${priceText}</span></span>
+        </div>
+        <div class="checkout-buttons-row">
+          <button class="checkout-button" id="promoGoCheckoutBtn">Перейти к оформлению</button>
+          <button class="promo-btn" id="promoHelpBtn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь"></button>
+        </div>
+      </div>
+    `;
+    document.getElementById("promoHelpBtn")?.addEventListener("click", () => { hapticLight(); window.open("https://t.me/GemStormHelp", "_blank"); });
+    document.getElementById("promoGoCheckoutBtn")?.addEventListener("click", () => {
+      hapticMedium();
+      const idx = document.getElementById("promoDealSelect")?.value;
+      const nameVal = document.getElementById("promoNameInput")?.value.trim();
+      const catVal = document.getElementById("promoCategorySelect")?.value;
+      let hasError = false;
+      if (idx === "" || idx === null || idx === undefined) {
+        document.getElementById("promoDealSelect")?.classList.add("error");
+        hasError = true;
+      } else {
+        document.getElementById("promoDealSelect")?.classList.remove("error");
+      }
+      if (!nameVal) {
+        document.getElementById("promoNameInput")?.classList.add("error");
+        hasError = true;
+      } else {
+        document.getElementById("promoNameInput")?.classList.remove("error");
+      }
+      if (!catVal) {
+        document.getElementById("promoCategorySelect")?.classList.add("error");
+        hasError = true;
+      } else {
+        document.getElementById("promoCategorySelect")?.classList.remove("error");
+      }
+      if (hasError) return;
+      promoOrderData.deal = promoDeals[parseInt(idx)];
+      promoOrderData.name = nameVal;
+      promoOrderData.category = catVal;
+      orderMode = "promo_deal";
+      showPage("checkout");
+    });
+  }
+
+  updateFixedBlock();
+
+  setTimeout(() => {
+    document.getElementById("promoDealSelect")?.addEventListener("change", function() {
+      promoOrderData.deal = promoDeals[parseInt(this.value)];
+      this.classList.remove("error");
+      updateFixedBlock();
+    });
+    document.getElementById("promoNameInput")?.addEventListener("input", function() {
+      promoOrderData.name = this.value;
+      this.classList.remove("error");
+    });
+    document.getElementById("promoCategorySelect")?.addEventListener("change", function() {
+      promoOrderData.category = this.value;
+      this.classList.remove("error");
+    });
+  }, 0);
+}
+
 async function renderWriteReviewPage() {
   const container = document.getElementById("writeReviewContent");
   if (!container) return;
@@ -2611,7 +2842,7 @@ async function renderProfilePage() {
   setTimeout(() => {
     document.getElementById("subscribeChannelBtn")?.addEventListener("click", () => { hapticLight(); window.open("https://t.me/GemStormStore", "_blank"); });
     document.getElementById("openReviewsPage")?.addEventListener("click", () => { hapticLight(); showPage("reviews"); });
-    document.getElementById("openFaqBtn")?.addEventListener("click", () => { hapticLight(); window.open("https://app.botpapa.me/@DeathGunBrawlBot", "_blank"); });
+    document.getElementById("openFaqBtn")?.addEventListener("click", () => { hapticLight(); orderMode = "cart"; promoOrderData = { deal: null, name: "", category: "" }; showPage("buy-promo"); });
     document.getElementById("openSupportBtn")?.addEventListener("click", () => { hapticLight(); window.open("https://t.me/GemStormHelp", "_blank"); });
   }, 0);
 }
@@ -2642,6 +2873,7 @@ function showPage(pageId, skipHistoryAdd = false) {
   if (targetPage) targetPage.classList.add("active-page");
   const checkoutBlock = document.getElementById("cartCheckoutFixed");
   if (pageId === "catalog") { renderCatalog(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
+  if (pageId === "catalog" || pageId === "cart") { if (orderMode === "promo_deal") orderMode = "cart"; }
   if (pageId === "cart") { renderCartPage(); }
   if (pageId === "orders") { renderOrdersPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
   if (pageId === "profile") { renderProfilePage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
@@ -2651,6 +2883,7 @@ function showPage(pageId, skipHistoryAdd = false) {
   if (pageId === "order-detail") { if (checkoutBlock) checkoutBlock.style.display = "none"; }
   if (pageId === "reviews") { renderReviewsPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
   if (pageId === "write-review") { renderWriteReviewPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
+  if (pageId === "buy-promo") { renderBuyPromoPage(); }
   const mainPages = ["catalog", "cart", "orders", "profile"];
   if (mainPages.includes(pageId)) {
     document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
@@ -2682,6 +2915,13 @@ function initBackButtonHandler() {
 
 function initApp() {
   loadCartFromLocalStorage();
+  const savedCheckout = localStorage.getItem('checkoutData');
+if (savedCheckout) {
+  try {
+    const parsed = JSON.parse(savedCheckout);
+    checkoutData = { ...checkoutData, ...parsed };
+  } catch(e) {}
+}
   const lastPage = getLastPage();
   showPage(lastPage);
   const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;

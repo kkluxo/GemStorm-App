@@ -144,6 +144,15 @@ async function initDB() {
         `);
         await pool.query(`ALTER TABLE reviews ADD COLUMN IF NOT EXISTS order_id INTEGER`);
         await pool.query(`ALTER TABLE reviews ADD COLUMN IF NOT EXISTS order_number INTEGER`);
+   
+        await pool.query(`
+    CREATE TABLE IF NOT EXISTS settings (
+        id INTEGER PRIMARY KEY DEFAULT 1,
+        bot_status TEXT DEFAULT 'open',
+        work_start TEXT DEFAULT '10:00',
+        work_end TEXT DEFAULT '23:59'
+    )
+`);
 
         console.log('Все таблицы готовы');
         
@@ -485,6 +494,66 @@ app.get('/api/conversion-history', async (req, res) => {
         
         res.json(result.rows);
     } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Получить всех пользователей
+app.get('/api/users', async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT 
+                user_id,
+                user_name,
+                user_username,
+                COUNT(*) as orders_count,
+                COALESCE(SUM(CASE WHEN status_code IN ('completed','done') THEN total ELSE 0 END), 0) as total_spent
+            FROM orders
+            WHERE user_id IS NOT NULL
+            GROUP BY user_id, user_name, user_username
+            ORDER BY total_spent DESC
+        `);
+        res.json(result.rows);
+    } catch(err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Получить настройки
+app.get('/api/settings', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM settings WHERE id = 1');
+        if (!result.rows.length) {
+            res.json({ bot_status: 'open', work_start: '10:00', work_end: '23:59' });
+        } else {
+            res.json(result.rows[0]);
+        }
+    } catch(err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Обновить настройки
+app.post('/api/settings', async (req, res) => {
+    try {
+        const { bot_status } = req.body;
+        await pool.query(`
+            INSERT INTO settings (id, bot_status) VALUES (1, $1)
+            ON CONFLICT (id) DO UPDATE SET bot_status = $1
+        `, [bot_status]);
+        res.json({ success: true });
+    } catch(err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Удалить отзыв
+app.delete('/api/reviews/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        await pool.query('DELETE FROM reviews WHERE id = $1', [id]);
+        res.json({ success: true });
+    } catch(err) {
         res.status(500).json({ error: err.message });
     }
 });

@@ -1666,19 +1666,21 @@
 
 <script>
 const imagesToPreload = [
-  // Иконки навигации
-  'https://storage.botpapa.me/files/fd86aa00-4a0c-11f1-bef9-f1ec7a2c6e45.png',
+  // Иконки навигации (меню)
+  'https://storage.botpapa.me/files/00f09750-5110-11f1-bef9-f1ec7a2c6e45.png',
+  'https://storage.botpapa.me/files/facb9000-510f-11f1-bef9-f1ec7a2c6e45.png',
   'https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png',
-  'https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png',
-  'https://storage.botpapa.me/files/12337af0-4a0d-11f1-bef9-f1ec7a2c6e45.png',
-  'https://storage.botpapa.me/files/fa0bb410-4a0c-11f1-bef9-f1ec7a2c6e45.png',
   'https://storage.botpapa.me/files/00feb9c0-4a0d-11f1-bef9-f1ec7a2c6e45.png',
+  'https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png',
   'https://storage.botpapa.me/files/8a684130-49e6-11f1-bef9-f1ec7a2c6e45.png',
   'https://storage.botpapa.me/files/1656bed0-4a0d-11f1-bef9-f1ec7a2c6e45.png',
-  // Иконки UI
+  'https://storage.botpapa.me/files/12337af0-4a0d-11f1-bef9-f1ec7a2c6e45.png',
+  
+  // Иконки UI (фильтры, кнопки, действия)
   'https://storage.botpapa.me/files/bc7cbf30-49e0-11f1-bef9-f1ec7a2c6e45.png',
   'https://storage.botpapa.me/files/9478fb40-49de-11f1-bef9-f1ec7a2c6e45.png',
   'https://storage.botpapa.me/files/62edaf00-4a27-11f1-bef9-f1ec7a2c6e45.png',
+  'https://storage.botpapa.me/files/f665c4e0-510f-11f1-bef9-f1ec7a2c6e45.png',
   'https://storage.botpapa.me/files/69f8dfe0-4f72-11f1-bef9-f1ec7a2c6e45.png',
   'https://storage.botpapa.me/files/975c4510-49de-11f1-bef9-f1ec7a2c6e45.png',
   'https://storage.botpapa.me/files/9a5d01f0-49de-11f1-bef9-f1ec7a2c6e45.png',
@@ -1687,6 +1689,7 @@ const imagesToPreload = [
   'https://storage.botpapa.me/files/a488c6d0-4a12-11f1-bef9-f1ec7a2c6e45.png',
   'https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png',
   'https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png',
+  
   // Изображения товаров
   'https://storage.botpapa.me/files/6b57bf60-499a-11f1-bef9-f1ec7a2c6e45.jpeg',
   'https://storage.botpapa.me/files/6f97da10-499a-11f1-bef9-f1ec7a2c6e45.jpeg',
@@ -1703,10 +1706,18 @@ const imagesToPreload = [
   'https://storage.botpapa.me/files/b6be6550-4a56-11f1-bef9-f1ec7a2c6e45.jpeg',
   'https://storage.botpapa.me/files/ba4da690-4a56-11f1-bef9-f1ec7a2c6e45.jpeg',
   'https://storage.botpapa.me/files/bd39a2f0-4a56-11f1-bef9-f1ec7a2c6e45.jpeg',
+  'https://storage.botpapa.me/files/3ec3c760-505b-11f1-bef9-f1ec7a2c6e45.jpeg',
+  'https://storage.botpapa.me/files/42c44100-505b-11f1-bef9-f1ec7a2c6e45.jpeg',
+  'https://storage.botpapa.me/files/3b8b31a0-505b-11f1-bef9-f1ec7a2c6e45.jpeg',
+  'https://storage.botpapa.me/files/027f28d0-505b-11f1-bef9-f1ec7a2c6e45.jpeg',
+  'https://storage.botpapa.me/files/08e35c00-505b-11f1-bef9-f1ec7a2c6e45.jpeg',
+  'https://storage.botpapa.me/files/12adebb0-505b-11f1-bef9-f1ec7a2c6e45.jpeg',
+  'https://storage.botpapa.me/files/1fdcdc10-505b-11f1-bef9-f1ec7a2c6e45.jpeg',
+  'https://storage.botpapa.me/files/0de56720-505b-11f1-bef9-f1ec7a2c6e45.jpeg',
+  'https://storage.botpapa.me/files/729a3ba0-4edf-11f1-bef9-f1ec7a2c6e45.jpeg',
   'https://storage.botpapa.me/files/19aae620-4edf-11f1-bef9-f1ec7a2c6e45.jpeg',
   'https://storage.botpapa.me/files/15436d50-4edf-11f1-bef9-f1ec7a2c6e45.jpeg',
-  'https://storage.botpapa.me/files/34f45f60-4edf-11f1-bef9-f1ec7a2c6e45.jpeg',
-  'https://storage.botpapa.me/files/729a3ba0-4edf-11f1-bef9-f1ec7a2c6e45.jpeg',
+  'https://storage.botpapa.me/files/34f45f60-4edf-11f1-bef9-f1ec7a2c6e45.jpeg'
 ];
 imagesToPreload.forEach(src => { const img = new Image(); img.src = src; });
 

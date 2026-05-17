@@ -1999,14 +1999,15 @@
   }
   
   // Кристаллы (id 5-10) - можно добавить до 3 шт.
-  if (product && product.category === "Кристаллы") {
+  if (product && product.category === "Кристаллы" && productId >= 5 && productId <= 10) {
     if ((cart[productId] || 0) >= 3) return { allowed: false, reason: "Максимум 3 шт." };
     return { allowed: true };
   }
   
-  // Ограничение на 3 разных товара в корзине
-  if (!cart[productId] && getCartItemsCount() >= 3) {
-    return { allowed: false, reason: "Максимум 3 разных товара в корзине" };
+  // НОВОЕ ПРАВИЛО: максимум 5 разных товаров в корзине
+  const currentUniqueItems = Object.keys(cart).length;
+  if (!cart[productId] && currentUniqueItems >= 5) {
+    return { allowed: false, reason: "Максимум 5 товаров" };
   }
   
   return { allowed: true };

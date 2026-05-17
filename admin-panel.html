@@ -695,10 +695,10 @@ if (bottomNav) bottomNav.style.display = 'none';
   let botStatus = 'open';
 
   try {
-    const ru = await fetch(`${API}/api/users`);
-    const users = await ru.json();
-    totalRevenue = users.reduce((s, u) => s + (parseInt(u.total_spent) || 0), 0);
-  } catch(e) {}
+    const ru = await fetch(`${API}/api/total-revenue`);
+    const data = await ru.json();
+    totalRevenue = data.revenue || 0;
+} catch(e) {}
 
   try {
     const rs = await fetch(`${API}/api/settings`);

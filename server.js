@@ -165,6 +165,23 @@ async function initDB() {
         last_seen TIMESTAMP DEFAULT NOW()
     )
 `);
+        await pool.query(`
+    CREATE TABLE IF NOT EXISTS promo_usage (
+        id SERIAL PRIMARY KEY,
+        user_id TEXT,
+        promo_code TEXT,
+        order_id INTEGER,
+        created_at TIMESTAMP DEFAULT NOW()
+    )
+`);
+
+await pool.query(`
+    CREATE TABLE IF NOT EXISTS order_rate_limit (
+        id SERIAL PRIMARY KEY,
+        user_id TEXT,
+        created_at TIMESTAMP DEFAULT NOW()
+    )
+`);
 
         console.log('Все таблицы готовы');
         
@@ -240,7 +257,18 @@ app.post('/api/order', async (req, res) => {
                 await notifyUser(bot, saved);
             }
         }
-        
+        // Записать использование промокода
+if (o.promo && o.user_id) {
+    try {
+        await pool.query(`
+            INSERT INTO promo_usage (user_id, promo_code, order_id)
+            VALUES ($1, $2, $3)
+            ON CONFLICT DO NOTHING
+        `, [o.user_id, o.promo.toUpperCase(), saved.id]);
+    } catch(e) {
+        console.error('Ошибка записи промокода:', e.message);
+    }
+}
         res.json({ success: true, orderId: saved.id });
     } catch (err) {
         console.error('Ошибка создания заказа:', err.message);
@@ -616,6 +644,123 @@ app.get('/api/total-revenue', async (req, res) => {
     try {
         const result = await pool.query(`SELECT COALESCE(SUM(total), 0) as revenue FROM orders`);
         res.json({ revenue: parseInt(result.rows[0].revenue) });
+    } catch(err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Проверка количества невыполненных заказов
+app.get('/api/check-queue', async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT COUNT(*) as count FROM orders
+            WHERE status_code IN ('pending', 'awaiting_code', 'processing')
+        `);
+        const count = parseInt(result.rows[0].count);
+        res.json({ busy: count >= 2, count });
+    } catch(err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Проверка лимита заказов пользователя
+app.get('/api/check-rate-limit', async (req, res) => {
+    try {
+        const { userId } = req.query;
+        if (!userId) return res.json({ limited: false });
+        
+        const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+        const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString();
+        
+        // Заказы за последние 10 минут
+        const recentResult = await pool.query(`
+            SELECT COUNT(*) as count FROM orders
+            WHERE user_id = $1 AND timestamp >= $2
+        `, [userId, tenMinutesAgo]);
+        
+        const recentCount = parseInt(recentResult.rows[0].count);
+        
+        if (recentCount >= 3) {
+            // Проверяем не прошло ли 30 минут с первого из этих заказов
+            const firstResult = await pool.query(`
+                SELECT timestamp FROM orders
+                WHERE user_id = $1
+                ORDER BY id DESC
+                LIMIT 3
+            `, [userId]);
+            
+            const oldest = firstResult.rows[firstResult.rows.length - 1];
+            if (oldest) {
+                const oldestTime = new Date(oldest.timestamp).getTime();
+                const limitUntil = oldestTime + 30 * 60 * 1000;
+                if (Date.now() < limitUntil) {
+                    return res.json({ limited: true });
+                }
+            }
+        }
+        
+        res.json({ limited: false });
+    } catch(err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Проверка промокода
+app.post('/api/check-promo', async (req, res) => {
+    try {
+        const { code, userId } = req.body;
+        if (!code || !userId) return res.status(400).json({ error: 'Нет данных' });
+        
+        const upperCode = code.toUpperCase();
+        const validCodes = { 'GEMSTORM3': 3, 'CL3PER': 5, 'WEL9825H0': 1 };
+        
+        if (!validCodes[upperCode]) {
+            return res.json({ valid: false, reason: 'not_found' });
+        }
+        
+        // Если промокод GEMSTORM3 — только на первый заказ
+        if (upperCode === 'GEMSTORM3') {
+            const ordersResult = await pool.query(`
+                SELECT COUNT(*) as count FROM orders WHERE user_id = $1
+            `, [userId]);
+            if (parseInt(ordersResult.rows[0].count) > 0) {
+                return res.json({ valid: false, reason: 'first_order_only' });
+            }
+        }
+        
+        // Проверяем использование промокода
+        const usageResult = await pool.query(`
+            SELECT pu.id, o.status_code FROM promo_usage pu
+            LEFT JOIN orders o ON o.id = pu.order_id
+            WHERE pu.user_id = $1 AND pu.promo_code = $2
+        `, [userId, upperCode]);
+        
+        if (usageResult.rows.length > 0) {
+            // Если заказ помечен как "Перевод не найден" — разрешаем повторно
+            const allNotFound = usageResult.rows.every(r => r.status_code === 'notfound');
+            if (!allNotFound) {
+                return res.json({ valid: false, reason: 'already_used' });
+            }
+        }
+        
+        res.json({ valid: true, discount: validCodes[upperCode] });
+    } catch(err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Записать использование промокода
+app.post('/api/use-promo', async (req, res) => {
+    try {
+        const { userId, code, orderId } = req.body;
+        if (!userId || !code || !orderId) return res.status(400).json({ error: 'Нет данных' });
+        
+        await pool.query(`
+            INSERT INTO promo_usage (user_id, promo_code, order_id)
+            VALUES ($1, $2, $3)
+        `, [userId, code.toUpperCase(), orderId]);
+        
+        res.json({ success: true });
     } catch(err) {
         res.status(500).json({ error: err.message });
     }

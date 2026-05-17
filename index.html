@@ -1971,24 +1971,46 @@
   function getCartItemsCount() { return Object.keys(cart).length; }
 
   function canAddToCart(productId) {
-    if (productId <= 4) {
-      if (cart[productId] >= 1) return { allowed: false, reason: "Максимум 1 шт." };
-      if (productId <= 3) {
-        const conflictIds = [1, 2, 3].filter(id => id !== productId && cart[id]);
-        if (conflictIds.length > 0) {
-          const conflictName = products.find(p => p.id === conflictIds[0]).name;
-          return { allowed: false, reason: `Удалите товар "${conflictName}" из корзины, чтобы добавить этот товар` };
-        }
+  const product = products.find(p => p.id == productId);
+  
+  // Пропуски (id 1-4) - максимум 1 шт.
+  if (productId <= 4) {
+    if (cart[productId] >= 1) return { allowed: false, reason: "Максимум 1 шт." };
+    if (productId <= 3) {
+      const conflictIds = [1, 2, 3].filter(id => id !== productId && cart[id]);
+      if (conflictIds.length > 0) {
+        const conflictName = products.find(p => p.id === conflictIds[0]).name;
+        return { allowed: false, reason: `Удалите товар "${conflictName}" из корзины, чтобы добавить этот товар` };
       }
-    }
-    if (productId >= 5 && productId <= 26) {
-      if ((cart[productId] || 0) >= 3) return { allowed: false, reason: "Максимум 3 шт." };
-    }
-    if (!cart[productId] && getCartItemsCount() >= 3) {
-      return { allowed: false, reason: "Максимум 3 разных товара в корзине" };
     }
     return { allowed: true };
   }
+  
+  // Акции (категория "Акции") - максимум 1 шт.
+  if (product && product.category === "Акции") {
+    if (cart[productId] >= 1) return { allowed: false, reason: "Максимум 1 шт." };
+    return { allowed: true };
+  }
+  
+  // Товары 26-36 - максимум 1 шт.
+  if (productId >= 26 && productId <= 36) {
+    if (cart[productId] >= 1) return { allowed: false, reason: "Максимум 1 шт." };
+    return { allowed: true };
+  }
+  
+  // Кристаллы (id 5-10) - можно добавить до 3 шт.
+  if (product && product.category === "Кристаллы") {
+    if ((cart[productId] || 0) >= 3) return { allowed: false, reason: "Максимум 3 шт." };
+    return { allowed: true };
+  }
+  
+  // Ограничение на 3 разных товара в корзине
+  if (!cart[productId] && getCartItemsCount() >= 3) {
+    return { allowed: false, reason: "Максимум 3 разных товара в корзине" };
+  }
+  
+  return { allowed: true };
+}
 
   function renderCartButtonHtml(productId) {
     const qty = cart[productId] || 0;

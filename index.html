@@ -1522,109 +1522,65 @@
     }
 
     /* Стили для страницы Подарки */
-    .gifts-container {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      padding-bottom: 110px;
-    }
+    /* Стили для страницы Подарки - в стиле каталога */
+.gifts-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px;
+  padding-bottom: 110px;
+}
 
-    .gift-card-wrapper {
-      position: relative;
-      margin-bottom: 0;
-    }
+.gift-card {
+  background: #202022;
+  border: 1px solid #2B2B2D;
+  border-radius: 42px 42px 28px 28px;
+  overflow: hidden;
+  transition: 0.1s linear;
+}
 
-    /* Изменённый стиль карточки подарка - колонкой */
-    .gift-main-card {
-      background: #202022;
-      border: 1px solid #2B2B2D;
-      border-radius: 36px 36px 30px 30px;
-      padding: 12px;
-      position: relative;
-      z-index: 2;
-      margin-bottom: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+.gift-card:active {
+  transform: scale(0.98);
+}
 
-    .gift-image {
-      width: 100%;
-      border-radius: 28px;
-      object-fit: cover;
-    }
+.gift-image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  padding: 6px;
+  border-radius: 43px;
+}
 
-    .gift-info {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      width: 100%;
-    }
+.gift-info {
+  padding: 0 8px 12px 8px;
+}
 
-    .gift-name {
-      font-size: 17px;
-      font-weight: 500;
-      color: white;
-    }
+.gift-name {
+  font-size: 18px;
+  font-weight: 500;
+  color: white;
+  margin-bottom: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
-    /* Кнопка на всю ширину */
-    .gift-claim-btn {
-      width: 100%;
-      background: rgba(76, 180, 233, 0.12);
-      border: none;
-      border-radius: 34px;
-      padding: 12px 18px;
-      color: #4cb4e9;
-      font-weight: 600;
-      font-size: 15px;
-      cursor: pointer;
-      text-align: center;
-      transition: 0.1s;
-    }
+.gift-claim-btn {
+  width: 100%;
+  height: 38px;
+  border-radius: 34px;
+  background: #4cb4e9;
+  border: none;
+  color: white;
+  font-weight: 500;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.1s;
+}
 
-    .gift-claim-btn:active {
-      transform: scale(0.98);
-      opacity: 0.8;
-    }
-
-    /* Ссылка с обрезанием */
-    .gift-link-card {
-      background: #171719;
-      border: 1px solid #2B2B2D;
-      border-radius: 0 0 30px 30px;
-      padding: 12px 16px;
-      margin-top: -28px;
-      padding-top: 36px;
-      position: relative;
-      z-index: 1;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .gift-link-text {
-      font-size: 14px;
-      color: #cbcdcd;
-      flex: 1;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      font-family: monospace;
-    }
-
-    .gift-copy-icon {
-      width: 22px;
-      height: 22px;
-      cursor: pointer;
-      flex-shrink: 0;
-      opacity: 0.7;
-      transition: 0.1s;
-    }
-
-    .gift-copy-icon:active {
-      transform: scale(0.85);
-      opacity: 1;
-    }
+.gift-claim-btn:active {
+  transform: scale(0.96);
+  opacity: 0.8;
+}
   </style>
 </head>
 <body>
@@ -2858,52 +2814,43 @@
 
   // Функция отрисовки страницы Подарки (изменённая)
   function renderGiftsPage() {
-    const container = document.getElementById("giftsList");
-    if (!container) return;
-    
-    const copyIconUrl = "https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png";
-    
-    container.innerHTML = giftItems.map(gift => `
-      <div class="gift-card-wrapper">
-        <div class="gift-main-card">
-          <img class="gift-image" src="${gift.image}" alt="${escapeHtml(gift.name)}" loading="lazy">
-          <div class="gift-info">
-            <span class="gift-name">${escapeHtml(gift.name)}</span>
-            <button class="gift-claim-btn" data-link="${gift.link}">Забрать награду в Brawl Stars</button>
-          </div>
-        </div>
-        <div class="gift-link-card">
-          <span class="gift-link-text" title="${escapeHtml(gift.link)}">${escapeHtml(gift.link)}</span>
-          <img class="gift-copy-icon" data-link="${gift.link}" src="${copyIconUrl}" alt="copy">
-        </div>
+  const container = document.getElementById("giftsList");
+  if (!container) return;
+  
+  container.innerHTML = giftItems.map(gift => `
+    <div class="gift-card" data-link="${gift.link}">
+      <img class="gift-image" src="${gift.image}" alt="${escapeHtml(gift.name)}" loading="lazy">
+      <div class="gift-info">
+        <div class="gift-name">${escapeHtml(gift.name)}</div>
+        <button class="gift-claim-btn" data-link="${gift.link}">Получить</button>
       </div>
-    `).join('');
-    
-    document.querySelectorAll('.gift-claim-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const link = btn.dataset.link;
-        if (link) {
-          hapticLight();
-          window.open(link, '_blank');
-        }
-      });
+    </div>
+  `).join('');
+  
+  // Обработчик для кнопки
+  document.querySelectorAll('.gift-claim-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const link = btn.dataset.link;
+      if (link) {
+        hapticLight();
+        window.open(link, '_blank');
+      }
     });
-    
-    document.querySelectorAll('.gift-copy-icon').forEach(icon => {
-      icon.addEventListener('click', async (e) => {
-        e.stopPropagation();
-        const link = icon.dataset.link;
-        if (link && navigator.clipboard) {
-          hapticLight();
-          await navigator.clipboard.writeText(link);
-          const originalSrc = icon.src;
-          icon.style.opacity = '0.5';
-          setTimeout(() => { icon.style.opacity = '0.7'; }, 200);
-        }
-      });
+  });
+  
+  // Обработчик для всей карточки (опционально)
+  document.querySelectorAll('.gift-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      if (e.target.classList.contains('gift-claim-btn')) return;
+      const link = card.dataset.link;
+      if (link) {
+        hapticLight();
+        window.open(link, '_blank');
+      }
     });
-  }
+  });
+}
 
   async function hasUserReviewed() {
     const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;

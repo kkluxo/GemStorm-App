@@ -2906,8 +2906,6 @@
   const container = document.getElementById("giftsList");
   if (!container) return;
   
-  const copyIconUrl = "https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png";
-  
   container.innerHTML = giftItems.map(gift => `
     <div class="gift-wrapper">
       <div class="gift-main-card">
@@ -2916,17 +2914,19 @@
           <div class="gift-name">${escapeHtml(gift.name)}</div>
           <div class="gift-price">Free Gift</div>
           <div class="gift-category">Подарок</div>
-        <div class="gift-expiry">              <!-- НОВЫЙ БЛОК -->
-          <span class="expiry-label">Срок действия</span>
-          <span class="expiry-status">активен</span>
-        </div>
         </div>
         <button class="gift-claim-btn" data-link="${gift.link}">Получить</button>
+      </div>
+      <!-- ЭТА КАРТОЧКА ВЫЕЗЖАЕТ ИЗ-ПОД ОСНОВНОЙ С margin-top: -28px -->
+      <div class="gift-link-card">
+        <div class="gift-expiry-bottom">
+          <span class="expiry-label-bottom">Срок действия</span>
+          <span class="expiry-status-bottom">активен</span>
+        </div>
       </div>
     </div>
   `).join('');
   
-  // Обработчик для кнопки "Забрать"
   document.querySelectorAll('.gift-claim-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -2934,20 +2934,6 @@
       if (link) {
         hapticLight();
         window.open(link, '_blank');
-      }
-    });
-  });
-  
-  // Обработчик для иконки копирования
-  document.querySelectorAll('.gift-copy-icon').forEach(icon => {
-    icon.addEventListener('click', async (e) => {
-      e.stopPropagation();
-      const link = icon.dataset.link;
-      if (link && navigator.clipboard) {
-        hapticLight();
-        await navigator.clipboard.writeText(link);
-        icon.style.opacity = '0.5';
-        setTimeout(() => { icon.style.opacity = '0.7'; }, 200);
       }
     });
   });

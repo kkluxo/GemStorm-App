@@ -746,7 +746,23 @@ app.post('/api/reviews', async (req, res) => {
 });
 
 // Запуск сервера
-initDB().then(() => {
+initDB().then(async () => {
+    // Автомиграция: заполнить app_users из существующих заказов
+    try {
+        await pool.query(`
+            INSERT INTO app_users (user_id, user_name, user_username)
+            SELECT DISTINCT ON (user_id) user_id, user_name, user_username
+            FROM orders
+            WHERE user_id IS NOT NULL
+            ON CONFLICT (user_id) DO UPDATE SET
+                user_name = EXCLUDED.user_name,
+                user_username = EXCLUDED.user_username
+        `);
+        const count = await pool.query('SELECT COUNT(*) as count FROM app_users');
+        console.log(`app_users после миграции: ${count.rows[0].count} пользователей`);
+    } catch(e) {
+        console.error('Ошибка автомиграции:', e.message);
+    }
     app.listen(PORT, () => console.log(`Сервер запущен на порту ${PORT}`));
 }).catch((err) => {
     console.error('Ошибка Базы:', err.message);

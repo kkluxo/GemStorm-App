@@ -2197,7 +2197,6 @@
   hapticMedium();
   const tgU = window.Telegram?.WebApp?.initDataUnsafe?.user;
   try {
-    // 1. Проверка статуса магазина
     const r = await fetch('https://gemstorm.up.railway.app/api/settings');
     const s = await r.json();
     const status = s.bot_status || 'open';
@@ -2209,29 +2208,13 @@
     }
   } catch(e) {}
   try {
-    // 2. Проверка очереди
     const qr = await fetch('https://gemstorm.up.railway.app/api/check-queue');
     const q = await qr.json();
     if (q.busy) { alert('Оформление заказа временно недоступно. У нас много невыполненных заказов, попробуйте позже'); return; }
   } catch(e) {}
   try {
-    // 3. Проверка лимита заказов пользователя
     if (tgU?.id) {
       const lr = await fetch(`https://gemstorm.up.railway.app/api/check-rate-limit?userId=${tgU.id}`);
-      const l = await lr.json();
-      if (l.limited) { alert('Оформление заказов для вас временно ограничено, попробуйте позже'); return; }
-    }
-  } catch(e) {}
-    } catch(e) {}
-  try {
-    const qr = await fetch('https://gemstorm.up.railway.app/api/check-queue');
-    const q = await qr.json();
-    if (q.busy) { alert('Оформление заказа временно недоступно. У нас много невыполненных заказов, попробуйте позже'); return; }
-  } catch(e) {}
-  try {
-    const tgU2 = window.Telegram?.WebApp?.initDataUnsafe?.user;
-    if (tgU2?.id) {
-      const lr = await fetch(`https://gemstorm.up.railway.app/api/check-rate-limit?userId=${tgU2.id}`);
       const l = await lr.json();
       if (l.limited) { alert('Оформление заказов для вас временно ограничено, попробуйте позже'); return; }
     }

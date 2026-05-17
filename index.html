@@ -1587,15 +1587,20 @@
   position: absolute;
   bottom: 10px;
   right: 10px;
-  background: #4cb4e9;
+  background: #202B32;
   border: none;
   border-radius: 40px;
   padding: 6px 16px;
-  color: white;
+  min-width: 80px;
+  color: #4cb4e9;
   font-weight: 500;
-  font-size: 15px;
+  font-size: 16px;
   cursor: pointer;
   transition: 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .gift-claim-btn:active {
@@ -2884,7 +2889,7 @@
         <img class="gift-image" src="${gift.image}" alt="${escapeHtml(gift.name)}" loading="lazy">
         <div class="gift-info">
           <div class="gift-name">${escapeHtml(gift.name)}</div>
-          <div class="gift-price">Free</div>
+          <div class="gift-price">Free Gift</div>
           <div class="gift-category">Подарок</div>
         </div>
         <button class="gift-claim-btn" data-link="${gift.link}">Забрать</button>

@@ -1521,65 +1521,124 @@
       font-weight: 500;
     }
 
-    /* Стили для страницы Подарки */
-    /* Стили для страницы Подарки - в стиле каталога */
+    /* Стили для страницы Подарки - в стиле корзины */
 .gifts-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
   padding-bottom: 110px;
 }
 
-.gift-card {
-  background: #202022;
-  border: 1px solid #2B2B2D;
-  border-radius: 42px 42px 28px 28px;
-  overflow: hidden;
-  transition: 0.1s linear;
+.gift-wrapper {
+  position: relative;
+  margin-bottom: 0;
 }
 
-.gift-card:active {
-  transform: scale(0.98);
+.gift-main-card {
+  background: #202022;
+  border: 1px solid #2B2B2D;
+  border-radius: 31px 31px 29px 29px;
+  padding: 9px;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  margin-bottom: 0;
 }
 
 .gift-image {
-  width: 100%;
-  aspect-ratio: 1 / 1;
+  width: 90px;
+  height: 90px;
+  border-radius: 22px;
   object-fit: cover;
-  padding: 6px;
-  border-radius: 43px;
+  flex-shrink: 0;
 }
 
 .gift-info {
-  padding: 0 8px 12px 8px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
 }
 
 .gift-name {
   font-size: 18px;
   font-weight: 500;
   color: white;
-  margin-bottom: 10px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
+.gift-price {
+  font-size: 18px;
+  font-weight: 500;
+  color: white;
+}
+
+.gift-category {
+  font-size: 18px;
+  color: #9e9e9e;
+}
+
 .gift-claim-btn {
-  width: 100%;
-  height: 38px;
-  border-radius: 34px;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
   background: #4cb4e9;
   border: none;
+  border-radius: 40px;
+  padding: 6px 16px;
   color: white;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 15px;
   cursor: pointer;
   transition: 0.1s;
 }
 
 .gift-claim-btn:active {
-  transform: scale(0.96);
+  transform: scale(0.95);
   opacity: 0.8;
+}
+
+.gift-link-card {
+  background: #171719;
+  border: 1px solid #2B2B2D;
+  border-radius: 0 0 30px 30px;
+  padding: 12px 16px;
+  margin-top: -28px;
+  padding-top: 36px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.gift-link-text {
+  font-size: 14px;
+  color: #cbcdcd;
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-family: monospace;
+}
+
+.gift-copy-icon {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  flex-shrink: 0;
+  opacity: 0.7;
+  transition: 0.1s;
+}
+
+.gift-copy-icon:active {
+  transform: scale(0.85);
+  opacity: 1;
 }
   </style>
 </head>
@@ -2817,17 +2876,27 @@
   const container = document.getElementById("giftsList");
   if (!container) return;
   
+  const copyIconUrl = "https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png";
+  
   container.innerHTML = giftItems.map(gift => `
-    <div class="gift-card" data-link="${gift.link}">
-      <img class="gift-image" src="${gift.image}" alt="${escapeHtml(gift.name)}" loading="lazy">
-      <div class="gift-info">
-        <div class="gift-name">${escapeHtml(gift.name)}</div>
-        <button class="gift-claim-btn" data-link="${gift.link}">Получить</button>
+    <div class="gift-wrapper">
+      <div class="gift-main-card">
+        <img class="gift-image" src="${gift.image}" alt="${escapeHtml(gift.name)}" loading="lazy">
+        <div class="gift-info">
+          <div class="gift-name">${escapeHtml(gift.name)}</div>
+          <div class="gift-price">Free</div>
+          <div class="gift-category">Подарок</div>
+        </div>
+        <button class="gift-claim-btn" data-link="${gift.link}">Забрать</button>
+      </div>
+      <div class="gift-link-card">
+        <span class="gift-link-text" title="${escapeHtml(gift.link)}">${escapeHtml(gift.link)}</span>
+        <img class="gift-copy-icon" data-link="${gift.link}" src="${copyIconUrl}" alt="copy">
       </div>
     </div>
   `).join('');
   
-  // Обработчик для кнопки
+  // Обработчик для кнопки "Забрать"
   document.querySelectorAll('.gift-claim-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -2839,14 +2908,16 @@
     });
   });
   
-  // Обработчик для всей карточки (опционально)
-  document.querySelectorAll('.gift-card').forEach(card => {
-    card.addEventListener('click', (e) => {
-      if (e.target.classList.contains('gift-claim-btn')) return;
-      const link = card.dataset.link;
-      if (link) {
+  // Обработчик для иконки копирования
+  document.querySelectorAll('.gift-copy-icon').forEach(icon => {
+    icon.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const link = icon.dataset.link;
+      if (link && navigator.clipboard) {
         hapticLight();
-        window.open(link, '_blank');
+        await navigator.clipboard.writeText(link);
+        icon.style.opacity = '0.5';
+        setTimeout(() => { icon.style.opacity = '0.7'; }, 200);
       }
     });
   });

@@ -201,13 +201,9 @@
 .user-spent { font-size: 14px; color: #9e9e9e; }
 }
     /* Страница отзывов */
-    .review-card {
-  background: #202022; border: 1px solid #2B2B2D; border-radius: 30px;
-  padding: 16px; position: relative; z-index: 2; margin-bottom: 0;
-}
-.review-card-wrapper { position: relative; margin-bottom: 13px; overflow: hidden; border-radius: 30px; border: 1px solid #2B2B2D; }
-.review-card-wrapper .review-card { border: none; border-radius: 30px 30px 0 0; }
-.review-card-wrapper .review-items-card { border: none; border-radius: 0 0 30px 30px; }
+    .review-card-wrapper { position: relative; margin-bottom: 13px; }
+.review-card { background: #202022; border: 1px solid #2B2B2D; border-radius: 30px; padding: 16px; position: relative; z-index: 2; margin-bottom: 0; }
+.review-items-card { background: #171719; border: 1px solid #2B2B2D; border-radius: 0 0 30px 30px; padding: 12px 16px; margin-top: -28px; padding-top: 36px; position: relative; z-index: 1; }
     .review-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
     .review-avatar {
       width: 38px; height: 38px; border-radius: 50%; background: #303032;
@@ -590,8 +586,9 @@ if (bottomNav) bottomNav.style.display = 'none';
   container.innerHTML = '<div class="empty-state">Загрузка...</div>';
   try {
     const r = await fetch(`${API}/api/users`);
-    const users = await r.json();
-    const activeCount = users.filter(u => parseInt(u.orders_count) > 0).length;
+const data = await r.json();
+const users = Array.isArray(data) ? data : [];
+const activeCount = users.filter(u => parseInt(u.orders_count) > 0).length;
 
     container.innerHTML = `
       <div class="stats-card">
@@ -618,49 +615,69 @@ if (bottomNav) bottomNav.style.display = 'none';
 
   // Страница отзывов (админ)
   async function renderReviewsPage() {
-    const container = document.getElementById('reviewsContent');
-    if (!container) return;
-    container.innerHTML = '<div class="review-empty">Загрузка...</div>';
-    try {
-      const r = await fetch(`${API}/api/reviews`);
-      const list = await r.json();
-      if (!list.length) { container.innerHTML = '<div class="review-empty">Отзывов нет</div>'; return; }
-      container.innerHTML = list.map(rv => {
-        const avatar = rv.photo_url
-          ? `<img style="width:38px;height:38px;border-radius:50%;object-fit:cover;flex-shrink:0;" src="${rv.photo_url}" alt="avatar">`
-          : `<div class="review-avatar">👤</div>`;
-        const dt = rv.created_at ? new Date(rv.created_at) : null;
-        const dateStr = dt ? `${dt.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})} ${dt.toLocaleDateString('ru-RU')}` : '';
-        let items = []; try { items = JSON.parse(rv.order_items || '[]'); } catch(e) {}
-        const itemsHtml = items.map(i => `<div class="review-item-row"><span class="review-item-name">${escapeHtml(i.name)}</span><span class="review-item-price">${formatPrice(i.price)}</span></div>`).join('');
-        return `<div class="review-card-wrapper" data-review-id="${rv.id}">
-          <div class="review-card">
-            <div class="review-header">
-              ${avatar}
-              <div><div class="review-author-name">${escapeHtml(rv.user_name || 'Пользователь')}</div><div class="review-date">${dateStr}</div></div>
-              ${rv.order_number ? `<span class="review-order-badge">#${rv.order_number}</span>` : ''}
-              <button class="review-delete-btn" data-id="${rv.id}"><img src="https://storage.botpapa.me/files/19b700d0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="delete"></button>
-            </div>
-            <div class="review-text">${escapeHtml(rv.text)}</div>
-          </div>
-          ${itemsHtml ? `<div class="review-items-card">${itemsHtml}</div>` : ''}
-        </div>`;
-      }).join('');
+  const container = document.getElementById('reviewsContent');
+  if (!container) return;
+  container.innerHTML = '<div class="review-empty">Загрузка...</div>';
+  try {
+    const r = await fetch(`${API}/api/reviews`);
+    const list = await r.json();
+    if (!list.length) { container.innerHTML = '<div class="review-empty">Отзывов нет</div>'; return; }
 
-      container.querySelectorAll('.review-delete-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          hapticLight();
-          const reviewId = btn.dataset.id;
-          const confirm = window.Telegram?.WebApp
-            ? window.Telegram.WebApp.showConfirm('Удалить отзыв?', async (ok) => { if (ok) await deleteReview(reviewId); })
-            : (window.confirm('Удалить отзыв?') ? deleteReview(reviewId) : null);
-        });
+    container.innerHTML = list.map(rv => {
+      const avatar = rv.photo_url
+        ? `<img style="width:38px;height:38px;border-radius:50%;object-fit:cover;flex-shrink:0;" src="${rv.photo_url}" alt="avatar">`
+        : `<div class="review-avatar">👤</div>`;
+      const dt = rv.created_at ? new Date(rv.created_at) : null;
+      const dateStr = dt
+        ? `${dt.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})} ${dt.toLocaleDateString('ru-RU')}`
+        : '';
+
+      let items = [];
+      try { items = JSON.parse(rv.order_items || '[]'); } catch(e) {}
+      const itemsHtml = items.map(i =>
+        `<div class="review-item-row">
+          <span class="review-item-name">${escapeHtml(i.name)}</span>
+          <span class="review-item-price">${formatPrice(i.price)}</span>
+        </div>`
+      ).join('');
+
+      return `<div class="review-card-wrapper" data-review-id="${rv.id}">
+        <div class="review-card">
+          <div class="review-header">
+            ${avatar}
+            <div>
+              <div class="review-author-name">${escapeHtml(rv.user_name || 'Пользователь')}</div>
+              <div class="review-date">${dateStr}</div>
+            </div>
+            ${rv.order_number ? `<span class="review-order-badge">#${rv.order_number}</span>` : ''}
+            <button class="review-delete-btn" data-id="${rv.id}">
+              <img src="https://storage.botpapa.me/files/19b700d0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="delete">
+            </button>
+          </div>
+          <div class="review-text">${escapeHtml(rv.text || '')}</div>
+        </div>
+        ${itemsHtml ? `<div class="review-items-card">${itemsHtml}</div>` : ''}
+      </div>`;
+    }).join('');
+
+    container.querySelectorAll('.review-delete-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        hapticLight();
+        const reviewId = btn.dataset.id;
+        if (window.Telegram?.WebApp) {
+          window.Telegram.WebApp.showConfirm('Удалить отзыв?', async (ok) => {
+            if (ok) await deleteReview(reviewId);
+          });
+        } else {
+          if (window.confirm('Удалить отзыв?')) deleteReview(reviewId);
+        }
       });
-    } catch(e) {
-      container.innerHTML = '<div class="review-empty">Ошибка загрузки</div>';
-    }
+    });
+  } catch(e) {
+    container.innerHTML = '<div class="review-empty">Ошибка загрузки</div>';
   }
+}
 
   async function deleteReview(reviewId) {
     try {

@@ -414,7 +414,7 @@
     return {'pending':'status-pending-bg','awaiting_code':'status-awaiting-bg','processing':'status-processing-bg','completed':'status-completed-bg','done':'status-done-bg','cancelled':'status-cancelled-bg','notfound':'status-notfound-bg'}[s?.toLowerCase()] || 'status-pending-bg';
   }
   function getStatusDisplayText(s) {
-    return {'pending':'Ожидание проверки','awaiting_code':'Ожидание кода','processing':'Ожидает выполнения','completed':'Заказ выполнен','done':'Заказ выполнен','cancelled':'Отменен','notfound':'Перевод не найден'}[s?.toLowerCase()] || 'Ожидание проверки';
+    return {'pending':'Ожидает проверки','awaiting_code':'Ожидание кода','processing':'Ожидает выполнения','completed':'Заказ выполнен','done':'Заказ выполнен','cancelled':'Отменен','notfound':'Перевод не найден'}[s?.toLowerCase()] || 'Ожидает проверки';
   }
 
   // Навигация

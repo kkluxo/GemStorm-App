@@ -611,8 +611,9 @@ if (bottomNav) bottomNav.style.display = 'none';
         </div>`;
       }).join('')}`;
   } catch(e) {
-    container.innerHTML = '<div class="empty-state">Ошибка загрузки</div>';
-  }
+    console.error('Ошибка загрузки пользователей:', e);
+    container.innerHTML = `<div class="empty-state">Ошибка загрузки<br><small style="color:#666;font-size:12px;">${e.message}</small></div>`;
+}
 }
 
   // Страница отзывов (админ)

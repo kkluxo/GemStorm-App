@@ -1538,7 +1538,7 @@
     .gift-main-card {
       background: #202022;
       border: 1px solid #2B2B2D;
-      border-radius: 30px;
+      border-radius: 32px 32px 30px 30px;
       padding: 12px;
       position: relative;
       z-index: 2;
@@ -1550,7 +1550,7 @@
 
     .gift-image {
       width: 100%;
-      border-radius: 22px;
+      border-radius: 24px;
       object-fit: cover;
     }
 
@@ -1873,9 +1873,9 @@
     
   const giftItems = [
     { id: 101, name: "Значок Взрыв головы", image: "https://storage.botpapa.me/files/30af6170-51fa-11f1-bef9-f1ec7a2c6e45.png", link: "https://link.brawlstars.com/ru/voucher/e4a3bb44-95fd-48d1-9fe6-378619bf2eb9/" },
-    { id: 102, name: "Иконка Спайк с планетой", image: "https://storage.botpapa.me/files/87475ea0-51e8-11f1-bef9-f1ec7a2c6e45.jpeg", link: "https://link.brawlstars.com/?action=voucher&code=ab9cf7c2-45f8-4012-ad38-dfe8b1747c3b" },
-    { id: 103, name: "Спрей бойца Хэнк", image: "https://storage.botpapa.me/files/8b1bbf30-51e8-11f1-bef9-f1ec7a2c6e45.jpeg", link: "https://link.brawlstars.com/en/voucher/963326be-8393-492e-91ea-b19325ffb088/" },
-    { id: 104, name: "Иконка бойца Спайк", image: "https://storage.botpapa.me/files/8f068df0-51e8-11f1-bef9-f1ec7a2c6e45.jpeg", link: "https://link.brawlstars.com/ru/voucher/da19cd17-68af-4ed9-8671-b974a3a73356/" },
+    { id: 102, name: "Иконка Спайк с планетой", image: "https://storage.botpapa.me/files/6144b550-51fb-11f1-bef9-f1ec7a2c6e45.png", link: "https://link.brawlstars.com/?action=voucher&code=ab9cf7c2-45f8-4012-ad38-dfe8b1747c3b" },
+    { id: 103, name: "Спрей бойца Хэнк", image: "https://storage.botpapa.me/files/64c43f20-51fb-11f1-bef9-f1ec7a2c6e45.png", link: "https://link.brawlstars.com/en/voucher/963326be-8393-492e-91ea-b19325ffb088/" },
+    { id: 104, name: "Иконка бойца Спайк", image: "https://storage.botpapa.me/files/68e930b0-51fb-11f1-bef9-f1ec7a2c6e45.png", link: "https://link.brawlstars.com/ru/voucher/da19cd17-68af-4ed9-8671-b974a3a73356/" },
     { id: 105, name: "Значок клоуна", image: "https://storage.botpapa.me/files/92540b40-51e8-11f1-bef9-f1ec7a2c6e45.jpeg", link: "https://link.brawlstars.com/?action=voucher&code=b647c71d-41a5-42c4-a10f-8d47952d82f3" },
     { id: 106, name: "Значок белое лицо", image: "https://storage.botpapa.me/files/974a2f80-51e8-11f1-bef9-f1ec7a2c6e45.jpeg", link: "https://link.brawlstars.com/ru/?action=voucher&code=315b3e4f-0fd5-4a31-a5b0-86806f7638fc" },
     { id: 107, name: "Значок с мимом", image: "https://storage.botpapa.me/files/9b8938c0-51e8-11f1-bef9-f1ec7a2c6e45.jpeg", link: "https://link.brawlstars.com/ru/?action=voucher&code=2593e957-9cef-4ce7-b15f-b1dec74ec7df" },
@@ -2869,7 +2869,7 @@
           <img class="gift-image" src="${gift.image}" alt="${escapeHtml(gift.name)}" loading="lazy">
           <div class="gift-info">
             <span class="gift-name">${escapeHtml(gift.name)}</span>
-            <button class="gift-claim-btn" data-link="${gift.link}">Забрать в Brawl Stars</button>
+            <button class="gift-claim-btn" data-link="${gift.link}">Забрать награду в Brawl Stars</button>
           </div>
         </div>
         <div class="gift-link-card">

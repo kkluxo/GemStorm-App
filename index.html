@@ -1973,6 +1973,14 @@
   function canAddToCart(productId) {
   const product = products.find(p => p.id == productId);
   
+  // Подсчёт уникальных товаров в корзине
+  const uniqueItemsCount = Object.keys(cart).length;
+  
+  // Проверка лимита уникальных товаров (максимум 5)
+  if (!cart[productId] && uniqueItemsCount >= 5) {
+    return { allowed: false, reason: "Максимум 5 разных товаров в корзине" };
+  }
+  
   // Пропуски (id 1-4) - максимум 1 шт.
   if (productId <= 4) {
     if (cart[productId] >= 1) return { allowed: false, reason: "Максимум 1 шт." };
@@ -2002,12 +2010,6 @@
   if (product && product.category === "Кристаллы" && productId >= 5 && productId <= 10) {
     if ((cart[productId] || 0) >= 3) return { allowed: false, reason: "Максимум 3 шт." };
     return { allowed: true };
-  }
-  
-  // НОВОЕ ПРАВИЛО: максимум 5 разных товаров в корзине
-  const currentUniqueItems = Object.keys(cart).length;
-  if (!cart[productId] && currentUniqueItems >= 5) {
-    return { allowed: false, reason: "Максимум 5 товаров" };
   }
   
   return { allowed: true };

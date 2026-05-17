@@ -9,6 +9,7 @@
   <link rel="preload" as="image" href="https://storage.botpapa.me/files/00feb9c0-4a0d-11f1-bef9-f1ec7a2c6e45.png">
   <link rel="preload" as="image" href="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png">
   <link rel="preload" as="image" href="https://storage.botpapa.me/files/8a684130-49e6-11f1-bef9-f1ec7a2c6e45.png">
+  <link rel="preload" as="image" href="https://storage.botpapa.me/files/501ffee0-51e9-11f1-bef9-f1ec7a2c6e45.png">
   <link rel="preload" as="image" href="https://storage.botpapa.me/files/49df3ed0-5110-11f1-bef9-f1ec7a2c6e45.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -1543,6 +1544,138 @@
   color: #ffffff;
   font-weight: 500;
 }
+
+/* Стили для страницы Подарки */
+.gifts-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 110px;
+}
+
+.gift-card-wrapper {
+  position: relative;
+  margin-bottom: 0;
+}
+
+.gift-main-card {
+  background: #202022;
+  border: 1px solid #2B2B2D;
+  border-radius: 30px;
+  padding: 12px;
+  position: relative;
+  z-index: 2;
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.gift-image {
+  width: 70px;
+  height: 70px;
+  border-radius: 22px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.gift-info {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 0;
+}
+
+.gift-name {
+  font-size: 17px;
+  font-weight: 500;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 55%;
+}
+
+.gift-claim-btn {
+  background: rgba(76, 180, 233, 0.12);
+  border: none;
+  border-radius: 34px;
+  padding: 10px 18px;
+  color: #4cb4e9;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.1s;
+  flex-shrink: 0;
+}
+
+.gift-claim-btn:active {
+  transform: scale(0.95);
+  opacity: 0.8;
+}
+
+.gift-link-card {
+  background: #171719;
+  border: 1px solid #2B2B2D;
+  border-radius: 0 0 30px 30px;
+  padding: 12px 16px;
+  margin-top: -28px;
+  padding-top: 36px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.gift-link-text {
+  font-size: 14px;
+  color: #cbcdcd;
+  word-break: break-all;
+  flex: 1;
+  font-family: monospace;
+}
+
+.gift-copy-icon {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  flex-shrink: 0;
+  opacity: 0.7;
+  transition: 0.1s;
+}
+
+.gift-copy-icon:active {
+  transform: scale(0.85);
+  opacity: 1;
+}
+
+.profile-gift-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #202022;
+  border: 1px solid #2B2B2D;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.1s;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.profile-gift-icon:active {
+  transform: scale(0.92);
+  opacity: 0.8;
+}
+
+.profile-gift-icon img {
+  width: 24px;
+  height: 24px;
+}
   </style>
 </head>
 <body>
@@ -1678,6 +1811,14 @@
       <img id="profileMenuAvatar" src="" style="width:100%;height:100%;aspect-ratio:1/1;object-fit:cover;border-radius:50%;">
     </button>
   </div>
+  <!-- Страница "Подарки" -->
+<div id="gifts-page" class="page">
+  <div class="header-row">
+    <img class="header-icon-img" src="https://storage.botpapa.me/files/501ffee0-51e9-11f1-bef9-f1ec7a2c6e45.png" alt="gifts">
+    <div class="page-title">Подарки</div>
+  </div>
+  <div id="giftsList" class="gifts-container"></div>
+</div>
 </div>
 
 <script>
@@ -1782,6 +1923,26 @@ const products = [
   { id: 34, name: "180 гемов", price: 769, oldPrice: 799, image: "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Кристаллы" },
   { id: 35, name: "180 гемов", price: 169, oldPrice: 179, image: "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Кристаллы" },
   { id: 36, name: "200 гемов", price: 849, oldPrice: 889, image: "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg", category: "Кристаллы" },
+  // Подарки (не участвуют в обычной продаже)
+const giftItems = [
+  { id: 101, name: "Значок Взрыв головы", image: "https://storage.botpapa.me/files/80f10e20-51e8-11f1-bef9-f1ec7a2c6e45.jpeg", link: "https://link.brawlstars.com/ru/voucher/e4a3bb44-95fd-48d1-9fe6-378619bf2eb9/" },
+  { id: 102, name: "Иконка Спайк с планетой", image: "https://storage.botpapa.me/files/87475ea0-51e8-11f1-bef9-f1ec7a2c6e45.jpeg", link: "https://link.brawlstars.com/?action=voucher&code=ab9cf7c2-45f8-4012-ad38-dfe8b1747c3b" },
+  { id: 103, name: "Спрей бойца Хэнк", image: "https://storage.botpapa.me/files/8b1bbf30-51e8-11f1-bef9-f1ec7a2c6e45.jpeg", link: "https://link.brawlstars.com/en/voucher/963326be-8393-492e-91ea-b19325ffb088/" },
+  { id: 104, name: "Иконка бойца Спайк", image: "https://storage.botpapa.me/files/8f068df0-51e8-11f1-bef9-f1ec7a2c6e45.jpeg", link: "https://link.brawlstars.com/ru/voucher/da19cd17-68af-4ed9-8671-b974a3a73356/" },
+  { id: 105, name: "Значок клоуна", image: "https://storage.botpapa.me/files/92540b40-51e8-11f1-bef9-f1ec7a2c6e45.jpeg", link: "https://link.brawlstars.com/?action=voucher&code=b647c71d-41a5-42c4-a10f-8d47952d82f3" },
+  { id: 106, name: "Значок белое лицо", image: "https://storage.botpapa.me/files/974a2f80-51e8-11f1-bef9-f1ec7a2c6e45.jpeg", link: "https://link.brawlstars.com/ru/?action=voucher&code=315b3e4f-0fd5-4a31-a5b0-86806f7638fc" },
+  { id: 107, name: "Значок с мимом", image: "https://storage.botpapa.me/files/9b8938c0-51e8-11f1-bef9-f1ec7a2c6e45.jpeg", link: "https://link.brawlstars.com/ru/?action=voucher&code=2593e957-9cef-4ce7-b15f-b1dec74ec7df" },
+  { id: 108, name: "Значок с яичком", image: "https://storage.botpapa.me/files/9fd49e10-51e8-11f1-bef9-f1ec7a2c6e45.jpeg", link: "https://link.brawlstars.com/?action=voucher&code=cc017c48-b904-448d-9fe1-dd494e28bfd2" },
+  { id: 109, name: "Иконка Brawl Stars", image: "https://storage.botpapa.me/files/a39b4300-51e8-11f1-bef9-f1ec7a2c6e45.jpeg", link: "https://link.brawlstars.com/?action=voucher&code=3484c6d2-9ab5-4eae-878a-4a186fc4e24a" },
+  { id: 110, name: "Иконка с книжкой", image: "https://storage.botpapa.me/files/a7e87d10-51e8-11f1-bef9-f1ec7a2c6e45.jpeg", link: "https://link.brawlstars.com/?action=voucher&code=91eead0b-0917-4077-8efe-6b852c7e49a3" },
+  { id: 111, name: "Иконка Годзилла", image: "https://storage.botpapa.me/files/b05355b0-51e8-11f1-bef9-f1ec7a2c6e45.jpeg", link: "https://link.brawlstars.com/en/?action=voucher&code=935251d2-1647-433e-a6e6-771a6ade9293" },
+  { id: 112, name: "Иконка Спанч Боб", image: "https://storage.botpapa.me/files/b4b88490-51e8-11f1-bef9-f1ec7a2c6e45.jpeg", link: "https://link.brawlstars.com/?action=voucher&code=4c9ea6d6-10f7-430d-a506-201903512c50" },
+  { id: 113, name: "Иконка с пиццей", image: "https://storage.botpapa.me/files/b8f34810-51e8-11f1-bef9-f1ec7a2c6e45.jpeg", link: "https://link.brawlstars.com/ru/?action=voucher&code=8142f715-a879-4d19-9af3-fa49e72ef59a" },
+  { id: 114, name: "Значок с Brawl Talk", image: "https://storage.botpapa.me/files/828b7250-51ea-11f1-bef9-f1ec7a2c6e45.jpeg", link: "https://link.brawlstars.com/voucher/cbd9bc12-423e-4a32-be45-590b0ebc52ad" },
+  { id: 115, name: "Спрей с картой", image: "https://storage.botpapa.me/files/87e51350-51ea-11f1-bef9-f1ec7a2c6e45.jpeg", link: "https://link.brawlstars.com/?action=voucher&code=974a1b0f-b2f7-45c5-978e-bdade83062a1" },
+  { id: 116, name: "Спрей Subway Surfers", image: "https://storage.botpapa.me/files/8b1396f0-51ea-11f1-bef9-f1ec7a2c6e45.jpeg", link: "https://link.brawlstars.com/ru/voucher/04f69983-0712-49b3-af7a-3718398c4517/" },
+  { id: 117, name: "Значок Brawl Cup #1", image: "https://storage.botpapa.me/files/bc0ce420-51e8-11f1-bef9-f1ec7a2c6e45.jpeg", link: "https://link.brawlstars.com/en/voucher/98cd2217-391a-48a7-b892-caab7c5a058b/" },
+  { id: 118, name: "Значок Brawl Cup #2", image: "https://storage.botpapa.me/files/bf2d8510-51e8-11f1-bef9-f1ec7a2c6e45.jpeg", link: "https://link.brawlstars.com/jp/voucher/1a90f300-ae20-4c00-9a23-a5483c9744dc/" }
 ];
   
 const promoCodes = { "GEMSTORM3": 3, "CL3PER": 5, "WEL9825H0": 1 };
@@ -2758,6 +2919,90 @@ async function renderWriteReviewPage() {
   }, 0);
 }
 
+// Функция отрисовки страницы Подарки
+function renderGiftsPage() {
+  const container = document.getElementById("giftsList");
+  if (!container) return;
+  
+  const copyIconUrl = "https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png";
+  
+  container.innerHTML = giftItems.map(gift => `
+    <div class="gift-card-wrapper">
+      <div class="gift-main-card">
+        <img class="gift-image" src="${gift.image}" alt="${escapeHtml(gift.name)}" loading="lazy">
+        <div class="gift-info">
+          <span class="gift-name">${escapeHtml(gift.name)}</span>
+          <button class="gift-claim-btn" data-link="${gift.link}">Забрать</button>
+        </div>
+      </div>
+      <div class="gift-link-card">
+        <span class="gift-link-text">${escapeHtml(gift.link)}</span>
+        <img class="gift-copy-icon" data-link="${gift.link}" src="${copyIconUrl}" alt="copy">
+      </div>
+    </div>
+  `).join('');
+  
+  // Обработчики для кнопок "Забрать"
+  document.querySelectorAll('.gift-claim-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const link = btn.dataset.link;
+      if (link) {
+        hapticLight();
+        window.open(link, '_blank');
+      }
+    });
+  });
+  
+  // Обработчики для иконок копирования
+  document.querySelectorAll('.gift-copy-icon').forEach(icon => {
+    icon.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const link = icon.dataset.link;
+      if (link && navigator.clipboard) {
+        hapticLight();
+        await navigator.clipboard.writeText(link);
+        // Визуальный фидбек
+        const originalSrc = icon.src;
+        icon.style.opacity = '0.5';
+        setTimeout(() => { icon.style.opacity = '0.7'; }, 200);
+      }
+    });
+  });
+}
+
+// Проверка, оставлял ли пользователь отзывы
+async function hasUserReviewed() {
+  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  if (!tgUser?.id) return false;
+  
+  try {
+    const response = await fetch(`https://gemstorm.up.railway.app/api/reviews`);
+    if (!response.ok) return false;
+    const reviews = await response.json();
+    return reviews.some(r => String(r.user_id) === String(tgUser.id));
+  } catch(e) {
+    console.error('Ошибка проверки отзывов:', e);
+    return false;
+  }
+}
+
+// Открыть страницу подарков с проверкой
+async function openGiftsPage() {
+  hapticLight();
+  const hasReview = await hasUserReviewed();
+  if (hasReview) {
+    renderGiftsPage();
+    showPage("gifts");
+  } else {
+    if (window.Telegram?.WebApp) {
+      window.Telegram.WebApp.showAlert("Чтобы получить доступ к разделу “Подарки”, вам нужно оставить хотя бы один отзыв к заказу");
+    } else {
+      alert("Чтобы получить доступ к разделу “Подарки”, вам нужно оставить хотя бы один отзыв к заказу");
+    }
+  }
+}
+
 async function loadReviewsList() {
   const container = document.getElementById('reviewsList');
   if (!container) return;
@@ -2834,6 +3079,7 @@ async function renderProfilePage() {
   
   const totalSpent = await getUserTotalSpent();
   const arrowSvg = `<svg style="width:18px;height:18px;opacity:0.4;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>`;
+  const giftIconUrl = "https://storage.botpapa.me/files/501ffee0-51e9-11f1-bef9-f1ec7a2c6e45.png";
 
   container.innerHTML = `
     <div class="profile-wrapper">
@@ -2844,6 +3090,9 @@ async function renderProfilePage() {
           <div style="margin-top:4px;">
             <div class="profile-username">${escapeHtml(username)}</div>
           </div>
+        </div>
+        <div class="profile-gift-icon" id="openGiftsBtn">
+          <img src="${giftIconUrl}" alt="gifts">
         </div>
       </div>
       <div class="profile-bottom-card">
@@ -2891,6 +3140,7 @@ async function renderProfilePage() {
     document.getElementById("openReviewsPage")?.addEventListener("click", () => { hapticLight(); showPage("reviews"); });
     document.getElementById("openFaqBtn")?.addEventListener("click", () => { hapticLight(); orderMode = "cart"; promoOrderData = { deal: null, name: "", category: "" }; showPage("buy-promo"); });
     document.getElementById("openSupportBtn")?.addEventListener("click", () => { hapticLight(); window.open("https://t.me/GemStormHelp", "_blank"); });
+    document.getElementById("openGiftsBtn")?.addEventListener("click", openGiftsPage);
   }, 0);
 }
 
@@ -2929,6 +3179,7 @@ function showPage(pageId, skipHistoryAdd = false) {
   if (pageId === "filter") { if (checkoutBlock) checkoutBlock.style.display = "none"; }
   if (pageId === "order-detail") { if (checkoutBlock) checkoutBlock.style.display = "none"; }
   if (pageId === "reviews") { renderReviewsPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
+  if (pageId === "gifts") { renderGiftsPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
   if (pageId === "write-review") { renderWriteReviewPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
   if (pageId === "buy-promo") { renderBuyPromoPage(); }
   if (pageId === "checkout") { afterPaymentBackPage = orderMode === "promo_deal" ? "buy-promo" : "cart"; }

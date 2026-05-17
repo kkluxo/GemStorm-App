@@ -530,6 +530,24 @@ app.post('/api/track-user', async (req, res) => {
     }
 });
 
+app.post('/api/migrate-users', async (req, res) => {
+    try {
+        await pool.query(`
+            INSERT INTO app_users (user_id, user_name, user_username)
+            SELECT DISTINCT ON (user_id) user_id, user_name, user_username
+            FROM orders
+            WHERE user_id IS NOT NULL
+            ON CONFLICT (user_id) DO UPDATE SET
+                user_name = EXCLUDED.user_name,
+                user_username = EXCLUDED.user_username
+        `);
+        const count = await pool.query('SELECT COUNT(*) as count FROM app_users');
+        res.json({ success: true, users: parseInt(count.rows[0].count) });
+    } catch(err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // Получить всех пользователей
 app.get('/api/users', async (req, res) => {
     try {

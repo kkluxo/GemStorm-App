@@ -1913,7 +1913,6 @@
     { id: 118, name: "Значок Brawl Cup #2", image: "https://storage.botpapa.me/files/91a58780-5203-11f1-bef9-f1ec7a2c6e45.jpeg", link: "https://link.brawlstars.com/jp/voucher/1a90f300-ae20-4c00-9a23-a5483c9744dc/" }
   ];
     
-  const promoCodes = { "GEMSTORM3": 3, "CL3PER": 5, "WEL9825H0": 1 };
   const cardNumbers = { "Т-Банк": "2200 7019 3499 0208", "ВТБ Банк": "2200 2418 6382 9697", "Сбер Банк": "2202 2084 4441 4743", "Ozon Банк": "2204 3203 9062 7166", "Альфа Банк": "2200 1529 6836 2817" };
   const paymentMethodsOptions = [
     { value: "tbank", label: "Т-Банк" },
@@ -2156,37 +2155,89 @@
         const applyBtn = document.getElementById("promoApplyBtn");
         if (promoInput) promoInput.focus();
         if (backBtn) backBtn.addEventListener("click", () => { hapticLight(); if (appliedPromo) appliedPromo = null; isPromoMode = false; renderCheckoutBlock(); renderCartPage(); });
-        if (applyBtn) applyBtn.addEventListener("click", () => { hapticLight(); const code = promoInput?.value.trim().toUpperCase(); if (promoCodes[code]) { appliedPromo = { code, discountPercent: promoCodes[code] }; isPromoMode = false; renderCheckoutBlock(); renderCartPage(); } else if (promoInput) { promoInput.classList.add("error"); promoInput.value = "Промокод не найден"; setTimeout(() => { promoInput.classList.remove("error"); promoInput.value = appliedPromo ? appliedPromo.code : ""; }, 2000); } });
+        if (applyBtn) applyBtn.addEventListener("click", async () => {
+  hapticLight();
+  const code = promoInput?.value.trim().toUpperCase();
+  if (!code) return;
+  const tgU = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  try {
+    const r = await fetch('https://gemstorm.up.railway.app/api/check-promo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code, userId: String(tgU?.id || '') })
+    });
+    const data = await r.json();
+    if (data.valid) {
+      appliedPromo = { code, discountPercent: data.discount };
+      isPromoMode = false;
+      renderCheckoutBlock();
+      renderCartPage();
+    } else {
+      if (data.reason === 'not_found') {
+        alert('Промокод не найден');
+      } else if (data.reason === 'already_used') {
+        alert('Данный промокод уже был использован ранее');
+      } else if (data.reason === 'first_order_only') {
+        alert('Данный промокод доступен только на первый заказ');
+      }
+      if (promoInput) {
+        promoInput.value = appliedPromo ? appliedPromo.code : '';
+      }
+    }
+  } catch(e) {
+    alert('Ошибка проверки промокода');
+  }
+});
         if (promoInput) promoInput.addEventListener("keypress", (e) => { if (e.key === "Enter") applyBtn?.click(); });
       }, 0);
     } else {
       fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${appliedPromo ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="checkoutBtn">Перейти к оформлению</button><button class="promo-btn" id="openPromoBtn"><img src="https://storage.botpapa.me/files/a488c6d0-4a12-11f1-bef9-f1ec7a2c6e45.png" alt="Промокод"></button></div></div>`;
       setTimeout(() => {
         document.getElementById("checkoutBtn")?.addEventListener("click", async () => {
-          hapticMedium();
-          try {
-            const r = await fetch('https://gemstorm.up.railway.app/api/settings');
-            const s = await r.json();
-            const status = s.bot_status || 'open';
-            if (status === 'closed') {
-              alert('Оформить заказ временно не получится, попробуйте позже');
-              return;
-            }
-            if (status === 'maintenance') {
-              alert('Оформить заказ временно не получится, проводятся технические работы');
-              return;
-            }
-            if (status === 'auto') {
-              const nowUtc = new Date();
-              const mskHour = (nowUtc.getUTCHours() + 3) % 24;
-              if (mskHour >= 0 && mskHour < 10) {
-                alert('Оформить заказ временно не получится, возвращайтесь в 10:00 по московскому времени');
-                return;
-              }
-            }
-          } catch(e) {}
-          showPage("checkout");
-        });
+  hapticMedium();
+  const tgU = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  try {
+    // 1. Проверка статуса магазина
+    const r = await fetch('https://gemstorm.up.railway.app/api/settings');
+    const s = await r.json();
+    const status = s.bot_status || 'open';
+    if (status === 'closed') { alert('Оформить заказ временно не получится, попробуйте позже'); return; }
+    if (status === 'maintenance') { alert('Оформить заказ временно не получится, проводятся технические работы'); return; }
+    if (status === 'auto') {
+      const mskHour = (new Date().getUTCHours() + 3) % 24;
+      if (mskHour >= 0 && mskHour < 10) { alert('Оформить заказ временно не получится, возвращайтесь в 10:00 по московскому времени'); return; }
+    }
+  } catch(e) {}
+  try {
+    // 2. Проверка очереди
+    const qr = await fetch('https://gemstorm.up.railway.app/api/check-queue');
+    const q = await qr.json();
+    if (q.busy) { alert('Оформление заказа временно недоступно. У нас много невыполненных заказов, попробуйте позже'); return; }
+  } catch(e) {}
+  try {
+    // 3. Проверка лимита заказов пользователя
+    if (tgU?.id) {
+      const lr = await fetch(`https://gemstorm.up.railway.app/api/check-rate-limit?userId=${tgU.id}`);
+      const l = await lr.json();
+      if (l.limited) { alert('Оформление заказов для вас временно ограничено, попробуйте позже'); return; }
+    }
+  } catch(e) {}
+    } catch(e) {}
+  try {
+    const qr = await fetch('https://gemstorm.up.railway.app/api/check-queue');
+    const q = await qr.json();
+    if (q.busy) { alert('Оформление заказа временно недоступно. У нас много невыполненных заказов, попробуйте позже'); return; }
+  } catch(e) {}
+  try {
+    const tgU2 = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    if (tgU2?.id) {
+      const lr = await fetch(`https://gemstorm.up.railway.app/api/check-rate-limit?userId=${tgU2.id}`);
+      const l = await lr.json();
+      if (l.limited) { alert('Оформление заказов для вас временно ограничено, попробуйте позже'); return; }
+    }
+  } catch(e) {}
+  showPage("checkout");
+});
         document.getElementById("openPromoBtn")?.addEventListener("click", () => { hapticLight(); isPromoMode = true; renderCheckoutBlock(); });
       }, 0);
     }

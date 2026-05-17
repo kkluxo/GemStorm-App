@@ -223,9 +223,9 @@
   display: inline-flex; align-items: center; justify-content: center;
   background: rgba(239,68,68,0.12); border-radius: 50%; width: 32px; height: 32px;
   color: #ef4444; cursor: pointer; border: none; flex-shrink: 0;
-  margin-left: 4px; padding: 0;
+  margin-left: 2px; padding: 0;
 }
-.review-delete-btn img { width: 16px; height: 16px; }
+.review-delete-btn img { width: 20px; height: 20px; }
 
     .review-delete-btn:active { opacity: 0.7; transform: scale(0.95); }
     .review-items-card {
@@ -683,133 +683,124 @@ if (bottomNav) bottomNav.style.display = 'none';
 
   // Страница профиля (админ)
   async function renderProfilePage() {
-    const container = document.getElementById('profileContent');
-    if (!container) return;
-    const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-    const nickname = tgUser?.first_name || 'Администратор';
-    const username = tgUser?.username ? '@' + tgUser.username : '';
-    const photoUrl = tgUser?.photo_url || '';
+  const container = document.getElementById('profileContent');
+  if (!container) return;
+  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  const nickname = tgUser?.first_name || 'Администратор';
+  const username = tgUser?.username ? '@' + tgUser.username : '';
+  const photoUrl = tgUser?.photo_url || '';
 
-    let totalUsers = 0;
-    try {
-      const r = await fetch(`${API}/api/users`);
-      const users = await r.json();
-      totalUsers = users.length;
-    } catch(e) {}
+  // Загружаем данные ДО рендера чтобы не было мигания
+  let totalRevenue = 0;
+  let botStatus = 'open';
 
-    let botStatus = 'open';
-    try {
-    const ru = await fetch(`${API}/api/users`);
-    const users = await ru.json();
-    const total = users.reduce((s, u) => s + (parseInt(u.total_spent) || 0), 0);
-    const el = document.getElementById('totalRevenueVal');
-    if (el) el.textContent = total > 0 ? formatPrice(total) : '0₽';
-} catch(e) {
-    const el = document.getElementById('totalRevenueVal');
-    if (el) el.textContent = 'Ошибка';
-}
-
-    container.innerHTML = `
-  <div class="profile-wrapper">
-    <div class="profile-main-card">
-      ${photoUrl ? `<img class="profile-avatar" src="${photoUrl}" alt="avatar">` : '<div class="profile-avatar" style="background:#303032;display:flex;align-items:center;justify-content:center;font-size:24px;">👤</div>'}
-      <div>
-        <div class="profile-nickname">${escapeHtml(nickname)}</div>
-        ${username ? `<div class="profile-username">${escapeHtml(username)}</div>` : ''}
-      </div>
-    </div>
-    <div class="profile-bottom-card">
-      <div class="profile-stats-row">
-        <span class="profile-stats-label">Общий объем</span>
-        <span class="profile-stats-value" id="totalRevenueVal">...</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="subscribe-card" id="goStatsBtn">
-    <div>
-      <div class="subscribe-title">Полная статистика</div>
-      <div class="subscribe-text">Получить полную статистику</div>
-    </div>
-    <svg style="width:18px;height:18px;opacity:0.4;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-  </div>
-
-  <div class="settings-card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-      <span class="settings-title" style="margin-bottom:0;">Статус</span>
-      <span id="currentStatusBadge" class="order-card-status ${
-  botStatus === 'open' ? 'status-completed-text status-completed-bg' :
-  botStatus === 'closed' ? 'status-cancelled-text status-cancelled-bg' :
-  botStatus === 'maintenance' ? 'status-awaiting_text status-awaiting-bg' :
-  'status-pending-text status-pending-bg'
-}">${
-  botStatus === 'open' ? 'Открыт' :
-  botStatus === 'closed' ? 'Закрыт' :
-  botStatus === 'maintenance' ? 'Тех. раб.' : 'Авто'
-}</span>
-    </div>
-    <select class="status-select" id="adminStatusSelectProfile">
-      <option value="open">Открыт</option>
-      <option value="closed">Закрыт</option>
-      <option value="auto">Авто (10:00–23:59 МСК)</option>
-      <option value="maintenance">Тех. раб.</option>
-    </select>
-    <div class="action-buttons-row" style="margin-top:12px;">
-      <button class="update-status-btn" id="saveStatusBtn">Сохранить статус</button>
-      <button class="support-circle-btn" id="showMskTimeBtn">
-        <img src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="time" style="width:26px;height:26px;">
-      </button>
-    </div>
-  </div>`;
-
-    setTimeout(async () => {
-  // Загрузить общий объём
   try {
     const ru = await fetch(`${API}/api/users`);
     const users = await ru.json();
-    const total = users.reduce((s, u) => s + parseInt(u.total_spent || 0), 0);
-    const el = document.getElementById('totalRevenueVal');
-    if (el) el.textContent = formatPrice(total);
+    totalRevenue = users.reduce((s, u) => s + (parseInt(u.total_spent) || 0), 0);
   } catch(e) {}
 
-  // Загрузить текущий статус
   try {
     const rs = await fetch(`${API}/api/settings`);
     const s = await rs.json();
-    const sel = document.getElementById('adminStatusSelectProfile');
-    if (sel) sel.value = s.bot_status || 'open';
+    botStatus = s.bot_status || 'open';
   } catch(e) {}
 
-  document.getElementById('adminStatusSelectProfile')?.addEventListener('change', function() {
-    updateStatusBadge(this.value);
-  });
+  const statusMap = {
+    'open':        { text: 'Открыт',    tc: 'status-completed-text', bc: 'status-completed-bg' },
+    'closed':      { text: 'Закрыт',    tc: 'status-cancelled-text', bc: 'status-cancelled-bg' },
+    'auto':        { text: 'Авто',      tc: 'status-pending-text',   bc: 'status-pending-bg' },
+    'maintenance': { text: 'Тех. раб.', tc: 'status-awaiting_text',  bc: 'status-awaiting-bg' },
+  };
+  const currentStatus = statusMap[botStatus] || statusMap['open'];
 
-  document.getElementById('saveStatusBtn')?.addEventListener('click', async () => {
-    hapticMedium();
-    const val = document.getElementById('adminStatusSelectProfile')?.value;
-    try {
-      await fetch(`${API}/api/settings`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ bot_status: val }) });
+  container.innerHTML = `
+    <div class="profile-wrapper">
+      <div class="profile-main-card">
+        ${photoUrl ? `<img class="profile-avatar" src="${photoUrl}" alt="avatar">` : '<div class="profile-avatar" style="background:#303032;display:flex;align-items:center;justify-content:center;font-size:24px;">👤</div>'}
+        <div>
+          <div class="profile-nickname">${escapeHtml(nickname)}</div>
+          ${username ? `<div class="profile-username">${escapeHtml(username)}</div>` : ''}
+        </div>
+      </div>
+      <div class="profile-bottom-card">
+        <div class="profile-stats-row">
+          <span class="profile-stats-label">Общий объем</span>
+          <span class="profile-stats-value">${formatPrice(totalRevenue)}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="subscribe-card" id="goStatsBtn">
+      <div>
+        <div class="subscribe-title">Полная статистика</div>
+        <div class="subscribe-text">Получить полную статистику</div>
+      </div>
+      <svg style="width:18px;height:18px;opacity:0.4;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </div>
+
+    <div class="settings-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <span class="settings-title" style="margin-bottom:0;">Статус</span>
+        <span id="currentStatusBadge" class="order-card-status ${currentStatus.tc} ${currentStatus.bc}">${currentStatus.text}</span>
+      </div>
+      <select class="status-select" id="adminStatusSelectProfile">
+        <option value="open" ${botStatus==='open'?'selected':''}>Открыт</option>
+        <option value="closed" ${botStatus==='closed'?'selected':''}>Закрыт</option>
+        <option value="auto" ${botStatus==='auto'?'selected':''}>Авто (10:00–23:59 МСК)</option>
+        <option value="maintenance" ${botStatus==='maintenance'?'selected':''}>Тех. раб.</option>
+      </select>
+      <div class="action-buttons-row" style="margin-top:12px;">
+        <button class="update-status-btn" id="saveStatusBtn">Сохранить статус</button>
+        <button class="support-circle-btn" id="showMskTimeBtn">
+          <img src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="time" style="width:26px;height:26px;">
+        </button>
+      </div>
+    </div>`;
+
+  // Навешиваем обработчики ПОСЛЕ рендера
+  setTimeout(() => {
+    // Статус бейдж меняется ТОЛЬКО при нажатии Сохранить
+    document.getElementById('saveStatusBtn')?.addEventListener('click', async () => {
+      hapticMedium();
+      const val = document.getElementById('adminStatusSelectProfile')?.value;
+      try {
+        const r = await fetch(`${API}/api/settings`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ bot_status: val })
+        });
+        if (r.ok) {
+          hapticLight();
+          // Обновляем бейдж только после успешного сохранения
+          const saved = statusMap[val] || statusMap['open'];
+          const badge = document.getElementById('currentStatusBadge');
+          if (badge) {
+            badge.className = `order-card-status ${saved.tc} ${saved.bc}`;
+            badge.textContent = saved.text;
+          }
+        } else {
+          alert('Ошибка сохранения');
+        }
+      } catch(e) { alert('Ошибка сохранения'); }
+    });
+
+    document.getElementById('showMskTimeBtn')?.addEventListener('click', () => {
       hapticLight();
-    } catch(e) { alert('Ошибка сохранения'); }
-  });
+      const mskTime = new Intl.DateTimeFormat('ru-RU', {
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        timeZone: 'Europe/Moscow'
+      }).format(new Date());
+      const msg = `Время по МСК: ${mskTime}`;
+      window.Telegram?.WebApp ? window.Telegram.WebApp.showAlert(msg) : alert(msg);
+    });
 
-  document.getElementById('showMskTimeBtn')?.addEventListener('click', () => {
-    hapticLight();
-    const now = new Date();
-    const mskTime = new Intl.DateTimeFormat('ru-RU', {
-      hour: '2-digit', minute: '2-digit', second: '2-digit',
-      timeZone: 'Europe/Moscow'
-    }).format(now);
-    const msg = `Время по МСК: ${mskTime}`;
-    window.Telegram?.WebApp ? window.Telegram.WebApp.showAlert(msg) : alert(msg);
-  });
-
-  document.getElementById('goStatsBtn')?.addEventListener('click', () => {
-    hapticLight();
-    showStatsPage();
-  });
-}, 0);
-  }
+    document.getElementById('goStatsBtn')?.addEventListener('click', () => {
+      hapticLight();
+      showStatsPage();
+    });
+  }, 0);
+}
 
   function updateTabSlider() {
     const slider = document.getElementById('tabSlider');

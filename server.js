@@ -584,27 +584,27 @@ app.get('/api/users', async (req, res) => {
         }
         
         const result = await pool.query(`
-            SELECT 
-                au.user_id,
-                au.user_name,
-                au.user_username,
-                au.photo_url,
-                au.first_seen,
-                au.last_seen,
-                COALESCE(o.orders_count, 0) as orders_count,
-                COALESCE(o.total_spent, 0) as total_spent
-            FROM app_users au
-            LEFT JOIN (
-                SELECT 
-                    user_id,
-                    COUNT(*) as orders_count,
-                    SUM(total) as total_spent
-                FROM orders
-                WHERE user_id IS NOT NULL
-                GROUP BY user_id
-            ) o ON au.user_id = o.user_id
-            ORDER BY COALESCE(o.total_spent, 0) DESC, au.first_seen DESC
-        `);
+    SELECT 
+        au.user_id,
+        au.user_name,
+        au.user_username,
+        au.photo_url,
+        au.first_seen,
+        au.last_seen,
+        COALESCE(o.orders_count, 0) as orders_count,
+        COALESCE(o.total_spent, 0) as total_spent
+    FROM app_users au
+    LEFT JOIN (
+        SELECT 
+            user_id::TEXT,
+            COUNT(*) as orders_count,
+            SUM(total) as total_spent
+        FROM orders
+        WHERE user_id IS NOT NULL
+        GROUP BY user_id::TEXT
+    ) o ON au.user_id::TEXT = o.user_id
+    ORDER BY COALESCE(o.total_spent, 0) DESC, au.first_seen DESC
+`);
         res.json(result.rows);
     } catch(err) {
         console.error('Ошибка /api/users:', err.message);
@@ -792,15 +792,15 @@ initDB().then(async () => {
     // Автомиграция: заполнить app_users из существующих заказов
     try {
     await pool.query(`
-        INSERT INTO app_users (user_id, user_name, user_username)
-        SELECT user_id, MAX(user_name) as user_name, MAX(user_username) as user_username
-        FROM orders
-        WHERE user_id IS NOT NULL
-        GROUP BY user_id
-        ON CONFLICT (user_id) DO UPDATE SET
-            user_name = EXCLUDED.user_name,
-            user_username = EXCLUDED.user_username
-    `);
+    INSERT INTO app_users (user_id, user_name, user_username)
+    SELECT user_id::TEXT, MAX(user_name), MAX(user_username)
+    FROM orders
+    WHERE user_id IS NOT NULL
+    GROUP BY user_id::TEXT
+    ON CONFLICT (user_id) DO UPDATE SET
+        user_name = EXCLUDED.user_name,
+        user_username = EXCLUDED.user_username
+`);
         const count = await pool.query('SELECT COUNT(*) as count FROM app_users');
         console.log(`app_users после миграции: ${count.rows[0].count} пользователей`);
     } catch(e) {

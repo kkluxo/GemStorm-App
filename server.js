@@ -669,9 +669,9 @@ app.get('/api/check-rate-limit', async (req, res) => {
         const { userId } = req.query;
         if (!userId) return res.json({ limited: false });
         
-        const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
-        const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString();
-        
+        const tenMinutesAgo = Date.now() - 10 * 60 * 1000;
+        const thirtyMinutesAgo = Date.now() - 30 * 60 * 1000;
+    
         // Заказы за последние 10 минут
         const recentResult = await pool.query(`
             SELECT COUNT(*) as count FROM orders

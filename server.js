@@ -579,6 +579,15 @@ app.get('/api/users', async (req, res) => {
     }
 });
 
+app.get('/api/total-revenue', async (req, res) => {
+    try {
+        const result = await pool.query(`SELECT COALESCE(SUM(total), 0) as revenue FROM orders`);
+        res.json({ revenue: parseInt(result.rows[0].revenue) });
+    } catch(err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // Получить настройки
 app.get('/api/settings', async (req, res) => {
     try {

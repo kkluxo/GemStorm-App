@@ -1559,7 +1559,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 6px;
   min-width: 0;
 }
 
@@ -1579,8 +1579,26 @@
 }
 
 .gift-category {
-  font-size: 18px;
+  font-size: 16px;
   color: #9e9e9e;
+}
+
+.gift-expiry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2px;
+}
+
+.expiry-label {
+  font-size: 16px;
+  color: #9e9e9e;
+}
+
+.expiry-status {
+  font-size: 16px;
+  color: #22c55e;
+  font-weight: 500;
 }
 
 .gift-claim-btn {
@@ -1606,45 +1624,6 @@
 .gift-claim-btn:active {
   transform: scale(0.95);
   opacity: 0.8;
-}
-
-.gift-link-card {
-  background: #171719;
-  border: 1px solid #2B2B2D;
-  border-radius: 0 0 30px 30px;
-  padding: 12px 16px;
-  margin-top: -28px;
-  padding-top: 36px;
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.gift-link-text {
-  font-size: 16px;
-  color: #cbcdcd;
-  flex: 1;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellepsis;
-  font-family: inherit;
-  font-weight: 500;
-}
-
-.gift-copy-icon {
-  width: 22px;
-  height: 22px;
-  cursor: pointer;
-  flex-shrink: 0;
-  opacity: 0.7;
-  transition: 0.1s;
-}
-
-.gift-copy-icon:active {
-  transform: scale(0.85);
-  opacity: 1;
 }
   </style>
 </head>
@@ -2921,12 +2900,12 @@
           <div class="gift-name">${escapeHtml(gift.name)}</div>
           <div class="gift-price">Free Gift</div>
           <div class="gift-category">Подарок</div>
+        <div class="gift-expiry">              <!-- НОВЫЙ БЛОК -->
+          <span class="expiry-label">Срок действия</span>
+          <span class="expiry-status">активен</span>
+        </div>
         </div>
         <button class="gift-claim-btn" data-link="${gift.link}">Получить</button>
-      </div>
-      <div class="gift-link-card">
-        <span class="gift-link-text" title="${escapeHtml(gift.link)}">${escapeHtml(gift.link)}</span>
-        <img class="gift-copy-icon" data-link="${gift.link}" src="${copyIconUrl}" alt="copy">
       </div>
     </div>
   `).join('');

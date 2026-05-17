@@ -2208,11 +2208,6 @@
     }
   } catch(e) {}
   try {
-    const qr = await fetch('https://gemstorm.up.railway.app/api/check-queue');
-    const q = await qr.json();
-    if (q.busy) { alert('Оформление заказа временно недоступно. У нас много невыполненных заказов, попробуйте позже'); return; }
-  } catch(e) {}
-  try {
     if (tgU?.id) {
       const lr = await fetch(`https://gemstorm.up.railway.app/api/check-rate-limit?userId=${tgU.id}`);
       const l = await lr.json();

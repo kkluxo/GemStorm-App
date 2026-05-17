@@ -548,9 +548,41 @@ app.post('/api/migrate-users', async (req, res) => {
     }
 });
 
+app.get('/api/debug-users', async (req, res) => {
+    try {
+        const appUsers = await pool.query('SELECT COUNT(*) as count FROM app_users');
+        const orders = await pool.query('SELECT COUNT(DISTINCT user_id) as count FROM orders WHERE user_id IS NOT NULL');
+        const sample = await pool.query('SELECT user_id, user_name FROM orders WHERE user_id IS NOT NULL LIMIT 3');
+        res.json({
+            app_users_count: parseInt(appUsers.rows[0].count),
+            orders_unique_users: parseInt(orders.rows[0].count),
+            sample_order_users: sample.rows
+        });
+    } catch(err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // Получить всех пользователей
 app.get('/api/users', async (req, res) => {
     try {
+        // Сначала пробуем получить из app_users
+        const checkEmpty = await pool.query('SELECT COUNT(*) as count FROM app_users');
+        
+        // Если app_users пустая — заполняем из orders
+        if (parseInt(checkEmpty.rows[0].count) === 0) {
+            await pool.query(`
+                INSERT INTO app_users (user_id, user_name, user_username)
+                SELECT user_id, MAX(user_name), MAX(user_username)
+                FROM orders
+                WHERE user_id IS NOT NULL
+                GROUP BY user_id
+                ON CONFLICT (user_id) DO UPDATE SET
+                    user_name = EXCLUDED.user_name,
+                    user_username = EXCLUDED.user_username
+            `);
+        }
+        
         const result = await pool.query(`
             SELECT 
                 au.user_id,
@@ -571,10 +603,11 @@ app.get('/api/users', async (req, res) => {
                 WHERE user_id IS NOT NULL
                 GROUP BY user_id
             ) o ON au.user_id = o.user_id
-            ORDER BY o.total_spent DESC NULLS LAST, au.first_seen DESC
+            ORDER BY COALESCE(o.total_spent, 0) DESC, au.first_seen DESC
         `);
         res.json(result.rows);
     } catch(err) {
+        console.error('Ошибка /api/users:', err.message);
         res.status(500).json({ error: err.message });
     }
 });

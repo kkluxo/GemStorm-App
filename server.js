@@ -9,6 +9,17 @@ const BOT_TOKEN = process.env.BOT_TOKEN;
 const ADMIN_ID = 7509324385;
 
 console.log('Запуск сервера...');
+
+app.use(cors());
+app.use(express.json());
+app.use(express.static('.'));
+
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+});
+
+// Инициализация бота
 let botInstance = null;
 if (BOT_TOKEN) {
     botInstance = new Telegraf(BOT_TOKEN);
@@ -29,7 +40,7 @@ if (BOT_TOKEN) {
                             { text: 'Наш канал', url: 'https://t.me/GemStormStore' }
                         ],
                         [
-                            { text: '🛍 Открыть приложение GemStorm', web_app: { url: appUrl } }
+                            { text: 'Открыть приложение GemStorm', web_app: { url: appUrl } }
                         ]
                     ]
                 }
@@ -39,15 +50,6 @@ if (BOT_TOKEN) {
     
     botInstance.launch().catch(e => console.error('Ошибка запуска бота:', e.message));
 }
-
-app.use(cors());
-app.use(express.json());
-app.use(express.static('.'));
-
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
-});
 
 // Функция для получения следующего номера заказа
 async function getNextOrderNumber() {
@@ -60,7 +62,7 @@ async function notifyAdmin(bot, order) {
     const usernameText = order.user_username ? `@${order.user_username}` : 'Нет юзернейма';
     const previewLink = 'https://storage.botpapa.me/files/e89661a0-4591-11f1-bef9-f1ec7a2c6e45.jpeg';
     
-    const message = `[​](${previewLink})Получен новый заказ \\#${order.order_number}\n\n` +
+    const message = `[​](${previewLink})🆕 НОВЫЙ ЗАКАЗ \\#${order.order_number}\n\n` +
         `Сумма: ${order.total} руб\\.\n` +
         `Клиент: ${(order.user_name || 'Не указан').replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&')} \\(${usernameText}\\)\n` +
         `ID: ${order.user_id || 'Не указан'}\n` +
@@ -118,14 +120,10 @@ async function initDB() {
         `);
         console.log('Таблица orders готова');
         
-        // Внутри функции initDB после создания таблицы orders
         await pool.query('ALTER TABLE orders ADD COLUMN IF NOT EXISTS user_username TEXT');
-
-        // Добавление колонки verification_code если её нет
         await pool.query('ALTER TABLE orders ADD COLUMN IF NOT EXISTS verification_code TEXT');
         await pool.query('ALTER TABLE orders ADD COLUMN IF NOT EXISTS promo_item_name TEXT');
         await pool.query('ALTER TABLE orders ADD COLUMN IF NOT EXISTS promo_item_category TEXT');
-
         
         // Таблица reviews
         await pool.query(`
@@ -143,42 +141,43 @@ async function initDB() {
         await pool.query(`ALTER TABLE reviews ADD COLUMN IF NOT EXISTS order_number INTEGER`);
    
         await pool.query(`
-    CREATE TABLE IF NOT EXISTS settings (
-        id INTEGER PRIMARY KEY DEFAULT 1,
-        bot_status TEXT DEFAULT 'open',
-        work_start TEXT DEFAULT '10:00',
-        work_end TEXT DEFAULT '23:59'
-    )
-`);
+            CREATE TABLE IF NOT EXISTS settings (
+                id INTEGER PRIMARY KEY DEFAULT 1,
+                bot_status TEXT DEFAULT 'open',
+                work_start TEXT DEFAULT '10:00',
+                work_end TEXT DEFAULT '23:59'
+            )
+        `);
         
         await pool.query(`
-    CREATE TABLE IF NOT EXISTS app_users (
-        id SERIAL PRIMARY KEY,
-        user_id TEXT UNIQUE,
-        user_name TEXT,
-        user_username TEXT,
-        photo_url TEXT,
-        first_seen TIMESTAMP DEFAULT NOW(),
-        last_seen TIMESTAMP DEFAULT NOW()
-    )
-`);
+            CREATE TABLE IF NOT EXISTS app_users (
+                id SERIAL PRIMARY KEY,
+                user_id TEXT UNIQUE,
+                user_name TEXT,
+                user_username TEXT,
+                photo_url TEXT,
+                first_seen TIMESTAMP DEFAULT NOW(),
+                last_seen TIMESTAMP DEFAULT NOW()
+            )
+        `);
+        
         await pool.query(`
-    CREATE TABLE IF NOT EXISTS promo_usage (
-        id SERIAL PRIMARY KEY,
-        user_id TEXT,
-        promo_code TEXT,
-        order_id INTEGER,
-        created_at TIMESTAMP DEFAULT NOW()
-    )
-`);
+            CREATE TABLE IF NOT EXISTS promo_usage (
+                id SERIAL PRIMARY KEY,
+                user_id TEXT,
+                promo_code TEXT,
+                order_id INTEGER,
+                created_at TIMESTAMP DEFAULT NOW()
+            )
+        `);
 
-await pool.query(`
-    CREATE TABLE IF NOT EXISTS order_rate_limit (
-        id SERIAL PRIMARY KEY,
-        user_id TEXT,
-        created_at TIMESTAMP DEFAULT NOW()
-    )
-`);
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS order_rate_limit (
+                id SERIAL PRIMARY KEY,
+                user_id TEXT,
+                created_at TIMESTAMP DEFAULT NOW()
+            )
+        `);
 
         console.log('Все таблицы готовы');
         
@@ -231,18 +230,18 @@ app.post('/api/order', async (req, res) => {
         const nextNumber = await getNextOrderNumber();
         
         const result = await pool.query(
-    `INSERT INTO orders (
-        order_number, date, time, timestamp, items, total, promo, 
-        promo_discount, payment_method, sender_name, email, user_id, user_name, user_username,
-        promo_item_name, promo_item_category
-    ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16) RETURNING *`,
-    [
-        nextNumber, o.date, o.time, o.timestamp, JSON.stringify(o.items), o.total, 
-        o.promo || null, o.promo_discount || 0, o.payment_method || null,
-        o.sender_name || null, o.email || null, o.user_id || null, o.user_name || null,
-        o.user_username || null, o.promo_item_name || null, o.promo_item_category || null
-    ]
-);
+            `INSERT INTO orders (
+                order_number, date, time, timestamp, items, total, promo, 
+                promo_discount, payment_method, sender_name, email, user_id, user_name, user_username,
+                promo_item_name, promo_item_category
+            ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16) RETURNING *`,
+            [
+                nextNumber, o.date, o.time, o.timestamp, JSON.stringify(o.items), o.total, 
+                o.promo || null, o.promo_discount || 0, o.payment_method || null,
+                o.sender_name || null, o.email || null, o.user_id || null, o.user_name || null,
+                o.user_username || null, o.promo_item_name || null, o.promo_item_category || null
+            ]
+        );
         
         const saved = result.rows[0];
         console.log(`Заказ #${saved.order_number} сохранён`);
@@ -254,18 +253,19 @@ app.post('/api/order', async (req, res) => {
                 await notifyUser(bot, saved);
             }
         }
+        
         // Записать использование промокода
-if (o.promo && o.user_id) {
-    try {
-        await pool.query(`
-            INSERT INTO promo_usage (user_id, promo_code, order_id)
-            VALUES ($1, $2, $3)
-            ON CONFLICT DO NOTHING
-        `, [o.user_id, o.promo.toUpperCase(), saved.id]);
-    } catch(e) {
-        console.error('Ошибка записи промокода:', e.message);
-    }
-}
+        if (o.promo && o.user_id) {
+            try {
+                await pool.query(`
+                    INSERT INTO promo_usage (user_id, promo_code, order_id)
+                    VALUES ($1, $2, $3)
+                    ON CONFLICT DO NOTHING
+                `, [o.user_id, o.promo.toUpperCase(), saved.id]);
+            } catch(e) {
+                console.error('Ошибка записи промокода:', e.message);
+            }
+        }
         res.json({ success: true, orderId: saved.id });
     } catch (err) {
         console.error('Ошибка создания заказа:', err.message);
@@ -308,26 +308,26 @@ app.post('/api/update-status', async (req, res) => {
         
         const order = result.rows[0];
         
-                if (BOT_TOKEN && order.user_id && finalStatusCode !== 'pending') {
-    try {
-        const bot = botInstance || new Telegraf(BOT_TOKEN);
-        const previewLink = 'https://storage.botpapa.me/files/e89661a0-4591-11f1-bef9-f1ec7a2c6e45.jpeg';
-        const appUrl = 'https://t.me/GemStormBot/app';
-        const escapedStatus = status.replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
-        const message = `[​](${previewLink})**Обновление статуса заказа**\n\n**Номер заказа:** \\#${order.order_number}\n**Статус:** ${escapedStatus}`;
-        
-        await bot.telegram.sendMessage(order.user_id, message, {
-            parse_mode: 'MarkdownV2',
-            reply_markup: {
-                inline_keyboard: [[
-                    { text: 'Открыть заказ в приложении', web_app: { url: appUrl } }
-                ]]
+        // Уведомление пользователя об изменении статуса
+        if (BOT_TOKEN && order.user_id && finalStatusCode !== 'pending') {
+            try {
+                const bot = botInstance || new Telegraf(BOT_TOKEN);
+                const previewLink = 'https://storage.botpapa.me/files/e89661a0-4591-11f1-bef9-f1ec7a2c6e45.jpeg';
+                const appUrl = 'https://t.me/GemStormBot/app';
+                const escapedStatus = status.replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
+                const message = `[​](${previewLink})**Обновление статуса заказа**\n\n**Номер заказа:** \\#${order.order_number}\n**Статус:** ${escapedStatus}`;
+                
+                await bot.telegram.sendMessage(order.user_id, message, {
+                    parse_mode: 'MarkdownV2',
+                    reply_markup: {
+                        inline_keyboard: [[
+                            { text: 'Открыть заказ в приложении', web_app: { url: appUrl } }
+                        ]]
+                    }
+                });
+            } catch(e) {
+                console.error('Не удалось уведомить пользователя:', e.message);
             }
-        });
-    } catch(e) {
-        console.error('Не удалось уведомить пользователя:', e.message);
-    }
-}
         }
         
         res.json({ success: true, order: order });
@@ -397,10 +397,8 @@ app.post('/api/track-user', async (req, res) => {
 // Получить всех пользователей
 app.get('/api/users', async (req, res) => {
     try {
-        // Сначала пробуем получить из app_users
         const checkEmpty = await pool.query('SELECT COUNT(*) as count FROM app_users');
         
-        // Если app_users пустая — заполняем из orders
         if (parseInt(checkEmpty.rows[0].count) === 0) {
             await pool.query(`
                 INSERT INTO app_users (user_id, user_name, user_username)
@@ -415,27 +413,27 @@ app.get('/api/users', async (req, res) => {
         }
         
         const result = await pool.query(`
-    SELECT 
-        au.user_id,
-        au.user_name,
-        au.user_username,
-        au.photo_url,
-        au.first_seen,
-        au.last_seen,
-        COALESCE(o.orders_count, 0) as orders_count,
-        COALESCE(o.total_spent, 0) as total_spent
-    FROM app_users au
-    LEFT JOIN (
-        SELECT 
-            user_id::TEXT,
-            COUNT(*) as orders_count,
-            SUM(total) as total_spent
-        FROM orders
-        WHERE user_id IS NOT NULL
-        GROUP BY user_id::TEXT
-    ) o ON au.user_id::TEXT = o.user_id
-    ORDER BY COALESCE(o.total_spent, 0) DESC, au.first_seen DESC
-`);
+            SELECT 
+                au.user_id,
+                au.user_name,
+                au.user_username,
+                au.photo_url,
+                au.first_seen,
+                au.last_seen,
+                COALESCE(o.orders_count, 0) as orders_count,
+                COALESCE(o.total_spent, 0) as total_spent
+            FROM app_users au
+            LEFT JOIN (
+                SELECT 
+                    user_id::TEXT,
+                    COUNT(*) as orders_count,
+                    SUM(total) as total_spent
+                FROM orders
+                WHERE user_id IS NOT NULL
+                GROUP BY user_id::TEXT
+            ) o ON au.user_id::TEXT = o.user_id
+            ORDER BY COALESCE(o.total_spent, 0) DESC, au.first_seen DESC
+        `);
         res.json(result.rows);
     } catch(err) {
         console.error('Ошибка /api/users:', err.message);
@@ -475,7 +473,6 @@ app.get('/api/check-rate-limit', async (req, res) => {
         const tenMinutesAgo = Date.now() - 10 * 60 * 1000;
         const thirtyMinutesAgo = Date.now() - 30 * 60 * 1000;
     
-        // Заказы за последние 10 минут
         const recentResult = await pool.query(`
             SELECT COUNT(*) as count FROM orders
             WHERE user_id = $1 AND timestamp >= $2
@@ -484,7 +481,6 @@ app.get('/api/check-rate-limit', async (req, res) => {
         const recentCount = parseInt(recentResult.rows[0].count);
         
         if (recentCount >= 3) {
-            // Проверяем не прошло ли 30 минут с первого из этих заказов
             const firstResult = await pool.query(`
                 SELECT timestamp FROM orders
                 WHERE user_id = $1
@@ -521,7 +517,6 @@ app.post('/api/check-promo', async (req, res) => {
             return res.json({ valid: false, reason: 'not_found' });
         }
         
-        // Если промокод GEMSTORM3 — только на первый заказ
         if (upperCode === 'GEMSTORM3') {
             const ordersResult = await pool.query(`
                 SELECT COUNT(*) as count FROM orders WHERE user_id = $1
@@ -531,7 +526,6 @@ app.post('/api/check-promo', async (req, res) => {
             }
         }
         
-        // Проверяем использование промокода
         const usageResult = await pool.query(`
             SELECT pu.id, o.status_code FROM promo_usage pu
             LEFT JOIN orders o ON o.id = pu.order_id
@@ -539,7 +533,6 @@ app.post('/api/check-promo', async (req, res) => {
         `, [userId, upperCode]);
         
         if (usageResult.rows.length > 0) {
-            // Если заказ помечен как "Перевод не найден" — разрешаем повторно
             const allNotFound = usageResult.rows.every(r => r.status_code === 'notfound');
             if (!allNotFound) {
                 return res.json({ valid: false, reason: 'already_used' });
@@ -547,23 +540,6 @@ app.post('/api/check-promo', async (req, res) => {
         }
         
         res.json({ valid: true, discount: validCodes[upperCode] });
-    } catch(err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// Записать использование промокода
-app.post('/api/use-promo', async (req, res) => {
-    try {
-        const { userId, code, orderId } = req.body;
-        if (!userId || !code || !orderId) return res.status(400).json({ error: 'Нет данных' });
-        
-        await pool.query(`
-            INSERT INTO promo_usage (user_id, promo_code, order_id)
-            VALUES ($1, $2, $3)
-        `, [userId, code.toUpperCase(), orderId]);
-        
-        res.json({ success: true });
     } catch(err) {
         res.status(500).json({ error: err.message });
     }
@@ -627,15 +603,10 @@ app.get('/api/stats', async (req, res) => {
         const todayStr = today.toLocaleDateString('ru-RU');
         const weekAgo = week.toISOString();
 
-        // Статистика за день
         const dayOrders = await pool.query(`SELECT COUNT(*) as count, COALESCE(SUM(total),0) as revenue FROM orders WHERE date = $1`, [todayStr]);
         const dayUsers = await pool.query(`SELECT COUNT(DISTINCT user_id) as count FROM orders WHERE date = $1`, [todayStr]);
-
-        // Статистика за 7 дней
         const weekOrders = await pool.query(`SELECT COUNT(*) as count, COALESCE(SUM(total),0) as revenue FROM orders WHERE timestamp >= $1`, [weekAgo]);
         const weekUsers = await pool.query(`SELECT COUNT(DISTINCT user_id) as count FROM orders WHERE timestamp >= $1`, [weekAgo]);
-
-        // Всё время
         const allOrders = await pool.query(`SELECT COUNT(*) as count, COALESCE(SUM(total),0) as revenue FROM orders`);
         const allUsers = await pool.query(`SELECT COUNT(*) as count FROM app_users`);
         const activeUsers = await pool.query(`SELECT COUNT(DISTINCT user_id) as count FROM orders WHERE user_id IS NOT NULL`);
@@ -690,51 +661,46 @@ app.get('/api/reviews', async (req, res) => {
 // Отзывы - добавить новый
 app.post('/api/reviews', async (req, res) => {
     try {
-        const { userId, userName, photoUrl, text, starsVal, orderId, orderNumber } = req.body;
+        const { userId, userName, photoUrl, text, orderId, orderNumber } = req.body;
         
         if (!text || !text.trim()) {
             return res.status(400).json({ error: 'Текст обязателен' });
         }
         
         await pool.query(
-            'INSERT INTO reviews (user_id, user_name, photo_url, text, stars, order_id, order_number) VALUES ($1,$2,$3,$4,$5,$6,$7)',
-            [userId || null, userName || 'Пользователь', photoUrl || null, text.trim(), starsVal || 5, orderId || null, orderNumber || null]
+            'INSERT INTO reviews (user_id, user_name, photo_url, text, order_id, order_number) VALUES ($1,$2,$3,$4,$5,$6)',
+            [userId || null, userName || 'Пользователь', photoUrl || null, text.trim(), orderId || null, orderNumber || null]
         );
         
-        // Уведомить админа об отзыве
         if (BOT_TOKEN) {
             try {
                 const bot = botInstance || new Telegraf(BOT_TOKEN);
                 await bot.telegram.sendMessage(
                     ADMIN_ID, 
-                    `⭐ Новый отзыв от ${userName || 'Пользователь'}\nОценка: ${starsVal || 5}/5\nТекст: ${text.substring(0, 100)}`
+                    `⭐ Новый отзыв от ${userName || 'Пользователь'}\nТекст: ${text.substring(0, 100)}`
                 );
-            } catch(e) {
-                console.error('Ошибка уведомления:', e.message);
-            }
+            } catch(e) {}
         }
         
         res.json({ success: true });
     } catch(err) {
-        console.error('Ошибка создания отзыва:', err.message);
         res.status(500).json({ error: err.message });
     }
 });
 
 // Запуск сервера
 initDB().then(async () => {
-    // Автомиграция: заполнить app_users из существующих заказов
     try {
-    await pool.query(`
-    INSERT INTO app_users (user_id, user_name, user_username)
-    SELECT user_id::TEXT, MAX(user_name), MAX(user_username)
-    FROM orders
-    WHERE user_id IS NOT NULL
-    GROUP BY user_id::TEXT
-    ON CONFLICT (user_id) DO UPDATE SET
-        user_name = EXCLUDED.user_name,
-        user_username = EXCLUDED.user_username
-`);
+        await pool.query(`
+            INSERT INTO app_users (user_id, user_name, user_username)
+            SELECT user_id::TEXT, MAX(user_name), MAX(user_username)
+            FROM orders
+            WHERE user_id IS NOT NULL
+            GROUP BY user_id::TEXT
+            ON CONFLICT (user_id) DO UPDATE SET
+                user_name = EXCLUDED.user_name,
+                user_username = EXCLUDED.user_username
+        `);
         const count = await pool.query('SELECT COUNT(*) as count FROM app_users');
         console.log(`app_users после миграции: ${count.rows[0].count} пользователей`);
     } catch(e) {

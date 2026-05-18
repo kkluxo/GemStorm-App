@@ -8,12 +8,6 @@ const PORT = process.env.PORT || 3000;
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const ADMIN_ID = 7509324385;
 
-// Экранирование спецсимволов для MarkdownV2
-function escapeMarkdown(text) {
-    if (!text) return '';
-    return String(text).replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
-}
-
 console.log('Запуск сервера...');
 
 app.use(cors());
@@ -30,15 +24,13 @@ let botInstance = null;
 if (BOT_TOKEN) {
     botInstance = new Telegraf(BOT_TOKEN);
     
-    // Команда /start
+    // Команда /start - без Markdown, обычный текст
     botInstance.start(async (ctx) => {
-        const previewLink = 'https://storage.botpapa.me/files/e89661a0-4591-11f1-bef9-f1ec7a2c6e45.jpeg';
         const webAppUrl = 'https://gemstorm.up.railway.app';
         
         await ctx.reply(
-            `[​](${previewLink})**Добро пожаловать** в \n[GemStorm](https://t.me/GemStormBot)\n\n[GemStorm Store](https://t.me/GemStormBot) — **это бот для покупки** доната в игры **Supercell**`,
+            `Добро пожаловать в GemStorm!\n\nGemStorm Store — это бот для покупки доната в игры Supercell.\n\nОткройте приложение, чтобы сделать заказ:`,
             {
-                parse_mode: 'MarkdownV2',
                 reply_markup: {
                     inline_keyboard: [
                         [
@@ -46,7 +38,7 @@ if (BOT_TOKEN) {
                             { text: 'Наш канал', url: 'https://t.me/GemStormStore' }
                         ],
                         [
-                            { text: 'Открыть приложение GemStorm', web_app: { url: webAppUrl } }
+                            { text: '🛍 Открыть приложение GemStorm', web_app: { url: webAppUrl } }
                         ]
                     ]
                 }
@@ -66,39 +58,31 @@ async function getNextOrderNumber() {
 // Уведомление администратора
 async function notifyAdmin(bot, order) {
     const usernameText = order.user_username ? `@${order.user_username}` : 'Нет юзернейма';
-    const previewLink = 'https://storage.botpapa.me/files/e89661a0-4591-11f1-bef9-f1ec7a2c6e45.jpeg';
     
-    // Экранируем все специальные символы
-    const escapeMarkdown = (text) => {
-        if (!text) return '';
-        return String(text).replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
-    };
-    
-    const message = `[​](${previewLink})🆕 НОВЫЙ ЗАКАЗ \\#${order.order_number}\n\n` +
-        `Сумма: ${order.total} руб\\.\n` +
-        `Клиент: ${escapeMarkdown(order.user_name || 'Не указан')} \\(${escapeMarkdown(usernameText)}\\)\n` +
-        `ID: ${escapeMarkdown(order.user_id || 'Не указан')}\n` +
-        `Метод оплаты: ${escapeMarkdown(order.payment_method || 'Не указан')}\n` +
+    const message = `🆕 НОВЫЙ ЗАКАЗ #${order.order_number}\n\n` +
+        `Сумма: ${order.total} руб.\n` +
+        `Клиент: ${order.user_name || 'Не указан'} (${usernameText})\n` +
+        `ID: ${order.user_id || 'Не указан'}\n` +
+        `Метод оплаты: ${order.payment_method || 'Не указан'}\n` +
         `Дата: ${order.date} ${order.time}`;
     
-    await bot.telegram.sendMessage(ADMIN_ID, message, { parse_mode: 'MarkdownV2' });
+    await bot.telegram.sendMessage(ADMIN_ID, message);
 }
 
 // Уведомление пользователя
-// Уведомление пользователя
 async function notifyUser(bot, order) {
     try {
-        const previewLink = 'https://storage.botpapa.me/files/e89661a0-4591-11f1-bef9-f1ec7a2c6e45.jpeg';
         const appUrl = 'https://gemstorm.up.railway.app';
         
-        // Экранируем номер заказа
-        const message = `[​](${previewLink})**Заказ был успешно создан**\n\n**Номер заказа:** \\#${order.order_number}\n**Статус:** Ожидает проверки`;
+        const message = `✅ Ваш заказ #${order.order_number} принят!\n\n` +
+            `Сумма: ${order.total} руб.\n` +
+            `Статус: ${order.status || 'Ожидает проверки'}\n\n` +
+            `Спасибо за покупку!`;
         
         await bot.telegram.sendMessage(order.user_id, message, {
-            parse_mode: 'MarkdownV2',
             reply_markup: {
                 inline_keyboard: [[
-                    { text: 'Открыть заказ в приложении', web_app: { url: appUrl } }
+                    { text: '📦 Открыть заказ в приложении', web_app: { url: appUrl } }
                 ]]
             }
         });
@@ -137,7 +121,7 @@ async function initDB() {
         await pool.query('ALTER TABLE orders ADD COLUMN IF NOT EXISTS verification_code TEXT');
         await pool.query('ALTER TABLE orders ADD COLUMN IF NOT EXISTS promo_item_name TEXT');
         await pool.query('ALTER TABLE orders ADD COLUMN IF NOT EXISTS promo_item_category TEXT');
-        
+
         await pool.query(`
             CREATE TABLE IF NOT EXISTS reviews (
                 id SERIAL PRIMARY KEY,
@@ -172,7 +156,7 @@ async function initDB() {
                 last_seen TIMESTAMP DEFAULT NOW()
             )
         `);
-        
+
         await pool.query(`
             CREATE TABLE IF NOT EXISTS promo_usage (
                 id SERIAL PRIMARY KEY,
@@ -277,6 +261,7 @@ app.post('/api/order', async (req, res) => {
                 console.error('Ошибка записи промокода:', e.message);
             }
         }
+        
         res.json({ success: true, orderId: saved.id });
     } catch (err) {
         console.error('Ошибка создания заказа:', err.message);
@@ -320,32 +305,25 @@ app.post('/api/update-status', async (req, res) => {
         const order = result.rows[0];
         
         if (BOT_TOKEN && order.user_id && finalStatusCode !== 'pending') {
-    try {
-        const bot = botInstance || new Telegraf(BOT_TOKEN);
-        const previewLink = 'https://storage.botpapa.me/files/e89661a0-4591-11f1-bef9-f1ec7a2c6e45.jpeg';
-        const appUrl = 'https://gemstorm.up.railway.app';
-        
-        // Экранируем статус
-        const escapeMarkdown = (text) => {
-            if (!text) return '';
-            return String(text).replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
-        };
-        
-        const escapedStatus = escapeMarkdown(status);
-        const message = `[​](${previewLink})**Обновление статуса заказа**\n\n**Номер заказа:** \\#${order.order_number}\n**Статус:** ${escapedStatus}`;
-        
-        await bot.telegram.sendMessage(order.user_id, message, {
-            parse_mode: 'MarkdownV2',
-            reply_markup: {
-                inline_keyboard: [[
-                    { text: '📦 Открыть заказ в приложении', web_app: { url: appUrl } }
-                ]]
+            try {
+                const bot = botInstance || new Telegraf(BOT_TOKEN);
+                const appUrl = 'https://gemstorm.up.railway.app';
+                
+                await bot.telegram.sendMessage(
+                    order.user_id, 
+                    `📦 Статус заказа #${order.order_number} изменён: ${status}`,
+                    {
+                        reply_markup: {
+                            inline_keyboard: [[
+                                { text: '📦 Открыть заказ в приложении', web_app: { url: appUrl } }
+                            ]]
+                        }
+                    }
+                );
+            } catch(e) {
+                console.error('Не удалось уведомить пользователя:', e.message);
             }
-        });
-    } catch(e) {
-        console.error('Не удалось уведомить пользователя:', e.message);
-    }
-}
+        }
         
         res.json({ success: true, order: order });
     } catch (err) {
@@ -417,10 +395,10 @@ app.get('/api/users', async (req, res) => {
         if (parseInt(checkEmpty.rows[0].count) === 0) {
             await pool.query(`
                 INSERT INTO app_users (user_id, user_name, user_username)
-                SELECT user_id, MAX(user_name), MAX(user_username)
+                SELECT user_id::TEXT, MAX(user_name), MAX(user_username)
                 FROM orders
                 WHERE user_id IS NOT NULL
-                GROUP BY user_id
+                GROUP BY user_id::TEXT
                 ON CONFLICT (user_id) DO UPDATE SET
                     user_name = EXCLUDED.user_name,
                     user_username = EXCLUDED.user_username

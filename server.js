@@ -26,30 +26,27 @@ if (BOT_TOKEN) {
     
     // Команда /start
     botInstance.start(async (ctx) => {
-        const previewLink = 'https://storage.botpapa.me/files/e89661a0-4591-11f1-bef9-f1ec7a2c6e45.jpeg';
-        const appUrl = 'https://t.me/GemStormBot/app';
-        
-        await ctx.reply(
-            `[​](${previewLink})**Добро пожаловать** в \n[GemStorm](https://t.me/GemStormBot)\n\n[GemStorm Store](https://t.me/GemStormBot) — **это бот для покупки** доната в игры **Supercell**`,
-            {
-                parse_mode: 'MarkdownV2',
-                reply_markup: {
-                    inline_keyboard: [
-                        [
-                            { text: 'Поддержка', url: 'https://t.me/GemStormHelp' },
-                            { text: 'Наш канал', url: 'https://t.me/GemStormStore' }
-                        ],
-                        [
-                            { text: 'Открыть приложение GemStorm', web_app: { url: appUrl } }
-                        ]
-                    ]
-                }
-            }
-        );
-    });
+    const previewLink = 'https://storage.botpapa.me/files/e89661a0-4591-11f1-bef9-f1ec7a2c6e45.jpeg';
+    const webAppUrl = 'https://gemstorm.up.railway.app'; // ваш сайт
     
-    botInstance.launch().catch(e => console.error('Ошибка запуска бота:', e.message));
-}
+    await ctx.reply(
+        `[​](${previewLink})**Добро пожаловать** в \n[GemStorm](https://t.me/GemStormBot)\n\n[GemStorm Store](https://t.me/GemStormBot) — **это бот для покупки** доната в игры **Supercell**`,
+        {
+            parse_mode: 'MarkdownV2',
+            reply_markup: {
+                inline_keyboard: [
+                    [
+                        { text: 'Поддержка', url: 'https://t.me/GemStormHelp' },
+                        { text: 'Наш канал', url: 'https://t.me/GemStormStore' }
+                    ],
+                    [
+                        { text: 'Открыть приложение GemStorm', web_app: { url: webAppUrl } }
+                    ]
+                ]
+            }
+        }
+    );
+});
 
 // Функция для получения следующего номера заказа
 async function getNextOrderNumber() {
@@ -76,7 +73,7 @@ async function notifyAdmin(bot, order) {
 async function notifyUser(bot, order) {
     try {
         const previewLink = 'https://storage.botpapa.me/files/e89661a0-4591-11f1-bef9-f1ec7a2c6e45.jpeg';
-        const appUrl = 'https://t.me/GemStormBot/app';
+        const appUrl = 'https://gemstorm.up.railway.app';
         
         const message = `[​](${previewLink})**Заказ был успешно создан**\n\n**Номер заказа:** \\#${order.order_number}\n**Статус:** Ожидает проверки`;
         
@@ -313,7 +310,7 @@ app.post('/api/update-status', async (req, res) => {
             try {
                 const bot = botInstance || new Telegraf(BOT_TOKEN);
                 const previewLink = 'https://storage.botpapa.me/files/e89661a0-4591-11f1-bef9-f1ec7a2c6e45.jpeg';
-                const appUrl = 'https://t.me/GemStormBot/app';
+                const appUrl = 'https://gemstorm.up.railway.app';
                 const escapedStatus = status.replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
                 const message = `[​](${previewLink})**Обновление статуса заказа**\n\n**Номер заказа:** \\#${order.order_number}\n**Статус:** ${escapedStatus}`;
                 

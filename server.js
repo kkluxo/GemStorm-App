@@ -690,16 +690,16 @@ app.get('/api/reviews', async (req, res) => {
 // Отзывы - добавить новый
 app.post('/api/reviews', async (req, res) => {
     try {
-        const { userId, userName, photoUrl, text, orderId, orderNumber } = req.body;
+        const { userId, userName, photoUrl, text, starsVal, orderId, orderNumber } = req.body;
         
         if (!text || !text.trim()) {
             return res.status(400).json({ error: 'Текст обязателен' });
         }
         
         await pool.query(
-  'INSERT INTO reviews (user_id, user_name, photo_url, text, order_id, order_number) VALUES ($1,$2,$3,$4,$5,$6)',
-  [userId || null, userName || 'Пользователь', photoUrl || null, text.trim(), orderId || null, orderNumber || null]
-);
+            'INSERT INTO reviews (user_id, user_name, photo_url, text, stars, order_id, order_number) VALUES ($1,$2,$3,$4,$5,$6,$7)',
+            [userId || null, userName || 'Пользователь', photoUrl || null, text.trim(), starsVal || 5, orderId || null, orderNumber || null]
+        );
         
         // Уведомить админа об отзыве
         if (BOT_TOKEN) {
@@ -707,13 +707,16 @@ app.post('/api/reviews', async (req, res) => {
                 const bot = botInstance || new Telegraf(BOT_TOKEN);
                 await bot.telegram.sendMessage(
                     ADMIN_ID, 
-                    `⭐ Новый отзыв от ${userName || 'Пользователь'}\nОценка: ${starsVal}/5\nТекст: ${text.substring(0, 100)}`
+                    `⭐ Новый отзыв от ${userName || 'Пользователь'}\nОценка: ${starsVal || 5}/5\nТекст: ${text.substring(0, 100)}`
                 );
-            } catch(e) {}
+            } catch(e) {
+                console.error('Ошибка уведомления:', e.message);
+            }
         }
         
         res.json({ success: true });
     } catch(err) {
+        console.error('Ошибка создания отзыва:', err.message);
         res.status(500).json({ error: err.message });
     }
 });

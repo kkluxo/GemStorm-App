@@ -9,6 +9,36 @@ const BOT_TOKEN = process.env.BOT_TOKEN;
 const ADMIN_ID = 7509324385;
 
 console.log('Запуск сервера...');
+let botInstance = null;
+if (BOT_TOKEN) {
+    botInstance = new Telegraf(BOT_TOKEN);
+    
+    // Команда /start
+    botInstance.start(async (ctx) => {
+        const previewLink = 'https://storage.botpapa.me/files/e89661a0-4591-11f1-bef9-f1ec7a2c6e45.jpeg';
+        const appUrl = 'https://t.me/GemStormBot/app';
+        
+        await ctx.reply(
+            `[​](${previewLink})**Добро пожаловать** в \n[GemStorm](https://t.me/GemStormBot)\n\n[GemStorm Store](https://t.me/GemStormBot) — **это бот для покупки** доната в игры **Supercell**`,
+            {
+                parse_mode: 'MarkdownV2',
+                reply_markup: {
+                    inline_keyboard: [
+                        [
+                            { text: 'Поддержка', url: 'https://t.me/GemStormHelp' },
+                            { text: 'Наш канал', url: 'https://t.me/GemStormStore' }
+                        ],
+                        [
+                            { text: '🛍 Открыть приложение GemStorm', web_app: { url: appUrl } }
+                        ]
+                    ]
+                }
+            }
+        );
+    });
+    
+    botInstance.launch().catch(e => console.error('Ошибка запуска бота:', e.message));
+}
 
 app.use(cors());
 app.use(express.json());
@@ -28,26 +58,34 @@ async function getNextOrderNumber() {
 // Уведомление администратора
 async function notifyAdmin(bot, order) {
     const usernameText = order.user_username ? `@${order.user_username}` : 'Нет юзернейма';
+    const previewLink = 'https://storage.botpapa.me/files/e89661a0-4591-11f1-bef9-f1ec7a2c6e45.jpeg';
     
-    const message = `🆕 НОВЫЙ ЗАКАЗ #${order.order_number}\n\n` +
-        `Сумма: ${order.total} руб.\n` +
-        `Клиент: ${order.user_name || 'Не указан'} (${usernameText})\n` + // Добавили юзернейм
+    const message = `[​](${previewLink})Получен новый заказ \\#${order.order_number}\n\n` +
+        `Сумма: ${order.total} руб\\.\n` +
+        `Клиент: ${(order.user_name || 'Не указан').replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&')} \\(${usernameText}\\)\n` +
         `ID: ${order.user_id || 'Не указан'}\n` +
-        `Метод оплаты: ${order.payment_method || 'Не указан'}\n` +
+        `Метод оплаты: ${(order.payment_method || 'Не указан').replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&')}\n` +
         `Дата: ${order.date} ${order.time}`;
     
-    await bot.telegram.sendMessage(ADMIN_ID, message);
+    await bot.telegram.sendMessage(ADMIN_ID, message, { parse_mode: 'MarkdownV2' });
 }
 
 // Уведомление пользователя
 async function notifyUser(bot, order) {
     try {
-        const message = `✅ Ваш заказ #${order.order_number} принят!\n\n` +
-            `Сумма: ${order.total} руб.\n` +
-            `Статус: ${order.status || 'Ожидает проверки'}\n\n` +
-            `Спасибо за покупку!`;
+        const previewLink = 'https://storage.botpapa.me/files/e89661a0-4591-11f1-bef9-f1ec7a2c6e45.jpeg';
+        const appUrl = 'https://t.me/GemStormBot/app';
         
-        await bot.telegram.sendMessage(order.user_id, message);
+        const message = `[​](${previewLink})**Заказ был успешно создан**\n\n**Номер заказа:** \\#${order.order_number}\n**Статус:** Ожидает проверки`;
+        
+        await bot.telegram.sendMessage(order.user_id, message, {
+            parse_mode: 'MarkdownV2',
+            reply_markup: {
+                inline_keyboard: [[
+                    { text: 'Открыть заказ в приложении', web_app: { url: appUrl } }
+                ]]
+            }
+        });
     } catch(e) {
         console.error('Не удалось уведомить пользователя:', e.message);
     }
@@ -88,47 +126,6 @@ async function initDB() {
         await pool.query('ALTER TABLE orders ADD COLUMN IF NOT EXISTS promo_item_name TEXT');
         await pool.query('ALTER TABLE orders ADD COLUMN IF NOT EXISTS promo_item_category TEXT');
 
-        // Таблица referrals
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS referrals (
-                id SERIAL PRIMARY KEY,
-                user_id TEXT UNIQUE,
-                referred_by TEXT,
-                created_at TIMESTAMP DEFAULT NOW()
-            )
-        `);
-        
-        // Таблица referral_balances
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS referral_balances (
-                id SERIAL PRIMARY KEY,
-                user_id TEXT UNIQUE,
-                balance INTEGER DEFAULT 0
-            )
-        `);
-        
-        // Таблица referral_promocodes
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS referral_promocodes (
-                id SERIAL PRIMARY KEY,
-                user_id TEXT,
-                code TEXT UNIQUE,
-                amount INTEGER,
-                used BOOLEAN DEFAULT FALSE,
-                created_at TIMESTAMP DEFAULT NOW()
-            )
-        `);
-        
-        // Таблица referral_conversions
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS referral_conversions (
-                id SERIAL PRIMARY KEY,
-                user_id TEXT,
-                code TEXT,
-                amount INTEGER,
-                created_at TIMESTAMP DEFAULT NOW()
-            )
-        `);
         
         // Таблица reviews
         await pool.query(`
@@ -251,7 +248,7 @@ app.post('/api/order', async (req, res) => {
         console.log(`Заказ #${saved.order_number} сохранён`);
         
         if (BOT_TOKEN) {
-            const bot = new Telegraf(BOT_TOKEN);
+            const bot = botInstance || new Telegraf(BOT_TOKEN);
             await notifyAdmin(bot, saved);
             if (saved.user_id) {
                 await notifyUser(bot, saved);
@@ -311,49 +308,26 @@ app.post('/api/update-status', async (req, res) => {
         
         const order = result.rows[0];
         
-                if (BOT_TOKEN && order.user_id) {
-            try {
-                const bot = new Telegraf(BOT_TOKEN);
-                await bot.telegram.sendMessage(
-                    order.user_id, 
-                    `📦 Статус заказа #${order.order_number} изменён: ${status}`
-                );
-            } catch(e) {
-                console.error('Не удалось уведомить пользователя:', e.message);
-            }
-        }
+                if (BOT_TOKEN && order.user_id && finalStatusCode !== 'pending') {
+    try {
+        const bot = botInstance || new Telegraf(BOT_TOKEN);
+        const previewLink = 'https://storage.botpapa.me/files/e89661a0-4591-11f1-bef9-f1ec7a2c6e45.jpeg';
+        const appUrl = 'https://t.me/GemStormBot/app';
+        const escapedStatus = status.replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
+        const message = `[​](${previewLink})**Обновление статуса заказа**\n\n**Номер заказа:** \\#${order.order_number}\n**Статус:** ${escapedStatus}`;
         
-        if (finalStatusCode === 'completed') {
-            try {
-                const refRow = await pool.query(
-                    'SELECT referred_by FROM referrals WHERE user_id = $1',
-                    [order.user_id]
-                );
-                
-                if (refRow.rows.length && refRow.rows[0].referred_by) {
-                    const referrerId = refRow.rows[0].referred_by;
-                    const bonus = Math.round(order.total * 0.02);
-                    
-                    if (bonus > 0) {
-                        await pool.query(
-                            `INSERT INTO referral_balances (user_id, balance) 
-                             VALUES ($1, $2) 
-                             ON CONFLICT (user_id) DO UPDATE SET balance = referral_balances.balance + $2`,
-                            [referrerId, bonus]
-                        );
-                        
-                        if (BOT_TOKEN) {
-                            const bot = new Telegraf(BOT_TOKEN);
-                            await bot.telegram.sendMessage(
-                                referrerId,
-                                `🎉 Вам начислено ${bonus}₽ за покупку вашего реферала (заказ #${order.order_number})`
-                            );
-                        }
-                    }
-                }
-            } catch(e) {
-                console.error('Ошибка начисления бонуса:', e.message);
+        await bot.telegram.sendMessage(order.user_id, message, {
+            parse_mode: 'MarkdownV2',
+            reply_markup: {
+                inline_keyboard: [[
+                    { text: 'Открыть заказ в приложении', web_app: { url: appUrl } }
+                ]]
             }
+        });
+    } catch(e) {
+        console.error('Не удалось уведомить пользователя:', e.message);
+    }
+}
         }
         
         res.json({ success: true, order: order });
@@ -376,7 +350,7 @@ app.post('/api/submit-code', async (req, res) => {
         if (!result.rows.length) return res.status(404).json({ error: 'Заказ не найден' });
         
         if (BOT_TOKEN) {
-            const bot = new Telegraf(BOT_TOKEN);
+            const bot = botInstance || new Telegraf(BOT_TOKEN);
             await bot.telegram.sendMessage(
                 ADMIN_ID, 
                 `🔑 НОВЫЙ КОД ДЛЯ ЗАКАЗА #${result.rows[0].order_number}\nКод: ${code}`
@@ -400,144 +374,6 @@ app.post('/api/refresh-order', async (req, res) => {
     }
 });
 
-app.post('/api/register-referral', async (req, res) => {
-    try {
-        const { userId, referrerId } = req.body;
-        if (!userId || !referrerId || userId === referrerId) return res.json({ success: false });
-        
-        await pool.query(
-            `INSERT INTO referrals (user_id, referred_by) VALUES ($1, $2) ON CONFLICT (user_id) DO NOTHING`,
-            [userId, referrerId]
-        );
-        
-        res.json({ success: true });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-app.get('/api/referral-stats', async (req, res) => {
-    try {
-        const userId = req.query.userId;
-        if (!userId) return res.json({ count: 0, balance: 0, referrals: [] });
-        
-        const countResult = await pool.query(
-            'SELECT COUNT(*) as count FROM referrals WHERE referred_by = $1',
-            [userId]
-        );
-        
-        const balanceResult = await pool.query(
-            'SELECT balance FROM referral_balances WHERE user_id = $1',
-            [userId]
-        );
-        
-        const referralsResult = await pool.query(
-            `SELECT r.user_id, r.created_at,
-             COALESCE(SUM(CASE WHEN o.status_code = 'completed' THEN ROUND(o.total * 0.02) ELSE 0 END), 0) as earned
-             FROM referrals r
-             LEFT JOIN orders o ON o.user_id = r.user_id AND o.status_code = 'completed'
-             WHERE r.referred_by = $1
-             GROUP BY r.user_id, r.created_at
-             ORDER BY r.created_at DESC`,
-            [userId]
-        );
-        
-        res.json({ 
-            count: parseInt(countResult.rows[0].count), 
-            balance: balanceResult.rows[0]?.balance || 0, 
-            referrals: referralsResult.rows 
-        });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-app.post('/api/convert-balance', async (req, res) => {
-    try {
-        const { userId } = req.body;
-        if (!userId) return res.status(400).json({ error: 'userId required' });
-        
-        const balanceResult = await pool.query('SELECT balance FROM referral_balances WHERE user_id = $1', [userId]);
-        const balance = balanceResult.rows[0]?.balance || 0;
-        
-        if (balance <= 0) return res.status(400).json({ error: 'Баланс пуст' });
-        
-        const code = 'REF' + Math.random().toString(36).substring(2, 7).toUpperCase();
-        
-        await pool.query(
-            'INSERT INTO referral_promocodes (user_id, code, amount) VALUES ($1, $2, $3)',
-            [userId, code, balance]
-        );
-        
-        await pool.query(
-            'UPDATE referral_balances SET balance = 0 WHERE user_id = $1',
-            [userId]
-        );
-        
-        await pool.query(
-            'INSERT INTO referral_conversions (user_id, code, amount) VALUES ($1, $2, $3)',
-            [userId, code, balance]
-        );
-        
-        res.json({ success: true, code, amount: balance });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-app.post('/api/check-referral-promo', async (req, res) => {
-    try {
-        const { code, userId } = req.body;
-        if (!code || !userId) return res.status(400).json({ error: 'Нет данных' });
-        
-        const result = await pool.query(
-            'SELECT * FROM referral_promocodes WHERE code = $1 AND user_id = $2 AND used = FALSE',
-            [code, userId]
-        );
-        
-        if (!result.rows.length) return res.json({ valid: false });
-        res.json({ valid: true, amount: result.rows[0].amount });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-app.post('/api/use-referral-promo', async (req, res) => {
-    try {
-        const { code, userId } = req.body;
-        
-        const result = await pool.query(
-            'UPDATE referral_promocodes SET used = TRUE WHERE code = $1 AND user_id = $2 AND used = FALSE RETURNING *',
-            [code, userId]
-        );
-        
-        if (!result.rows.length) return res.json({ success: false });
-        res.json({ success: true, amount: result.rows[0].amount });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-app.get('/api/conversion-history', async (req, res) => {
-    try {
-        const userId = req.query.userId;
-        if (!userId) return res.json([]);
-        
-        const result = await pool.query(
-            `SELECT rc.code, rc.amount, rc.created_at, COALESCE(rp.used, false) as used 
-             FROM referral_conversions rc
-             LEFT JOIN referral_promocodes rp ON rc.code = rp.code
-             WHERE rc.user_id = $1
-             ORDER BY rc.created_at DESC`,
-            [userId]
-        );
-        
-        res.json(result.rows);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
 // Регистрация/обновление пользователя при входе в приложение
 app.post('/api/track-user', async (req, res) => {
     try {
@@ -553,39 +389,6 @@ app.post('/api/track-user', async (req, res) => {
                 last_seen = NOW()
         `, [userId, userName || null, userUsername || null, photoUrl || null]);
         res.json({ success: true });
-    } catch(err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-app.post('/api/migrate-users', async (req, res) => {
-    try {
-        await pool.query(`
-            INSERT INTO app_users (user_id, user_name, user_username)
-            SELECT DISTINCT ON (user_id) user_id, user_name, user_username
-            FROM orders
-            WHERE user_id IS NOT NULL
-            ON CONFLICT (user_id) DO UPDATE SET
-                user_name = EXCLUDED.user_name,
-                user_username = EXCLUDED.user_username
-        `);
-        const count = await pool.query('SELECT COUNT(*) as count FROM app_users');
-        res.json({ success: true, users: parseInt(count.rows[0].count) });
-    } catch(err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-app.get('/api/debug-users', async (req, res) => {
-    try {
-        const appUsers = await pool.query('SELECT COUNT(*) as count FROM app_users');
-        const orders = await pool.query('SELECT COUNT(DISTINCT user_id) as count FROM orders WHERE user_id IS NOT NULL');
-        const sample = await pool.query('SELECT user_id, user_name FROM orders WHERE user_id IS NOT NULL LIMIT 3');
-        res.json({
-            app_users_count: parseInt(appUsers.rows[0].count),
-            orders_unique_users: parseInt(orders.rows[0].count),
-            sample_order_users: sample.rows
-        });
     } catch(err) {
         res.status(500).json({ error: err.message });
     }
@@ -815,23 +618,6 @@ app.delete('/api/reviews/:id', async (req, res) => {
     }
 });
 
-// Рейтинг пользователей
-app.get('/api/rating', async (req, res) => {
-    try {
-        const result = await pool.query(
-            `SELECT user_id, user_name, COALESCE(SUM(total), 0) as total_spent
-             FROM orders 
-             WHERE status_code = 'completed'
-             GROUP BY user_id, user_name
-             ORDER BY total_spent DESC
-             LIMIT 100`
-        );
-        res.json(result.rows);
-    } catch(err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
 app.get('/api/stats', async (req, res) => {
     try {
         const now = new Date();
@@ -918,7 +704,7 @@ app.post('/api/reviews', async (req, res) => {
         // Уведомить админа об отзыве
         if (BOT_TOKEN) {
             try {
-                const bot = new Telegraf(BOT_TOKEN);
+                const bot = botInstance || new Telegraf(BOT_TOKEN);
                 await bot.telegram.sendMessage(
                     ADMIN_ID, 
                     `⭐ Новый отзыв от ${userName || 'Пользователь'}\nОценка: ${starsVal}/5\nТекст: ${text.substring(0, 100)}`

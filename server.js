@@ -26,27 +26,30 @@ if (BOT_TOKEN) {
     
     // Команда /start
     botInstance.start(async (ctx) => {
-    const previewLink = 'https://storage.botpapa.me/files/e89661a0-4591-11f1-bef9-f1ec7a2c6e45.jpeg';
-    const webAppUrl = 'https://gemstorm.up.railway.app'; // ваш сайт
-    
-    await ctx.reply(
-        `[​](${previewLink})**Добро пожаловать** в \n[GemStorm](https://t.me/GemStormBot)\n\n[GemStorm Store](https://t.me/GemStormBot) — **это бот для покупки** доната в игры **Supercell**`,
-        {
-            parse_mode: 'MarkdownV2',
-            reply_markup: {
-                inline_keyboard: [
-                    [
-                        { text: 'Поддержка', url: 'https://t.me/GemStormHelp' },
-                        { text: 'Наш канал', url: 'https://t.me/GemStormStore' }
-                    ],
-                    [
-                        { text: 'Открыть приложение GemStorm', web_app: { url: webAppUrl } }
+        const previewLink = 'https://storage.botpapa.me/files/e89661a0-4591-11f1-bef9-f1ec7a2c6e45.jpeg';
+        const webAppUrl = 'https://gemstorm.up.railway.app';
+        
+        await ctx.reply(
+            `[​](${previewLink})**Добро пожаловать** в \n[GemStorm](https://t.me/GemStormBot)\n\n[GemStorm Store](https://t.me/GemStormBot) — **это бот для покупки** доната в игры **Supercell**`,
+            {
+                parse_mode: 'MarkdownV2',
+                reply_markup: {
+                    inline_keyboard: [
+                        [
+                            { text: 'Поддержка', url: 'https://t.me/GemStormHelp' },
+                            { text: 'Наш канал', url: 'https://t.me/GemStormStore' }
+                        ],
+                        [
+                            { text: 'Открыть приложение GemStorm', web_app: { url: webAppUrl } }
+                        ]
                     ]
-                ]
+                }
             }
-        }
-    );
-});
+        );
+    });
+    
+    botInstance.launch().catch(e => console.error('Ошибка запуска бота:', e.message));
+}
 
 // Функция для получения следующего номера заказа
 async function getNextOrderNumber() {
@@ -93,7 +96,6 @@ async function notifyUser(bot, order) {
 // Инициализация базы данных
 async function initDB() {
     try {
-        // Таблица orders
         await pool.query(`
             CREATE TABLE IF NOT EXISTS orders (
                 id SERIAL PRIMARY KEY,
@@ -122,7 +124,6 @@ async function initDB() {
         await pool.query('ALTER TABLE orders ADD COLUMN IF NOT EXISTS promo_item_name TEXT');
         await pool.query('ALTER TABLE orders ADD COLUMN IF NOT EXISTS promo_item_category TEXT');
         
-        // Таблица reviews
         await pool.query(`
             CREATE TABLE IF NOT EXISTS reviews (
                 id SERIAL PRIMARY KEY,
@@ -251,7 +252,6 @@ app.post('/api/order', async (req, res) => {
             }
         }
         
-        // Записать использование промокода
         if (o.promo && o.user_id) {
             try {
                 await pool.query(`
@@ -305,7 +305,6 @@ app.post('/api/update-status', async (req, res) => {
         
         const order = result.rows[0];
         
-        // Уведомление пользователя об изменении статуса
         if (BOT_TOKEN && order.user_id && finalStatusCode !== 'pending') {
             try {
                 const bot = botInstance || new Telegraf(BOT_TOKEN);
@@ -371,7 +370,6 @@ app.post('/api/refresh-order', async (req, res) => {
     }
 });
 
-// Регистрация/обновление пользователя при входе в приложение
 app.post('/api/track-user', async (req, res) => {
     try {
         const { userId, userName, userUsername, photoUrl } = req.body;
@@ -391,7 +389,6 @@ app.post('/api/track-user', async (req, res) => {
     }
 });
 
-// Получить всех пользователей
 app.get('/api/users', async (req, res) => {
     try {
         const checkEmpty = await pool.query('SELECT COUNT(*) as count FROM app_users');
@@ -447,7 +444,6 @@ app.get('/api/total-revenue', async (req, res) => {
     }
 });
 
-// Проверка количества невыполненных заказов
 app.get('/api/check-queue', async (req, res) => {
     try {
         const result = await pool.query(`
@@ -461,15 +457,13 @@ app.get('/api/check-queue', async (req, res) => {
     }
 });
 
-// Проверка лимита заказов пользователя
 app.get('/api/check-rate-limit', async (req, res) => {
     try {
         const { userId } = req.query;
         if (!userId) return res.json({ limited: false });
         
         const tenMinutesAgo = Date.now() - 10 * 60 * 1000;
-        const thirtyMinutesAgo = Date.now() - 30 * 60 * 1000;
-    
+        
         const recentResult = await pool.query(`
             SELECT COUNT(*) as count FROM orders
             WHERE user_id = $1 AND timestamp >= $2
@@ -501,7 +495,6 @@ app.get('/api/check-rate-limit', async (req, res) => {
     }
 });
 
-// Проверка промокода
 app.post('/api/check-promo', async (req, res) => {
     try {
         const { code, userId } = req.body;
@@ -542,7 +535,6 @@ app.post('/api/check-promo', async (req, res) => {
     }
 });
 
-// Получить настройки
 app.get('/api/settings', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM settings WHERE id = 1');
@@ -556,7 +548,6 @@ app.get('/api/settings', async (req, res) => {
     }
 });
 
-// Обновить настройки
 app.post('/api/settings', async (req, res) => {
     try {
         const { bot_status } = req.body;
@@ -580,7 +571,6 @@ app.delete('/api/orders/:id', async (req, res) => {
     }
 });
 
-// Удалить отзыв
 app.delete('/api/reviews/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -655,7 +645,6 @@ app.get('/api/reviews', async (req, res) => {
     }
 });
 
-// Отзывы - добавить новый
 app.post('/api/reviews', async (req, res) => {
     try {
         const { userId, userName, photoUrl, text, orderId, orderNumber } = req.body;

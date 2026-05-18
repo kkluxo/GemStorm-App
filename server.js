@@ -8,6 +8,12 @@ const PORT = process.env.PORT || 3000;
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const ADMIN_ID = 7509324385;
 
+// Экранирование спецсимволов для MarkdownV2
+function escapeMarkdown(text) {
+    if (!text) return '';
+    return String(text).replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
+}
+
 console.log('Запуск сервера...');
 
 app.use(cors());
@@ -62,22 +68,30 @@ async function notifyAdmin(bot, order) {
     const usernameText = order.user_username ? `@${order.user_username}` : 'Нет юзернейма';
     const previewLink = 'https://storage.botpapa.me/files/e89661a0-4591-11f1-bef9-f1ec7a2c6e45.jpeg';
     
+    // Экранируем все специальные символы
+    const escapeMarkdown = (text) => {
+        if (!text) return '';
+        return String(text).replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
+    };
+    
     const message = `[​](${previewLink})🆕 НОВЫЙ ЗАКАЗ \\#${order.order_number}\n\n` +
         `Сумма: ${order.total} руб\\.\n` +
-        `Клиент: ${(order.user_name || 'Не указан').replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&')} \\(${usernameText}\\)\n` +
-        `ID: ${order.user_id || 'Не указан'}\n` +
-        `Метод оплаты: ${(order.payment_method || 'Не указан').replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&')}\n` +
+        `Клиент: ${escapeMarkdown(order.user_name || 'Не указан')} \\(${escapeMarkdown(usernameText)}\\)\n` +
+        `ID: ${escapeMarkdown(order.user_id || 'Не указан')}\n` +
+        `Метод оплаты: ${escapeMarkdown(order.payment_method || 'Не указан')}\n` +
         `Дата: ${order.date} ${order.time}`;
     
     await bot.telegram.sendMessage(ADMIN_ID, message, { parse_mode: 'MarkdownV2' });
 }
 
 // Уведомление пользователя
+// Уведомление пользователя
 async function notifyUser(bot, order) {
     try {
         const previewLink = 'https://storage.botpapa.me/files/e89661a0-4591-11f1-bef9-f1ec7a2c6e45.jpeg';
         const appUrl = 'https://gemstorm.up.railway.app';
         
+        // Экранируем номер заказа
         const message = `[​](${previewLink})**Заказ был успешно создан**\n\n**Номер заказа:** \\#${order.order_number}\n**Статус:** Ожидает проверки`;
         
         await bot.telegram.sendMessage(order.user_id, message, {
@@ -306,25 +320,32 @@ app.post('/api/update-status', async (req, res) => {
         const order = result.rows[0];
         
         if (BOT_TOKEN && order.user_id && finalStatusCode !== 'pending') {
-            try {
-                const bot = botInstance || new Telegraf(BOT_TOKEN);
-                const previewLink = 'https://storage.botpapa.me/files/e89661a0-4591-11f1-bef9-f1ec7a2c6e45.jpeg';
-                const appUrl = 'https://gemstorm.up.railway.app';
-                const escapedStatus = status.replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
-                const message = `[​](${previewLink})**Обновление статуса заказа**\n\n**Номер заказа:** \\#${order.order_number}\n**Статус:** ${escapedStatus}`;
-                
-                await bot.telegram.sendMessage(order.user_id, message, {
-                    parse_mode: 'MarkdownV2',
-                    reply_markup: {
-                        inline_keyboard: [[
-                            { text: 'Открыть заказ в приложении', web_app: { url: appUrl } }
-                        ]]
-                    }
-                });
-            } catch(e) {
-                console.error('Не удалось уведомить пользователя:', e.message);
+    try {
+        const bot = botInstance || new Telegraf(BOT_TOKEN);
+        const previewLink = 'https://storage.botpapa.me/files/e89661a0-4591-11f1-bef9-f1ec7a2c6e45.jpeg';
+        const appUrl = 'https://gemstorm.up.railway.app';
+        
+        // Экранируем статус
+        const escapeMarkdown = (text) => {
+            if (!text) return '';
+            return String(text).replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
+        };
+        
+        const escapedStatus = escapeMarkdown(status);
+        const message = `[​](${previewLink})**Обновление статуса заказа**\n\n**Номер заказа:** \\#${order.order_number}\n**Статус:** ${escapedStatus}`;
+        
+        await bot.telegram.sendMessage(order.user_id, message, {
+            parse_mode: 'MarkdownV2',
+            reply_markup: {
+                inline_keyboard: [[
+                    { text: '📦 Открыть заказ в приложении', web_app: { url: appUrl } }
+                ]]
             }
-        }
+        });
+    } catch(e) {
+        console.error('Не удалось уведомить пользователя:', e.message);
+    }
+}
         
         res.json({ success: true, order: order });
     } catch (err) {

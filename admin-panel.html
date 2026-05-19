@@ -170,13 +170,6 @@
     }
     .refresh-circle-btn:active { opacity: 0.8; transform: scale(0.95); }
     .refresh-circle-btn img { width: 26px; height: 26px; }
-    .refresh-circle-btn.spinning img {
-      animation: spin 0.6s linear;
-    }
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
 
     /* Страница пользователей — карточки в стиле отзывов */
     .stats-card {
@@ -560,7 +553,6 @@
     document.getElementById('adminRefreshBtn').addEventListener('click', async () => {
       hapticLight();
       const btn = document.getElementById('adminRefreshBtn');
-      if (btn) btn.classList.add('spinning');
       await loadOrders();
       // Обновляем текущий заказ с новыми данными
       const upd = allOrders.find(o => o.id === order.id);
@@ -569,7 +561,6 @@
         order = upd;
         showOrderDetail(upd);
       }
-      setTimeout(() => { const b = document.getElementById('adminRefreshBtn'); if (b) b.classList.remove('spinning'); }, 600);
     });
 
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));

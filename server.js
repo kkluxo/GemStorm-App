@@ -9,7 +9,7 @@ const BOT_TOKEN = process.env.BOT_TOKEN;
 const ADMIN_ID = 7509324385;
 
 // Предпросмотр изображения через невидимый символ
-const PREVIEW_IMAGE_URL = 'https://storage.botpapa.me/files/0a2344e0-5362-11f1-bef9-f1ec7a2c6e45.jpeg';
+const PREVIEW_IMAGE_URL = 'https://storage.botpapa.me/files/13a15050-5364-11f1-bef9-f1ec7a2c6e45.jpeg';
 const INVISIBLE_LINK = `<a href="${PREVIEW_IMAGE_URL}">&#8205;</a>`;
 
 // Ссылки на приложение
@@ -305,10 +305,8 @@ function getBot() {
         botInstance.start(async (ctx) => {
             try {
                 const message =
-                    `${INVISIBLE_LINK}<b>Добро пожаловать</b> в\n` +
-                    `<b><a href="https://t.me/GemStormBot">GemStorm</a></b>\n\n` +
-                    `<b><a href="https://t.me/GemStormBot">GemStorm Store</a> - это бот для покупки</b> доната в игры <b>Supercell</b>`;
-
+    `${INVISIBLE_LINK}<b>Добро пожаловать в</b> <b><a href="https://t.me/GemStormBot">GemStorm</a></b>\n\n` +
+    `<b><a href="https://t.me/GemStormBot">GemStorm Store</a> - это бот для покупки</b> доната в игры <b>Supercell</b>`;
                 await ctx.reply(message, {
                     parse_mode: 'HTML',
                     ...NO_FORWARD,

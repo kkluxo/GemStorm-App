@@ -60,8 +60,8 @@ async function notifyAdmin(bot, order) {
 
     const message =
         `${INVISIBLE_LINK}<b>Новый заказ от ${usernameText}</b>\n\n` +
-        `<b>Заказ:</b> #${order.order_number}\n` +
-        `<b>Сумма заказа:</b> ${order.total} руб.\n` +
+        `<b>Номер заказа:</b> #${order.order_number}\n` +
+        `<b>Сумма заказа:</b> ${order.total}₽\n` +
         `<b>Способ оплаты:</b> ${order.payment_method || 'Не указан'}`;
 
     const sent = await bot.telegram.sendMessage(ADMIN_ID, message, {

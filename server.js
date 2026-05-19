@@ -85,7 +85,7 @@ async function notifyAdminCode(bot, order, code, prevAdminMsgId) {
 
     const message =
         `${INVISIBLE_LINK}<b>Код для заказа от ${usernameText}</b>\n\n` +
-        `<b>Заказ:</b> #${order.order_number}\n` +
+        `<b>Номер заказа:</b> #${order.order_number}\n` +
         `<b>Код для входа:</b> ${code}`;
 
     const sent = await bot.telegram.sendMessage(ADMIN_ID, message, {

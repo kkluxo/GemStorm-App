@@ -2341,7 +2341,7 @@
           orderNumber: 0,
           date: new Date().toLocaleDateString('ru-RU'),
           time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
-          timestamp: new Date().toISOString(),
+          timestamp: Date.now(),
           items: orderItems,
           total: total,
           status: "Ожидает проверки",

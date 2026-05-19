@@ -2014,8 +2014,8 @@
   const uniqueItemsCount = Object.keys(cart).length;
   
   // Проверка лимита уникальных товаров (максимум 5)
-  if (!cart[productId] && uniqueItemsCount >= 3) {
-    return { allowed: false, reason: "В корзину можно добавить не более 3 товаров" };
+  if (!cart[productId] && uniqueItemsCount >= 4) {
+    return { allowed: false, reason: "В корзину можно добавить не более 4 товаров" };
   }
   
   // Пропуски (id 1-4) - максимум 1 шт.

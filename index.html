@@ -2066,51 +2066,6 @@
   function loadCartFromLocalStorage() { const savedCart = localStorage.getItem('cart'); if (savedCart) { cart = JSON.parse(savedCart); } }
   function getCartItemsCount() { return Object.keys(cart).length; }
 
-  function canAddToCart(productId) {
-  const product = products.find(p => p.id == productId);
-  
-  // Подсчёт уникальных товаров в корзине
-  const uniqueItemsCount = Object.keys(cart).length;
-  
-  // Проверка лимита уникальных товаров (максимум 5)
-  if (!cart[productId] && uniqueItemsCount >= 4) {
-    return { allowed: false, reason: "В корзину можно добавить не более 4 товаров" };
-  }
-  
-  // Пропуски (id 1-4) - максимум 1 шт.
-  if (productId <= 4) {
-    if (cart[productId] >= 1) return { allowed: false, reason: "Максимум 1 шт." };
-    if (productId <= 3) {
-      const conflictIds = [1, 2, 3].filter(id => id !== productId && cart[id]);
-      if (conflictIds.length > 0) {
-        const conflictName = products.find(p => p.id === conflictIds[0]).name;
-        return { allowed: false, reason: `Удалите товар "${conflictName}" из корзины, чтобы добавить этот товар` };
-      }
-    }
-    return { allowed: true };
-  }
-  
-  // Акции (категория "Акции") - максимум 1 шт.
-  if (product && product.category === "Акции") {
-    if (cart[productId] >= 1) return { allowed: false, reason: "Максимум 1 шт." };
-    return { allowed: true };
-  }
-  
-  // Товары 26-36 - максимум 1 шт.
-  if (productId >= 26 && productId <= 36) {
-    if (cart[productId] >= 1) return { allowed: false, reason: "Максимум 1 шт." };
-    return { allowed: true };
-  }
-  
-  // Кристаллы (id 5-10) - можно добавить до 3 шт.
-  if (product && product.category === "Кристаллы" && productId >= 5 && productId <= 10) {
-    if ((cart[productId] || 0) >= 3) return { allowed: false, reason: "Максимум 3 шт." };
-    return { allowed: true };
-  }
-  
-  return { allowed: true };
-}
-
   function renderCartButtonHtml(productId) {
     const qty = cart[productId] || 0;
     if (qty > 0) {
@@ -2229,7 +2184,7 @@
         const newMinus = actionBtn.querySelector('.counter-minus');
         const newPlus = actionBtn.querySelector('.counter-plus');
         newMinus?.addEventListener('click', (e) => { e.stopPropagation(); hapticLight(); handleCartAction(cardId, false); });
-        newPlus?.addEventListener('click', (e) => { e.stopPropagation(); hapticLight(); if (cardId <= 4) { alert("Максимум 1 шт."); return; } handleCartAction(cardId, true); });
+        newPlus?.addEventListener('click', (e) => { e.stopPropagation(); hapticLight(); handleCartAction(cardId, true); });
       }
     });
   }

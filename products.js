@@ -60,7 +60,7 @@ const products = [
      image: "https://storage.botpapa.me/files/ef35be60-55be-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
   {  id: 24, name: "Скин Бо",         price: 769,  oldPrice: 799,  label: "Ежен. акция", category: "Еженедельные акции",
-     image: "https://storage.botpapa.me/files/f2aa72c0-55be-11f1-bef9-f1ec7a2c6e45.jpeg.jpeg" },
+     image: "https://storage.botpapa.me/files/f2aa72c0-55be-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
   // ── ЕЖЕДНЕВНЫЕ АКЦИИ (id 25–36) ──────────────────────────────────────────
   // id   name           price   oldPrice  label           category

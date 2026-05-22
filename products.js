@@ -28,16 +28,16 @@ const products = [
   {  id: 14, name: "Набор: 3 скина",  price: 2379, oldPrice: 2489, label: "Старр Нова", category: "Старр Нова",
      image: "https://storage.botpapa.me/files/ac8cd670-4a56-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 15, name: "Скин Амбер",      price: 1269, oldPrice: 1329, label: "Старр Нова", category: "Старр Нова",
+  {  id: 15, name: "Амбер из войда",      price: 1269, oldPrice: 1329, label: "Старр Нова", category: "Старр Нова",
      image: "https://storage.botpapa.me/files/b3c4fb70-4a56-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 16, name: "Скин Амбер",      price: 1269, oldPrice: 1329, label: "Старр Нова", category: "Старр Нова",
+  {  id: 16, name: "Амбер из патруля",      price: 1269, oldPrice: 1329, label: "Старр Нова", category: "Старр Нова",
      image: "https://storage.botpapa.me/files/b6be6550-4a56-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 17, name: "Скин Джуджу",     price: 849,  oldPrice: 889,  label: "Старр Нова", category: "Старр Нова",
+  {  id: 17, name: "Джуджу из патруля",     price: 849,  oldPrice: 889,  label: "Старр Нова", category: "Старр Нова",
      image: "https://storage.botpapa.me/files/ba4da690-4a56-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 18, name: "Скин Беа",        price: 679,  oldPrice: 709,  label: "Старр Нова", category: "Старр Нова",
+  {  id: 18, name: "Беа из патруля",        price: 679,  oldPrice: 709,  label: "Старр Нова", category: "Старр Нова",
      image: "https://storage.botpapa.me/files/bd39a2f0-4a56-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
   // ── ОСОБЫЕ АКЦИИ (id 19–20) ───────────────────────────────────────────────
@@ -50,16 +50,16 @@ const products = [
 
   // ── ЕЖЕНЕДЕЛЬНЫЕ АКЦИИ (id 21–24) ────────────────────────────────────────
   // id   name            price   oldPrice  label          category
-  {  id: 21, name: "Скин Рико",        price: 589,  oldPrice: 619,  label: "Ежен. акция", category: "Еженедельные акции",
+  {  id: 21, name: "Яичный Рико",        price: 589,  oldPrice: 619,  label: "Ежен. акция", category: "Еженедельные акции",
      image: "https://storage.botpapa.me/files/eb561330-55be-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 22, name: "Скин Нита",        price: 769,  oldPrice: 799,  label: "Ежен. акция", category: "Еженедельные акции",
+  {  id: 22, name: "Нита с бивнями",        price: 769,  oldPrice: 799,  label: "Ежен. акция", category: "Еженедельные акции",
      image: "https://storage.botpapa.me/files/e6501070-55be-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 23, name: "Скин 8-Бит",        price: 769,  oldPrice: 799,  label: "Ежен. акция", category: "Еженедельные акции",
+  {  id: 23, name: "Антивирус 8-Бит",        price: 769,  oldPrice: 799,  label: "Ежен. акция", category: "Еженедельные акции",
      image: "https://storage.botpapa.me/files/ef35be60-55be-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 24, name: "Скин Бо",         price: 769,  oldPrice: 799,  label: "Ежен. акция", category: "Еженедельные акции",
+  {  id: 24, name: "Бо-меха",         price: 769,  oldPrice: 799,  label: "Ежен. акция", category: "Еженедельные акции",
      image: "https://storage.botpapa.me/files/f2aa72c0-55be-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
   // ── ЕЖЕДНЕВНЫЕ АКЦИИ (id 25–36) ──────────────────────────────────────────

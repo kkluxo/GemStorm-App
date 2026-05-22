@@ -16,10 +16,10 @@ const products = [
 
   // ── СТАРР НОВА (id 11–18) ─────────────────────────────────────────────────
   // id   name                price   oldPrice  label          category
-  {  id: 11, name: "Боец Старр Нова",  price: 3149, oldPrice: 3289, label: "Старр Нова", category: "Старр Нова",
+  {  id: 11, name: "Боец Старр Нова",  price: 1269, oldPrice: 1329, label: "Старр Нова", category: "Старр Нова",
      image: "https://storage.botpapa.me/files/e2268b00-55be-11f1-bef9-f1ec7a2c6e45.jpeg" },
   
-  {  id: 12, name: "Набор: Старр Нова",  price: 3149, oldPrice: 3289, label: "Старр Нова", category: "Старр Нова",
+  {  id: 12, name: "Набор: Старр Нова",  price: 2129, oldPrice: 2249, label: "Старр Нова", category: "Старр Нова",
      image: "https://storage.botpapa.me/files/e2268b00-55be-11f1-bef9-f1ec7a2c6e45.jpeg" },
   
   {  id: 13, name: "Набор: 4 скина",  price: 3149, oldPrice: 3289, label: "Старр Нова", category: "Старр Нова",

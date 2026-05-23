@@ -64,6 +64,24 @@ const products = [
 
   // ── ЕЖЕДНЕВНЫЕ АКЦИИ (id 25–34) ──────────────────────────────────────────
   // id   name          price   oldPrice  label            category               maxQty  conflictGroup
+  {  id: 35, name: "600 монет",  price: 169,  oldPrice: 179,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
+     image: "https://storage.botpapa.me/files/c04d8e50-56ba-11f1-bef9-f1ec7a2c6e45.jpeg" },
+
+  {  id: 36, name: "900 монет",  price: 85,  oldPrice: 89,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
+     image: "https://storage.botpapa.me/files/c04d8e50-56ba-11f1-bef9-f1ec7a2c6e45.jpeg" },
+
+  {  id: 37, name: "1100 монет",  price: 339,  oldPrice: 359,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
+     image: "https://storage.botpapa.me/files/c04d8e50-56ba-11f1-bef9-f1ec7a2c6e45.jpeg" },
+
+  {  id: 38, name: "1750 монет",  price: 169,  oldPrice: 179,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
+     image: "https://storage.botpapa.me/files/c4c55ad0-56ba-11f1-bef9-f1ec7a2c6e45.jpeg" },
+
+  {  id: 39, name: "900 очков силы",  price: 85,  oldPrice: 89,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
+     image: "https://storage.botpapa.me/files/bc0695d0-56ba-11f1-bef9-f1ec7a2c6e45.jpeg" },
+
+  {  id: 40, name: "1000 очков силы",  price: 249,  oldPrice: 269,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
+     image: "https://storage.botpapa.me/files/bc0695d0-56ba-11f1-bef9-f1ec7a2c6e45.jpeg" },
+  
   {  id: 25, name: "50 гемов",  price: 169,  oldPrice: 179,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/de7124e0-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
 

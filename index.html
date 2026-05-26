@@ -714,12 +714,20 @@
     }
    
     .cart-warn-btn {
-  width: 34px; height: 34px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
-  border: none; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  padding: 0;
+  -webkit-appearance: none;
 }
+
 
     .content-card {
       background: #202022;
@@ -2137,7 +2145,7 @@
     for (let [id, qty] of items) {
       const prod = products.find(p => p.id == id);
       if (!prod) continue;
-      html += `<div class="cart-item-wrapper"><div class="cart-item"><img class="cart-img" src="${prod.image}" alt="${escapeHtml(prod.name)}"><div class="cart-info"><div class="cart-product-name">${escapeHtml(prod.name)}</div><div class="cart-product-price">${formatPrice(prod.price)}</div><div class="cart-product-category">${escapeHtml(prod.label || prod.category)}</div></div><div class="cart-actions" style="display:flex;flex-direction:column;align-items:flex-end;justify-content:space-evenly;">${!['Пропуски', 'Кристаллы'].includes(prod.category) ? `<button class="cart-warn-btn" data-id="${id}"><img src="https://storage.botpapa.me/files/ea9c0cf0-592a-11f1-bef9-f1ec7a2c6e45.png" style="width:18px;height:18px;"></button>` : ''}<div class="cart-quantity"><button class="cart-qty-btn" data-dec="${id}"><img src="https://storage.botpapa.me/files/975c4510-49de-11f1-bef9-f1ec7a2c6e45.png" alt="-"></button><span class="cart-qty-value">${qty}</span><button class="cart-qty-btn" data-inc="${id}"><img src="https://storage.botpapa.me/files/9a5d01f0-49de-11f1-bef9-f1ec7a2c6e45.png" alt="+"></button></div></div></div><div class="cart-item-delivery"><span class="cart-item-delivery-label">Способ получения</span><span class="cart-item-delivery-value">вход в аккаунт</span></div></div>`;
+      html += `<div class="cart-item-wrapper"><div class="cart-item"><img class="cart-img" src="${prod.image}" alt="${escapeHtml(prod.name)}"><div class="cart-info"><div class="cart-product-name">${escapeHtml(prod.name)}</div><div class="cart-product-price">${formatPrice(prod.price)}</div><div class="cart-product-category">${escapeHtml(prod.label || prod.category)}</div></div>style="display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-start;gap:6px;padding-right:4px;padding-top:4px;">${!['Пропуски', 'Кристаллы'].includes(prod.category) ? `<button class="cart-warn-btn" data-id="${id}"><img src="https://storage.botpapa.me/files/ea9c0cf0-592a-11f1-bef9-f1ec7a2c6e45.png" style="width:18px;height:18px;"></button>` : ''}<div class="cart-quantity"><button class="cart-qty-btn" data-dec="${id}"><img src="https://storage.botpapa.me/files/975c4510-49de-11f1-bef9-f1ec7a2c6e45.png" alt="-"></button><span class="cart-qty-value">${qty}</span><button class="cart-qty-btn" data-inc="${id}"><img src="https://storage.botpapa.me/files/9a5d01f0-49de-11f1-bef9-f1ec7a2c6e45.png" alt="+"></button></div></div></div><div class="cart-item-delivery"><span class="cart-item-delivery-label">Способ получения</span><span class="cart-item-delivery-value">вход в аккаунт</span></div></div>`;
     }
     container.innerHTML = html;
     document.querySelectorAll("[data-dec]").forEach(btn => { btn.addEventListener("click", () => changeQty(parseInt(btn.dataset.dec), -1)); });

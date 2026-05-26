@@ -2,134 +2,134 @@ const products = [
 
   // ── ПРОПУСКИ (id 1–4) ─────────────────────────────────────────────────────
   // id   name                price   oldPrice  label      category     maxQty  conflictGroup
-  {  id: 1,  name: "Brawl Pass",      price: 769,  oldPrice: 799,  label: "Пропуск", category: "Пропуски", maxQty: 1, conflictGroup: [1, 2, 3],
+  {  id: 1,  name: "Brawl Pass",      price: 709,  oldPrice: 769,  label: "Пропуск", category: "Пропуски", maxQty: 1, conflictGroup: [1, 2, 3],
      image: "https://storage.botpapa.me/files/6b57bf60-499a-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 2,  name: "Brawl Pass Plus", price: 1099, oldPrice: 1169, label: "Пропуск", category: "Пропуски", maxQty: 1, conflictGroup: [1, 2, 3],
+  {  id: 2,  name: "Brawl Pass Plus", price: 1029, oldPrice: 1099, label: "Пропуск", category: "Пропуски", maxQty: 1, conflictGroup: [1, 2, 3],
      image: "https://storage.botpapa.me/files/6f97da10-499a-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 3,  name: "Улучш. до BP+",   price: 429,  oldPrice: 449,  label: "Пропуск", category: "Пропуски", maxQty: 1, conflictGroup: [1, 2, 3],
+  {  id: 3,  name: "Улучш. до BP+",   price: 399,  oldPrice: 429,  label: "Пропуск", category: "Пропуски", maxQty: 1, conflictGroup: [1, 2, 3],
      image: "https://storage.botpapa.me/files/6f97da10-499a-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 4,  name: "Pro Pass",         price: 2129, oldPrice: 2249, label: "Пропуск", category: "Пропуски", maxQty: 1, conflictGroup: [],
+  {  id: 4,  name: "Pro Pass",         price: 1979, oldPrice: 2129, label: "Пропуск", category: "Пропуски", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/72f535e0-499a-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
   // ── СТАРР НОВА (id 11–18) ─────────────────────────────────────────────────
   // id   name                  price   oldPrice  label          category       maxQty  conflictGroup
-  {  id: 11, name: "Боец Старр Нова",   price: 1269, oldPrice: 1329, label: "Старр Нова", category: "Старр Нова", maxQty: 1, conflictGroup: [11, 12],
+  {  id: 11, name: "Боец Старр Нова",   price: 1189, oldPrice: 1269, label: "Старр Нова", category: "Старр Нова", maxQty: 1, conflictGroup: [11, 12],
      image: "https://storage.botpapa.me/files/e2268b00-55be-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 12, name: "Набор: Старр Нова", price: 2129, oldPrice: 2249, label: "Старр Нова", category: "Старр Нова", maxQty: 1, conflictGroup: [11, 12],
+  {  id: 12, name: "Набор: Старр Нова", price: 1979, oldPrice: 2129, label: "Старр Нова", category: "Старр Нова", maxQty: 1, conflictGroup: [11, 12],
      image: "https://storage.botpapa.me/files/e2268b00-55be-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 13, name: "Набор: 4 скина",    price: 3149, oldPrice: 3289, label: "Старр Нова", category: "Старр Нова", maxQty: 1, conflictGroup: [],
+  {  id: 13, name: "Набор: 4 скина",    price: 2929, oldPrice: 3149, label: "Старр Нова", category: "Старр Нова", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/a99938f0-4a56-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 14, name: "Набор: 3 скина",    price: 2379, oldPrice: 2489, label: "Старр Нова", category: "Старр Нова", maxQty: 1, conflictGroup: [],
+  {  id: 14, name: "Набор: 3 скина",    price: 2219, oldPrice: 2379, label: "Старр Нова", category: "Старр Нова", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/ac8cd670-4a56-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 15, name: "Амбер из войда",    price: 1269, oldPrice: 1329, label: "Старр Нова", category: "Старр Нова", maxQty: 1, conflictGroup: [],
+  {  id: 15, name: "Амбер из войда",    price: 1189, oldPrice: 1269, label: "Старр Нова", category: "Старр Нова", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/b3c4fb70-4a56-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 16, name: "Амбер из зв. патруля",  price: 1269, oldPrice: 1329, label: "Старр Нова", category: "Старр Нова", maxQty: 1, conflictGroup: [],
+  {  id: 16, name: "Амбер из зв. патруля",  price: 1189, oldPrice: 1269, label: "Старр Нова", category: "Старр Нова", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/b6be6550-4a56-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 17, name: "Джуджу из зв. патруля", price: 849,  oldPrice: 889,  label: "Старр Нова", category: "Старр Нова", maxQty: 1, conflictGroup: [],
+  {  id: 17, name: "Джуджу из зв. патруля", price: 789,  oldPrice: 849,  label: "Старр Нова", category: "Старр Нова", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/ba4da690-4a56-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 18, name: "Беа из зв. патруля",    price: 679,  oldPrice: 709,  label: "Старр Нова", category: "Старр Нова", maxQty: 1, conflictGroup: [],
+  {  id: 18, name: "Беа из зв. патруля",    price: 629,  oldPrice: 679,  label: "Старр Нова", category: "Старр Нова", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/bd39a2f0-4a56-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
   // ── ОСОБЫЕ АКЦИИ (id 19–20) ───────────────────────────────────────────────
   // id   name          price   oldPrice  label           category          maxQty  conflictGroup
-  {  id: 19, name: "4000 блингов",  price: 85,  oldPrice: 89,  label: "Bling Deal", category: "Bling Deals", maxQty: 1, conflictGroup: [],
+  {  id: 19, name: "4000 блингов",  price: 79,  oldPrice: 85,  label: "Bling Deal", category: "Bling Deals", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 20, name: "8к/8,5к блингов", price: 509,  oldPrice: 529,  label: "Bling Deal", category: "Bling Deals", maxQty: 1, conflictGroup: [],
+  {  id: 20, name: "8к/8,5к блингов", price: 479,  oldPrice: 509,  label: "Bling Deal", category: "Bling Deals", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
   // ── ЕЖЕНЕДЕЛЬНЫЕ АКЦИИ (id 21–24) ────────────────────────────────────────
   // id   name               price   oldPrice  label           category                maxQty  conflictGroup
-  {  id: 21, name: "Яичный Рико",    price: 589,  oldPrice: 619,  label: "Ежен. акция", category: "Ежен. акции", maxQty: 1, conflictGroup: [],
+  {  id: 21, name: "Яичный Рико",    price: 549,  oldPrice: 589,  label: "Ежен. акция", category: "Ежен. акции", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/eb561330-55be-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 22, name: "Нита с бивнями", price: 769,  oldPrice: 799,  label: "Ежен. акция", category: "Ежен. акции", maxQty: 1, conflictGroup: [],
+  {  id: 22, name: "Нита с бивнями", price: 709,  oldPrice: 769,  label: "Ежен. акция", category: "Ежен. акции", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/e6501070-55be-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 23, name: "Антивирус 8-Бит",price: 769,  oldPrice: 799,  label: "Ежен. акция", category: "Ежен. акции", maxQty: 1, conflictGroup: [],
+  {  id: 23, name: "Антивирус 8-Бит",price: 709,  oldPrice: 769,  label: "Ежен. акция", category: "Ежен. акции", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/ef35be60-55be-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 24, name: "Бо-меха",        price: 769,  oldPrice: 799,  label: "Ежен. акция", category: "Ежен. акции", maxQty: 1, conflictGroup: [],
+  {  id: 24, name: "Бо-меха",        price: 709,  oldPrice: 769,  label: "Ежен. акция", category: "Ежен. акции", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/f2aa72c0-55be-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
   // ── ЕЖЕДНЕВНЫЕ АКЦИИ (id 25–34) ──────────────────────────────────────────
   // id   name          price   oldPrice  label            category               maxQty  conflictGroup
-  {  id: 35, name: "600 монет",  price: 169,  oldPrice: 179,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
+  {  id: 35, name: "600 монет",  price: 159,  oldPrice: 169,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/c04d8e50-56ba-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 36, name: "900 монет",  price: 85,  oldPrice: 89,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
+  {  id: 36, name: "900 монет",  price: 79,  oldPrice: 85,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/c04d8e50-56ba-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 37, name: "1100 монет",  price: 339,  oldPrice: 359,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
+  {  id: 37, name: "1100 монет",  price: 319,  oldPrice: 339,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/c04d8e50-56ba-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 38, name: "1750 монет",  price: 169,  oldPrice: 179,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
+  {  id: 38, name: "1750 монет",  price: 159,  oldPrice: 169,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/c4c55ad0-56ba-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 39, name: "900 очков силы",  price: 85,  oldPrice: 89,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
+  {  id: 39, name: "900 очков силы",  price: 79,  oldPrice: 85,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/bc0695d0-56ba-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 40, name: "1000 очков силы",  price: 249,  oldPrice: 269,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
+  {  id: 40, name: "1000 очков силы",  price: 239,  oldPrice: 249,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/bc0695d0-56ba-11f1-bef9-f1ec7a2c6e45.jpeg" },
   
-  {  id: 25, name: "50 гемов",  price: 169,  oldPrice: 179,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
+  {  id: 25, name: "50 гемов",  price: 159,  oldPrice: 169,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/de7124e0-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 26, name: "60 гемов",  price: 249,  oldPrice: 269,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
+  {  id: 26, name: "60 гемов",  price: 239,  oldPrice: 249,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/e2281260-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 27, name: "90 гемов",  price: 85,   oldPrice: 89,   label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
+  {  id: 27, name: "90 гемов",  price: 79,   oldPrice: 85,   label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/e2281260-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 28, name: "95 гемов",  price: 339,  oldPrice: 359,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
+  {  id: 28, name: "95 гемов",  price: 319,  oldPrice: 339,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/e2281260-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 29, name: "100 гемов", price: 429,  oldPrice: 449,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
+  {  id: 29, name: "100 гемов", price: 399,  oldPrice: 429,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/e2281260-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 30, name: "120 гемов", price: 509,  oldPrice: 529,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
+  {  id: 30, name: "120 гемов", price: 479,  oldPrice: 509,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/e2281260-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 31, name: "140 гемов", price: 589,  oldPrice: 619,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
+  {  id: 31, name: "140 гемов", price: 549,  oldPrice: 589,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 32, name: "160 гемов", price: 679,  oldPrice: 709,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
+  {  id: 32, name: "160 гемов", price: 629,  oldPrice: 679,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 33, name: "180 гемов", price: 769,  oldPrice: 799,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
+  {  id: 33, name: "180 гемов", price: 709,  oldPrice: 769,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 34, name: "180 гемов", price: 169,  oldPrice: 179,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
+  {  id: 34, name: "180 гемов", price: 159,  oldPrice: 169,  label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
   // ── КРИСТАЛЛЫ (id 5–10) ───────────────────────────────────────────────────
   // id   name           price   oldPrice  label          category      maxQty  conflictGroup
-  {  id: 5,  name: "30 гемов",   price: 169,  oldPrice: 179,  label: "Кристаллы", category: "Кристаллы", maxQty: 3, conflictGroup: [],
+  {  id: 5,  name: "30 гемов",   price: 159,  oldPrice: 169,  label: "Кристаллы", category: "Кристаллы", maxQty: 3, conflictGroup: [],
      image: "https://storage.botpapa.me/files/de7124e0-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 6,  name: "80 гемов",   price: 429,  oldPrice: 449,  label: "Кристаллы", category: "Кристаллы", maxQty: 3, conflictGroup: [],
+  {  id: 6,  name: "80 гемов",   price: 399,  oldPrice: 429,  label: "Кристаллы", category: "Кристаллы", maxQty: 3, conflictGroup: [],
      image: "https://storage.botpapa.me/files/e2281260-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 7,  name: "170 гемов",  price: 849,  oldPrice: 889,  label: "Кристаллы", category: "Кристаллы", maxQty: 3, conflictGroup: [],
+  {  id: 7,  name: "170 гемов",  price: 789,  oldPrice: 849,  label: "Кристаллы", category: "Кристаллы", maxQty: 3, conflictGroup: [],
      image: "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 8,  name: "360 гемов",  price: 1699, oldPrice: 1779, label: "Кристаллы", category: "Кристаллы", maxQty: 3, conflictGroup: [],
+  {  id: 8,  name: "360 гемов",  price: 1579, oldPrice: 1699, label: "Кристаллы", category: "Кристаллы", maxQty: 3, conflictGroup: [],
      image: "https://storage.botpapa.me/files/e8aa06c0-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 9,  name: "950 гемов",  price: 4249, oldPrice: 4449, label: "Кристаллы", category: "Кристаллы", maxQty: 3, conflictGroup: [],
+  {  id: 9,  name: "950 гемов",  price: 3949, oldPrice: 4249, label: "Кристаллы", category: "Кристаллы", maxQty: 3, conflictGroup: [],
      image: "https://storage.botpapa.me/files/ec10b160-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 10, name: "2000 гемов", price: 8469, oldPrice: 8899, label: "Кристаллы", category: "Кристаллы", maxQty: 3, conflictGroup: [],
+  {  id: 10, name: "2000 гемов", price: 7899, oldPrice: 8469, label: "Кристаллы", category: "Кристаллы", maxQty: 3, conflictGroup: [],
      image: "https://storage.botpapa.me/files/767ed1d0-499a-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
 ];

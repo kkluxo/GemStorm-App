@@ -42,11 +42,11 @@ const products = [
 
   // ── ОСОБЫЕ АКЦИИ (id 19–20) ───────────────────────────────────────────────
   // id   name          price   oldPrice  label           category          maxQty  conflictGroup
-  {  id: 19, name: "90 гемов",  price: 249,  oldPrice: 269,  label: "Особ. акция", category: "Особые акции", maxQty: 1, conflictGroup: [],
-     image: "https://storage.botpapa.me/files/e2281260-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
+  {  id: 19, name: "4000 блингов",  price: 85,  oldPrice: 89,  label: "Bling Deal", category: "Bling Deals", maxQty: 1, conflictGroup: [],
+     image: "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 20, name: "300 гемов", price: 849,  oldPrice: 889,  label: "Особ. акция", category: "Особые акции", maxQty: 1, conflictGroup: [],
-     image: "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
+  {  id: 20, name: "8-8,5к блингов", price: 509,  oldPrice: 529,  label: "Bling Deal", category: "Bling Deals", maxQty: 1, conflictGroup: [],
+     image: "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
   // ── ЕЖЕНЕДЕЛЬНЫЕ АКЦИИ (id 21–24) ────────────────────────────────────────
   // id   name               price   oldPrice  label           category                maxQty  conflictGroup
@@ -142,9 +142,9 @@ const FILTER_CATEGORIES = [
   "Пропуски",
   "Кристаллы",
   "Старр Нова",
+  "Bling Deals",
   "Ежен. акции",
   "Ежедн. акции",
-  "Особые акции",
 ];
 
 // ─────────────────────────────────────────────

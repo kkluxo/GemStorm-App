@@ -45,7 +45,7 @@ const products = [
   {  id: 19, name: "4000 блингов",  price: 85,  oldPrice: 89,  label: "Bling Deal", category: "Bling Deals", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 20, name: "8-8,5к блингов", price: 509,  oldPrice: 529,  label: "Bling Deal", category: "Bling Deals", maxQty: 1, conflictGroup: [],
+  {  id: 20, name: "8к/8,5к блингов", price: 509,  oldPrice: 529,  label: "Bling Deal", category: "Bling Deals", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
   // ── ЕЖЕНЕДЕЛЬНЫЕ АКЦИИ (id 21–24) ────────────────────────────────────────

@@ -2276,7 +2276,7 @@
         if (promoInput) promoInput.addEventListener("keypress", (e) => { if (e.key === "Enter") applyBtn?.click(); });
       }, 0);
     } else {
-      fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${appliedPromo ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="checkoutBtn">Перейти к оформлению</button><button class="promo-btn" id="openPromoBtn"><img src="https://storage.botpapa.me/files/eff64a31-592a-11f1-bef9-f1ec7a2c6e45.png" alt="Промокод"></button></div></div>`;
+      fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${appliedPromo ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="checkoutBtn">Перейти к оформлению</button><button class="promo-btn" id="openPromoBtn"><img src="https://storage.botpapa.me/files/8324fec0-5933-11f1-bef9-f1ec7a2c6e45.png" alt="Промокод"></button></div></div>`;
       setTimeout(() => {
         document.getElementById("checkoutBtn")?.addEventListener("click", async () => {
   hapticMedium();

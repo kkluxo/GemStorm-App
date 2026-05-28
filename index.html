@@ -2106,10 +2106,14 @@ body {
   function renderCartButtonHtml(productId) {
     const qty = cart[productId] || 0;
     if (qty > 0) {
+      const prod = products.find(p => p.id == productId);
+      const maxQty = prod?.category === 'Кристаллы' ? 3 : 1;
+      const atLimit = qty >= maxQty;
+      const plusOpacity = atLimit ? 'opacity:0.3;pointer-events:none;' : '';
       return `<div class="card-action-btn counter-btn">
         <span class="counter-minus" data-id="${productId}"><img src="https://storage.botpapa.me/files/975c4510-49de-11f1-bef9-f1ec7a2c6e45.png" alt="-"></span>
         <span class="counter-value">${qty}</span>
-        <span class="counter-plus" data-id="${productId}"><img src="https://storage.botpapa.me/files/9a5d01f0-49de-11f1-bef9-f1ec7a2c6e45.png" alt="+"></span>
+        <span class="counter-plus" data-id="${productId}" style="${plusOpacity}"><img src="https://storage.botpapa.me/files/9a5d01f0-49de-11f1-bef9-f1ec7a2c6e45.png" alt="+"></span>
       </div>`;
     }
     return `<div class="card-action-btn cart-add-btn" data-add="${productId}">В корзину</div>`;

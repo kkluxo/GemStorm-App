@@ -3313,6 +3313,10 @@ if (wasOnProfile && mainPages.includes(pageId)) {
   }
 
   function initApp() {
+    if (typeof products === 'undefined' || !products.length) {
+    setTimeout(initApp, 100);
+    return;
+  }
     loadCartFromLocalStorage();
     const tgU = window.Telegram?.WebApp?.initDataUnsafe?.user;
     if (tgU?.id) {

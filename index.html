@@ -17,6 +17,20 @@
   <meta name="theme-color" content="#141416">
   <title>GemStorm Store</title>
   <style>
+    #appLoader {
+  position: fixed;
+  inset: 0;
+  background: #141416;
+  z-index: 99998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#appLoader.hidden {
+  display: none;
+}
+
     .page { display: none !important; }
     .page.active-page { display: block !important; }
 
@@ -1815,6 +1829,8 @@ body {
 </head>
 <body>
 
+<div id="appLoader"></div>
+
 <div id="browserBlocker" style="display: none;" class="browser-blocker">
   <div class="browser-blocker-content">
     <img class="browser-blocker-icon" src="https://storage.botpapa.me/files/fd86aa00-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="warning">
@@ -3358,6 +3374,29 @@ if (wasOnProfile && mainPages.includes(pageId)) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userId, referrerId })
         }).catch(() => {});
+    // Ждём загрузки всех изображений из preload
+const preloadLinks = Array.from(document.querySelectorAll('link[rel="preload"][as="image"]'));
+const preloadSrcs = preloadLinks.map(l => l.href);
+
+let loaded = 0;
+const total = preloadSrcs.length;
+
+if (total === 0) {
+  document.getElementById('appLoader')?.classList.add('hidden');
+  return;
+}
+
+preloadSrcs.forEach(src => {
+  const img = new Image();
+  img.onload = img.onerror = () => {
+    loaded++;
+    if (loaded >= total) {
+      document.getElementById('appLoader')?.classList.add('hidden');
+    }
+  };
+  img.src = src;
+});
+
       }
     }
   }

@@ -36,8 +36,25 @@ const pool = new Pool({
 // =============================================
 
 async function getNextOrderNumber() {
-    const result = await pool.query('SELECT COALESCE(MAX(order_number), 0) + 1 as next FROM orders');
-    return result.rows[0].next;
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const digits = '0123456789';
+  
+  let attempts = 0;
+  while (attempts < 100) {
+    const l1 = letters[Math.floor(Math.random() * 26)];
+    const d1 = digits[Math.floor(Math.random() * 10)];
+    const l2 = letters[Math.floor(Math.random() * 26)];
+    const d2 = digits[Math.floor(Math.random() * 10)];
+    const code = `${l1}${d1}${l2}${d2}`;
+    
+    const exists = await pool.query(
+      'SELECT id FROM orders WHERE order_number = $1',
+      [code]
+    );
+    if (!exists.rows.length) return code;
+    attempts++;
+  }
+  throw new Error('Не удалось сгенерировать уникальный номер');
 }
 
 // Безопасное удаление сообщения (игнорирует ошибки если уже удалено)
@@ -222,6 +239,8 @@ async function initDB() {
         for (const col of colDefs) {
             await pool.query(`ALTER TABLE orders ADD COLUMN IF NOT EXISTS ${col}`);
         }
+
+        await pool.query(`ALTER TABLE orders ALTER COLUMN order_number TYPE TEXT USING order_number::TEXT`);
 
         await pool.query(`
             CREATE TABLE IF NOT EXISTS reviews (

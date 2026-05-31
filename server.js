@@ -257,7 +257,7 @@ async function initDB() {
             )
         `);
         await pool.query(`ALTER TABLE reviews ADD COLUMN IF NOT EXISTS order_id INTEGER`);
-        await pool.query(`ALTER TABLE reviews ADD COLUMN IF NOT EXISTS order_number INTEGER`);
+        await pool.query(`ALTER TABLE reviews ALTER COLUMN order_number TYPE TEXT USING order_number::TEXT`);
         await pool.query(`ALTER TABLE reviews ADD COLUMN IF NOT EXISTS user_username TEXT`);
 
         await pool.query(`

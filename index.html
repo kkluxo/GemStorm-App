@@ -2220,8 +2220,14 @@ body {
       document.getElementById("checkoutBtn")?.addEventListener("click", async () => {
         hapticMedium();
         const tgU = window.Telegram?.WebApp?.initDataUnsafe?.user;
-        if (!tgU?.id) { alert('Оформление заказа доступно только через Telegram'); return; }
-        try {
+        if (!tgU?.id) {
+  if (window.Telegram?.WebApp?.showAlert) {
+    window.Telegram.WebApp.showAlert('Оформление заказа доступно только через Telegram');
+  } else {
+    alert('Оформление заказа доступно только через Telegram');
+  }
+  return;
+}
           const r = await fetch('https://gemstorm.up.railway.app/api/settings');
           const s = await r.json();
           const status = s.bot_status || 'open';

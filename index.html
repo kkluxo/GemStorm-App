@@ -172,11 +172,6 @@ body {
       padding: 5px 0 2px 0;
     }
 
-    .menu-item:active {
-      transform: scale(0.92);
-      opacity: 0.8;
-    }
-
     .menu-icon {
       width: 28px;
       height: 28px;
@@ -420,10 +415,6 @@ body {
       margin-top: 10px;
     }
 
-    .empty-catalog-btn:active {
-      transform: scale(0.96);
-      opacity: 0.8;
-    }
 
     .cart-item {
       background: #222225;
@@ -635,11 +626,6 @@ body {
       height: 48px;
     }
 
-    .checkout-button:active {
-      opacity: 0.8;
-      transform: scale(0.98);
-    }
-
     .promo-btn {
       width: 48px;
       height: 48px;
@@ -657,11 +643,6 @@ body {
     .promo-btn img {
       width: 24px;
       height: 24px;
-    }
-
-    .promo-btn:active {
-      opacity: 0.8;
-      transform: scale(0.95);
     }
 
     .promo-input-row {
@@ -715,11 +696,6 @@ body {
 
     .promo-action-btn.back-btn {
       background: rgba(239, 68, 68, 0.12);
-    }
-
-    .promo-action-btn:active {
-      opacity: 0.8;
-      transform: scale(0.95);
     }
 
     .promo-action-btn img {
@@ -918,11 +894,6 @@ body {
       margin-bottom: 12px;
       cursor: pointer;
       position: relative;
-    }
-
-    .order-card:active {
-      transform: scale(0.98);
-      opacity: 0.9;
     }
 
     .order-card-header {
@@ -1398,10 +1369,6 @@ body {
       opacity: 1;
     }
 
-    .review-star-btn:active {
-      transform: scale(0.88);
-    }
-
     .review-textarea {
       width: 100%;
       background: #303032;
@@ -1431,11 +1398,6 @@ body {
       font-size: 16px;
       font-weight: 600;
       cursor: pointer;
-    }
-
-    .review-submit-btn:active {
-      opacity: 0.8;
-      transform: scale(0.98);
     }
 
     .review-empty {
@@ -1596,11 +1558,6 @@ body {
       cursor: pointer;
     }
 
-    .order-main-card:active {
-      transform: scale(0.98);
-      opacity: 0.9;
-    }
-
     .order-header {
       display: flex;
       justify-content: space-between;
@@ -1634,11 +1591,6 @@ body {
       opacity: 0.7;
       transition: 0.1s;
       flex-shrink: 0;
-    }
-
-    .order-refresh-btn:active {
-      transform: scale(0.9);
-      opacity: 1;
     }
 
     .order-refresh-btn svg {
@@ -1807,10 +1759,6 @@ body {
   gap: 8px;
 }
 
-.gift-claim-btn:active {
-  transform: scale(0.95);
-  opacity: 0.8;
-}
   </style>
 </head>
 <body>
@@ -2010,7 +1958,7 @@ body {
 
  (function checkTelegramContext() {
     const tg = window.Telegram?.WebApp;
-    const isTelegramWebApp = !!(tg && tg.initData && tg.initData.length > 0);
+    const isTelegramWebApp = !!(window.Telegram?.WebApp?.initData || window.Telegram?.WebApp?.platform);
     const blocker = document.getElementById('browserBlocker');
     if (!isTelegramWebApp) {
       if (blocker) blocker.style.display = 'flex';

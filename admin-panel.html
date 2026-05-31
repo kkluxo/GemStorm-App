@@ -417,6 +417,7 @@ if (entered !== ADMIN_PASSWORD) {
 
   // Навигация
   function showAdminPage(pageId) {
+    history.pushState({ page: pageId }, '', '');
     const oldFixed = document.getElementById('adminFixedBar');
     if (oldFixed) oldFixed.remove();
 
@@ -905,8 +906,12 @@ if (entered !== ADMIN_PASSWORD) {
 
   // Меню навигации
   document.querySelectorAll('.menu-item').forEach(btn => {
-    btn.addEventListener('click', () => { hapticLight(); showAdminPage(btn.dataset.page); });
+  btn.addEventListener('click', () => {
+    hapticLight();
+    showAdminPage(btn.dataset.page);
+    if (btn.dataset.page === 'orders') loadOrders();
   });
+});
 
   // Аватар в меню
   const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
@@ -915,6 +920,17 @@ if (entered !== ADMIN_PASSWORD) {
   }
 
   // Запуск
+  window.addEventListener('popstate', () => {
+  const oldFixed = document.getElementById('adminFixedBar');
+  if (oldFixed) oldFixed.remove();
+  if (document.getElementById('stats-page').classList.contains('active-page')) {
+    showAdminPage('profile');
+  } else if (document.getElementById('detail-page').classList.contains('active-page')) {
+    showAdminPage('orders');
+  } else {
+    showAdminPage('orders');
+  }
+});
   initBackButton();
   showAdminPage('orders');
   loadOrders();

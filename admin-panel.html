@@ -371,6 +371,17 @@
 </div>
 
 <script>
+  const ADMIN_PASSWORD = usa2026';
+const entered = localStorage.getItem('adminAuth');
+if (entered !== ADMIN_PASSWORD) {
+  const pwd = prompt('Введите пароль администратора:');
+  if (pwd !== ADMIN_PASSWORD) {
+    document.body.innerHTML = '<div style="color:white;text-align:center;margin-top:40vh;font-size:20px;">Доступ запрещён</div>';
+  } else {
+    localStorage.setItem('adminAuth', ADMIN_PASSWORD);
+  }
+}
+
   const API = 'https://gemstorm.up.railway.app';
   let allOrders = [];
   let currentTab = 'pending';

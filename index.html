@@ -40,21 +40,21 @@
     }
     
     /* Запрет выделения везде */
-body {
-  -webkit-user-select: none;
-  user-select: none;
-}
+    body {
+      -webkit-user-select: none;
+      user-select: none;
+    }
 
-/* Разрешить только в карточке оплаты */
-#payment-page .form-select-readonly,
-#payment-page .card-number-text {
-  -webkit-user-select: text;
-  user-select: text;
-}
+    /* Разрешить только в карточке оплаты */
+    #payment-page .form-select-readonly,
+    #payment-page .card-number-text {
+      -webkit-user-select: text;
+      user-select: text;
+    }
 
-body {
-  touch-action: pan-y;
-}
+    body {
+      touch-action: pan-y;
+    }
 
     .browser-blocker {
       position: fixed;
@@ -110,6 +110,45 @@ body {
       height: 26px;
       object-fit: contain;
       margin-top: -1px;
+    }
+
+    /* Новые стили для пилюль */
+    .page-title-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #222225;
+      border: 1px solid #2B2B2D;
+      border-radius: 50px;
+      padding: 8px 14px 8px 10px;
+      font-size: 20px;
+      font-weight: 500;
+      color: white;
+    }
+
+    .page-title-pill img {
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+    }
+
+    .balance-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #222225;
+      border: 1px solid #2B2B2D;
+      border-radius: 50px;
+      padding: 8px 14px 8px 10px;
+      font-size: 16px;
+      font-weight: 600;
+      color: white;
+      margin-left: auto;
+    }
+
+    .balance-pill img {
+      width: 18px;
+      height: 18px;
     }
 
     .bottom-menu {
@@ -429,41 +468,41 @@ body {
     }
  
     .cart-item-wrapper {
-  position: relative;
-  margin-bottom: 12px;
-}
+      position: relative;
+      margin-bottom: 12px;
+    }
 
-.cart-item-wrapper .cart-item {
-  margin-bottom: 0;
-  position: relative;
-  z-index: 2;
-}
+    .cart-item-wrapper .cart-item {
+      margin-bottom: 0;
+      position: relative;
+      z-index: 2;
+    }
 
-.cart-item-delivery {
-  background: #171719;
-  border: 1px solid #2B2B2D;
-  border-radius: 0 0 29px 29px;
-  padding: 14px 16px;
-  margin-top: -28px;
-  padding-top: 38px;
-  position: relative;
-  z-index: 1;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+    .cart-item-delivery {
+      background: #171719;
+      border: 1px solid #2B2B2D;
+      border-radius: 0 0 29px 29px;
+      padding: 14px 16px;
+      margin-top: -28px;
+      padding-top: 38px;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-.cart-item-delivery-label {
-  font-size: 16px;
-  color: #cbcdcd;
-  font-weight: 500;
-}
+    .cart-item-delivery-label {
+      font-size: 16px;
+      color: #cbcdcd;
+      font-weight: 500;
+    }
 
-.cart-item-delivery-value {
-  font-size: 16px;
-  color: #9e9e9e;
-  font-weight: 500;
-}
+    .cart-item-delivery-value {
+      font-size: 16px;
+      color: #9e9e9e;
+      font-weight: 500;
+    }
 
 
     .cart-img {
@@ -708,19 +747,19 @@ body {
     }
    
     .cart-warn-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  padding: 0;
-  -webkit-appearance: none;
-}
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      padding: 0;
+      -webkit-appearance: none;
+    }
 
 
     .content-card {
@@ -1107,7 +1146,886 @@ body {
       background: #222225;
       border: 1px solid #2B2B2D;
       border-radius: 28px;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      cursor: pointer;
+    }
 
+    .subscribe-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 4px;
+    }
+
+    .subscribe-text {
+      font-size: 14px;
+      color: #9e9e9e;
+    }
+
+    .telegram-logo {
+      width: 32px;
+      height: 32px;
+      fill: #4cb4e9;
+    }
+
+    .code-input-fixed {
+      position: fixed;
+      bottom: 16px;
+      left: 16px;
+      right: 16px;
+      z-index: 1000;
+      max-width: 600px;
+      margin: 0 auto;
+      width: calc(100% - 32px);
+    }
+
+    .profile-actions-group {
+      background: #1a1a1c;
+      border: 1px solid #2B2B2D;
+      border-radius: 28px;
+      padding: 12px;
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .profile-action-item {
+      background: #222225;
+      border: 1px solid #2B2B2D;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: opacity 0.12s;
+    }
+
+    .profile-action-item:active {
+      opacity: 0.7;
+    }
+
+    .profile-action-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .profile-action-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: #ffffff;
+    }
+
+    .profile-action-subtitle {
+      font-size: 13px;
+      color: #9e9e9e;
+    }
+
+    .profile-action-arrow {
+      width: 18px;
+      height: 18px;
+      opacity: 0.4;
+    }
+
+    /* ===== REVIEWS PAGE ===== */
+    .review-pinned-wrapper {
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    .review-pinned-main {
+      background: #222225;
+      border: 1px solid #2B2B2D;
+      border-radius: 30px;
+      padding: 14px 16px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .review-pinned-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .review-pinned-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .review-pinned-info {
+      flex: 1;
+    }
+
+    .review-pinned-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .review-pinned-role {
+      font-size: 13px;
+      color: #9e9e9e;
+      margin-top: 2px;
+    }
+
+    .review-pinned-badge {
+      width: 34px;
+      height: 34px;
+      background: rgba(76, 180, 233, 0.08);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .review-pinned-badge img {
+      width: 16px;
+      height: 16px;
+    }
+
+    .review-pinned-text {
+      font-size: 15px;
+      color: #cbcdcd;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+
+    .review-pinned-bottom {
+      background: #171719;
+      border: 1px solid #2B2B2D;
+      border-radius: 0 0 30px 30px;
+      padding: 14px 16px;
+      margin-top: -28px;
+      padding-top: 38px;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .review-pinned-bottom:active {
+      opacity: 0.7;
+    }
+
+    .review-pinned-link-label {
+      font-size: 16px;
+      color: #cbcdcd;
+      font-weight: 500;
+    }
+
+    .review-pinned-arrow {
+      color: #9e9e9e;
+    }
+    
+    .review-card {
+      background: #222225;
+      border: 1px solid #2B2B2D;
+      border-radius: 30px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .review-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .review-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #303032;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .review-author-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .review-date {
+      font-size: 12px;
+      color: #9e9e9e;
+    }
+
+    .review-stars {
+      margin-left: auto;
+      display: flex;
+      gap: 2px;
+    }
+
+    .review-compose-card {
+      background: #1a1a1c;
+      border: 1px solid #2B2B2D;
+      border-radius: 24px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .review-compose-label {
+      font-size: 16px;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 12px;
+    }
+
+    .review-stars-select {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .review-star-btn {
+      font-size: 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      opacity: 0.3;
+      transition: opacity 0.1s, transform 0.1s;
+    }
+
+    .review-star-btn.active {
+      opacity: 1;
+    }
+
+    .review-textarea {
+      width: 100%;
+      background: #303032;
+      border: 1px solid #3a3a3e;
+      border-radius: 26px;
+      padding: 12px 14px;
+      color: white;
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      resize: none;
+      min-height: 80px;
+      margin-bottom: 10px;
+    }
+
+    .review-textarea::placeholder {
+      color: #6e6e72;
+    }
+
+    .review-submit-btn {
+      width: 100%;
+      height: 44px;
+      background: #4cb4e9;
+      border: none;
+      border-radius: 34px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .review-empty {
+      text-align: center;
+      padding: 30px 0;
+      color: #9e9e9e;
+      font-size: 15px;
+    }
+    
+    .reviews-fixed-action {
+      position: fixed;
+      bottom: 16px;
+      left: 16px;
+      right: 16px;
+      z-index: 1000;
+      max-width: 600px;
+      margin: 0 auto;
+      width: calc(100% - 32px);
+    }
+
+    .review-text {
+      font-size: 16px;
+      color: #cbcdcd;
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .review-card-wrapper {
+      position: relative;
+      margin-bottom: 13px;
+    }
+
+    .review-card {
+      position: relative;
+      z-index: 2;
+      margin-bottom: 0;
+    }
+
+    .review-items-card {
+      background: #171719;
+      border: 1px solid #2B2B2D;
+      border-radius: 0 0 30px 30px;
+      padding: 12px 16px;
+      margin-top: -28px;
+      padding-top: 36px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .review-item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+    }
+
+    .review-item-name {
+      font-size: 16px;
+      color: #cbcdcd;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 60%;
+    }
+
+    .review-item-price {
+      font-size: 16px;
+      color: #ffffff;
+      font-weight: 500;
+    }
+
+    .review-order-badge {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(76, 180, 233, 0.08);
+      border-radius: 20px;
+      padding: 4px 10px;
+      font-size: 17px;
+      font-weight: 500;
+      color: #4cb4e9;
+      margin-left: auto;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .review-popup-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 9000;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .review-popup-card {
+      background: #222225;
+      border: 1px solid #2B2B2D;
+      border-radius: 28px;
+      padding: 22px 20px;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .review-popup-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 12px;
+    }
+
+    .review-popup-row {
+      font-size: 15px;
+      color: #cbd5e1;
+      margin-bottom: 8px;
+    }
+
+    .review-popup-close {
+      margin-top: 16px;
+      width: 100%;
+      height: 44px;
+      background: #303032;
+      border: none;
+      border-radius: 34px;
+      color: white;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .empty-message {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+      width: 100% !important;
+      height: 60vh !important;
+    }
+
+    .order-wrapper {
+      position: relative;
+      margin-bottom: 14px;
+    }
+
+    .order-main-card {
+      background: #222225;
+      border: 1px solid #2B2B2D;
+      border-radius: 30px;
+      padding: 14px;
+      position: relative;
+      z-index: 2;
+      margin-bottom: 0;
+      cursor: pointer;
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .order-id {
+      font-weight: 600;
+      color: #4cb4e9;
+      font-size: 17px;
+    }
+
+    .order-header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .order-refresh-btn {
+      background: rgba(32, 32, 34, 0.9);
+      border: 1px solid #2B2B2D;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #4cb4e9;
+      opacity: 0.7;
+      transition: 0.1s;
+      flex-shrink: 0;
+    }
+
+    .order-refresh-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .order-date {
+      color: #a1a1aa;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .order-total {
+      font-weight: 600;
+      color: white;
+      font-size: 17px;
+    }
+
+    .order-items-card {
+      background: #171719;
+      border: 1px solid #2B2B2D;
+      border-radius: 0 0 30px 30px;
+      padding: 12px 16px;
+      margin-top: -28px;
+      padding-top: 36px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .order-item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+    }
+
+    .order-item-name {
+      font-size: 16px;
+      color: #cbcdcd;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 60%;
+    }
+
+    .order-item-price {
+      font-size: 16px;
+      color: #ffffff;
+      font-weight: 500;
+    }
+
+    /* Стили для страницы Подарки - в стиле корзины */
+    .gifts-container {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding-bottom: 110px;
+    }
+
+    .gift-wrapper {
+      position: relative;
+      margin-bottom: 0;
+    }
+
+    .gift-main-card {
+      background: #222225;
+      border: 1px solid #2B2B2D;
+      border-radius: 31px 31px 29px 29px;
+      padding: 9px;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+      margin-bottom: 0;
+    }
+
+    .gift-image {
+      width: 90px;
+      height: 90px;
+      border-radius: 22px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .gift-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .gift-name {
+      font-size: 18px;
+      font-weight: 500;
+      color: white;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .gift-price {
+      font-size: 18px;
+      font-weight: 500;
+      color: white;
+    }
+
+    .gift-category {
+      font-size: 16px;
+      color: #9e9e9e;
+    }
+
+    /* Нижняя карточка с фономм #171719 */
+    .gift-link-card {
+      background: #171719;
+      border: 1px solid #2B2B2D;
+      border-radius: 0 0 30px 30px;
+      padding: 12px 16px;
+      margin-top: -28px;
+      padding-top: 36px;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .gift-expiry-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .expiry-label-bottom {
+      font-size: 16px;
+      color: #9e9e9e;
+    }
+
+    .expiry-status-bottom {
+      font-size: 16px;
+      color: #9e9e9e;
+      font-weight: 500;
+    }
+
+    .gift-claim-btn {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: #202B32;
+      border: none;
+      border-radius: 40px;
+      padding: 8px 20px;
+      min-width: 80px;
+      color: #4cb4e9;
+      font-weight: 500;
+      font-size: 17px;
+      cursor: pointer;
+      transition: 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="browserBlocker" style="display: none;" class="browser-blocker">
+  <div class="browser-blocker-content">
+    <img class="browser-blocker-icon" src="https://storage.botpapa.me/files/fd86aa00-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="warning">
+    <div class="browser-blocker-title">Доступно только в Telegram</div>
+    <div class="browser-blocker-text">Пожалуйста, откройте приложение через Telegram Web App</div>
+  </div>
+</div>
+
+<!-- Каталог -->
+<div id="catalog-page" class="page">
+  <div class="header-row">
+    <div class="page-title-pill">
+      <img src="https://storage.botpapa.me/files/00f09750-5110-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
+      Каталог
+    </div>
+    <div class="balance-pill">
+      <img src="https://storage.botpapa.me/files/6da60310-5d4c-11f1-af2e-f7a93121b83b.png" alt="balance">
+      100
+    </div>
+  </div>
+  <div class="search-section">
+    <div class="search-bar">
+      <img class="search-icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'%3E%3C/path%3E%3C/svg%3E">
+      <input type="text" class="search-input" id="searchInput" placeholder="Найти товар по названию">
+    </div>
+    <div class="filter-btn" id="openFilterBtn">
+      <img class="filter-icon" src="https://storage.botpapa.me/files/bc7cbf30-49e0-11f1-bef9-f1ec7a2c6e45.png" alt="filter">
+    </div>
+  </div>
+  <div id="catalogGrid" class="products-grid"></div>
+</div>
+
+<!-- Корзина -->
+<div id="cart-page" class="page">
+  <div class="header-row">
+    <div class="page-title-pill">
+      <img src="https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="cart">
+      Корзина
+    </div>
+    <div class="balance-pill">
+      <img src="https://storage.botpapa.me/files/6da60310-5d4c-11f1-af2e-f7a93121b83b.png" alt="balance">
+      100
+    </div>
+  </div>
+  <div id="cartItemsList" class="cart-content-padding"></div>
+</div>
+
+<!-- Заказы -->
+<div id="orders-page" class="page">
+  <div class="header-row">
+    <div class="page-title-pill">
+      <img src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="orders">
+      Заказы
+    </div>
+    <div class="balance-pill">
+      <img src="https://storage.botpapa.me/files/6da60310-5d4c-11f1-af2e-f7a93121b83b.png" alt="balance">
+      100
+    </div>
+  </div>
+  <div id="ordersList"></div>
+</div>
+
+<!-- Профиль -->
+<div id="profile-page" class="page">
+  <div class="header-row">
+    <div class="page-title-pill">
+      <img src="https://storage.botpapa.me/files/49df3ed0-5110-11f1-bef9-f1ec7a2c6e45.png" alt="profile">
+      Профиль
+    </div>
+    <div class="balance-pill">
+      <img src="https://storage.botpapa.me/files/6da60310-5d4c-11f1-af2e-f7a93121b83b.png" alt="balance">
+      100
+    </div>
+  </div>
+  <div id="profileContent"></div>
+</div>
+
+<!-- Фильтры -->
+<div id="filter-page" class="page">
+  <div class="header-row">
+    <div class="page-title-pill">
+      <img src="https://storage.botpapa.me/files/9478fb40-49de-11f1-bef9-f1ec7a2c6e45.png" alt="filter">
+      Фильтры
+    </div>
+    <div class="balance-pill">
+      <img src="https://storage.botpapa.me/files/6da60310-5d4c-11f1-af2e-f7a93121b83b.png" alt="balance">
+      100
+    </div>
+  </div>
+  <div class="filter-options" id="filterOptionsContainer"></div>
+</div>
+
+<!-- Оформление -->
+<div id="checkout-page" class="page">
+  <div class="header-row">
+    <div class="page-title-pill">
+      <img src="https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="cart">
+      Оформление
+    </div>
+    <div class="balance-pill">
+      <img src="https://storage.botpapa.me/files/6da60310-5d4c-11f1-af2e-f7a93121b83b.png" alt="balance">
+      100
+    </div>
+  </div>
+  <div id="checkoutFormContent"></div>
+</div>
+
+<!-- Оплата -->
+<div id="payment-page" class="page">
+  <div class="header-row">
+    <div class="page-title-pill">
+      <img src="https://storage.botpapa.me/files/62edaf00-4a27-11f1-bef9-f1ec7a2c6e45.png" alt="payment">
+      Оплата
+    </div>
+    <div class="balance-pill">
+      <img src="https://storage.botpapa.me/files/6da60310-5d4c-11f1-af2e-f7a93121b83b.png" alt="balance">
+      100
+    </div>
+  </div>
+  <div id="paymentContent"></div>
+</div>
+
+<!-- Детали заказа -->
+<div id="order-detail-page" class="page">
+  <div class="header-row">
+    <div class="page-title-pill">
+      <img src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="order">
+      <span id="orderDetailTitle">Заказ</span>
+    </div>
+    <div class="balance-pill">
+      <img src="https://storage.botpapa.me/files/6da60310-5d4c-11f1-af2e-f7a93121b83b.png" alt="balance">
+      100
+    </div>
+  </div>
+  <div id="orderDetailContent"></div>
+</div>
+
+<!-- Отзывы -->
+<div id="reviews-page" class="page">
+  <div class="header-row">
+    <div class="page-title-pill">
+      <img src="https://storage.botpapa.me/files/f665c4e0-510f-11f1-bef9-f1ec7a2c6e45.png" alt="reviews">
+      Отзывы
+    </div>
+    <div class="balance-pill">
+      <img src="https://storage.botpapa.me/files/6da60310-5d4c-11f1-af2e-f7a93121b83b.png" alt="balance">
+      100
+    </div>
+  </div>
+  <div id="reviewsContent"></div>
+</div>
+
+<!-- Покупка акции -->
+<div id="buy-promo-page" class="page">
+  <div class="header-row">
+    <div class="page-title-pill">
+      <img src="https://storage.botpapa.me/files/9deb9760-5167-11f1-bef9-f1ec7a2c6e45.png" alt="promo">
+      Покупка акции
+    </div>
+    <div class="balance-pill">
+      <img src="https://storage.botpapa.me/files/6da60310-5d4c-11f1-af2e-f7a93121b83b.png" alt="balance">
+      100
+    </div>
+  </div>
+  <div id="buyPromoContent"></div>
+</div>
+
+<!-- Оставить отзыв -->
+<div id="write-review-page" class="page">
+  <div class="header-row">
+    <div class="page-title-pill">
+      <img src="https://storage.botpapa.me/files/f665c4e0-510f-11f1-bef9-f1ec7a2c6e45.png" alt="reviews">
+      Оставить отзыв
+    </div>
+    <div class="balance-pill">
+      <img src="https://storage.botpapa.me/files/6da60310-5d4c-11f1-af2e-f7a93121b83b.png" alt="balance">
+      100
+    </div>
+  </div>
+  <div id="writeReviewContent"></div>
+</div>
+
+<!-- Подарки -->
+<div id="gifts-page" class="page">
+  <div class="header-row">
+    <div class="page-title-pill">
+      <img src="https://storage.botpapa.me/files/501ffee0-51e9-11f1-bef9-f1ec7a2c6e45.png" alt="gifts">
+      Подарки
+    </div>
+    <div class="balance-pill">
+      <img src="https://storage.botpapa.me/files/6da60310-5d4c-11f1-af2e-f7a93121b83b.png" alt="balance">
+      100
+    </div>
+  </div>
+  <div id="giftsList" class="gifts-container"></div>
+</div>
+
+<!-- Фиксированная корзина (чек-аут) -->
+<div id="cartCheckoutFixed" class="cart-checkout-fixed" style="display: none;"></div>
+
+<!-- Нижнее меню -->
+<div style="position:fixed;bottom:16px;left:16px;right:16px;z-index:1001;max-width:600px;margin:0 auto;width:calc(100% - 32px);display:flex;gap:10px;align-items:center;">
+  <div style="flex:1;height:66px;background:#222225f9;border:1px solid rgba(255,255,255,0.15);border-radius:60px;display:flex;justify-content:space-between;align-items:center;padding:5px 4px 8px 4px;backdrop-filter:blur(10px);position:relative;overflow:hidden;">
+    <div class="menu-slider" id="menuSlider"></div>
+    <button class="menu-item" data-page="catalog">
+      <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/a0ee77c0-5112-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
+      <img class="menu-icon menu-icon-active" src="https://storage.botpapa.me/files/a7400d50-5112-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
+      <span class="menu-label">Каталог</span>
+    </button>
+    <button class="menu-item" data-page="cart">
+      <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/00feb9c0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="cart">
+      <img class="menu-icon menu-icon-active" src="https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="cart">
+      <span class="menu-label">Корзина</span>
+    </button>
+    <button class="menu-item" data-page="orders">
+      <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/8a684130-49e6-11f1-bef9-f1ec7a2c6e45.png" alt="orders" style="width:28px;height:28px;">
+      <img class="menu-icon menu-icon-active" src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="orders" style="width:28px;height:28px;">
+      <span class="menu-label">Заказы</span>
+    </button>
+  </div>
+  <div id="profileMenuWrapper" style="height:66px;width:66px;background:#222225f9;border:1px solid rgba(255,255,255,0.15);border-radius:50%;backdrop-filter:blur(10px);flex:none;transition:background 0.2s;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+    <button class="menu-item" data-page="profile" id="profileMenuBtn" style="width:55px;height:55px;min-width:55px;min-height:55px;border-radius:50%;border:none;padding:0;overflow:hidden;background:transparent;flex:none;">
+      <img id="profileMenuAvatar" src="" style="width:100%;height:100%;aspect-ratio:1/1;object-fit:cover;border-radius:50%;">
+    </button>
+  </div>
+</div>
 
 <script src="products.js"></script>
 <script>

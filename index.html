@@ -14,7 +14,7 @@
   <link rel="preload" as="image" href="https://storage.botpapa.me/files/fbe8e820-57b8-11f1-bef9-f1ec7a2c6e45.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <meta name="theme-color" content="#121214">
+  <meta name="theme-color" content="#141416">
   <title>GemStorm Store</title>
   <style>
     .page { display: none !important; }
@@ -33,28 +33,28 @@
     }
 
     body {
-      background-color: #121214;
+      background-color: #141416;
       font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       color: #ffffff;
       padding-bottom: 130px;
     }
     
     /* Запрет выделения везде */
-    body {
-      -webkit-user-select: none;
-      user-select: none;
-    }
+body {
+  -webkit-user-select: none;
+  user-select: none;
+}
 
-    /* Разрешить только в карточке оплаты */
-    #payment-page .form-select-readonly,
-    #payment-page .card-number-text {
-      -webkit-user-select: text;
-      user-select: text;
-    }
+/* Разрешить только в карточке оплаты */
+#payment-page .form-select-readonly,
+#payment-page .card-number-text {
+  -webkit-user-select: text;
+  user-select: text;
+}
 
-    body {
-      touch-action: pan-y;
-    }
+body {
+  touch-action: pan-y;
+}
 
     .browser-blocker {
       position: fixed;
@@ -110,53 +110,6 @@
       height: 26px;
       object-fit: contain;
       margin-top: -1px;
-    }
-
-    /* Новые стили для пилюль */
-    .page-title-pill {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: #212124;
-  border: 1px solid #2B2B2D;
-  border-radius: 50px;
-  padding: 8px 14px 8px 10px;
-  font-size: 19px;
-  font-weight: 500;
-  color: white;
-
-  /* Фиксированная высота */
-  height: 42px;
-  box-sizing: border-box;
-}
-
-    .page-title-pill img {
-      width: 22px;
-      height: 22px;
-      object-fit: contain;
-    }
-
-    .balance-pill {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: #212124;
-  border: 1px solid #2B2B2D;
-  border-radius: 50px;
-  padding: 8px 14px 8px 10px;
-  font-size: 18px;
-  font-weight: 500;
-  color: white;
-  margin-left: auto;
-
-  /* Фиксированная высота */
-  height: 42px;
-  box-sizing: border-box;
-}
-
-    .balance-pill img {
-      width: 18px;
-      height: 18px;
     }
 
     .bottom-menu {
@@ -259,7 +212,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 14px;
+      margin-bottom: 20px;
     }
 
     .page-title {
@@ -476,41 +429,41 @@
     }
  
     .cart-item-wrapper {
-      position: relative;
-      margin-bottom: 12px;
-    }
+  position: relative;
+  margin-bottom: 12px;
+}
 
-    .cart-item-wrapper .cart-item {
-      margin-bottom: 0;
-      position: relative;
-      z-index: 2;
-    }
+.cart-item-wrapper .cart-item {
+  margin-bottom: 0;
+  position: relative;
+  z-index: 2;
+}
 
-    .cart-item-delivery {
-      background: #171719;
-      border: 1px solid #2B2B2D;
-      border-radius: 0 0 29px 29px;
-      padding: 14px 16px;
-      margin-top: -28px;
-      padding-top: 38px;
-      position: relative;
-      z-index: 1;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+.cart-item-delivery {
+  background: #171719;
+  border: 1px solid #2B2B2D;
+  border-radius: 0 0 29px 29px;
+  padding: 14px 16px;
+  margin-top: -28px;
+  padding-top: 38px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-    .cart-item-delivery-label {
-      font-size: 16px;
-      color: #cbcdcd;
-      font-weight: 500;
-    }
+.cart-item-delivery-label {
+  font-size: 16px;
+  color: #cbcdcd;
+  font-weight: 500;
+}
 
-    .cart-item-delivery-value {
-      font-size: 16px;
-      color: #9e9e9e;
-      font-weight: 500;
-    }
+.cart-item-delivery-value {
+  font-size: 16px;
+  color: #9e9e9e;
+  font-weight: 500;
+}
 
 
     .cart-img {
@@ -755,19 +708,19 @@
     }
    
     .cart-warn-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: none;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      padding: 0;
-      -webkit-appearance: none;
-    }
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  -webkit-appearance: none;
+}
 
 
     .content-card {
@@ -1243,100 +1196,100 @@
 
     /* ===== REVIEWS PAGE ===== */
     .review-pinned-wrapper {
-      position: relative;
-      margin-bottom: 12px;
-    }
+  position: relative;
+  margin-bottom: 12px;
+}
 
-    .review-pinned-main {
-      background: #222225;
-      border: 1px solid #2B2B2D;
-      border-radius: 30px;
-      padding: 14px 16px;
-      position: relative;
-      z-index: 2;
-    }
+.review-pinned-main {
+  background: #222225;
+  border: 1px solid #2B2B2D;
+  border-radius: 30px;
+  padding: 14px 16px;
+  position: relative;
+  z-index: 2;
+}
 
-    .review-pinned-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+.review-pinned-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
-    .review-pinned-avatar {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      object-fit: cover;
-      flex-shrink: 0;
-    }
+.review-pinned-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
 
-    .review-pinned-info {
-      flex: 1;
-    }
+.review-pinned-info {
+  flex: 1;
+}
 
-    .review-pinned-name {
-      font-size: 16px;
-      font-weight: 600;
-      color: #ffffff;
-    }
+.review-pinned-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+}
 
-    .review-pinned-role {
-      font-size: 13px;
-      color: #9e9e9e;
-      margin-top: 2px;
-    }
+.review-pinned-role {
+  font-size: 13px;
+  color: #9e9e9e;
+  margin-top: 2px;
+}
 
-    .review-pinned-badge {
-      width: 34px;
-      height: 34px;
-      background: rgba(76, 180, 233, 0.08);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
+.review-pinned-badge {
+  width: 34px;
+  height: 34px;
+  background: rgba(76, 180, 233, 0.08);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
 
-    .review-pinned-badge img {
-      width: 16px;
-      height: 16px;
-    }
+.review-pinned-badge img {
+  width: 16px;
+  height: 16px;
+}
 
-    .review-pinned-text {
-      font-size: 15px;
-      color: #cbcdcd;
-      margin-top: 12px;
-      line-height: 1.5;
-    }
+.review-pinned-text {
+  font-size: 15px;
+  color: #cbcdcd;
+  margin-top: 12px;
+  line-height: 1.5;
+}
 
-    .review-pinned-bottom {
-      background: #171719;
-      border: 1px solid #2B2B2D;
-      border-radius: 0 0 30px 30px;
-      padding: 14px 16px;
-      margin-top: -28px;
-      padding-top: 38px;
-      position: relative;
-      z-index: 1;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-    }
+.review-pinned-bottom {
+  background: #171719;
+  border: 1px solid #2B2B2D;
+  border-radius: 0 0 30px 30px;
+  padding: 14px 16px;
+  margin-top: -28px;
+  padding-top: 38px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
 
-    .review-pinned-bottom:active {
-      opacity: 0.7;
-    }
+.review-pinned-bottom:active {
+  opacity: 0.7;
+}
 
-    .review-pinned-link-label {
-      font-size: 16px;
-      color: #cbcdcd;
-      font-weight: 500;
-    }
+.review-pinned-link-label {
+  font-size: 16px;
+  color: #cbcdcd;
+  font-weight: 500;
+}
 
-    .review-pinned-arrow {
-      color: #9e9e9e;
-    }
+.review-pinned-arrow {
+  color: #9e9e9e;
+}
     
     .review-card {
       background: #222225;
@@ -1691,119 +1644,121 @@
     }
 
     /* Стили для страницы Подарки - в стиле корзины */
-    .gifts-container {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      padding-bottom: 110px;
-    }
+/* Стили для страницы Подарки - в стиле корзины */
+.gifts-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 110px;
+}
 
-    .gift-wrapper {
-      position: relative;
-      margin-bottom: 0;
-    }
+.gift-wrapper {
+  position: relative;
+  margin-bottom: 0;
+}
 
-    .gift-main-card {
-      background: #222225;
-      border: 1px solid #2B2B2D;
-      border-radius: 31px 31px 29px 29px;
-      padding: 9px;
-      display: flex;
-      gap: 14px;
-      align-items: center;
-      position: relative;
-      z-index: 2;
-      margin-bottom: 0;
-    }
+.gift-main-card {
+  background: #222225;
+  border: 1px solid #2B2B2D;
+  border-radius: 31px 31px 29px 29px;
+  padding: 9px;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  margin-bottom: 0;
+}
 
-    .gift-image {
-      width: 90px;
-      height: 90px;
-      border-radius: 22px;
-      object-fit: cover;
-      flex-shrink: 0;
-    }
+.gift-image {
+  width: 90px;
+  height: 90px;
+  border-radius: 22px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
 
-    .gift-info {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      min-width: 0;
-    }
+.gift-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
 
-    .gift-name {
-      font-size: 18px;
-      font-weight: 500;
-      color: white;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+.gift-name {
+  font-size: 18px;
+  font-weight: 500;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
-    .gift-price {
-      font-size: 18px;
-      font-weight: 500;
-      color: white;
-    }
+.gift-price {
+  font-size: 18px;
+  font-weight: 500;
+  color: white;
+}
 
-    .gift-category {
-      font-size: 16px;
-      color: #9e9e9e;
-    }
+.gift-category {
+  font-size: 16px;
+  color: #9e9e9e;
+}
 
-    /* Нижняя карточка с фономм #171719 */
-    .gift-link-card {
-      background: #171719;
-      border: 1px solid #2B2B2D;
-      border-radius: 0 0 30px 30px;
-      padding: 12px 16px;
-      margin-top: -28px;
-      padding-top: 36px;
-      position: relative;
-      z-index: 1;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+/* Нижняя карточка с фономм #171719 */
+.gift-link-card {
+  background: #171719;
+  border: 1px solid #2B2B2D;
+  border-radius: 0 0 30px 30px;
+  padding: 12px 16px;
+  margin-top: -28px;
+  padding-top: 36px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-    .gift-expiry-bottom {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-    }
+.gift-expiry-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
 
-    .expiry-label-bottom {
-      font-size: 16px;
-      color: #9e9e9e;
-    }
+.expiry-label-bottom {
+  font-size: 16px;
+  color: #9e9e9e;
+}
 
-    .expiry-status-bottom {
-      font-size: 16px;
-      color: #9e9e9e;
-      font-weight: 500;
-    }
+.expiry-status-bottom {
+  font-size: 16px;
+  color: #9e9e9e;
+  font-weight: 500;
+}
 
-    .gift-claim-btn {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      background: #202B32;
-      border: none;
-      border-radius: 40px;
-      padding: 8px 20px;
-      min-width: 80px;
-      color: #4cb4e9;
-      font-weight: 500;
-      font-size: 17px;
-      cursor: pointer;
-      transition: 0.1s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
+.gift-claim-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: #202B32;
+  border: none;
+  border-radius: 40px;
+  padding: 8px 20px;
+  min-width: 80px;
+  color: #4cb4e9;
+  font-weight: 500;
+  font-size: 17px;
+  cursor: pointer;
+  transition: 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
   </style>
 </head>
 <body>
@@ -1816,16 +1771,10 @@
   </div>
 </div>
 
-<!-- Каталог -->
 <div id="catalog-page" class="page">
   <div class="header-row">
-    <div class="page-title-pill">
-      <img src="https://storage.botpapa.me/files/00f09750-5110-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
-      Каталог
-    </div>
-    <div class="balance-pill">
-      <img src="https://storage.botpapa.me/files/fc92ba71-5d4f-11f1-af2e-f7a93121b83b.png" alt="balance">
-    </div>
+    <img class="header-icon-img" src="https://storage.botpapa.me/files/00f09750-5110-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
+    <div class="page-title">Каталог</div>
   </div>
   <div class="search-section">
     <div class="search-bar">
@@ -1839,170 +1788,96 @@
   <div id="catalogGrid" class="products-grid"></div>
 </div>
 
-<!-- Корзина -->
 <div id="cart-page" class="page">
   <div class="header-row">
-    <div class="page-title-pill">
-      <img src="https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="cart">
-      Корзина
-    </div>
-    <div class="balance-pill">
-      <img src="https://storage.botpapa.me/files/fc92ba71-5d4f-11f1-af2e-f7a93121b83b.png" alt="balance">
-    </div>
+    <img class="header-icon-img" src="https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="cart">
+    <div class="page-title">Корзина</div>
   </div>
   <div id="cartItemsList" class="cart-content-padding"></div>
 </div>
 
-<!-- Заказы -->
 <div id="orders-page" class="page">
   <div class="header-row">
-    <div class="page-title-pill">
-      <img src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="orders">
-      Заказы
-    </div>
-    <div class="balance-pill">
-      <img src="https://storage.botpapa.me/files/fc92ba71-5d4f-11f1-af2e-f7a93121b83b.png" alt="balance">
-    </div>
+    <img class="header-icon-img" src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="orders">
+    <div class="page-title">Заказы</div>
   </div>
   <div id="ordersList"></div>
 </div>
 
-<!-- Профиль -->
 <div id="profile-page" class="page">
   <div class="header-row">
-    <div class="page-title-pill">
-      <img src="https://storage.botpapa.me/files/49df3ed0-5110-11f1-bef9-f1ec7a2c6e45.png" alt="profile">
-      Профиль
-    </div>
-    <div class="balance-pill">
-      <img src="https://storage.botpapa.me/files/fc92ba71-5d4f-11f1-af2e-f7a93121b83b.png" alt="balance">
-    </div>
+    <img class="header-icon-img" src="https://storage.botpapa.me/files/49df3ed0-5110-11f1-bef9-f1ec7a2c6e45.png" alt="profile">
+    <div class="page-title">Профиль</div>
   </div>
   <div id="profileContent"></div>
 </div>
 
-<!-- Фильтры -->
 <div id="filter-page" class="page">
   <div class="header-row">
-    <div class="page-title-pill">
-      <img src="https://storage.botpapa.me/files/9478fb40-49de-11f1-bef9-f1ec7a2c6e45.png" alt="filter">
-      Фильтры
-    </div>
-    <div class="balance-pill">
-      <img src="https://storage.botpapa.me/files/d8712070-5d52-11f1-af2e-f7a93121b83b.png" alt="balance">
-    99
-    </div>
+    <img class="header-icon-img" src="https://storage.botpapa.me/files/9478fb40-49de-11f1-bef9-f1ec7a2c6e45.png" alt="filter">
+    <div class="page-title">Фильтры</div>
   </div>
   <div class="filter-options" id="filterOptionsContainer"></div>
 </div>
 
-<!-- Оформление -->
 <div id="checkout-page" class="page">
   <div class="header-row">
-    <div class="page-title-pill">
-      <img src="https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="cart">
-      Оформление
-    </div>
-    <div class="balance-pill">
-      <img src="https://storage.botpapa.me/files/fc92ba71-5d4f-11f1-af2e-f7a93121b83b.png" alt="balance">
-    </div>
+    <img class="header-icon-img" src="https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="cart">
+    <div class="page-title">Оформление</div>
   </div>
   <div id="checkoutFormContent"></div>
 </div>
 
-<!-- Оплата -->
 <div id="payment-page" class="page">
   <div class="header-row">
-    <div class="page-title-pill">
-      <img src="https://storage.botpapa.me/files/62edaf00-4a27-11f1-bef9-f1ec7a2c6e45.png" alt="payment">
-      Оплата
-    </div>
-    <div class="balance-pill">
-      <img src="https://storage.botpapa.me/files/6da60310-5d4c-11f1-af2e-f7a93121b83b.png" alt="balance">
-    </div>
+    <img class="header-icon-img" src="https://storage.botpapa.me/files/62edaf00-4a27-11f1-bef9-f1ec7a2c6e45.png" alt="payment">
+    <div class="page-title">Оплата</div>
   </div>
   <div id="paymentContent"></div>
 </div>
 
-<!-- Детали заказа -->
 <div id="order-detail-page" class="page">
   <div class="header-row">
-    <div class="page-title-pill">
-      <img src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="order">
-      <span id="orderDetailTitle">Заказ</span>
-    </div>
-    <div class="balance-pill">
-      <img src="https://storage.botpapa.me/files/6da60310-5d4c-11f1-af2e-f7a93121b83b.png" alt="balance">
-      100
-    </div>
+    <img class="header-icon-img" src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="order">
+    <div class="page-title" id="orderDetailTitle">Заказ</div>
   </div>
   <div id="orderDetailContent"></div>
 </div>
 
-<!-- Отзывы -->
 <div id="reviews-page" class="page">
   <div class="header-row">
-    <div class="page-title-pill">
-      <img src="https://storage.botpapa.me/files/f665c4e0-510f-11f1-bef9-f1ec7a2c6e45.png" alt="reviews">
-      Отзывы
-    </div>
-    <div class="balance-pill">
-      <img src="https://storage.botpapa.me/files/6da60310-5d4c-11f1-af2e-f7a93121b83b.png" alt="balance">
-      100
-    </div>
+    <img class="header-icon-img" src="https://storage.botpapa.me/files/f665c4e0-510f-11f1-bef9-f1ec7a2c6e45.png" alt="reviews">
+    <div class="page-title">Отзывы</div>
   </div>
   <div id="reviewsContent"></div>
 </div>
 
-<!-- Покупка акции -->
 <div id="buy-promo-page" class="page">
   <div class="header-row">
-    <div class="page-title-pill">
-      <img src="https://storage.botpapa.me/files/9deb9760-5167-11f1-bef9-f1ec7a2c6e45.png" alt="promo">
-      Покупка акции
-    </div>
-    <div class="balance-pill">
-      <img src="https://storage.botpapa.me/files/6da60310-5d4c-11f1-af2e-f7a93121b83b.png" alt="balance">
-      100
-    </div>
+    <img class="header-icon-img" src="https://storage.botpapa.me/files/9deb9760-5167-11f1-bef9-f1ec7a2c6e45.png" alt="promo">
+    <div class="page-title">Покупка акции</div>
   </div>
   <div id="buyPromoContent"></div>
 </div>
 
-<!-- Оставить отзыв -->
 <div id="write-review-page" class="page">
   <div class="header-row">
-    <div class="page-title-pill">
-      <img src="https://storage.botpapa.me/files/f665c4e0-510f-11f1-bef9-f1ec7a2c6e45.png" alt="reviews">
-      Оставить отзыв
-    </div>
-    <div class="balance-pill">
-      <img src="https://storage.botpapa.me/files/6da60310-5d4c-11f1-af2e-f7a93121b83b.png" alt="balance">
-      100
-    </div>
+    <img class="header-icon-img" src="https://storage.botpapa.me/files/f665c4e0-510f-11f1-bef9-f1ec7a2c6e45.png" alt="reviews">
+    <div class="page-title">Оставить отзыв</div>
   </div>
   <div id="writeReviewContent"></div>
 </div>
 
-<!-- Подарки -->
 <div id="gifts-page" class="page">
   <div class="header-row">
-    <div class="page-title-pill">
-      <img src="https://storage.botpapa.me/files/501ffee0-51e9-11f1-bef9-f1ec7a2c6e45.png" alt="gifts">
-      Подарки
-    </div>
-    <div class="balance-pill">
-      <img src="https://storage.botpapa.me/files/6da60310-5d4c-11f1-af2e-f7a93121b83b.png" alt="balance">
-      100
-    </div>
+    <img class="header-icon-img" src="https://storage.botpapa.me/files/501ffee0-51e9-11f1-bef9-f1ec7a2c6e45.png" alt="gifts">
+    <div class="page-title">Подарки</div>
   </div>
   <div id="giftsList" class="gifts-container"></div>
 </div>
 
-<!-- Фиксированная корзина (чек-аут) -->
 <div id="cartCheckoutFixed" class="cart-checkout-fixed" style="display: none;"></div>
 
-<!-- Нижнее меню -->
 <div style="position:fixed;bottom:16px;left:16px;right:16px;z-index:1001;max-width:600px;margin:0 auto;width:calc(100% - 32px);display:flex;gap:10px;align-items:center;">
   <div style="flex:1;height:66px;background:#222225f9;border:1px solid rgba(255,255,255,0.15);border-radius:60px;display:flex;justify-content:space-between;align-items:center;padding:5px 4px 8px 4px;backdrop-filter:blur(10px);position:relative;overflow:hidden;">
     <div class="menu-slider" id="menuSlider"></div>
@@ -3443,7 +3318,7 @@ if (wasOnProfile && mainPages.includes(pageId)) {
       const tg = window.Telegram.WebApp;
       tg.ready();
       tg.expand();
-      try { tg.setHeaderColor("#121214"); tg.setBackgroundColor("#121214"); } catch(e) {}
+      try { tg.setHeaderColor("#141416"); tg.setBackgroundColor("#141416"); } catch(e) {}
       try { if (tg.disableClosingConfirmation) tg.disableClosingConfirmation(); } catch(e) {}
       try { if (tg.isClosingConfirmationEnabled === false && tg.enableClosingConfirmation) tg.enableClosingConfirmation(); } catch(e) {}
       try { if (tg.disableVerticalSwipes) tg.disableVerticalSwipes(); } catch(e) {}

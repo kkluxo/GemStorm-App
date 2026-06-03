@@ -412,7 +412,7 @@ if (entered !== ADMIN_PASSWORD) {
     return {'pending':'status-pending-bg','awaiting_code':'status-awaiting-bg','processing':'status-processing-bg','completed':'status-completed-bg','done':'status-done-bg','cancelled':'status-cancelled-bg','notfound':'status-notfound-bg'}[s?.toLowerCase()] || 'status-pending-bg';
   }
   function getStatusDisplayText(s) {
-    return {'pending':'Ожидает проверки','awaiting_code':'Ожидание кода','processing':'Ожидает выполнения','completed':'Заказ выполнен','done':'Заказ выполнен','cancelled':'Отменен','notfound':'Перевод не найден'}[s?.toLowerCase()] || 'Ожидает проверки';
+    return {'pending':'Ожидает проверки','awaiting_code':'Ожидание кода','processing':'Ожидает выполнения','completed':'Заказ выполнен','done':'Заказ выполнен','cancelled':'Отменен','notfound':'Заказ отменён'}[s?.toLowerCase()] || 'Ожидает проверки';
   }
 
   // Навигация
@@ -539,7 +539,7 @@ if (entered !== ADMIN_PASSWORD) {
         <option value="awaiting_code" ${order.status_code==='awaiting_code'?'selected':''}>Ожидание кода</option>
         <option value="processing" ${order.status_code==='processing'?'selected':''}>Ожидает выполнения</option>
         <option value="done" ${(order.status_code==='done'||order.status_code==='completed')?'selected':''}>Заказ выполнен</option>
-        <option value="notfound" ${order.status_code==='notfound'?'selected':''}>Перевод не найден</option>
+        <option value="notfound" ${order.status_code==='notfound'?'selected':''}>Заказа отменён</option>
       </select>
       <div class="action-buttons-row">
         <button class="update-status-btn" id="adminUpdateStatusBtn">Сохранить статус</button>
@@ -552,7 +552,7 @@ if (entered !== ADMIN_PASSWORD) {
 
     document.getElementById('adminUpdateStatusBtn').addEventListener('click', async () => {
       const newCode = document.getElementById('adminStatusSelect').value;
-      const statusMap = {'awaiting_code':'Ожидание кода','processing':'Ожидает выполнения','done':'Заказ выполнен','notfound':'Перевод не найден'};
+      const statusMap = {'awaiting_code':'Ожидание кода','processing':'Ожидает выполнения','done':'Заказ выполнен','notfound':'Заказ отменён'};
       hapticMedium();
       try {
         const r = await fetch(`${API}/api/update-status`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({orderId:order.id, status:statusMap[newCode], statusCode:newCode}) });

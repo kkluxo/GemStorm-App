@@ -61,7 +61,6 @@
   z-index: 500;
   margin: 0 -14px 14px -14px;
   padding: 8px 14px;
-  padding-top: calc(var(--tg-content-safe-area-inset-top, 0px) + 8px);
   background: #121214;
 }
 
@@ -3388,6 +3387,20 @@
       tg.ready();
       tg.expand();
       try { tg.requestFullscreen(); } catch(e) {}
+      
+      function applyHeaderOffset() {
+        const safeTop = tg.safeAreaInset?.top || 0;
+        const contentTop = tg.contentSafeAreaInset?.top || 0;
+        const offset = Math.max(safeTop, contentTop);
+        document.querySelectorAll('.page-header-sticky').forEach(el => {
+          el.style.paddingTop = (offset + 8) + 'px';
+        });
+      }
+      
+      applyHeaderOffset();
+      tg.onEvent('safeAreaChanged', applyHeaderOffset);
+      tg.onEvent('contentSafeAreaChanged', applyHeaderOffset);
+      setTimeout(applyHeaderOffset, 300);
       try { tg.setHeaderColor("#121214"); tg.setBackgroundColor("#121214"); } catch(e) {}
       try { if (tg.disableClosingConfirmation) tg.disableClosingConfirmation(); } catch(e) {}
       try { if (tg.isClosingConfirmationEnabled === false && tg.enableClosingConfirmation) tg.enableClosingConfirmation(); } catch(e) {}

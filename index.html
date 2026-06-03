@@ -57,10 +57,17 @@
 
     /* ===== STICKY HEADER ===== */
     .page-header-sticky {
-  position: relative;
+  position: sticky;
+  top: 0;
   z-index: 500;
-  margin: 14px -14px 10px -14px; /* сверху 14px */
-  padding: 0 14px;
+
+  margin: 0 -14px 10px -14px;
+
+  padding-top: calc(env(safe-area-inset-top) + 14px);
+  padding-left: 14px;
+  padding-right: 14px;
+  padding-bottom: 0;
+
   background: #121214;
 }
 

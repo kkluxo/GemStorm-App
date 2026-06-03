@@ -38,6 +38,10 @@
       padding-bottom: 130px;
     }
     
+    body {
+  padding-top: var(--tg-safe-area-inset-top, 0px);
+}
+
     /* Запрет выделениявезде */
     body {
       -webkit-user-select: none;
@@ -57,14 +61,13 @@
 
     /* ===== STICKY HEADER ===== */
     .page-header-sticky {
-      position: sticky;
-      top: 0;
-      padding-top: max(8px, env(safe-area-inset-top));
-      z-index: 500;
-      margin: 0 -14px 14px -14px;
-      padding: 8px 14px;
-      background: #121214;
-    }
+  position: sticky;
+  top: var(--tg-safe-area-inset-top, 0px);
+  z-index: 500;
+  margin: 0 -14px 14px -14px;
+  padding: 8px 14px;
+  background: #121214;
+}
 
     .page-header-inner {
       display: flex;

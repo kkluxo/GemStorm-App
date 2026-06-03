@@ -57,18 +57,27 @@
 
     /* ===== STICKY HEADER ===== */
     .page-header-sticky {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 500;
+  left: 0;
+  right: 0;
 
-  margin: 0 -14px 10px -14px;
+  z-index: 999;
 
   padding-top: calc(env(safe-area-inset-top) + 14px);
   padding-left: 14px;
   padding-right: 14px;
-  padding-bottom: 0;
+  padding-bottom: 10px;
 
   background: #121214;
+
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+    
+    .page-content {
+  padding-top: 132px;
 }
 
     .page-header-inner {

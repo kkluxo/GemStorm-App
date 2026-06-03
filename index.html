@@ -37,6 +37,10 @@
       color: #ffffff;
       padding-bottom: 130px;
     }
+    
+    body {
+  padding-top: var(--tg-safe-area-inset-top, 0px);
+}
 
     /* Запрет выделениявезде  */
     body {
@@ -57,27 +61,12 @@
 
     /* ===== STICKY HEADER ===== */
     .page-header-sticky {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-
-  z-index: 999;
-
-  padding-top: calc(env(safe-area-inset-top) + 14px);
-  padding-left: 14px;
-  padding-right: 14px;
-  padding-bottom: 10px;
-
+  position: sticky;
+  top: var(--tg-safe-area-inset-top, 0px);
+  z-index: 500;
+  margin: 0 -14px 14px -14px;
+  padding: 8px 14px;
   background: #121214;
-
-  transform: translateZ(0);
-  will-change: transform;
-  backface-visibility: hidden;
-}
-    
-    .page-content {
-  padding-top: 132px;
 }
 
     .page-header-inner {
@@ -88,7 +77,8 @@
       background: #141416;
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 60px;
-      height: 42px;
+      padding: 3px 3px 3px 3px;
+      height: auto;
     }
 
     .page-header-title-btn {
@@ -3402,20 +3392,6 @@
       tg.ready();
       tg.expand();
       try { tg.requestFullscreen(); } catch(e) {}
-      
-      function applyHeaderOffset() {
-        const safeTop = tg.safeAreaInset?.top || 0;
-        const contentTop = tg.contentSafeAreaInset?.top || 0;
-        const offset = Math.max(safeTop, contentTop);
-        document.querySelectorAll('.page-header-sticky').forEach(el => {
-          el.style.paddingTop = (offset + 8) + 'px';
-        });
-      }
-      
-      applyHeaderOffset();
-      tg.onEvent('safeAreaChanged', applyHeaderOffset);
-      tg.onEvent('contentSafeAreaChanged', applyHeaderOffset);
-      setTimeout(applyHeaderOffset, 300);
       try { tg.setHeaderColor("#121214"); tg.setBackgroundColor("#121214"); } catch(e) {}
       try { if (tg.disableClosingConfirmation) tg.disableClosingConfirmation(); } catch(e) {}
       try { if (tg.isClosingConfirmationEnabled === false && tg.enableClosingConfirmation) tg.enableClosingConfirmation(); } catch(e) {}

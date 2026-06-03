@@ -187,6 +187,16 @@
       display: block;
     }
 
+     .bottom-menu {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  /* Добавляем динамический отступ снизу под системную кнопку iOS */
+  padding-bottom: calc(var(--tg-safe-area-inset-bottom, 0px) + 16px); 
+  z-index: 1001;
+}
+
     .bottom-menu {
       position: fixed;
       bottom: 16px;
@@ -604,15 +614,16 @@
     }
 
     .cart-checkout-fixed {
-      position: fixed;
-      bottom: 16px;
-      left: 16px;
-      right: 16px;
-      z-index: 1000;
-      max-width: 600px;
-      margin: 0 auto;
-      width: calc(100% - 32px);
-    }
+  position: fixed;
+  /* Заменяем фиксированные 16px на сумму безопасной зоны Telegram и твоего отступа */
+  bottom: calc(var(--tg-safe-area-inset-bottom, 0px) + 16px); 
+  left: 16px;
+  right: 16px;
+  z-index: 2000; /* Чтобы блок гарантированно был поверх скроллящегося контента */
+  max-width: 600px;
+  margin: 0 auto;
+  width: calc(100% - 32px);
+}
 
     .checkout-card {
       background: #222225f9;

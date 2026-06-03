@@ -12,7 +12,6 @@
   <link rel="preload" as="image" href="https://storage.botpapa.me/files/501ffee0-51e9-11f1-bef9-f1ec7a2c6e45.png">
   <link rel="preload" as="image" href="https://storage.botpapa.me/files/49df3ed0-5110-11f1-bef9-f1ec7a2c6e45.png">
   <link rel="preload" as="image" href="https://storage.botpapa.me/files/fbe8e820-57b8-11f1-bef9-f1ec7a2c6e45.png">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <meta name="theme-color" content="#121214">
   <title>GemStorm Store</title>
@@ -40,21 +39,89 @@
     }
     
     /* Запрет выделения везде */
-body {
-  -webkit-user-select: none;
-  user-select: none;
-}
+    body {
+      -webkit-user-select: none;
+      user-select: none;
+    }
 
-/* Разрешить только в карточке оплаты */
-#payment-page .form-select-readonly,
-#payment-page .card-number-text {
-  -webkit-user-select: text;
-  user-select: text;
-}
+    /* Разрешить только в карточке оплаты */
+    #payment-page .form-select-readonly,
+    #payment-page .card-number-text {
+      -webkit-user-select: text;
+      user-select: text;
+    }
 
-body {
-  touch-action: pan-y;
-}
+    body {
+      touch-action: pan-y;
+    }
+
+    /* ===== STICKY HEADER ===== */
+    .page-header-sticky {
+      position: sticky;
+      top: 0;
+      z-index: 500;
+      margin: 0 -14px 16px -14px;
+      padding: 0 14px;
+      padding-top: 8px;
+      padding-bottom: 8px;
+      background: #121214;
+    }
+
+    .page-header-inner {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #141416;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 60px;
+      padding: 3px;
+      height: 48px;
+    }
+
+    .page-header-title-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #212124;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 50px;
+      height: 42px;
+      padding: 0 14px 0 10px;
+      flex: 1;
+      cursor: default;
+    }
+
+    .page-header-title-btn img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+    }
+
+    .page-header-title-btn span {
+      font-size: 17px;
+      font-weight: 600;
+      color: white;
+      white-space: nowrap;
+    }
+
+    .page-header-settings-btn {
+      width: 42px;
+      height: 42px;
+      min-width: 42px;
+      background: #212124;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .page-header-settings-btn img {
+      width: 22px;
+      height: 22px;
+    }
 
     .browser-blocker {
       position: fixed;
@@ -96,20 +163,13 @@ body {
     
     .page {
       display: none;
-      padding: 10px 14px 20px 14px;
+      padding: 0 14px 20px 14px;
       max-width: 600px;
       margin: 0 auto;
     }
 
     .page.active-page {
       display: block;
-    }
-
-    .header-icon-img {
-      width: 26px;
-      height: 26px;
-      object-fit: contain;
-      margin-top: -1px;
     }
 
     .bottom-menu {
@@ -206,18 +266,6 @@ body {
 
     #profileMenuWrapper.active {
       background: #28282af9 !important;
-    }
-
-    .header-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .page-title {
-      font-size: 25px;
-      font-weight: 500;
     }
 
     .search-section {
@@ -415,7 +463,6 @@ body {
       margin-top: 10px;
     }
 
-
     .cart-item {
       background: #222225;
       border: 1px solid #2B2B2D;
@@ -429,42 +476,41 @@ body {
     }
  
     .cart-item-wrapper {
-  position: relative;
-  margin-bottom: 12px;
-}
+      position: relative;
+      margin-bottom: 12px;
+    }
 
-.cart-item-wrapper .cart-item {
-  margin-bottom: 0;
-  position: relative;
-  z-index: 2;
-}
+    .cart-item-wrapper .cart-item {
+      margin-bottom: 0;
+      position: relative;
+      z-index: 2;
+    }
 
-.cart-item-delivery {
-  background: #161618;
-  border: 1px solid #2B2B2D;
-  border-radius: 0 0 29px 29px;
-  padding: 14px 16px;
-  margin-top: -28px;
-  padding-top: 38px;
-  position: relative;
-  z-index: 1;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+    .cart-item-delivery {
+      background: #161618;
+      border: 1px solid #2B2B2D;
+      border-radius: 0 0 29px 29px;
+      padding: 14px 16px;
+      margin-top: -28px;
+      padding-top: 38px;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-.cart-item-delivery-label {
-  font-size: 16px;
-  color: #cbcdcd;
-  font-weight: 500;
-}
+    .cart-item-delivery-label {
+      font-size: 16px;
+      color: #cbcdcd;
+      font-weight: 500;
+    }
 
-.cart-item-delivery-value {
-  font-size: 16px;
-  color: #9e9e9e;
-  font-weight: 500;
-}
-
+    .cart-item-delivery-value {
+      font-size: 16px;
+      color: #9e9e9e;
+      font-weight: 500;
+    }
 
     .cart-img {
       width: 90px;
@@ -708,20 +754,19 @@ body {
     }
    
     .cart-warn-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  padding: 0;
-  -webkit-appearance: none;
-}
-
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      padding: 0;
+      -webkit-appearance: none;
+    }
 
     .content-card {
       background: #222225;
@@ -1057,7 +1102,6 @@ body {
       font-weight: 500;
     }
 
-    /* Иконка подарка в профиле - на уровне username */
     .profile-gift-icon {
       width: 42px;
       height: 42px;
@@ -1194,102 +1238,101 @@ body {
       opacity: 0.4;
     }
 
-    /* ===== REVIEWS PAGE ===== */
     .review-pinned-wrapper {
-  position: relative;
-  margin-bottom: 12px;
-}
+      position: relative;
+      margin-bottom: 12px;
+    }
 
-.review-pinned-main {
-  background: #222225;
-  border: 1px solid #2B2B2D;
-  border-radius: 30px;
-  padding: 14px 16px;
-  position: relative;
-  z-index: 2;
-}
+    .review-pinned-main {
+      background: #222225;
+      border: 1px solid #2B2B2D;
+      border-radius: 30px;
+      padding: 14px 16px;
+      position: relative;
+      z-index: 2;
+    }
 
-.review-pinned-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
+    .review-pinned-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-.review-pinned-avatar {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  object-fit: cover;
-  flex-shrink: 0;
-}
+    .review-pinned-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
 
-.review-pinned-info {
-  flex: 1;
-}
+    .review-pinned-info {
+      flex: 1;
+    }
 
-.review-pinned-name {
-  font-size: 16px;
-  font-weight: 600;
-  color: #ffffff;
-}
+    .review-pinned-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #ffffff;
+    }
 
-.review-pinned-role {
-  font-size: 13px;
-  color: #9e9e9e;
-  margin-top: 2px;
-}
+    .review-pinned-role {
+      font-size: 13px;
+      color: #9e9e9e;
+      margin-top: 2px;
+    }
 
-.review-pinned-badge {
-  width: 34px;
-  height: 34px;
-  background: rgba(76, 180, 233, 0.08);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
+    .review-pinned-badge {
+      width: 34px;
+      height: 34px;
+      background: rgba(76, 180, 233, 0.08);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
 
-.review-pinned-badge img {
-  width: 16px;
-  height: 16px;
-}
+    .review-pinned-badge img {
+      width: 16px;
+      height: 16px;
+    }
 
-.review-pinned-text {
-  font-size: 15px;
-  color: #cbcdcd;
-  margin-top: 12px;
-  line-height: 1.5;
-}
+    .review-pinned-text {
+      font-size: 15px;
+      color: #cbcdcd;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
 
-.review-pinned-bottom {
-  background: #161618;
-  border: 1px solid #2B2B2D;
-  border-radius: 0 0 30px 30px;
-  padding: 14px 16px;
-  margin-top: -28px;
-  padding-top: 38px;
-  position: relative;
-  z-index: 1;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-}
+    .review-pinned-bottom {
+      background: #161618;
+      border: 1px solid #2B2B2D;
+      border-radius: 0 0 30px 30px;
+      padding: 14px 16px;
+      margin-top: -28px;
+      padding-top: 38px;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
 
-.review-pinned-bottom:active {
-  opacity: 0.7;
-}
+    .review-pinned-bottom:active {
+      opacity: 0.7;
+    }
 
-.review-pinned-link-label {
-  font-size: 16px;
-  color: #cbcdcd;
-  font-weight: 500;
-}
+    .review-pinned-link-label {
+      font-size: 16px;
+      color: #cbcdcd;
+      font-weight: 500;
+    }
 
-.review-pinned-arrow {
-  color: #9e9e9e;
-}
+    .review-pinned-arrow {
+      color: #9e9e9e;
+    }
     
     .review-card {
       background: #222225;
@@ -1643,122 +1686,118 @@ body {
       font-weight: 500;
     }
 
-    /* Стили для страницы Подарки - в стиле корзины */
-/* Стили для страницы Подарки - в стиле корзины */
-.gifts-container {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  padding-bottom: 110px;
-}
+    .gifts-container {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding-bottom: 110px;
+    }
 
-.gift-wrapper {
-  position: relative;
-  margin-bottom: 0;
-}
+    .gift-wrapper {
+      position: relative;
+      margin-bottom: 0;
+    }
 
-.gift-main-card {
-  background: #222225;
-  border: 1px solid #2B2B2D;
-  border-radius: 31px 31px 29px 29px;
-  padding: 9px;
-  display: flex;
-  gap: 14px;
-  align-items: center;
-  position: relative;
-  z-index: 2;
-  margin-bottom: 0;
-}
+    .gift-main-card {
+      background: #222225;
+      border: 1px solid #2B2B2D;
+      border-radius: 31px 31px 29px 29px;
+      padding: 9px;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+      margin-bottom: 0;
+    }
 
-.gift-image {
-  width: 90px;
-  height: 90px;
-  border-radius: 22px;
-  object-fit: cover;
-  flex-shrink: 0;
-}
+    .gift-image {
+      width: 90px;
+      height: 90px;
+      border-radius: 22px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
 
-.gift-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-width: 0;
-}
+    .gift-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
 
-.gift-name {
-  font-size: 18px;
-  font-weight: 500;
-  color: white;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+    .gift-name {
+      font-size: 18px;
+      font-weight: 500;
+      color: white;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-.gift-price {
-  font-size: 18px;
-  font-weight: 500;
-  color: white;
-}
+    .gift-price {
+      font-size: 18px;
+      font-weight: 500;
+      color: white;
+    }
 
-.gift-category {
-  font-size: 16px;
-  color: #9e9e9e;
-}
+    .gift-category {
+      font-size: 16px;
+      color: #9e9e9e;
+    }
 
-/* Нижняя карточка с фономм #171719 */
-.gift-link-card {
-  background: #161618;
-  border: 1px solid #2B2B2D;
-  border-radius: 0 0 30px 30px;
-  padding: 12px 16px;
-  margin-top: -28px;
-  padding-top: 36px;
-  position: relative;
-  z-index: 1;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+    .gift-link-card {
+      background: #161618;
+      border: 1px solid #2B2B2D;
+      border-radius: 0 0 30px 30px;
+      padding: 12px 16px;
+      margin-top: -28px;
+      padding-top: 36px;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-.gift-expiry-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
+    .gift-expiry-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
 
-.expiry-label-bottom {
-  font-size: 16px;
-  color: #9e9e9e;
-}
+    .expiry-label-bottom {
+      font-size: 16px;
+      color: #9e9e9e;
+    }
 
-.expiry-status-bottom {
-  font-size: 16px;
-  color: #9e9e9e;
-  font-weight: 500;
-}
+    .expiry-status-bottom {
+      font-size: 16px;
+      color: #9e9e9e;
+      font-weight: 500;
+    }
 
-.gift-claim-btn {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  background: #202B32;
-  border: none;
-  border-radius: 40px;
-  padding: 8px 20px;
-  min-width: 80px;
-  color: #4cb4e9;
-  font-weight: 500;
-  font-size: 17px;
-  cursor: pointer;
-  transition: 0.1s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
+    .gift-claim-btn {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: #202B32;
+      border: none;
+      border-radius: 40px;
+      padding: 8px 20px;
+      min-width: 80px;
+      color: #4cb4e9;
+      font-weight: 500;
+      font-size: 17px;
+      cursor: pointer;
+      transition: 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
   </style>
 </head>
 <body>
@@ -1772,10 +1811,6 @@ body {
 </div>
 
 <div id="catalog-page" class="page">
-  <div class="header-row">
-    <img class="header-icon-img" src="https://storage.botpapa.me/files/00f09750-5110-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
-    <div class="page-title">Каталог</div>
-  </div>
   <div class="search-section">
     <div class="search-bar">
       <img class="search-icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'%3E%3C/path%3E%3C/svg%3E">
@@ -1789,91 +1824,51 @@ body {
 </div>
 
 <div id="cart-page" class="page">
-  <div class="header-row">
-    <img class="header-icon-img" src="https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="cart">
-    <div class="page-title">Корзина</div>
-  </div>
   <div id="cartItemsList" class="cart-content-padding"></div>
 </div>
 
 <div id="orders-page" class="page">
-  <div class="header-row">
-    <img class="header-icon-img" src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="orders">
-    <div class="page-title">Заказы</div>
-  </div>
   <div id="ordersList"></div>
 </div>
 
 <div id="profile-page" class="page">
-  <div class="header-row">
-    <img class="header-icon-img" src="https://storage.botpapa.me/files/49df3ed0-5110-11f1-bef9-f1ec7a2c6e45.png" alt="profile">
-    <div class="page-title">Профиль</div>
-  </div>
   <div id="profileContent"></div>
 </div>
 
 <div id="filter-page" class="page">
-  <div class="header-row">
-    <img class="header-icon-img" src="https://storage.botpapa.me/files/9478fb40-49de-11f1-bef9-f1ec7a2c6e45.png" alt="filter">
-    <div class="page-title">Фильтры</div>
-  </div>
   <div class="filter-options" id="filterOptionsContainer"></div>
 </div>
 
 <div id="checkout-page" class="page">
-  <div class="header-row">
-    <img class="header-icon-img" src="https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="cart">
-    <div class="page-title">Оформление</div>
-  </div>
   <div id="checkoutFormContent"></div>
 </div>
 
 <div id="payment-page" class="page">
-  <div class="header-row">
-    <img class="header-icon-img" src="https://storage.botpapa.me/files/62edaf00-4a27-11f1-bef9-f1ec7a2c6e45.png" alt="payment">
-    <div class="page-title">Оплата</div>
-  </div>
   <div id="paymentContent"></div>
 </div>
 
 <div id="order-detail-page" class="page">
-  <div class="header-row">
-    <img class="header-icon-img" src="https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png" alt="order">
-    <div class="page-title" id="orderDetailTitle">Заказ</div>
-  </div>
   <div id="orderDetailContent"></div>
 </div>
 
 <div id="reviews-page" class="page">
-  <div class="header-row">
-    <img class="header-icon-img" src="https://storage.botpapa.me/files/f665c4e0-510f-11f1-bef9-f1ec7a2c6e45.png" alt="reviews">
-    <div class="page-title">Отзывы</div>
-  </div>
   <div id="reviewsContent"></div>
 </div>
 
 <div id="buy-promo-page" class="page">
-  <div class="header-row">
-    <img class="header-icon-img" src="https://storage.botpapa.me/files/9deb9760-5167-11f1-bef9-f1ec7a2c6e45.png" alt="promo">
-    <div class="page-title">Покупка акции</div>
-  </div>
   <div id="buyPromoContent"></div>
 </div>
 
 <div id="write-review-page" class="page">
-  <div class="header-row">
-    <img class="header-icon-img" src="https://storage.botpapa.me/files/f665c4e0-510f-11f1-bef9-f1ec7a2c6e45.png" alt="reviews">
-    <div class="page-title">Оставить отзыв</div>
-  </div>
   <div id="writeReviewContent"></div>
 </div>
 
 <div id="gifts-page" class="page">
-  <div class="header-row">
-    <img class="header-icon-img" src="https://storage.botpapa.me/files/501ffee0-51e9-11f1-bef9-f1ec7a2c6e45.png" alt="gifts">
-    <div class="page-title">Подарки</div>
-  </div>
   <div id="giftsList" class="gifts-container"></div>
+</div>
+
+<div id="settings-page" class="page">
+  <div id="settingsContent" style="padding-top: 8px;"></div>
 </div>
 
 <div id="cartCheckoutFixed" class="cart-checkout-fixed" style="display: none;"></div>
@@ -1956,17 +1951,17 @@ body {
     imagesToPreload.forEach(src => { const img = new Image(); img.src = src; });
   });
 
-(function checkTelegramContext() {
-  const tg = window.Telegram?.WebApp;
-  const isTelegramWebApp = !!(tg && (tg.initData || tg.platform));
-  const blocker = document.getElementById('browserBlocker');
-  if (!isTelegramWebApp) {
-    if (blocker) blocker.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-    return;
-  }
-  if (blocker) blocker.style.display = 'none';
-})();
+  (function checkTelegramContext() {
+    const tg = window.Telegram?.WebApp;
+    const isTelegramWebApp = !!(tg && (tg.initData || tg.platform));
+    const blocker = document.getElementById('browserBlocker');
+    if (!isTelegramWebApp) {
+      if (blocker) blocker.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      return;
+    }
+    if (blocker) blocker.style.display = 'none';
+  })();
     
   const giftItems = [
     { id: 101, name: "Значок Взрыв головы", image: "https://storage.botpapa.me/files/5a056ac0-5203-11f1-bef9-f1ec7a2c6e45.jpeg", link: "https://link.brawlstars.com/ru/voucher/e4a3bb44-95fd-48d1-9fe6-378619bf2eb9/" },
@@ -2005,6 +2000,20 @@ body {
   function getPaymentMethodLabel(value) { const opt = paymentMethodsOptions.find(o => o.value === value); return opt ? opt.label : ''; }
   function getBankFromValue(value) { const opt = paymentMethodsOptions.find(o => o.value === value); return opt ? opt.label : ''; }
   function getCardNumberFromValue(value) { const bank = getBankFromValue(value); return cardNumbers[bank] || ""; }
+
+  function renderPageHeader(iconUrl, title) {
+    return `<div class="page-header-sticky">
+      <div class="page-header-inner">
+        <div class="page-header-title-btn">
+          <img src="${iconUrl}" alt="">
+          <span>${title}</span>
+        </div>
+        <button class="page-header-settings-btn" id="headerSettingsBtn">
+          <img src="https://storage.botpapa.me/files/e4196b10-5f66-11f1-af2e-f7a93121b83b.png" alt="settings">
+        </button>
+      </div>
+    </div>`;
+  }
 
   let cart = {};
   let appliedPromo = null;
@@ -2049,7 +2058,6 @@ body {
 
   function saveCartToLocalStorage() { localStorage.setItem('cart', JSON.stringify(cart)); }
   function loadCartFromLocalStorage() { const savedCart = localStorage.getItem('cart'); if (savedCart) { cart = JSON.parse(savedCart); } }
-  function getCartItemsCount() { return Object.keys(cart).length; }
 
   function renderCartButtonHtml(productId) {
     const qty = cart[productId] || 0;
@@ -2116,7 +2124,7 @@ body {
     for (let [id, qty] of items) {
       const prod = products.find(p => p.id == id);
       if (!prod) continue;
-      html += `<div class="cart-item-wrapper"><div class="cart-item"><img class="cart-img" src="${prod.image}" alt="${escapeHtml(prod.name)}"><div class="cart-info"><div class="cart-product-name">${escapeHtml(prod.name)}</div><div class="cart-product-price">${formatPrice(prod.price)}</div><div class="cart-product-category">${escapeHtml(prod.label || prod.category)}</div></div><div class="cart-actions" style="display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-start;gap:11px;padding-right:0px;padding-top:0px;">${!['Пропуски', 'Кристаллы'].includes(prod.category) ? `<button class="cart-warn-btn" data-id="${id}" style="margin-right:5px;"><img src="https://storage.botpapa.me/files/ea9c0cf0-592a-11f1-bef9-f1ec7a2c6e45.png" style="width:21px;height:21px;"></button>` : ''}<div class="cart-quantity"><button class="cart-qty-btn" data-dec="${id}"><img src="https://storage.botpapa.me/files/975c4510-49de-11f1-bef9-f1ec7a2c6e45.png" alt="-"></button><span class="cart-qty-value">${qty}</span><button class="cart-qty-btn" data-inc="${id}" style="${qty >= (prod.category === 'Кристаллы' ? 3 : 1) ? 'opacity:0.4;pointer-events:none;' : ''}"><img src="https://storage.botpapa.me/files/9a5d01f0-49de-11f1-bef9-f1ec7a2c6e45.png" alt="+"></button></div>
+      html += `<div class="cart-item-wrapper"><div class="cart-item"><img class="cart-img" src="${prod.image}" alt="${escapeHtml(prod.name)}"><div class="cart-info"><div class="cart-product-name">${escapeHtml(prod.name)}</div><div class="cart-product-price">${formatPrice(prod.price)}</div><div class="cart-product-category">${escapeHtml(prod.label || prod.category)}</div></div><div class="cart-actions" style="display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-start;gap:11px;padding-right:0px;padding-top:0px;">${!['Пропуски', 'Кристаллы'].includes(prod.category) ? `<button class="cart-warn-btn" data-id="${id}" style="margin-right:5px;"><img src="https://storage.botpapa.me/files/ea9c0cf0-592a-11f1-bef9-f7a93121b83b.png" style="width:21px;height:21px;"></button>` : ''}<div class="cart-quantity"><button class="cart-qty-btn" data-dec="${id}"><img src="https://storage.botpapa.me/files/975c4510-49de-11f1-bef9-f1ec7a2c6e45.png" alt="-"></button><span class="cart-qty-value">${qty}</span><button class="cart-qty-btn" data-inc="${id}" style="${qty >= (prod.category === 'Кристаллы' ? 3 : 1) ? 'opacity:0.4;pointer-events:none;' : ''}"><img src="https://storage.botpapa.me/files/9a5d01f0-49de-11f1-bef9-f1ec7a2c6e45.png" alt="+"></button></div>
 </div></div><div class="cart-item-delivery"><span class="cart-item-delivery-label">Способ получения</span><span class="cart-item-delivery-value">вход в аккаунт</span></div></div>`;
     }
     container.innerHTML = html;
@@ -2124,11 +2132,11 @@ body {
     document.querySelectorAll("[data-inc]").forEach(btn => { btn.addEventListener("click", () => changeQty(parseInt(btn.dataset.inc), 1)); });
     if (document.getElementById("cart-page").classList.contains("active-page")) { renderCheckoutBlock(); }
     document.querySelectorAll(".cart-warn-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    hapticLight();
-    alert("Перед оформлением заказа пожалуйста проверьте наличие данной акции на вашем аккаунте");
-  });
-});
+      btn.addEventListener("click", () => {
+        hapticLight();
+        alert("Перед оформлением заказа пожалуйста проверьте наличие данной акции на вашем аккаунте");
+      });
+    });
   }
   
   function updateAllCards() {
@@ -2213,66 +2221,66 @@ body {
         if (promoInput) promoInput.focus();
         if (backBtn) backBtn.addEventListener("click", () => { hapticLight(); if (appliedPromo) appliedPromo = null; isPromoMode = false; renderCheckoutBlock(); renderCartPage(); });
         if (applyBtn) applyBtn.addEventListener("click", async () => {
-  hapticLight();
-  const code = promoInput?.value.trim().toUpperCase();
-  if (!code) return;
-  const tgU = window.Telegram?.WebApp?.initDataUnsafe?.user;
-  try {
-    const r = await fetch('https://gemstorm.up.railway.app/api/check-promo', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code, userId: String(tgU?.id || '') })
-    });
-    const data = await r.json();
-    if (data.valid) {
-      appliedPromo = { code, discountPercent: data.discount };
-      isPromoMode = false;
-      renderCheckoutBlock();
-      renderCartPage();
-    } else {
-      if (data.reason === 'not_found') {
-        alert('Промокод не найден');
-      } else if (data.reason === 'already_used') {
-        alert('Данный промокод уже был использован ранее');
-      } else if (data.reason === 'first_order_only') {
-        alert('Данный промокод доступен только на первый заказ');
-      }
-      if (promoInput) {
-        promoInput.value = appliedPromo ? appliedPromo.code : '';
-      }
-    }
-  } catch(e) {
-    alert('Ошибка проверки промокода');
-  }
-});
+          hapticLight();
+          const code = promoInput?.value.trim().toUpperCase();
+          if (!code) return;
+          const tgU = window.Telegram?.WebApp?.initDataUnsafe?.user;
+          try {
+            const r = await fetch('https://gemstorm.up.railway.app/api/check-promo', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ code, userId: String(tgU?.id || '') })
+            });
+            const data = await r.json();
+            if (data.valid) {
+              appliedPromo = { code, discountPercent: data.discount };
+              isPromoMode = false;
+              renderCheckoutBlock();
+              renderCartPage();
+            } else {
+              if (data.reason === 'not_found') {
+                alert('Промокод не найден');
+              } else if (data.reason === 'already_used') {
+                alert('Данный промокод уже был использован ранее');
+              } else if (data.reason === 'first_order_only') {
+                alert('Данный промокод доступен только на первый заказ');
+              }
+              if (promoInput) {
+                promoInput.value = appliedPromo ? appliedPromo.code : '';
+              }
+            }
+          } catch(e) {
+            alert('Ошибка проверки промокода');
+          }
+        });
         if (promoInput) promoInput.addEventListener("keypress", (e) => { if (e.key === "Enter") applyBtn?.click(); });
       }, 0);
     } else {
       fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${appliedPromo ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="checkoutBtn">Перейти к оформлению</button><button class="promo-btn" id="openPromoBtn"><img src="https://storage.botpapa.me/files/8324fec0-5933-11f1-bef9-f1ec7a2c6e45.png" alt="Промокод"></button></div></div>`;
       setTimeout(() => {
         document.getElementById("checkoutBtn")?.addEventListener("click", async () => {
-  hapticMedium();
-  const tgU = window.Telegram?.WebApp?.initDataUnsafe?.user;
-  try {
-    const r = await fetch('https://gemstorm.up.railway.app/api/settings');
-    const s = await r.json();
-    const status = s.bot_status || 'open';
-    if (status === 'closed') { alert('Оформить заказ временно не получится, попробуйте позже'); return; }
-    if (status === 'maintenance') { alert('Оформить заказ временно не получится, проводятся технические работы'); return; }
-    if (status === 'auto') {
-      const mskHour = (new Date().getUTCHours() + 3) % 24;
-      if (mskHour >= 0 && mskHour < 10) { alert('Оформить заказ временно не получится, возвращайтесь в 10:00 по московскому времени'); return; }
-    }
-  } catch(e) {}
-  try {
-    if (tgU?.id) {
-      const lr = await fetch(`https://gemstorm.up.railway.app/api/check-rate-limit?userId=${tgU.id}`);
-      const l = await lr.json();
-      if (l.limited) { alert('Оформление заказов для вас временно ограничено, попробуйте позже'); return; }
-    }
-  } catch(e) {}
-  showPage("checkout");
-});
+          hapticMedium();
+          const tgU = window.Telegram?.WebApp?.initDataUnsafe?.user;
+          try {
+            const r = await fetch('https://gemstorm.up.railway.app/api/settings');
+            const s = await r.json();
+            const status = s.bot_status || 'open';
+            if (status === 'closed') { alert('Оформить заказ временно не получится, попробуйте позже'); return; }
+            if (status === 'maintenance') { alert('Оформить заказ временно не получится, проводятся технические работы'); return; }
+            if (status === 'auto') {
+              const mskHour = (new Date().getUTCHours() + 3) % 24;
+              if (mskHour >= 0 && mskHour < 10) { alert('Оформить заказ временно не получится, возвращайтесь в 10:00 по московскому времени'); return; }
+            }
+          } catch(e) {}
+          try {
+            if (tgU?.id) {
+              const lr = await fetch(`https://gemstorm.up.railway.app/api/check-rate-limit?userId=${tgU.id}`);
+              const l = await lr.json();
+              if (l.limited) { alert('Оформление заказов для вас временно ограничено, попробуйте позже'); return; }
+            }
+          } catch(e) {}
+          showPage("checkout");
+        });
         document.getElementById("openPromoBtn")?.addEventListener("click", () => { hapticLight(); isPromoMode = true; renderCheckoutBlock(); });
       }, 0);
     }
@@ -2565,7 +2573,6 @@ body {
   }
 
   function showOrderDetail(order) {
-    document.getElementById("orderDetailTitle").textContent = `Заказ #${order.order_number}`;
     const container = document.getElementById("orderDetailContent");
     let items = [];
     try { items = JSON.parse(order.items || '[]'); } catch(e) {}
@@ -2908,7 +2915,7 @@ body {
           </select>
         </div>
         <div class="form-section" style="margin-bottom:0;">
-          <div class="form-label">Ваш отзыв <span id="reviewCharCount" style="color:#9e9e9e;font-weight:400;font-size:14px;">0/80</span></div>
+          <div class="form-label">Ваш отзыв <span id="reviewCharCount" style="color:#9e9e9e;font-weight:400;font-size:14px;">0/70</span></div>
           <textarea class="review-textarea" id="reviewTextarea" placeholder="Напишите ваш отзыв..." maxlength="70" rows="3"></textarea>
         </div>
         <button class="checkout-button" id="reviewSubmitBtn" style="width:100%;height:48px;margin-top:10px;">Отправить отзыв</button>
@@ -2963,43 +2970,41 @@ body {
     }, 0);
   }
 
-  // Функция отрисовки страницы Подарки (шизменённая)
   function renderGiftsPage() {
-  const container = document.getElementById("giftsList");
-  if (!container) return;
-  
-  container.innerHTML = giftItems.map(gift => `
-    <div class="gift-wrapper">
-      <div class="gift-main-card">
-        <img class="gift-image" src="${gift.image}" alt="${escapeHtml(gift.name)}" loading="lazy">
-        <div class="gift-info">
-          <div class="gift-name">${escapeHtml(gift.name)}</div>
-          <div class="gift-price">Free Gift</div>
-          <div class="gift-category">Подарок</div>
+    const container = document.getElementById("giftsList");
+    if (!container) return;
+    
+    container.innerHTML = giftItems.map(gift => `
+      <div class="gift-wrapper">
+        <div class="gift-main-card">
+          <img class="gift-image" src="${gift.image}" alt="${escapeHtml(gift.name)}" loading="lazy">
+          <div class="gift-info">
+            <div class="gift-name">${escapeHtml(gift.name)}</div>
+            <div class="gift-price">Free Gift</div>
+            <div class="gift-category">Подарок</div>
+          </div>
+          <button class="gift-claim-btn" data-link="${gift.link}">Получить</button>
         </div>
-        <button class="gift-claim-btn" data-link="${gift.link}">Получить</button>
-      </div>
-      <!-- ЭТА КАРТОЧКА ВЫЕЗЖАЕТ ИЗ-ПОД ОСНОВНОЙ С margin-top: -28px -->
-      <div class="gift-link-card">
-        <div class="gift-expiry-bottom">
-          <span class="expiry-label-bottom">Срок действия</span>
-          <span class="expiry-status-bottom">∞</span>
+        <div class="gift-link-card">
+          <div class="gift-expiry-bottom">
+            <span class="expiry-label-bottom">Срок действия</span>
+            <span class="expiry-status-bottom">∞</span>
+          </div>
         </div>
       </div>
-    </div>
-  `).join('');
-  
-  document.querySelectorAll('.gift-claim-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const link = btn.dataset.link;
-      if (link) {
-        hapticLight();
-        window.open(link, '_blank');
-      }
+    `).join('');
+    
+    document.querySelectorAll('.gift-claim-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const link = btn.dataset.link;
+        if (link) {
+          hapticLight();
+          window.open(link, '_blank');
+        }
+      });
     });
-  });
-}
+  }
 
   async function hasUserReviewed() {
     const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
@@ -3097,7 +3102,6 @@ body {
     }
   }
 
-  // Изменённая функция отрисовки профиля (иконка подарка на уровне username)
   async function renderProfilePage() {
     const container = document.getElementById("profileContent");
     if (!container) return;
@@ -3176,8 +3180,67 @@ body {
     }, 0);
   }
 
+  function renderSettingsPage() {
+    const container = document.getElementById("settingsContent");
+    if (!container) return;
+    container.innerHTML = `
+      <div class="content-card" style="text-align:center;">
+        <div style="font-size:18px;font-weight:500;margin-bottom:16px;">Настройки</div>
+        <div style="font-size:15px;color:#9e9e9e;margin-bottom:20px;">Версия 1.0.0</div>
+        <button id="closeSettingsBtn" class="checkout-button" style="background:#303032;margin-top:10px;">Закрыть</button>
+      </div>
+    `;
+    setTimeout(() => {
+      document.getElementById("closeSettingsBtn")?.addEventListener("click", () => {
+        hapticLight();
+        if (navigationHistory.length > 0) {
+          const previousPage = navigationHistory.pop();
+          showPage(previousPage, true);
+        } else {
+          showPage("catalog");
+        }
+      });
+    }, 0);
+  }
+
   function saveCurrentPage(pageId) { localStorage.setItem("lastPage", pageId); }
   function getLastPage() { const savedPage = localStorage.getItem("lastPage"); const validPages = ["catalog", "cart", "orders", "profile"]; if (savedPage && validPages.includes(savedPage)) { return savedPage; } return "catalog"; }
+
+  function injectPageHeader() {
+    const pageConfigs = {
+      'catalog': { icon: 'https://storage.botpapa.me/files/00f09750-5110-11f1-bef9-f1ec7a2c6e45.png', title: 'Каталог' },
+      'cart': { icon: 'https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png', title: 'Корзина' },
+      'orders': { icon: 'https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png', title: 'Заказы' },
+      'profile': { icon: 'https://storage.botpapa.me/files/49df3ed0-5110-11f1-bef9-f1ec7a2c6e45.png', title: 'Профиль' },
+      'filter': { icon: 'https://storage.botpapa.me/files/9478fb40-49de-11f1-bef9-f1ec7a2c6e45.png', title: 'Фильтры' },
+      'checkout': { icon: 'https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png', title: 'Оформление' },
+      'payment': { icon: 'https://storage.botpapa.me/files/62edaf00-4a27-11f1-bef9-f1ec7a2c6e45.png', title: 'Оплата' },
+      'order-detail': { icon: 'https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png', title: 'Заказ' },
+      'reviews': { icon: 'https://storage.botpapa.me/files/f665c4e0-510f-11f1-bef9-f1ec7a2c6e45.png', title: 'Отзывы' },
+      'buy-promo': { icon: 'https://storage.botpapa.me/files/9deb9760-5167-11f1-bef9-f1ec7a2c6e45.png', title: 'Покупка акции' },
+      'write-review': { icon: 'https://storage.botpapa.me/files/f665c4e0-510f-11f1-bef9-f1ec7a2c6e45.png', title: 'Оставить отзыв' },
+      'gifts': { icon: 'https://storage.botpapa.me/files/501ffee0-51e9-11f1-bef9-f1ec7a2c6e45.png', title: 'Подарки' },
+      'settings': { icon: 'https://storage.botpapa.me/files/e4196b10-5f66-11f1-af2e-f7a93121b83b.png', title: 'Настройки' },
+    };
+
+    const activePage = document.querySelector('.page.active-page');
+    if (!activePage) return;
+    const pageId = activePage.id.replace('-page', '');
+    const cfg = pageConfigs[pageId];
+    if (!cfg) return;
+
+    const old = activePage.querySelector('.page-header-sticky');
+    if (old) old.remove();
+
+    activePage.insertAdjacentHTML('afterbegin', renderPageHeader(cfg.icon, cfg.title));
+
+    setTimeout(() => {
+      document.getElementById('headerSettingsBtn')?.addEventListener('click', () => {
+        hapticLight();
+        showPage('settings');
+      });
+    }, 0);
+  }
 
   function showPage(pageId, skipHistoryAdd = false) {
     let currentPageId = null;
@@ -3214,7 +3277,9 @@ body {
     if (pageId === "gifts") { renderGiftsPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
     if (pageId === "write-review") { renderWriteReviewPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
     if (pageId === "buy-promo") { renderBuyPromoPage(); }
+    if (pageId === "settings") { renderSettingsPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
     if (pageId === "checkout") { afterPaymentBackPage = orderMode === "promo_deal" ? "buy-promo" : "cart"; }
+    
     const mainPages = ["catalog", "cart", "orders", "profile"];
     if (mainPages.includes(pageId)) {
       document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
@@ -3227,23 +3292,26 @@ body {
       }
       saveCurrentPage(pageId);
       const wasOnProfile = currentPageId === "profile";
-if (wasOnProfile && mainPages.includes(pageId)) {
-  const slider = document.getElementById("menuSlider");
-  if (slider) {
-    slider.style.transition = "none";
-    slider.style.left = "calc(100%)";
-    slider.style.opacity = "1";
-    setTimeout(() => {
-      slider.style.transition = "";
-      updateMenuSlider(pageId);
-    }, 20);
-  } else {
-    updateMenuSlider(pageId);
-  }
-} else {
-  updateMenuSlider(pageId);
-}
+      if (wasOnProfile && mainPages.includes(pageId)) {
+        const slider = document.getElementById("menuSlider");
+        if (slider) {
+          slider.style.transition = "none";
+          slider.style.left = "calc(100%)";
+          slider.style.opacity = "1";
+          setTimeout(() => {
+            slider.style.transition = "";
+            updateMenuSlider(pageId);
+          }, 20);
+        } else {
+          updateMenuSlider(pageId);
+        }
+      } else {
+        updateMenuSlider(pageId);
+      }
     }
+    
+    injectPageHeader();
+    
     if (window.Telegram && window.Telegram.WebApp) {
       const tg = window.Telegram.WebApp;
       if (pageId === "catalog") { tg.BackButton.hide(); } else { tg.BackButton.show(); }
@@ -3348,7 +3416,7 @@ if (wasOnProfile && mainPages.includes(pageId)) {
     btn.addEventListener("click", () => { hapticLight(); showPage(btn.dataset.page); });
   });
 
-    let lastSliderIndex = 0;
+  let lastSliderIndex = 0;
 
   function updateMenuSlider(pageId) {
     const slider = document.getElementById("menuSlider");
@@ -3373,6 +3441,21 @@ if (wasOnProfile && mainPages.includes(pageId)) {
       slider.style.left = "calc(33.33%)";
       slider.style.width = "calc(33.33%)";
     }
+  }
+
+  function renderFilterModal() {
+    const container = document.getElementById("filterOptionsContainer");
+    if (!container) return;
+    const categories = ["Все категории", ...new Set(products.map(p => p.category))];
+    container.innerHTML = categories.map(cat => `<div class="filter-row" data-filter="${cat}"><span class="filter-text">${cat}</span>${currentFilter === cat ? '<span class="check-mark">✓</span>' : ''}</div>`).join("");
+    container.querySelectorAll(".filter-row").forEach(row => {
+      row.addEventListener("click", () => {
+        currentFilter = row.dataset.filter;
+        renderCatalog();
+        renderFilterModal();
+        showPage("catalog");
+      });
+    });
   }
 
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));

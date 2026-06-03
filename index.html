@@ -37,10 +37,6 @@
       color: #ffffff;
       padding-bottom: 130px;
     }
-    
-    body {
-  padding-top: var(--tg-safe-area-inset-top, 0px);
-}
 
     /* Запрет выделениявезде  */
     body {
@@ -61,11 +57,11 @@
 
     /* ===== STICKY HEADER ===== */
     .page-header-sticky {
-  position: sticky;
-  top: var(--tg-safe-area-inset-top, 0px);
+  position: relative;
   z-index: 500;
   margin: 0 -14px 14px -14px;
   padding: 8px 14px;
+  padding-top: calc(var(--tg-content-safe-area-inset-top, 0px) + 8px);
   background: #121214;
 }
 
@@ -78,7 +74,7 @@
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 60px;
       padding: 3px 3px 3px 3px;
-      height: auto;
+      height: 48px;
     }
 
     .page-header-title-btn {

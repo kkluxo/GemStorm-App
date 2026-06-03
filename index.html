@@ -59,37 +59,27 @@
       touch-action: pan-y;
     }
 
-    /*/* ===== STICKY HEADER ===== */
-.page-header-sticky {
+    /* ===== STICKY HEADER ===== */
+    .page-header-sticky {
   position: sticky;
-  /* Добавляем небольшой отступ сверху, чтобы плашка не прилипала к самому верху экрана */
-  top: calc(var(--tg-safe-area-inset-top, 0px) + 8px); 
-  z-index: 2000; /* Поднимаем z-index выше, чтобы карточки товаров гарантированно уходили ПОД шапку */
-  margin: 0 0 14px 0; /* Убираем отрицательные маргины по бокам, они ломают обтекание */
-  padding: 0; /* Сбрасываем внутренние отступы внешнего контейнера */
-  background: transparent; /* Делаем сам контейнер полностью прозрачным */
-  pointer-events: none; /* Пропускаем клики сквозь прозрачные области */
+  top: var(--tg-safe-area-inset-top, 0px);
+  z-index: 500;
+  margin: 0 -14px 14px -14px;
+  padding: 8px 14px;
+  background: #121214;
 }
 
-.page-header-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  
-  /* Делаем фон плашки полупрозрачным, как на видео 2 */
-  background: rgba(20, 20, 22, 0.75); 
-  
-  /* Эффект размытия контента, который проходит ПОД плашкой */
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 60px;
-  padding: 3px;
-  height: auto;
-  pointer-events: auto; /* Возвращаем кликабельность кнопкам внутри плашки */
-}
+    .page-header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: #141416;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 60px;
+      padding: 3px 3px 3px 3px;
+      height: auto;
+    }
 
     .page-header-title-btn {
       display: inline-flex;
@@ -186,16 +176,6 @@
     .page.active-page {
       display: block;
     }
-
-     .bottom-menu {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  /* Добавляем динамический отступ снизу под системную кнопку iOS */
-  padding-bottom: calc(var(--tg-safe-area-inset-bottom, 0px) + 16px); 
-  z-index: 1001;
-}
 
     .bottom-menu {
       position: fixed;
@@ -614,16 +594,15 @@
     }
 
     .cart-checkout-fixed {
-  position: fixed;
-  /* Заменяем фиксированные 16px на сумму безопасной зоны Telegram и твоего отступа */
-  bottom: calc(var(--tg-safe-area-inset-bottom, 0px) + 16px); 
-  left: 16px;
-  right: 16px;
-  z-index: 2000; /* Чтобы блок гарантированно был поверх скроллящегося контента */
-  max-width: 600px;
-  margin: 0 auto;
-  width: calc(100% - 32px);
-}
+      position: fixed;
+      bottom: 16px;
+      left: 16px;
+      right: 16px;
+      z-index: 1000;
+      max-width: 600px;
+      margin: 0 auto;
+      width: calc(100% - 32px);
+    }
 
     .checkout-card {
       background: #222225f9;

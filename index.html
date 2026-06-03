@@ -59,6 +59,7 @@
     .page-header-sticky {
       position: sticky;
       top: 0;
+      padding-top: max(8px, env(safe-area-inset-top));
       z-index: 500;
       margin: 0 -14px 14px -14px;
       padding: 8px 14px;
@@ -74,7 +75,7 @@
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 60px;
       padding: 3px 3px 3px 3px;
-      height: 48px;
+      height: auto;
     }
 
     .page-header-title-btn {
@@ -3387,6 +3388,7 @@
       const tg = window.Telegram.WebApp;
       tg.ready();
       tg.expand();
+      try { tg.requestFullscreen(); } catch(e) {}
       try { tg.setHeaderColor("#121214"); tg.setBackgroundColor("#121214"); } catch(e) {}
       try { if (tg.disableClosingConfirmation) tg.disableClosingConfirmation(); } catch(e) {}
       try { if (tg.isClosingConfirmationEnabled === false && tg.enableClosingConfirmation) tg.enableClosingConfirmation(); } catch(e) {}

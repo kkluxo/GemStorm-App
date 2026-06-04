@@ -194,7 +194,7 @@
       bottom: 16px;
       left: 16px;
       right: 16px;
-      background: #222225f9;
+      background: rgba(34, 34, 37, 0.7);
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 60px;
       display: flex;
@@ -205,7 +205,8 @@
       max-width: 600px;
       margin: 0 auto;
       width: calc(100% - 32px);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(20px); /* увеличить blur */
+      -webkit-backdrop-filter: blur(20px); /* для iOS */
     }
 
     .menu-slider {

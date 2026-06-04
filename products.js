@@ -141,8 +141,6 @@ const products = [
 // ─────────────────────────────────────────────
 const FILTER_CATEGORIES = [
   "Все категории",
-  "Esports",
-  "Strikers"
   "Пропуски",
   "Кристаллы",
   "Esports",

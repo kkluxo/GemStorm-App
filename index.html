@@ -87,8 +87,8 @@
   right: 21px; /* половина кнопки настроек */
   top: 0;
   bottom: 0;
-  border-top: 1px solid rgba(255,255,255,0.02);
-  border-bottom: 1px solid rgba(255,255,255,0.02);
+  border-top: 1px solid rgba(255,255,255,0);
+  border-bottom: 1px solid rgba(255,255,255,0);
   pointer-events: none;
   z-index: 0;
 }
@@ -98,7 +98,7 @@
   align-items: center;
   gap: 8px;
   background: #212124;
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid #2B2B2D;
   border-radius: 50px;
   height: 44px;
   padding: 0 14px 0 10px;
@@ -126,7 +126,7 @@
   height: 44px;
   min-width: 44px;
   background: #212124;
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid #2B2B2D;
   border-radius: 50%;
   position: relative;
   z-index: 1;
@@ -294,9 +294,10 @@
 
     .search-bar {
       flex: 1;
-      background: #303032;
+      background: #141416;
       height: 46px;
       border-radius: 34px;
+      border: 1px solid #2B2B2D;
       display: flex;
       align-items: center;
       padding: 0 16px;
@@ -321,7 +322,7 @@
 
     .search-input::placeholder {
       color: #a1a1aa;
-      font-size: 16px;
+      font-size: 18px;
     }
 
     .filter-btn {

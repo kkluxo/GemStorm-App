@@ -144,7 +144,7 @@ const FILTER_CATEGORIES = [
   "Пропуски",
   "Кристаллы",
   "Esports",
-  "Strikers"
+  "Strikers",
   "Bling Deals",
   "Ежен. акции",
   "Ежедн. акции",

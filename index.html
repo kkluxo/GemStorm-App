@@ -71,22 +71,26 @@
 
     .page-header-inner {
   display: flex;
-  flex-direction: column; /* вертикально */
-  align-items: stretch;
-  gap: 0;
-  background: #141416;
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 60px;
-  padding: 3px;
-  width: fit-content;
-  margin-left: auto; /* прижать вправо */
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  height: 42px;
 }
 
 .page-header-title-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #212124;
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 50px;
   height: 42px;
   padding: 0 14px 0 10px;
+  flex: 0 1 auto;
 }
 
     .page-header-title-btn img {
@@ -103,12 +107,17 @@
       white-space: nowrap;
     }
 
-   .page-header-settings-btn {
+  .page-header-settings-btn {
   width: 42px;
   height: 42px;
+  min-width: 42px;
+  background: #212124;
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 50%;
-  align-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
     .page-header-settings-btn img {

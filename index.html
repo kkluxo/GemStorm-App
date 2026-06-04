@@ -2657,7 +2657,9 @@
     `;
     
     showPage("order-detail", true);
-    
+    const titleSpan = document.querySelector('#order-detail-page .page-header-title-btn span');
+    if (titleSpan) titleSpan.textContent = `Заказ #${order.order_number}`;
+
     const fixedBlock = document.getElementById("cartCheckoutFixed");
     if (fixedBlock) {
       const tgUserForReview = window.Telegram?.WebApp?.initDataUnsafe?.user;

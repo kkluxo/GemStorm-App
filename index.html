@@ -73,11 +73,24 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #141416;
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 50px;
+  background: transparent;
+  border: none;
   padding: 0;
   height: 42px;
+  position: relative;
+}
+
+.page-header-inner::before {
+  content: '';
+  position: absolute;
+  left: 21px; /* половина кнопки заголовка */
+  right: 21px; /* половина кнопки настроек */
+  top: 0;
+  bottom: 0;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  pointer-events: none;
+  z-index: 0;
 }
 
 .page-header-title-btn {

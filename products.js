@@ -16,28 +16,30 @@ const products = [
 
   // ── СТАРР НОВА (id 11–18) ─────────────────────────────────────────────────
   // id   name                  price   oldPrice  label          category       maxQty  conflictGroup
-  {  id: 11, name: "Боец Старр Нова",   price: 1189, oldPrice: 1269, label: "Старр Нова", category: "Старр Нова", maxQty: 1, conflictGroup: [11, 12],
-     image: "https://storage.botpapa.me/files/e2268b00-55be-11f1-bef9-f1ec7a2c6e45.jpeg" },
+  {  id: 11, name: "Набор: 3 скина",   price: 2129, oldPrice: 2289, label: "Strikers", category: "Strikers", maxQty: 1, conflictGroup: [11, 12],
+     image: "https://storage.botpapa.me/files/58cac0f0-6032-11f1-af2e-f7a93121b83b.jpeg" },
 
-  {  id: 12, name: "Набор: Старр Нова", price: 1979, oldPrice: 2129, label: "Старр Нова", category: "Старр Нова", maxQty: 1, conflictGroup: [11, 12],
-     image: "https://storage.botpapa.me/files/e2268b00-55be-11f1-bef9-f1ec7a2c6e45.jpeg" },
+  {  id: 12, name: "Табло Вольт",    price: 789, oldPrice: 849, label: "Strikers", category: "Strikers", maxQty: 1, conflictGroup: [11, 12],
+     image: "https://storage.botpapa.me/files/63247140-6032-11f1-af2e-f7a93121b83b.jpeg" },
 
-  {  id: 13, name: "Набор: 4 скина",    price: 2929, oldPrice: 3149, label: "Старр Нова", category: "Старр Нова", maxQty: 1, conflictGroup: [],
-     image: "https://storage.botpapa.me/files/a99938f0-4a56-11f1-bef9-f1ec7a2c6e45.jpeg" },
+  {  id: 13, name: "Судья Милп",    price: 789, oldPrice: 849, label: "Strikers", category: "Strikers", maxQty: 1, conflictGroup: [],
+     image: "https://storage.botpapa.me/files/673b3200-6032-11f1-af2e-f7a93121b83b.jpeg" },
 
-  {  id: 14, name: "Набор: 3 скина",    price: 2219, oldPrice: 2379, label: "Старр Нова", category: "Старр Нова", maxQty: 1, conflictGroup: [],
-     image: "https://storage.botpapa.me/files/ac8cd670-4a56-11f1-bef9-f1ec7a2c6e45.jpeg" },
+  {  id: 14, name: "Суперфорвард Лу",    price: 1189, oldPrice: 1279, label: "Strikers", category: "Strikers", maxQty: 1, conflictGroup: [],
+     image: "https://storage.botpapa.me/files/5ed5b090-6032-11f1-af2e-f7a93121b83b.jpeg" },
 
-  {  id: 15, name: "Амбер из войда",    price: 1189, oldPrice: 1269, label: "Старр Нова", category: "Старр Нова", maxQty: 1, conflictGroup: [],
+ // Еспорт скины:
+  
+  {  id: 15, name: "Победитель Отис",    price: 399, oldPrice: 429, label: "Esports", category: "Esports", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/b3c4fb70-4a56-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 16, name: "Амбер из зв. патруля",  price: 1189, oldPrice: 1269, label: "Старр Нова", category: "Старр Нова", maxQty: 1, conflictGroup: [],
+  {  id: 16, name: "Чемпион мира Гас",  price: 399, oldPrice: 429, label: "Esports", category: "Esports", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/b6be6550-4a56-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 17, name: "Джуджу из зв. патруля", price: 789,  oldPrice: 849,  label: "Старр Нова", category: "Старр Нова", maxQty: 1, conflictGroup: [],
+  {  id: 17, name: "Яростная Тара", price: 399,  oldPrice: 429,  label: "Esports", category: "Esports", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/ba4da690-4a56-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
-  {  id: 18, name: "Беа из зв. патруля",    price: 629,  oldPrice: 679,  label: "Старр Нова", category: "Старр Нова", maxQty: 1, conflictGroup: [],
+  {  id: 18, name: "Кошка-воровка Джесси",    price: 319,  oldPrice: 339,  label: "Esports", category: "Esports", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/bd39a2f0-4a56-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
   // ── ОСОБЫЕ АКЦИИ (id 19–20) ───────────────────────────────────────────────
@@ -139,9 +141,12 @@ const products = [
 // ─────────────────────────────────────────────
 const FILTER_CATEGORIES = [
   "Все категории",
+  "Esports",
+  "Strikers"
   "Пропуски",
   "Кристаллы",
-  "Старр Нова",
+  "Esports",
+  "Strikers"
   "Bling Deals",
   "Ежен. акции",
   "Ежедн. акции",

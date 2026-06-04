@@ -87,8 +87,8 @@
   right: 21px; /* половина кнопки настроек */
   top: 0;
   bottom: 0;
-  border-top: 1px solid rgba(255,255,255,0.06);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-top: 1px solid rgba(255,255,255,0.02);
+  border-bottom: 1px solid rgba(255,255,255,0.02);
   pointer-events: none;
   z-index: 0;
 }
@@ -2562,9 +2562,9 @@
       container.querySelectorAll(".order-wrapper").forEach(wrapper => {
         const order = orders.find(o => o.id == wrapper.dataset.orderId);
         wrapper.querySelector(".order-main-card")?.addEventListener("click", (e) => {
-          if (e.target.closest('.order-refresh-btn')) return;
-          if (order) showOrderDetail(order);
-        });
+  if (e.target.closest('.order-refresh-btn')) return;
+  if (order) { hapticLight(); showOrderDetail(order); }
+});
       });
       
       container.querySelectorAll(".order-refresh-btn").forEach(btn => {

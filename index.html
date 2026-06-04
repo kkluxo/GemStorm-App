@@ -70,32 +70,24 @@
 }
 
     .page-header-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 3px;
-      gap: 8px;
-      background: #141416;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 60px;
-      height: 42px;
-    }
+  display: flex;
+  flex-direction: column; /* вертикально */
+  align-items: stretch;
+  gap: 0;
+  background: #141416;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 60px;
+  padding: 3px;
+  width: fit-content;
+  margin-left: auto; /* прижать вправо */
+}
 
-    .page-header-title-btn {
-      display: inline-flex;
-      align-items: center;
-      padding: 0;
-      gap: 8px;
-      background: #212124;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 50px;
-      height: 42px;
-      margin: 0;
-      padding: 0 14px 0 10px;
-      flex: 0 1 auto;
-      min-width: 0;
-      cursor: default;
-    }
+.page-header-title-btn {
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 50px;
+  height: 42px;
+  padding: 0 14px 0 10px;
+}
 
     .page-header-title-btn img {
       width: 22px;
@@ -111,20 +103,13 @@
       white-space: nowrap;
     }
 
-    .page-header-settings-btn {
-      width: 42px;
-      height: 42px;
-      min-width: 42px;
-      margin: 0;
-      background: #212124;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
+   .page-header-settings-btn {
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 50%;
+  align-self: center;
+}
 
     .page-header-settings-btn img {
       width: 20px;

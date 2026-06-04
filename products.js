@@ -31,16 +31,16 @@ const products = [
  // Еспорт скины:
   
   {  id: 15, name: "Победитель Отис",    price: 399, oldPrice: 429, label: "Esports", category: "Esports", maxQty: 1, conflictGroup: [],
-     image: "https://storage.botpapa.me/files/b3c4fb70-4a56-11f1-bef9-f1ec7a2c6e45.jpeg" },
+     image: "https://storage.botpapa.me/files/12adebb0-505b-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
   {  id: 16, name: "Чемпион мира Гас",  price: 399, oldPrice: 429, label: "Esports", category: "Esports", maxQty: 1, conflictGroup: [],
-     image: "https://storage.botpapa.me/files/b6be6550-4a56-11f1-bef9-f1ec7a2c6e45.jpeg" },
+     image: "https://storage.botpapa.me/files/0de56720-505b-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
   {  id: 17, name: "Яростная Тара", price: 399,  oldPrice: 429,  label: "Esports", category: "Esports", maxQty: 1, conflictGroup: [],
-     image: "https://storage.botpapa.me/files/ba4da690-4a56-11f1-bef9-f1ec7a2c6e45.jpeg" },
+     image: "https://storage.botpapa.me/files/08e35c00-505b-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
   {  id: 18, name: "Кошка-воровка Джесси",    price: 319,  oldPrice: 339,  label: "Esports", category: "Esports", maxQty: 1, conflictGroup: [],
-     image: "https://storage.botpapa.me/files/bd39a2f0-4a56-11f1-bef9-f1ec7a2c6e45.jpeg" },
+     image: "https://storage.botpapa.me/files/027f28d0-505b-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
   // ── ОСОБЫЕ АКЦИИ (id 19–20) ───────────────────────────────────────────────
   // id   name          price   oldPrice  label           category          maxQty  conflictGroup

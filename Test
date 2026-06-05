@@ -7,7 +7,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: Arial, sans-serif; background: #fff; padding: 8px; }
 
-  h3 { font-size: 11px; margin: 8px 0 3px; }
+  h3 { font-size: 11px; margin: 8px 0 3px; font-weight: 700; }
 
   table {
     border-collapse: collapse;
@@ -21,33 +21,35 @@
     text-align: center;
     vertical-align: middle;
     line-height: 1.2;
+    font-weight: 700;
+    color: #000;
+    background: #fff;
   }
 
   thead tr th {
-    background: #ccc;
+    background: #fff;
     font-weight: 700;
   }
 
   .col-num {
     width: 14px;
     font-weight: 700;
-    background: #ddd;
+    background: #fff;
   }
 
   .col-val { width: 52px; }
 
-  tbody tr:nth-child(even) .col-val { background: #f5f5f5; }
-
   .desc-row td {
-    background: #e8e8e8 !important;
+    background: #fff !important;
     font-style: italic;
     font-size: 7.5px;
     line-height: 1.2;
+    font-weight: 700;
   }
 
   .bold-val { font-weight: 700; }
 
-  .red-note { font-weight: 700; font-size: 7px; }
+  .red-note { font-weight: 700; font-size: 7px; color: #000; }
 
   @page { size: A4 landscape; margin: 8mm; }
   @media print {
@@ -244,6 +246,7 @@
       <td class="col-num">11</td><td class="col-val">246</td>
       <td class="col-num">11</td><td class="col-val">77</td>
       <td class="col-num">11</td><td class="col-val">84</td>
+      <td class="col-num">11</td><td class="col-val">84</td>
     </tr>
     <tr>
       <td class="col-num">12</td><td class="col-val">11</td>
@@ -370,7 +373,7 @@
       <td class="col-num">3</td><td class="col-val">3</td>
       <td class="col-num">3</td><td class="col-val">2</td>
       <td class="col-num">3</td><td class="col-val">1</td>
-      <td class="col-num">3</td><td class="col-val"><span class="red-note">3 (рисунок смолёта)</span></td>
+      <td class="col-num">3</td><td class="col-val"><span class="red-note">3 (рисунок самолёта)</span></td>
       <td class="col-num">3</td><td class="col-val">1</td>
       <td class="col-num">3</td><td class="col-val"><span class="red-note">2 (Балалайку настроили…)</span></td>
       <td class="col-num">3</td><td class="col-val"><span class="red-note">1 (на горизонт… глад. столике)</span></td>

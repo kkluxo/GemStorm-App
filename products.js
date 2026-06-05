@@ -165,6 +165,7 @@ const FILTER_CATEGORIES = [
   "Esports",
   "Strikers",
   "Bling Deals",
+  "Особые акции",
   "Ежен. акции",
   "Ежедн. акции",
 ];

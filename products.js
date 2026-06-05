@@ -39,8 +39,18 @@ const products = [
   {  id: 17, name: "Яростная Тара", price: 399,  oldPrice: 429,  label: "Esports", category: "Esports", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/08e35c00-505b-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
+  {  id: 45, name: "Фанат Фэнг", price: 399,  oldPrice: 429,  label: "Esports", category: "Esports", maxQty: 1, conflictGroup: [],
+     image: "https://storage.botpapa.me/files/1fdcdc10-505b-11f1-bef9-f1ec7a2c6e45.jpeg" },
+
+  {  id: 46, name: "Хоккеист Мортис", price: 399,  oldPrice: 429,  label: "Esports", category: "Esports", maxQty: 1, conflictGroup: [],
+     image: "https://storage.botpapa.me/files/cd577140-60d0-11f1-af2e-f7a93121b83b.jpeg" },
+  
   {  id: 18, name: "Кошка-воровка Джесси",    price: 319,  oldPrice: 339,  label: "Esports", category: "Esports", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/027f28d0-505b-11f1-bef9-f1ec7a2c6e45.jpeg" },
+
+  // ОСОБАЯ АКЦИЯ 300 гемов
+  {  id: 44, name: "300 гемов", price: 479,  oldPrice: 509,  label: "Особая акция", category: "Особые акции", maxQty: 1, conflictGroup: [],
+     image: "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
   // ── ОСОБЫЕ АКЦИИ (id 19–20) ───────────────────────────────────────────────
   // id   name          price   oldPrice  label           category          maxQty  conflictGroup
@@ -55,20 +65,23 @@ const products = [
 
   {  id: 42, name: "8500 блингов", price: 479,  oldPrice: 509,  label: "Bling Deal", category: "Bling Deals", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg" },
+  
+  {  id: 43, name: "12500 блингов", price: 629,  oldPrice: 679,  label: "Bling Deal", category: "Bling Deals", maxQty: 1, conflictGroup: [],
+     image: "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
   // ── ЕЖЕНЕДЕЛЬНЫЕ АКЦИИ (id 21–24) ────────────────────────────────────────
   // id   name               price   oldPrice  label           category                maxQty  conflictGroup
-  {  id: 21, name: "Яичный Рико",    price: 549,  oldPrice: 589,  label: "Ежен. акция", category: "Ежен. акции", maxQty: 1, conflictGroup: [],
-     image: "https://storage.botpapa.me/files/eb561330-55be-11f1-bef9-f1ec7a2c6e45.jpeg" },
+  {  id: 21, name: "Гипнос Сенди",    price: 709,  oldPrice: 769,  label: "Ежен. акция", category: "Ежен. акции", maxQty: 1, conflictGroup: [],
+     image: "https://storage.botpapa.me/files/c079d530-60d0-11f1-af2e-f7a93121b83b.jpeg" },
 
-  {  id: 22, name: "Нита с бивнями", price: 709,  oldPrice: 769,  label: "Ежен. акция", category: "Ежен. акции", maxQty: 1, conflictGroup: [],
-     image: "https://storage.botpapa.me/files/e6501070-55be-11f1-bef9-f1ec7a2c6e45.jpeg" },
+  {  id: 22, name: "Фигурка Пенни", price: 549,  oldPrice: 589,  label: "Ежен. акция", category: "Ежен. акции", maxQty: 1, conflictGroup: [],
+     image: "https://storage.botpapa.me/files/c76b2d30-60d0-11f1-af2e-f7a93121b83b.jpeg" },
 
-  {  id: 23, name: "Антивирус 8-Бит",price: 709,  oldPrice: 769,  label: "Ежен. акция", category: "Ежен. акции", maxQty: 1, conflictGroup: [],
-     image: "https://storage.botpapa.me/files/ef35be60-55be-11f1-bef9-f1ec7a2c6e45.jpeg" },
+  {  id: 23, name: "Равана Гром",price: 549,  oldPrice: 589,  label: "Ежен. акция", category: "Ежен. акции", maxQty: 1, conflictGroup: [],
+     image: "https://storage.botpapa.me/files/ca413090-60d0-11f1-af2e-f7a93121b83b.jpeg" },
 
-  {  id: 24, name: "Бо-меха",        price: 709,  oldPrice: 769,  label: "Ежен. акция", category: "Ежен. акции", maxQty: 1, conflictGroup: [],
-     image: "https://storage.botpapa.me/files/f2aa72c0-55be-11f1-bef9-f1ec7a2c6e45.jpeg" },
+  {  id: 24, name: "Вирус Чарли",        price: 709,  oldPrice: 769,  label: "Ежен. акция", category: "Ежен. акции", maxQty: 1, conflictGroup: [],
+     image: "https://storage.botpapa.me/files/c3f8c2c0-60d0-11f1-af2e-f7a93121b83b.jpeg" },
 
   // ── ЕЖЕДНЕВНЫЕ АКЦИИ (id 25–34) ──────────────────────────────────────────
   // id   name          price   oldPrice  label            category               maxQty  conflictGroup

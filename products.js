@@ -49,7 +49,7 @@ const products = [
      image: "https://storage.botpapa.me/files/027f28d0-505b-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
   // ОСОБАЯ АКЦИЯ 300 гемов
-  {  id: 44, name: "300 гемов", price: 479,  oldPrice: 509,  label: "Особая акция", category: "Особые акции", maxQty: 1, conflictGroup: [],
+  {  id: 44, name: "300 гемов", price: 769,  oldPrice: 849,  label: "Особая акция", category: "Особые акции", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
   // ── ОСОБЫЕ АКЦИИ (id 19–20) ───────────────────────────────────────────────

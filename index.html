@@ -2507,7 +2507,8 @@
             updateAllCards();
             renderCartPage();
           }
-          checkoutData = { paymentMethod: "", senderName: "", email: "" };
+          checkoutData = { paymentMethod: checkoutData.paymentMethod, senderName: checkoutData.senderName, email: "" };
+          localStorage.setItem('checkoutData', JSON.stringify(checkoutData));
           navigationHistory = [afterPaymentBackPage];
           showPage("orders", true);
         }
@@ -3045,8 +3046,8 @@
         </div>
         <div class="form-section">
           <div class="form-label">Получатель</div>
-          <input type="text" class="form-input" id="premiumUsernameInput" placeholder="Имя пользователя «username»" value="${escapeHtml(premiumOrderData.username)}">
-        </div>
+          <input type="text" class="form-input" id="premiumUsernameInput" placeholder="Имя пользователя «username»" value="${escapeHtml(premiumOrderData.username || localStorage.getItem('premiumUsername') || '')}">
+         </div>
         <div class="form-section" style="margin-bottom:0;">
           <div class="form-label">Количество</div>
           <select class="form-select-native" id="premiumDealSelect">
@@ -3182,9 +3183,10 @@ if (data.valid) {
         renderPremiumPage();
       });
       document.getElementById("premiumUsernameInput")?.addEventListener("input", function() {
-        premiumOrderData.username = this.value;
-        this.classList.remove("error");
-      });
+  premiumOrderData.username = this.value;
+  this.classList.remove("error");
+  localStorage.setItem('premiumUsername', this.value);
+});
       document.getElementById("premiumDealSelect")?.addEventListener("change", function() {
         const deals = premiumOrderData.category === 'premium' ? premiumDeals : starsDeals;
         premiumOrderData.deal = deals[parseInt(this.value)];

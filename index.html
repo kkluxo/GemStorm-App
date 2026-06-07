@@ -82,8 +82,6 @@
     .subscribe-card,
     .profile-actions-group,
     .profile-action-item,
-    .review-pinned-main,
-    .review-pinned-bottom,
     .review-card,
     .review-items-card,
     .review-compose-card,
@@ -92,32 +90,66 @@
     .search-bar,
     .filter-btn,
     .checkout-card,
-    .promo-input,
-    .form-input,
-    .form-select-native,
-    .form-select-readonly,
     .bottom-menu,
     .page-header-title-btn,
     .page-header-settings-btn,
     .cart-checkout-fixed,
-    .menu-slider,
     .code-input-fixed,
     .reviews-fixed-action,
     .empty-catalog-btn,
     .checkout-button,
     .promo-btn,
     .promo-action-btn,
-    .cart-qty-btn,
-    .cart-warn-btn,
     .gift-claim-btn,
     .review-submit-btn,
     .review-popup-card,
     .order-refresh-btn,
-    .profile-gift-icon {
+    .profile-gift-icon,
+    /* Добавлено: кнопки в карточке товара */
+    .cart-add-btn,
+    .counter-btn,
+    .counter-minus,
+    .counter-plus,
+    /* Добавлено: поля ввода и select */
+    .promo-input,
+    .form-input,
+    .form-select-native,
+    .form-select-readonly,
+    /* Добавлено: карточка заказа и статус */
+    .order-main-card,
+    .order-card-status,
+    /* Добавлено: выбор категории акций и другие select */
+    #promoDealSelect,
+    #promoCategorySelect,
+    #premiumCategorySelect,
+    #premiumDealSelect,
+    #paymentMethodSelect,
+    #reviewOrderSelect,
+    /* Добавлено: кнопки в корзине (кроме предупреждения и qty) */
+    #checkoutBtn,
+    #openPromoBtn,
+    #payBtn,
+    #helpBtn,
+    #helpBtn2,
+    #paidBtn,
+    #promoGoCheckoutBtn,
+    #promoOpenPromoBtn,
+    #premiumGoCheckoutBtn,
+    #premiumPromoBtn,
+    #closeSettingsBtn,
+    #emptyCartToCatalog,
+    #emptyOrdersToCatalog,
+    #resetFiltersBtn,
+    /* Добавлено: фильтры */
+    .filter-row,
+    /* Добавлено: кнопки в модальных окнах */
+    .review-order-badge,
+    .gift-claim-btn {
       position: relative;
       overflow: hidden;
     }
 
+    /* Основная обводка для всех элементов выше */
     .product-card::before,
     .cart-item::before,
     .cart-item-delivery::before,
@@ -129,8 +161,6 @@
     .subscribe-card::before,
     .profile-actions-group::before,
     .profile-action-item::before,
-    .review-pinned-main::before,
-    .review-pinned-bottom::before,
     .review-card::before,
     .review-items-card::before,
     .review-compose-card::before,
@@ -139,28 +169,54 @@
     .search-bar::before,
     .filter-btn::before,
     .checkout-card::before,
-    .promo-input::before,
-    .form-input::before,
-    .form-select-native::before,
-    .form-select-readonly::before,
     .bottom-menu::before,
     .page-header-title-btn::before,
     .page-header-settings-btn::before,
     .cart-checkout-fixed::before,
-    .menu-slider::before,
     .code-input-fixed::before,
     .reviews-fixed-action::before,
     .empty-catalog-btn::before,
     .checkout-button::before,
     .promo-btn::before,
     .promo-action-btn::before,
-    .cart-qty-btn::before,
-    .cart-warn-btn::before,
     .gift-claim-btn::before,
     .review-submit-btn::before,
     .review-popup-card::before,
     .order-refresh-btn::before,
-    .profile-gift-icon::before {
+    .profile-gift-icon::before,
+    /* Добавленные элементы */
+    .cart-add-btn::before,
+    .counter-btn::before,
+    .counter-minus::before,
+    .counter-plus::before,
+    .promo-input::before,
+    .form-input::before,
+    .form-select-native::before,
+    .form-select-readonly::before,
+    .order-main-card::before,
+    .order-card-status::before,
+    #promoDealSelect::before,
+    #promoCategorySelect::before,
+    #premiumCategorySelect::before,
+    #premiumDealSelect::before,
+    #paymentMethodSelect::before,
+    #reviewOrderSelect::before,
+    #checkoutBtn::before,
+    #openPromoBtn::before,
+    #payBtn::before,
+    #helpBtn::before,
+    #helpBtn2::before,
+    #paidBtn::before,
+    #promoGoCheckoutBtn::before,
+    #promoOpenPromoBtn::before,
+    #premiumGoCheckoutBtn::before,
+    #premiumPromoBtn::before,
+    #closeSettingsBtn::before,
+    #emptyCartToCatalog::before,
+    #emptyOrdersToCatalog::before,
+    #resetFiltersBtn::before,
+    .filter-row::before,
+    .review-order-badge::before {
       content: '';
       position: absolute;
       top: 0;
@@ -179,6 +235,43 @@
       -webkit-mask-composite: xor;
       mask-composite: exclude;
       pointer-events: none;
+    }
+
+    /* Убираем обводку с кнопок в корзине (предупреждение и +- у qty) */
+    .cart-qty-btn,
+    .cart-warn-btn {
+      position: relative;
+      overflow: visible;
+    }
+    
+    .cart-qty-btn::before,
+    .cart-warn-btn::before {
+      display: none;
+      content: none;
+    }
+
+    /* Убираем обводку с закрепленного блока отзывов */
+    .review-pinned-wrapper,
+    .review-pinned-main,
+    .review-pinned-bottom {
+      position: relative;
+      overflow: visible;
+    }
+    
+    .review-pinned-main::before,
+    .review-pinned-bottom::before {
+      display: none;
+      content: none;
+    }
+
+    /* Стили для статусов заказа (чтобы обводка была аккуратной) */
+    .order-card-status {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 16px;
+      font-weight: 500;
     }
 
     /* Разрешить выделение только в определенных полях */

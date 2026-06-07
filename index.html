@@ -2709,10 +2709,16 @@
           <span class="order-detail-label">Отправитель</span>
           <span class="order-detail-value">${escapeHtml(order.sender_name || '—')}</span>
         </div>
-        <div class="order-detail-row">
-          <span class="order-detail-label">Почта</span>
-          <span class="order-detail-value">${escapeHtml(order.email || '—')}</span>
-        </div>
+                ${order.promo_item_category === 'Telegram Premium' || order.promo_item_category === 'Telegram Stars'
+          ? `<div class="order-detail-row">
+              <span class="order-detail-label">Получатель</span>
+              <span class="order-detail-value">${escapeHtml(order.promo_item_name || '—')}</span>
+            </div>`
+          : `<div class="order-detail-row">
+              <span class="order-detail-label">Почта</span>
+              <span class="order-detail-value">${escapeHtml(order.email || '—')}</span>
+            </div>`
+        }
         ${order.promo ? `<div class="order-detail-row">
           <span class="order-detail-label">Промокод</span>
           <span class="order-detail-value">${order.promo} (${order.promo_discount}%)</span>
@@ -3038,8 +3044,8 @@
           </select>
         </div>
         <div class="form-section">
-          <div class="form-label">Юзернейм</div>
-          <input type="text" class="form-input" id="premiumUsernameInput" placeholder="Укажите юз получателя" value="${escapeHtml(premiumOrderData.username)}">
+          <div class="form-label">Получатель</div>
+          <input type="text" class="form-input" id="premiumUsernameInput" placeholder="Имя пользователя «username»" value="${escapeHtml(premiumOrderData.username)}">
         </div>
         <div class="form-section" style="margin-bottom:0;">
           <div class="form-label">Количество</div>

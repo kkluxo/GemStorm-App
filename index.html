@@ -3479,8 +3479,8 @@ if (data.valid) {
 
       <div class="subscribe-card" id="openPremiumBtn">
         <div class="subscribe-info">
-          <div class="subscribe-title">Премиум и звёзды</div>
-          <div class="subscribe-text">Покупка премиума и звёзд</div>
+          <div class="subscribe-title">Приобретение звёзд</div>
+          <div class="subscribe-text">Приобрести премиум и звёзды</div>
         </div>
         ${arrowSvg}
       </div>
@@ -3498,10 +3498,11 @@ if (data.valid) {
       document.getElementById("openReviewsPage")?.addEventListener("click", () => { hapticLight(); showPage("reviews"); });
       document.getElementById("openFaqBtn")?.addEventListener("click", () => { hapticLight(); orderMode = "cart"; promoOrderData = { deal: null, name: "", category: "" }; showPage("buy-promo"); });
       document.getElementById("openPremiumBtn")?.addEventListener("click", () => {
-        hapticLight();
-        premiumOrderData = { category: 'stars', username: '', deal: null };
-        showPage("premium");
-      });
+  hapticLight();
+  premiumOrderData = { category: 'stars', username: '', deal: null };
+  appliedPromoPremium = null;
+  showPage("premium");
+});
       document.getElementById("openSupportBtn")?.addEventListener("click", () => { hapticLight(); window.open("https://t.me/GemStormHelp", "_blank"); });
       document.getElementById("openGiftsBtn")?.addEventListener("click", openGiftsPage);
     }, 0);
@@ -3605,7 +3606,7 @@ if (data.valid) {
     if (pageId === "gifts") { renderGiftsPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
     if (pageId === "write-review") { renderWriteReviewPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
     if (pageId === "buy-promo") { renderBuyPromoPage(); }
-    if (pageId === "premium") { renderPremiumPage(); }
+    if (pageId === "premium") { appliedPromoPremium = null; renderPremiumPage(); }
     if (pageId === "settings") { renderSettingsPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
     if (pageId === "checkout") { afterPaymentBackPage = orderMode === "promo_deal" ? "buy-promo" : orderMode === "premium" ? "premium" : "cart"; }
     

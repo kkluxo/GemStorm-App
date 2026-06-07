@@ -1,6 +1,6 @@
 const products = [
   // Пропуски
-  { id: 1, name: "Brawl Pass", price: 709, oldPrice: 769, label: "Пропуск", category: "Пропуски", maxQty: 1, conflictGroup: [1, 2, 3], visible: false, image: "https://storage.botpapa.me/files/6b57bf60-499a-11f1-bef9-f1ec7a2c6e45.jpeg" },
+  { id: 1, name: "Brawl Pass", price: 709, oldPrice: 769, label: "Пропуск", category: "Пропуски", maxQty: 1, conflictGroup: [1, 2, 3], visible: true, image: "https://storage.botpapa.me/files/6b57bf60-499a-11f1-bef9-f1ec7a2c6e45.jpeg" },
   { id: 2, name: "Brawl Pass Plus", price: 1029, oldPrice: 1099, label: "Пропуск", category: "Пропуски", maxQty: 1, conflictGroup: [1, 2, 3], visible: true, image: "https://storage.botpapa.me/files/6f97da10-499a-11f1-bef9-f1ec7a2c6e45.jpeg" },
   { id: 3, name: "Улучш. до BP+", price: 399, oldPrice: 429, label: "Пропуск", category: "Пропуски", maxQty: 1, conflictGroup: [1, 2, 3], visible: true, image: "https://storage.botpapa.me/files/6f97da10-499a-11f1-bef9-f1ec7a2c6e45.jpeg" },
   { id: 4, name: "Pro Pass", price: 1979, oldPrice: 2129, label: "Пропуск", category: "Пропуски", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/72f535e0-499a-11f1-bef9-f1ec7a2c6e45.jpeg" },

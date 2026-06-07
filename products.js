@@ -45,7 +45,7 @@ const products = [
   {  id: 46, name: "Хоккеист Мортис", price: 399,  oldPrice: 429,  label: "Esports", category: "Esports", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/cd577140-60d0-11f1-af2e-f7a93121b83b.jpeg" },
   
-  {  id: 18, name: "Кошка-воровка Джесси",    price: 319,  oldPrice: 339,  label: "Esports", category: "Esports", maxQty: 1, conflictGroup: [],
+  {  id: 18, name: "Кошка-Эмилия",    price: 319,  oldPrice: 339,  label: "Esports", category: "Esports", maxQty: 1, conflictGroup: [],
      image: "https://storage.botpapa.me/files/027f28d0-505b-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
   // ОСОБАЯ АКЦИЯ 300 гемов

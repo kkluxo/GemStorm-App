@@ -3064,6 +3064,42 @@
       document.getElementById("premiumPromoBtn")?.addEventListener("click", () => {
         hapticLight();
         isPromoMode = true;
+        const fixedBlock = document.getElementById("cartCheckoutFixed");
+        fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="promo-label">Введите промокод на скидку</span></div><div class="promo-input-row"><input type="text" class="promo-input" id="promoInputPremium" placeholder="Введите промокод"><button class="promo-action-btn apply-btn" id="promoApplyPremiumBtn"><img src="https://storage.botpapa.me/files/b254ec20-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="apply"></button><button class="promo-action-btn back-btn" id="promoBackPremiumBtn"><img src="https://storage.botpapa.me/files/af0747c0-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="back"></button></div></div>`;
+        setTimeout(() => {
+          document.getElementById("promoInputPremium")?.focus();
+          document.getElementById("promoBackPremiumBtn")?.addEventListener("click", () => {
+            hapticLight();
+            isPromoMode = false;
+            renderPremiumPage();
+          });
+          document.getElementById("promoApplyPremiumBtn")?.addEventListener("click", async () => {
+            hapticLight();
+            const code = document.getElementById("promoInputPremium")?.value.trim().toUpperCase();
+            if (!code) return;
+            const tgU = window.Telegram?.WebApp?.initDataUnsafe?.user;
+            try {
+              const r = await fetch('https://gemstorm.up.railway.app/api/check-promo', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code, userId: String(tgU?.id || '') })
+              });
+              const data = await r.json();
+              if (data.valid) {
+                appliedPromo = { code, discountPercent: data.discount };
+                isPromoMode = false;
+                renderPremiumPage();
+              } else {
+                if (data.reason === 'not_found') alert('Промокод не найден');
+                else if (data.reason === 'already_used') alert('Данный промокод уже был использован ранее');
+                else if (data.reason === 'first_order_only') alert('Данный промокод доступен только на первый заказ');
+              }
+            } catch(e) { alert('Ошибка проверки промокода'); }
+          });
+          document.getElementById("promoInputPremium")?.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") document.getElementById("promoApplyPremiumBtn")?.click();
+          });
+        }, 0);
       });
 
       document.getElementById("premiumGoCheckoutBtn")?.addEventListener("click", async () => {
@@ -3512,13 +3548,7 @@
     if (old) old.remove();
 
     activePage.insertAdjacentHTML('afterbegin', renderPageHeader(cfg.icon, cfg.title));
-
-    setTimeout(() => {
-      document.getElementById('headerSettingsBtn')?.addEventListener('click', () => {
-        hapticLight();
-        showPage('settings');
-      });
-    }, 0);
+    
   }
 
   function showPage(pageId, skipHistoryAdd = false) {
@@ -3534,8 +3564,14 @@
       if (lastInHistory !== currentPageId) { navigationHistory.push(currentPageId); }
     }
     if (pageId === "catalog") { navigationHistory = []; }
-    if (isPromoMode) { isPromoMode = false; appliedPromo = null; }
-    if (pageId !== "reviews") {
+    if (isPromoMode) {
+      isPromoMode = false;
+      // Сбрасываем промокод только если уходим не на checkout/payment
+      if (!['checkout', 'payment'].includes(pageId)) {
+        appliedPromo = null;
+      }
+    }
+      if (pageId !== "reviews") {
       const rf = document.getElementById("reviewsFixedAction");
       if (rf) rf.remove();
     }
@@ -3695,6 +3731,13 @@
   }
   document.querySelectorAll(".menu-item").forEach(btn => {
     btn.addEventListener("click", () => { hapticLight(); showPage(btn.dataset.page); });
+  });
+  
+    document.addEventListener('click', function(e) {
+    if (e.target.closest('#headerSettingsBtn')) {
+      hapticLight();
+      showPage('settings');
+    }
   });
 
   let lastSliderIndex = 0;

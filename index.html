@@ -3278,6 +3278,7 @@
   }
 
   async function renderProfilePage() {
+  await new Promise(resolve => setTimeout(resolve, 300));
     const container = document.getElementById("profileContent");
     if (!container) return;
     let tgUser = null;
@@ -3491,6 +3492,7 @@
 
   function initApp() {
     loadCartFromLocalStorage();
+    await new Promise(resolve => setTimeout(resolve, 300));
     const tgU = window.Telegram?.WebApp?.initDataUnsafe?.user;
     if (tgU?.id) {
       fetch('https://gemstorm.up.railway.app/api/track-user', {

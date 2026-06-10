@@ -460,17 +460,6 @@
 
   // ========== ВЕСЬ ОСТАЛЬНОЙ КОД АДМИНКИ ==========
 
-async function fetchWithAuth(url, options = {}) {
-    const response = await fetch(url, {
-        ...options,
-        headers: {
-            ...options.headers,
-            'Authorization': `Bearer ${ADMIN_TOKEN}`
-        }
-    });
-    return response;
-}
-  
   function renderPageHeader(iconUrl, title) {
     return `<div class="page-header-sticky">
       <div class="page-header-inner">
@@ -673,7 +662,7 @@ allOrders = await r.json();
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${ADMIN_TOKEN}` // добавить
     },
-    body: JSON.stringify({...})
+    body: JSON.stringify({ orderId: order.id, status: statusMap[newCode], statusCode: newCode })
 });
         if (r.ok) { await loadOrders(); const upd = allOrders.find(o=>o.id===order.id); if(upd) showOrderDetail(upd); }
         else alert('Ошибка обновления статуса');
@@ -840,16 +829,12 @@ const data = await ru.json();
     } catch(e) {}
 
     try {
-      const r = await fetch(`${API}/api/settings`, {
-    method: 'POST',
-    headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${ADMIN_TOKEN}` // добавить
-    },
-    body: JSON.stringify({ bot_status: val })
-});
-      botStatus = s.bot_status || 'open';
-    } catch(e) {}
+      const rs = await fetch(`${API}/api/settings`, {
+    headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
+  });
+  const s = await rs.json();
+  botStatus = s.bot_status || 'open';
+} catch(e) {}
 
     const statusMap = {
       'open': { text: 'Открыт', tc: 'status-completed-text', bc: 'status-completed-bg' },

@@ -3489,7 +3489,7 @@
     }
   }
 
-  function initApp() {
+  async function initApp() {
     loadCartFromLocalStorage();
     await new Promise(resolve => setTimeout(resolve, 300));
     const tgU = window.Telegram?.WebApp?.initDataUnsafe?.user;

@@ -3690,8 +3690,10 @@ async function renderRoulettePage() {
           if (spinBtn) { spinBtn.disabled = true; spinBtn.textContent = "Обработка..."; }
           try {
             const ordersPromise = fetch(`https://gemstorm.up.railway.app/api/user-orders?userId=${userId}`).then(r => r.json());
-            const spinsRes = await fetch(`https://gemstorm.up.railway.app/api/user-spins?userId=${userId}`).then(r => r.json()).catch(() => ({ spins: [] }));
-            const usedOrderIds = (spinsRes.spins || []).map(s => String(s.order_id));
+const spinsRes = fetch(`https://gemstorm.up.railway.app/api/user-spins?userId=${userId}`)
+  .then(r => r.json())
+  .catch(() => ({ spins: [] }));
+// Уберите await - теперь это Promise, а не результат     const usedOrderIds = (spinsRes.spins || []).map(s => String(s.order_id));
             const availableOrder = ordersRes.filter(o => (o.status_code === 'done' || o.status_code === 'completed') && !usedOrderIds.includes(String(o.id)))[0];
             if (availableOrder) {
               const res = await fetch('https://gemstorm.up.railway.app/api/spin-roulette', {

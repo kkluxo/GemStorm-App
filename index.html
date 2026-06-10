@@ -1901,18 +1901,22 @@
 <script>
 function waitForTelegram(callback, attempts) {
   attempts = attempts || 0;
-  if (attempts > 50) {
-    // Через 5 секунд сдаёмся, запускаем без Telegram
+  if (window.Telegram && window.Telegram.WebApp) {
     callback();
     return;
   }
-  if (window.Telegram && window.Telegram.WebApp) {
+  // Если SDK нет но данные есть в URL — запускаем без SDK
+  if (attempts > 20 && window.location.hash.length > 100) {
     callback();
-  } else {
-    setTimeout(function() {
-      waitForTelegram(callback, attempts + 1);
-    }, 100);
+    return;
   }
+  if (attempts > 50) {
+    callback();
+    return;
+  }
+  setTimeout(function() {
+    waitForTelegram(callback, attempts + 1);
+  }, 100);
 }
 
 // Откладываем весь старт приложения до загрузки Telegram SDK
@@ -3602,24 +3606,27 @@ if (!tgUser || !tgUser.id) {
 
   function parseTgInitData() {
   try {
+    // Сначала пробуем через SDK
     const tg = window.Telegram?.WebApp;
-    if (!tg) return null;
-    
-    // Сначала пробуем initDataUnsafe
-    if (tg.initDataUnsafe?.user?.id) {
+    if (tg?.initDataUnsafe?.user?.id) {
       return tg.initDataUnsafe.user;
     }
-    
-    // Если не сработало — парсим initData вручную
-    if (tg.initData) {
+    if (tg?.initData) {
       const params = new URLSearchParams(tg.initData);
       const userStr = params.get('user');
+      if (userStr) return JSON.parse(decodeURIComponent(userStr));
+    }
+
+    // SDK нет — парсим hash напрямую из URL
+    const hash = window.location.hash.slice(1); // убираем #
+    if (hash) {
+      const params = new URLSearchParams(hash);
+      const userStr = params.get('user');
       if (userStr) {
-        const user = JSON.parse(decodeURIComponent(userStr));
-        return user;
+        return JSON.parse(decodeURIComponent(userStr));
       }
     }
-    
+
     return null;
   } catch(e) {
     return null;
@@ -3634,8 +3641,8 @@ if (!tgUser || !tgUser.id) {
   }
   // ... остальной твой код initApp без изменений
   loadCartFromLocalStorage();
-  const tgU = window.Telegram?.WebApp?.initDataUnsafe?.user;
-  if (tgU?.id) {
+  const tgU = window.__tgUser || window.Telegram?.WebApp?.initDataUnsafe?.user;
+    if (tgU?.id) {
     fetch('https://gemstorm.up.railway.app/api/track-user', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

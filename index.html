@@ -3622,24 +3622,38 @@ if (!tgUser || !tgUser.id) {
     if (tg?.initDataUnsafe?.user?.id) {
       return tg.initDataUnsafe.user;
     }
-    if (tg?.initData) {
-      const params = new URLSearchParams(tg.initData);
-      const userStr = params.get('user');
-      if (userStr) return JSON.parse(decodeURIComponent(userStr));
-    }
 
-    // SDK нет — парсим hash напрямую из URL
-    const hash = window.location.hash.slice(1); // убираем #
-    if (hash) {
-      const params = new URLSearchParams(hash);
-      const userStr = params.get('user');
-      if (userStr) {
-        return JSON.parse(decodeURIComponent(userStr));
+    // Парсим из hash
+    const hash = window.location.hash.slice(1);
+    if (!hash) return null;
+
+    const params = new URLSearchParams(hash);
+    
+    // Вариант 1: ключ 'user' напрямую
+    let userStr = params.get('user');
+    
+    // Вариант 2: ключ 'tgWebAppData' — внутри него ищем user
+    if (!userStr) {
+      const tgWebAppData = params.get('tgWebAppData');
+      if (tgWebAppData) {
+        const innerParams = new URLSearchParams(decodeURIComponent(tgWebAppData));
+        userStr = innerParams.get('user');
       }
     }
 
-    return null;
+    if (!userStr) return null;
+
+    // Декодируем один или два раза
+    let decoded = decodeURIComponent(userStr);
+    // Если всё ещё закодировано — декодируем ещё раз
+    if (decoded.includes('%')) {
+      decoded = decodeURIComponent(decoded);
+    }
+
+    return JSON.parse(decoded);
+
   } catch(e) {
+    console.error('parseTgInitData error:', e);
     return null;
   }
 }

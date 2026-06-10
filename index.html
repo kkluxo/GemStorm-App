@@ -1957,24 +1957,35 @@ document.addEventListener('DOMContentLoaded', function() {
 <script>
 document.getElementById('debugBtn').addEventListener('click', function() {
   const panel = document.getElementById('debugPanel');
+  
+  // Читаем hash напрямую
+  const hash = window.location.hash.slice(1);
+  let userFromHash = null;
+  let hashPreview = '';
+  
+  try {
+    const params = new URLSearchParams(hash);
+    hashPreview = hash.substring(0, 100);
+    const userStr = params.get('user');
+    if (userStr) {
+      userFromHash = JSON.parse(decodeURIComponent(userStr));
+    }
+  } catch(e) {}
+
   const tg = window.Telegram?.WebApp;
-  const user = tg?.initDataUnsafe?.user;
   const savedUser = window.__tgUser;
   
   panel.style.display = 'block';
   panel.innerHTML = `
-    <b>Telegram WebApp:</b> ${tg ? '✅ Есть' : '❌ Нет'}<br>
-    <b>initData:</b> ${tg?.initData ? '✅ Есть' : '❌ Нет'}<br>
-    <b>initData длина:</b> ${tg?.initData?.length || 0}<br>
-    <b>User из initDataUnsafe:</b> ${user?.id || '❌ Нет'}<br>
-    <b>User из __tgUser:</b> ${savedUser?.id || '❌ Нет'}<br>
-    <b>__tgUser.name:</b> ${savedUser?.first_name || '❌ Нет'}<br>
-    <b>Platform:</b> ${tg?.platform || '❌ Нет'}<br>
-    <b>version:</b> ${tg?.version || '❌ Нет'}<br>
-    <b>URL hash:</b> ${window.location.hash?.length || 0} chars<br>
+    <b>Telegram SDK:</b> ${tg ? '✅' : '❌'}<br>
+    <b>Hash длина:</b> ${hash.length}<br>
+    <b>Hash начало:</b> ${hashPreview}<br>
+    <b>user из hash:</b> ${userFromHash?.id || '❌ Нет'}<br>
+    <b>user.name из hash:</b> ${userFromHash?.first_name || '❌'}<br>
+    <b>__tgUser:</b> ${savedUser?.id || '❌ Нет'}<br>
   `;
   
-  setTimeout(() => { panel.style.display = 'none'; }, 15000);
+  setTimeout(() => { panel.style.display = 'none'; }, 20000);
 });
 </script>
 

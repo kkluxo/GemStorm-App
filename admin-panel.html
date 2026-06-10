@@ -459,8 +459,6 @@
   }
 
   // ========== ВЕСЬ ОСТАЛЬНОЙ КОД АДМИНКИ ==========
-  
-  const ADMIN_TOKEN = 'g3m5t0rm_2024'; // Тот же, что в Railway
 
 async function fetchWithAuth(url, options = {}) {
     const response = await fetch(url, {
@@ -669,7 +667,14 @@ allOrders = await r.json();
       const statusMap = {'awaiting_code':'Ожидание кода','processing':'Ожидает выполнения','done':'Заказ выполнен','notfound':'Заказ отменён'};
       hapticMedium();
       try {
-        const r = await fetch(`${API}/api/update-status`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({orderId:order.id, status:statusMap[newCode], statusCode:newCode}) });
+        const r = await fetch(`${API}/api/update-status`, { 
+    method:'POST',
+    headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${ADMIN_TOKEN}` // добавить
+    },
+    body: JSON.stringify({...})
+});
         if (r.ok) { await loadOrders(); const upd = allOrders.find(o=>o.id===order.id); if(upd) showOrderDetail(upd); }
         else alert('Ошибка обновления статуса');
       } catch(e) { alert('Ошибка соединения'); }
@@ -803,7 +808,10 @@ const list = await r.json();
 
   async function deleteReview(reviewId) {
     try {
-      const r = await fetch(`${API}/api/reviews/${reviewId}`, { method: 'DELETE' });
+      const r = await fetch(`${API}/api/reviews/${reviewId}`, { 
+    method: 'DELETE',
+    headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` } // добавить
+});
       if (r.ok) { hapticLight(); renderReviewsPage(); }
       else alert('Ошибка удаления');
     } catch(e) { alert('Ошибка соединения'); }
@@ -832,8 +840,14 @@ const data = await ru.json();
     } catch(e) {}
 
     try {
-      const rs = await fetch(`${API}/api/settings`);
-      const s = await rs.json();
+      const r = await fetch(`${API}/api/settings`, {
+    method: 'POST',
+    headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${ADMIN_TOKEN}` // добавить
+    },
+    body: JSON.stringify({ bot_status: val })
+});
       botStatus = s.bot_status || 'open';
     } catch(e) {}
 

@@ -41,7 +41,7 @@
       } catch(e) {}
     })();
   </script>
-  <meta name="theme-color" content="#121214">
+  <meta name="theme-color" content="#121214" id="themeColorMeta">
   <title>GemStorm Store</title>
   <style>
     .page { display: none !important; }
@@ -68,25 +68,25 @@
     }
     
     body.light-theme {
-      background-color: #f5f5f7;
+      background-color: #e8e8ed;
       color: #1c1c1e;
     }
 
     /* Светлая тема - полная перекраска всех элементов */
     body.light-theme .page-header-sticky {
-      background: #f5f5f7;
+      background: #e8e8ed;
     }
     body.light-theme .page-header-title-btn,
     body.light-theme .page-header-settings-btn {
       background: #ffffff;
-      border-color: #e5e5ea;
+      border-color: #d1d1d6;
     }
     body.light-theme .page-header-title-btn span {
       color: #1c1c1e;
     }
     body.light-theme .search-bar {
       background: #ffffff;
-      border-color: #e5e5ea;
+      border-color: #d1d1d6;
     }
     body.light-theme .search-input {
       color: #1c1c1e;
@@ -95,12 +95,12 @@
       color: #8e8e93;
     }
     body.light-theme .filter-btn {
-      border-color: #e5e5ea;
+      border-color: #d1d1d6;
       background: #ffffff;
     }
     body.light-theme .product-card {
       background: #ffffff;
-      border-color: #e5e5ea;
+      border-color: #d1d1d6;
     }
     body.light-theme .product-title {
       color: #1c1c1e;
@@ -110,7 +110,7 @@
     }
     body.light-theme .cart-item {
       background: #ffffff;
-      border-color: #e5e5ea;
+      border-color: #d1d1d6;
     }
     body.light-theme .cart-product-name {
       color: #1c1c1e;
@@ -122,8 +122,8 @@
       color: #5c5c5e;
     }
     body.light-theme .cart-item-delivery {
-      background: #e8e8ed;
-      border-color: #e5e5ea;
+      background: #f2f2f5;
+      border-color: #d1d1d6;
     }
     body.light-theme .cart-item-delivery-label {
       color: #5c5c5e;
@@ -163,13 +163,13 @@
     body.light-theme .gift-link-card,
     body.light-theme .settings-card {
       background: #ffffff;
-      border-color: #e5e5ea;
+      border-color: #d1d1d6;
     }
     body.light-theme .profile-bottom-card,
     body.light-theme .review-pinned-bottom,
     body.light-theme .order-items-card,
     body.light-theme .gift-link-card {
-      background: #e8e8ed;
+      background: #f2f2f5;
     }
     body.light-theme .form-input,
     body.light-theme .form-select-native,
@@ -188,8 +188,8 @@
       color: #1c1c1e;
     }
     body.light-theme .bottom-menu {
-      background: rgba(255, 255, 255, 0.7);
-      border-color: rgba(0, 0, 0, 0.1);
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(0, 0, 0, 0.08);
     }
     body.light-theme .menu-label {
       color: #8e8e93;
@@ -198,8 +198,8 @@
       color: #4cb4e9;
     }
     body.light-theme #profileMenuWrapper {
-      background: rgba(255, 255, 255, 0.7);
-      border-color: rgba(0, 0, 0, 0.1);
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(0, 0, 0, 0.08);
     }
     body.light-theme .empty-title {
       color: #8e8e93;
@@ -285,24 +285,34 @@
       color: #1c1c1e;
     }
     body.light-theme .filter-row {
-      border-bottom-color: rgba(0,0,0,0.1);
+      border-bottom-color: rgba(0,0,0,0.08);
     }
     body.light-theme .promo-action-btn.apply-btn,
     body.light-theme .promo-action-btn.back-btn {
-      background: rgba(56, 150, 200, 0.15);
+      background: rgba(56, 150, 200, 0.12);
     }
     body.light-theme .promo-btn {
-      background: rgba(56, 150, 200, 0.15);
+      background: rgba(56, 150, 200, 0.12);
     }
     body.light-theme .profile-gift-icon {
       background: #ffffff;
-      border-color: #e5e5ea;
+      border-color: #d1d1d6;
     }
     body.light-theme .cart-quantity {
       background: rgba(56, 150, 200, 0.1);
     }
     body.light-theme .gift-claim-btn {
-      background: rgba(56, 150, 200, 0.1);
+      background: rgba(56, 150, 200, 0.12);
+    }
+    body.light-theme .review-items-card {
+      background: #f2f2f5;
+      border-color: #d1d1d6;
+    }
+    body.light-theme .review-item-name {
+      color: #5c5c5e;
+    }
+    body.light-theme .review-item-price {
+      color: #1c1c1e;
     }
 
     body {
@@ -1837,12 +1847,14 @@
       overflow: hidden;
       text-overflow: ellipsis;
       max-width: 60%;
+      transition: color 0.2s;
     }
 
     .review-item-price {
       font-size: 16px;
       color: #ffffff;
       font-weight: 500;
+      transition: color 0.2s;
     }
 
     .review-order-badge {
@@ -2390,10 +2402,19 @@
   }
 
   function applyTheme() {
+    const metaTheme = document.getElementById('themeColorMeta');
     if (appSettings.theme === 'light') {
       document.body.classList.add('light-theme');
+      if (metaTheme) metaTheme.setAttribute('content', '#e8e8ed');
+      if (window.Telegram?.WebApp) {
+        try { window.Telegram.WebApp.setHeaderColor('#e8e8ed'); } catch(e) {}
+      }
     } else {
       document.body.classList.remove('light-theme');
+      if (metaTheme) metaTheme.setAttribute('content', '#121214');
+      if (window.Telegram?.WebApp) {
+        try { window.Telegram.WebApp.setHeaderColor('#121214'); } catch(e) {}
+      }
     }
     localStorage.setItem('appSettings', JSON.stringify(appSettings));
   }

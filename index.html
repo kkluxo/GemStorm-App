@@ -2397,11 +2397,11 @@ document.getElementById('debugBtn').addEventListener('click', function() {
   hapticMedium();
   
   // ===== ПРОВЕРКА (всего 3 строчки) =====
-  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-  if (!tgUser || !tgUser.id) {
-    alert('Оформить заказ можно только через Telegram-бота\n\nПожалуйста, откройте приложение через @GemStormBot');
-    return;
-  }
+  const tgUser = window.__tgUser || window.Telegram?.WebApp?.initDataUnsafe?.user;
+if (!tgUser || !tgUser.id) {
+  alert('Оформить заказ можно только через Telegram-бота\n\nПожалуйста, откройте приложение через @GemStormBot');
+  return;
+}
   // ======================================
   
   try {
@@ -3004,11 +3004,11 @@ document.getElementById('debugBtn').addEventListener('click', function() {
   hapticMedium();
   
   // ===== ТА ЖЕ ПРОВЕРКА =====
-  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-  if (!tgUser || !tgUser.id) {
-    alert('Оформить заказ можно только через Telegram-бота\n\nПожалуйста, откройте приложение через @GemStormBot');
-    return;
-  }
+  const tgUser = window.__tgUser || window.Telegram?.WebApp?.initDataUnsafe?.user;
+if (!tgUser || !tgUser.id) {
+  alert('Оформить заказ можно только через Telegram-бота\n\nПожалуйста, откройте приложение через @GemStormBot');
+  return;
+}
   // ===========================
         const idx = document.getElementById("promoDealSelect")?.value;
         const nameVal = document.getElementById("promoNameInput")?.value.trim();
@@ -3550,7 +3550,39 @@ document.getElementById('debugBtn').addEventListener('click', function() {
     }
   }
 
+  function parseTgInitData() {
+  try {
+    const tg = window.Telegram?.WebApp;
+    if (!tg) return null;
+    
+    // Сначала пробуем initDataUnsafe
+    if (tg.initDataUnsafe?.user?.id) {
+      return tg.initDataUnsafe.user;
+    }
+    
+    // Если не сработало — парсим initData вручную
+    if (tg.initData) {
+      const params = new URLSearchParams(tg.initData);
+      const userStr = params.get('user');
+      if (userStr) {
+        const user = JSON.parse(decodeURIComponent(userStr));
+        return user;
+      }
+    }
+    
+    return null;
+  } catch(e) {
+    return null;
+  }
+}
+
   function initApp() {
+  // Парсим пользователя сразу при старте
+  const parsedUser = parseTgInitData();
+  if (parsedUser) {
+    window.__tgUser = parsedUser;
+  }
+  // ... остальной твой код initApp без изменений
   loadCartFromLocalStorage();
   const tgU = window.Telegram?.WebApp?.initDataUnsafe?.user;
   if (tgU?.id) {

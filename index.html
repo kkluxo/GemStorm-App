@@ -1874,8 +1874,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 0 14px;
+  gap: 16px;
+  padding: 0 18px;
   cursor: pointer;
   transition: none;
 }
@@ -1883,6 +1883,16 @@
 .page-header-double-btn:active {
   transform: none;
   opacity: 1;
+}
+
+#headerRefreshIcon {
+  width: 24px;
+  height: 24px;
+}
+
+#headerSupportIcon {
+  width: 21px;
+  height: 21px;
 }
   </style>
 </head>
@@ -3597,7 +3607,7 @@
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
   renderFilterModal();
   initApp();
-  // Обработчик для двойной кнопки в хедере
+// Обработчик для двойной кнопки в хедере
 document.addEventListener('click', function(e) {
   const doubleBtn = e.target.closest('#headerDoubleBtn');
   if (!doubleBtn) return;
@@ -3607,7 +3617,7 @@ document.addEventListener('click', function(e) {
   const isSupport = e.target.closest('#headerSupportIcon');
   
   if (isRefresh) {
-    // Обновление без анимации
+    hapticLight(); // вибрация при обновлении
     refreshCurrentPage();
   } else if (isSupport) {
     hapticLight();
@@ -3615,7 +3625,7 @@ document.addEventListener('click', function(e) {
   }
 });
 
-// Функция обновления (без анимации)
+// Функция обновления
 function refreshCurrentPage() {
   const activePage = document.querySelector('.page.active-page');
   if (!activePage) return;

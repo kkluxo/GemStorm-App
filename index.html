@@ -1881,29 +1881,32 @@
       flex: 1;
       padding-right: 12px;
     }
-    .faq-arrow {
-      width: 20px;
-      height: 20px;
-      transition: transform 0.2s ease;
-      opacity: 0.6;
-    }
-    .faq-item.open .faq-arrow {
-      transform: rotate(180deg);
-    }
     .faq-answer {
-      padding: 0 18px;
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease, padding 0.3s ease;
-      color: #cbcdcd;
-      font-size: 14px;
-      line-height: 1.5;
-      border-top: none;
-    }
-    .faq-item.open .faq-answer {
-      padding: 0 18px 16px 18px;
-      max-height: 300px;
-    }
+  padding: 0 18px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), padding 0.2s ease;
+  color: #cbcdcd;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.faq-item.open .faq-answer {
+  padding: 12px 18px 16px 18px;
+  max-height: 200px; /* Уменьшено с 300px для лучшей анимации */
+}
+
+.faq-arrow {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+.faq-item.open .faq-arrow {
+  transform: rotate(180deg);
+}
   </style>
 </head>
 <body>
@@ -3313,37 +3316,43 @@
   ];
 
   function renderFaqPage() {
-    const container = document.getElementById("faqContent");
-    if (!container) return;
-    
-    let html = '';
-    faqData.forEach(category => {
-      html += `<div class="faq-category">
-        <div class="faq-category-title">${escapeHtml(category.category)}</div>`;
-      category.items.forEach((item, idx) => {
-        html += `<div class="faq-item" data-faq-idx="${idx}">
-          <div class="faq-question">
-            <span>${escapeHtml(item.q)}</span>
-            <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M6 9l6 6 6-6"/>
-            </svg>
-          </div>
-          <div class="faq-answer">${escapeHtml(item.a)}</div>
-        </div>`;
-      });
-      html += `</div>`;
+  const container = document.getElementById("faqContent");
+  if (!container) return;
+  
+  let html = '';
+  faqData.forEach(category => {
+    html += `<div class="faq-category">
+      <div class="faq-category-title">${escapeHtml(category.category)}</div>`;
+    category.items.forEach((item, idx) => {
+      html += `<div class="faq-item" data-faq-idx="${idx}">
+        <div class="faq-question">
+          <span>${escapeHtml(item.q)}</span>
+          <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
+        </div>
+        <div class="faq-answer">${escapeHtml(item.a)}</div>
+      </div>`;
     });
-    
-    container.innerHTML = html;
-    
-    // Add click handlers for FAQ items
-    container.querySelectorAll('.faq-item').forEach(item => {
+    html += `</div>`;
+  });
+  
+  container.innerHTML = html;
+  
+  // Добавляем обработчики после того, как HTML вставлен
+  setTimeout(() => {
+    document.querySelectorAll('.faq-item').forEach(item => {
       const questionDiv = item.querySelector('.faq-question');
-      questionDiv?.addEventListener('click', () => {
-        item.classList.toggle('open');
-      });
+      if (questionDiv) {
+        questionDiv.addEventListener('click', (e) => {
+          e.stopPropagation();
+          // Переключаем класс open
+          item.classList.toggle('open');
+        });
+      }
     });
-  }
+  }, 0);
+}
 
   async function renderProfilePage() {
     const container = document.getElementById("profileContent");

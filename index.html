@@ -1955,21 +1955,22 @@ document.getElementById('debugBtn').addEventListener('click', function() {
   const panel = document.getElementById('debugPanel');
   const tg = window.Telegram?.WebApp;
   const user = tg?.initDataUnsafe?.user;
+  const savedUser = window.__tgUser;
   
   panel.style.display = 'block';
   panel.innerHTML = `
     <b>Telegram WebApp:</b> ${tg ? '✅ Есть' : '❌ Нет'}<br>
-    <b>User ID:</b> ${user?.id || '❌ Нет'}<br>
-    <b>User Name:</b> ${user?.first_name || '❌ Нет'}<br>
-    <b>User Username:</b> ${user?.username || '❌ Нет'}<br>
-    <b>Photo URL:</b> ${user?.photo_url ? '✅ Есть' : '❌ Нет'}<br>
+    <b>initData:</b> ${tg?.initData ? '✅ Есть' : '❌ Нет'}<br>
+    <b>initData длина:</b> ${tg?.initData?.length || 0}<br>
+    <b>User из initDataUnsafe:</b> ${user?.id || '❌ Нет'}<br>
+    <b>User из __tgUser:</b> ${savedUser?.id || '❌ Нет'}<br>
+    <b>__tgUser.name:</b> ${savedUser?.first_name || '❌ Нет'}<br>
     <b>Platform:</b> ${tg?.platform || '❌ Нет'}<br>
-    <b>initData:</b> ${tg?.initData ? '✅ Есть' : '❌ Нет'}
+    <b>version:</b> ${tg?.version || '❌ Нет'}<br>
+    <b>URL hash:</b> ${window.location.hash?.length || 0} chars<br>
   `;
   
-  setTimeout(() => {
-    panel.style.display = 'none';
-  }, 10000);
+  setTimeout(() => { panel.style.display = 'none'; }, 15000);
 });
 </script>
 

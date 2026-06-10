@@ -3683,43 +3683,63 @@ async function renderRoulettePage() {
         isSpinning = false;
 
         if (demoMode) {
-          setTimeout(() => alert(`Демо результат: промокод на ${result.label}!`), 300);
-        } else {
-          // Реальный выигрыш — отправляем на сервер
-          const spinBtn = document.getElementById("spinBtn");
-          if (spinBtn) { spinBtn.disabled = true; spinBtn.textContent = "Обработка..."; }
-          try {
-            const ordersPromise = fetch(`https://gemstorm.up.railway.app/api/user-orders?userId=${userId}`).then(r => r.json());
-const spinsRes = fetch(`https://gemstorm.up.railway.app/api/user-spins?userId=${userId}`)
-  .then(r => r.json())
-  .catch(() => ({ spins: [] }));
-// Уберите await - теперь это Promise, а не результат     const usedOrderIds = (spinsRes.spins || []).map(s => String(s.order_id));
-            const availableOrder = ordersRes.filter(o => (o.status_code === 'done' || o.status_code === 'completed') && !usedOrderIds.includes(String(o.id)))[0];
-            if (availableOrder) {
-              const res = await fetch('https://gemstorm.up.railway.app/api/spin-roulette', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId: String(userId), orderId: availableOrder.id, discount: result.label })
-              });
-              if (res.ok) {
-                const data = await res.json();
-                canSpin = false;
-                const promoCode = data.promoCode || result.label;
-                const wonDiv = document.createElement('div');
-                wonDiv.innerHTML = `<div style="background:rgba(34,197,94,0.1);border:1px solid #22c55e;border-radius:20px;padding:16px;margin-bottom:20px;text-align:center;">
-                  <div style="font-size:16px;color:#22c55e;font-weight:600;margin-bottom:8px;">🎉 Вы выиграли!</div>
-                  <div style="font-size:20px;font-weight:700;color:white;">${promoCode}</div>
-                  <div style="font-size:14px;color:#9e9e9e;margin-top:6px;">Промокод добавлен в систему</div>
-                </div>`;
-                container.insertBefore(wonDiv.firstChild, container.firstChild);
-                if (fixedBlock) fixedBlock.style.display = "none";
-              }
-            }
-          } catch(e) { alert('Ошибка при обработке выигрыша'); }
-        }
+  setTimeout(() => alert(`Демо результат: промокод на ${result.label}!`), 300);
+} else {
+  // Реальный выигрыш — отправляем на сервер
+  const spinBtn = document.getElementById("spinBtn");
+  if (spinBtn) { 
+    spinBtn.disabled = true; 
+    spinBtn.textContent = "Обработка..."; 
+  }
+  
+  try {
+    // Правильный способ - используем Promise.all для ожидания обоих запросов
+    const [orders, spinsData] = await Promise.all([
+      fetch(`https://gemstorm.up.railway.app/api/user-orders?userId=${userId}`).then(r => r.json()),
+      fetch(`https://gemstorm.up.railway.app/api/user-spins?userId=${userId}`)
+        .then(r => r.json())
+        .catch(() => ({ spins: [] }))
+    ]);
+    
+    const usedOrderIds = (spinsData.spins || []).map(s => String(s.order_id));
+    const availableOrder = orders.filter(o => (o.status_code === 'done' || o.status_code === 'completed') && !usedOrderIds.includes(String(o.id)))[0];
+    
+    if (availableOrder) {
+      const res = await fetch('https://gemstorm.up.railway.app/api/spin-roulette', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: String(userId), orderId: availableOrder.id, discount: result.label })
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        canSpin = false;
+        const promoCode = data.promoCode || result.label;
+        const wonDiv = document.createElement('div');
+        wonDiv.innerHTML = `<div style="background:rgba(34,197,94,0.1);border:1px solid #22c55e;border-radius:20px;padding:16px;margin-bottom:20px;text-align:center;">
+          <div style="font-size:16px;color:#22c55e;font-weight:600;margin-bottom:8px;">🎉 Вы выиграли!</div>
+          <div style="font-size:20px;font-weight:700;color:white;">${promoCode}</div>
+          <div style="font-size:14px;color:#9e9e9e;margin-top:6px;">Промокод добавлен в систему</div>
+        </div>`;
+        container.insertBefore(wonDiv.firstChild, container.firstChild);
+        if (fixedBlock) fixedBlock.style.display = "none";
       }
-    }, spinCount < totalSpins * 0.5 ? 80 : spinCount < totalSpins * 0.8 ? 120 : 200);
-  });
+    } else {
+      // Нет доступных заказов для прокрутки
+      alert("Нет доступных заказов для участия в рулетке");
+      if (spinBtn) {
+        spinBtn.disabled = false;
+        spinBtn.textContent = "Крутить колесо";
+      }
+    }
+  } catch(e) { 
+    console.error('Ошибка рулетки:', e);
+    alert('Ошибка при обработке выигрыша: ' + e.message);
+    if (spinBtn) {
+      spinBtn.disabled = false;
+      spinBtn.textContent = "Крутить колесо";
+    }
+  }
 }
 
   function initApp() {

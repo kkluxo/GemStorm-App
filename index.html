@@ -3278,18 +3278,30 @@
   }
 
   async function renderProfilePage() {
-    const container = document.getElementById("profileContent");
-    if (!container) return;
-    let tgUser = null;
-    if (window.Telegram?.WebApp?.initDataUnsafe?.user) { tgUser = window.Telegram.WebApp.initDataUnsafe.user; }
-    const nickname = tgUser?.first_name || "Пользователь";
-    const username = tgUser?.username ? "@" + tgUser.username : "@username";
-    const photoUrl = tgUser?.photo_url || "";
-    
-    const totalSpent = await getUserTotalSpent();
-    const arrowSvg = `<svg style="width:18px;height:18px;opacity:0.4;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>`;
-    const giftIconUrl = "https://storage.botpapa.me/files/501ffee0-51e9-11f1-bef9-f1ec7a2c6e45.png";
-
+  // Ждём данные пользователя, если их ещё нет
+  let tgUser = window.__tgUser;
+  
+  if (!tgUser || !tgUser.id) {
+    // Пробуем получить ещё раз
+    for (let i = 0; i < 10; i++) {
+      tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+      if (tgUser?.id) {
+        window.__tgUser = tgUser;
+        break;
+      }
+      await new Promise(r => setTimeout(r, 200));
+    }
+  }
+  
+  // Если всё равно нет — используем заглушку
+  if (!tgUser || !tgUser.id) {
+    tgUser = { first_name: 'Гость', username: null, photo_url: null };
+  }
+  
+  const nickname = tgUser.first_name || "Пользователь";
+  const username = tgUser.username ? "@" + tgUser.username : "@username";
+  const photoUrl = tgUser.photo_url || "";
+  
     container.innerHTML = `
       <div class="profile-wrapper">
         <div class="profile-main-card">
@@ -3490,51 +3502,93 @@
   }
 
   async function initApp() {
-    loadCartFromLocalStorage();
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const tgU = window.Telegram?.WebApp?.initDataUnsafe?.user;
-    if (tgU?.id) {
-      fetch('https://gemstorm.up.railway.app/api/track-user', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: String(tgU.id),
-          userName: tgU.first_name || null,
-          userUsername: tgU.username || null,
-          photoUrl: tgU.photo_url || null
-        })
+  loadCartFromLocalStorage();
+  
+  // ========== УНИВЕРСАЛЬНАЯ ЗАГРУЗКА ПОЛЬЗОВАТЕЛЯ ==========
+  let tgU = null;
+  let attempts = 0;
+  const maxAttempts = 20; // 20 попыток (4 секунды)
+  
+  // Пытаемся получить пользователя несколько раз
+  while (attempts < maxAttempts && !tgU?.id) {
+    tgU = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    
+    // Если уже получили пользователя — выходим
+    if (tgU?.id) break;
+    
+    // Ждём 200 мс перед следующей попыткой
+    await new Promise(resolve => setTimeout(resolve, 200));
+    attempts++;
+  }
+  
+  // Если так и не получили, пробуем ещё один способ
+  if (!tgU?.id && window.Telegram?.WebApp) {
+    try {
+      // Принудительно расширяем WebApp и пробуем ещё раз
+      window.Telegram.WebApp.expand();
+      window.Telegram.WebApp.ready();
+      
+      await new Promise(resolve => setTimeout(resolve, 500));
+      tgU = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    } catch(e) {}
+  }
+  // ========================================================
+  
+  // Проверяем, есть ли пользователь
+  if (tgU?.id) {
+    // Отправляем данные на сервер
+    fetch('https://gemstorm.up.railway.app/api/track-user', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId: String(tgU.id),
+        userName: tgU.first_name || null,
+        userUsername: tgU.username || null,
+        photoUrl: tgU.photo_url || null
+      })
+    }).catch(() => {});
+    
+    // Сохраняем данные в глобальную переменную для других функций
+    window.__tgUser = tgU;
+  } else {
+    console.warn('Не удалось загрузить данные пользователя Telegram');
+    window.__tgUser = null;
+  }
+  
+  // ========== ОСТАЛЬНОЙ КОД initApp() ==========
+  const savedCheckout = localStorage.getItem('checkoutData');
+  if (savedCheckout) {
+    try {
+      const parsed = JSON.parse(savedCheckout);
+      checkoutData = { ...checkoutData, ...parsed };
+    } catch(e) {}
+  }
+  
+  const lastPage = getLastPage();
+  showPage(lastPage);
+  
+  // Обновляем аватар в меню, если есть
+  if (tgU?.photo_url) {
+    const avatar = document.getElementById("profileMenuAvatar");
+    if (avatar) avatar.src = tgU.photo_url;
+  }
+  
+  // Обработка реферальной ссылки
+  const tg = window.Telegram?.WebApp;
+  const startParam = tg?.initDataUnsafe?.start_param || new URLSearchParams(window.location.search).get("startapp");
+  const userId = tgU?.id;
+  
+  if (startParam && startParam.startsWith("ref") && userId) {
+    const referrerId = parseInt(startParam.replace("ref", ""));
+    if (referrerId && referrerId !== userId) {
+      fetch("https://gemstorm.up.railway.app/api/register-referral", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, referrerId })
       }).catch(() => {});
     }
-    const savedCheckout = localStorage.getItem('checkoutData');
-    if (savedCheckout) {
-      try {
-        const parsed = JSON.parse(savedCheckout);
-        checkoutData = { ...checkoutData, ...parsed };
-      } catch(e) {}
-    }
-    const lastPage = getLastPage();
-    showPage(lastPage);
-    const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-    if (tgUser?.photo_url) {
-      const avatar = document.getElementById("profileMenuAvatar");
-      if (avatar) avatar.src = tgUser.photo_url;
-    }
-
-    const tg = window.Telegram?.WebApp;
-    const startParam = tg?.initDataUnsafe?.start_param || new URLSearchParams(window.location.search).get("startapp");
-    const userId = tg?.initDataUnsafe?.user?.id;
-
-    if (startParam && startParam.startsWith("ref") && userId) {
-      const referrerId = parseInt(startParam.replace("ref", ""));
-      if (referrerId && referrerId !== userId) {
-        fetch("https://gemstorm.up.railway.app/api/register-referral", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId, referrerId })
-        }).catch(() => {});
-      }
-    }
   }
+}
 
   (function() {
     const tg = window.Telegram?.WebApp;

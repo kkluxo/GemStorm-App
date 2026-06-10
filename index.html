@@ -3478,18 +3478,6 @@ if (!tgUser || !tgUser.id) {
   });
 }
 
-    const activePage = document.querySelector('.page.active-page');
-    if (!activePage) return;
-    const pageId = activePage.id.replace('-page', '');
-    const cfg = pageConfigs[pageId];
-    if (!cfg) return;
-
-    const old = activePage.querySelector('.page-header-sticky');
-    if (old) old.remove();
-
-    activePage.insertAdjacentHTML('afterbegin', renderPageHeader(cfg.icon, cfg.title));
-  }
-
   function showPage(pageId, skipHistoryAdd = false) {
     let currentPageId = null;
     for (const page of document.querySelectorAll(".page")) {
@@ -3756,20 +3744,6 @@ if (!tgUser || !tgUser.id) {
 
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
   renderFilterModal();
-// Обработчик для двойной кнопки в хедере
-  
-  // Определяем, на какую иконку нажали
-  const isRefresh = e.target.closest('#headerRefreshIcon');
-  const isSupport = e.target.closest('#headerSupportIcon');
-  
-  if (isRefresh) {
-    hapticLight(); // вибрация при обновлении
-    refreshCurrentPage();
-  } else if (isSupport) {
-    hapticLight();
-    window.open('https://t.me/GemStormHelp', '_blank');
-  }
-});
 
 // Функция обновления
 function refreshCurrentPage() {

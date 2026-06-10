@@ -2326,7 +2326,7 @@
         if (promoInput) promoInput.addEventListener("keypress", (e) => { if (e.key === "Enter") applyBtn?.click(); });
       }, 0);
     } else {
-      fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${(orderMode === 'promo_deal' ? appliedPromoDeal : orderMode === 'premium' ? appliedPromoPremium : appliedPromo) ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="checkoutBtn">Перейти к оформлению</button><button class="promo-btn" id="openPromoBtn"><img src="https://storage.botpapa.me/files/8324fec0-5933-11f1-bef9-f1ec7a2c6e45.png" alt="Промокод"></button></div></div>`;
+      fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${(orderMode === 'promo_deal' ? appliedPromoDeal : appliedPromo) ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="checkoutBtn">Перейти к оформлению</button><button class="promo-btn" id="openPromoBtn"><img src="https://storage.botpapa.me/files/8324fec0-5933-11f1-bef9-f1ec7a2c6e45.png" alt="Промокод"></button></div></div>`;
       setTimeout(() => {
         document.getElementById("checkoutBtn")?.addEventListener("click", async () => {
           hapticMedium();
@@ -2365,11 +2365,7 @@
     if (orderMode === "promo_deal") {
       if (!promoOrderData.deal) { container.innerHTML = '<div class="empty-state">Акция не выбрана</div>'; return; }
       rawTotal = promoOrderData.deal.price;
-      discountedTotal = appliedPromoDeal ? Math.round(rawTotal * (1 - appliedPromoDeal.discountPercent / 100)) : rawTotal;
-    } else if (orderMode === "premium") {
-      if (!premiumOrderData.deal) { container.innerHTML = '<div class="empty-state">Товар не выбран</div>'; return; }
-      rawTotal = premiumOrderData.deal.price;
-      discountedTotal = appliedPromoPremium ? Math.round(rawTotal * (1 - appliedPromoPremium.discountPercent / 100)) : rawTotal;
+      discountedTotal = appliedPromoDeal ? Math.round(rawTotal * (1 - appliedPromoDeal.discountPercent / 100)) : rawTotal; 
     } else {
 
       const items = Object.entries(cart);
@@ -2380,7 +2376,7 @@
     container.innerHTML = `<div class="content-card"><div class="form-section"><div class="form-label">${orderMode === 'premium' ? 'Ваша почта' : 'Почта Supercell ID'}</div><input type="email" class="form-input" id="emailInput" placeholder="${orderMode === 'premium' ? 'Необязательно' : 'Укажите почту аккаунта'}" value="${escapeHtml(checkoutData.email)}"></div><div class="form-section"><div class="form-label">Способ оплаты</div><select class="form-select-native" id="paymentMethodSelect"><option value="" disabled ${!checkoutData.paymentMethod ? 'selected' : ''}>Нажмите для выбора</option>${paymentMethodsOptions.map(o => `<option value="${o.value}" ${checkoutData.paymentMethod === o.value ? 'selected' : ''}>${o.label}</option>`).join('')}</select></div><div class="form-section"><div class="form-label">Данные отправителя</div><input type="text" class="form-input" id="senderNameInput" placeholder="Укажите имя отправителя" value="${escapeHtml(checkoutData.senderName)}"></div></div>`;
     const fixedBlock = document.getElementById("cartCheckoutFixed");
     fixedBlock.style.display = "block";
-    fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${(orderMode === 'promo_deal' ? appliedPromoDeal : orderMode === 'premium' ? appliedPromoPremium : appliedPromo) ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="payBtn">Перейти к оплате</button><button class="promo-btn" id="helpBtn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь"></button></div></div>`;
+    fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${(orderMode === 'promo_deal' ? appliedPromoDeal : appliedPromo) ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="payBtn">Перейти к оплате</button><button class="promo-btn" id="helpBtn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь"></button></div></div>`;
     setTimeout(() => {
       const paymentSelect = document.getElementById("paymentMethodSelect");
       paymentSelect?.addEventListener("change", function() {
@@ -2414,10 +2410,7 @@
         if (orderMode === "promo_deal") {
       rawTotal = promoOrderData.deal.price;
       discountedTotal = appliedPromoDeal ? Math.round(rawTotal * (1 - appliedPromoDeal.discountPercent / 100)) : rawTotal;
-    } else if (orderMode === "premium") {
-      rawTotal = premiumOrderData.deal.price;
-      discountedTotal = appliedPromoPremium ? Math.round(rawTotal * (1 - appliedPromoPremium.discountPercent / 100)) : rawTotal;
-    } else {
+      } else {
       const items = Object.entries(cart);
       rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
       discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
@@ -2425,7 +2418,7 @@
     container.innerHTML = `<div class="content-card"><div class="form-section"><div class="form-label">Номер карты</div><div class="form-select-readonly card-number-row"><span class="card-number-text">${cardNum}</span><img class="copy-icon" id="copyCardBtn" src="https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png" alt="copy"></div></div><div class="form-section"><div class="form-label">Получатель</div><div class="form-select-readonly"><span>Азат Ф.</span></div></div><div class="form-section"><div class="form-label">Банк получателя</div><div class="form-select-readonly"><span>${bank}</span></div></div></div>`;
     const fixedBlock = document.getElementById("cartCheckoutFixed");
     fixedBlock.style.display = "block";
-    fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${(orderMode === 'promo_deal' ? appliedPromoDeal : orderMode === 'premium' ? appliedPromoPremium : appliedPromo) ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="paidBtn">Я оплатил</button><button class="promo-btn" id="helpBtn2"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь"></button></div></div>`;
+    fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${(orderMode === 'promo_deal' ? appliedPromoDeal : appliedPromo) ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="paidBtn">Я оплатил</button><button class="promo-btn" id="helpBtn2"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь"></button></div></div>`;
     setTimeout(() => {
       const copyBtn = document.getElementById("copyCardBtn");
       copyBtn?.addEventListener("click", async () => { if (navigator.clipboard) { copyBtn.style.transform = "scale(0.85)"; await navigator.clipboard.writeText(cardNum.replace(/\s/g, "")); setTimeout(() => { copyBtn.style.transform = "scale(1)"; }, 150); hapticLight(); } });
@@ -2455,16 +2448,7 @@
           orderPromoDiscount = appliedPromoDeal ? appliedPromoDeal.discountPercent : 0;
           orderPromoItemName = promoOrderData.name;
           orderPromoItemCategory = promoOrderData.category;
-    } else if (orderMode === "premium") {
-          const premRaw = premiumOrderData.deal.price;
-          const premTotal = appliedPromoPremium ? Math.round(premRaw * (1 - appliedPromoPremium.discountPercent / 100)) : premRaw;
-          orderItems = [{ id: 0, name: premiumOrderData.deal.label, qty: 1, price: premRaw }];
-          total = premTotal;
-          orderPromo = appliedPromoPremium ? appliedPromoPremium.code : null;
-          orderPromoDiscount = appliedPromoPremium ? appliedPromoPremium.discountPercent : 0;
-          orderPromoItemName = premiumOrderData.username;
-          orderPromoItemCategory = premiumOrderData.category === 'premium' ? 'Telegram Premium' : 'Telegram Stars';
-        } else {
+          } else {
           const cartItems = Object.entries(cart);
           total = cartItems.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
           if (appliedPromo) total = Math.round(total * (1 - appliedPromo.discountPercent / 100));
@@ -3424,7 +3408,7 @@
     if (targetPage) targetPage.classList.add("active-page");
     const checkoutBlock = document.getElementById("cartCheckoutFixed");
     if (pageId === "catalog") { renderCatalog(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
-    if (pageId === "catalog" || pageId === "cart") { if (orderMode === "promo_deal" || orderMode === "premium") orderMode = "cart"; }
+    if (pageId === "catalog" || pageId === "cart") { if (orderMode === "promo_deal") orderMode = "cart"; }
     if (pageId === "cart") { renderCartPage(); }
     if (pageId === "orders") { renderOrdersPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
     if (pageId === "profile") { renderProfilePage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }

@@ -17,12 +17,8 @@
       font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       color: #ffffff;
       padding-bottom: 130px;
+      padding-top: var(--tg-content-safe-area-inset-top, 0px);
     }
-    
-    body {
-  padding-top: var(--tg-content-safe-area-inset-top, 0px);
-}
-
     .page { display: none; padding: 0 14px 20px 14px; max-width: 600px; margin: 0 auto; }
     .page.active-page { display: block; }
 
@@ -32,7 +28,8 @@
       top: 0;
       z-index: 500;
       margin: 0 -14px 8px -14px;
-      padding: calc(var(--tg-content-safe-area-inset-top, 14px) + 12px) 14px 8px 14px;      background: #121214;
+      padding: calc(var(--tg-content-safe-area-inset-top, 14px) + 12px) 14px 8px 14px;
+      background: #121214;
     }
     .page-header-inner {
       display: flex;
@@ -418,6 +415,51 @@
 </div>
 
 <script>
+(async function() {
+  // Функция проверки пароля через сервер
+  async function checkAdminPassword() {
+    const savedAuth = localStorage.getItem('adminAuth');
+    const savedTime = localStorage.getItem('adminAuthTime');
+    
+    // Если авторизован меньше 24 часов
+    if (savedAuth && savedTime && (Date.now() - parseInt(savedTime) < 86400000)) {
+      return true;
+    }
+    
+    const pwd = prompt('Введите пароль администратора:');
+    if (!pwd) return false;
+    
+    try {
+      const res = await fetch('https://gemstorm.up.railway.app/api/admin/check-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pwd })
+      });
+      const data = await res.json();
+      
+      if (data.success) {
+        localStorage.setItem('adminAuth', pwd);
+        localStorage.setItem('adminAuthTime', Date.now().toString());
+        return true;
+      } else {
+        alert('Неверный пароль');
+        return false;
+      }
+    } catch(e) {
+      alert('Ошибка проверки пароля');
+      return false;
+    }
+  }
+
+  // Проверяем пароль
+  const isAuth = await checkAdminPassword();
+  if (!isAuth) {
+    document.body.innerHTML = '<div style="color:white;text-align:center;margin-top:40vh;font-size:20px;">Доступ запрещён</div>';
+    return;
+  }
+
+  // ========== ВЕСЬ ОСТАЛЬНОЙ КОД АДМИНКИ ==========
+  
   function renderPageHeader(iconUrl, title) {
     return `<div class="page-header-sticky">
       <div class="page-header-inner">
@@ -438,17 +480,6 @@
   let currentTab = 'pending';
   let currentDetailOrder = null;
   let currentAdminPage = 'orders';
-
-  const ADMIN_PASSWORD = 'usa2026';
-  const entered = localStorage.getItem('adminAuth');
-  if (entered !== ADMIN_PASSWORD) {
-    const pwd = prompt('Введите пароль администратора:');
-    if (pwd !== ADMIN_PASSWORD) {
-      document.body.innerHTML = '<div style="color:white;text-align:center;margin-top:40vh;font-size:20px;">Доступ запрещён</div>';
-    } else {
-      localStorage.setItem('adminAuth', ADMIN_PASSWORD);
-    }
-  }
 
   if (window.Telegram?.WebApp) {
     const tg = window.Telegram.WebApp;
@@ -570,7 +601,6 @@
   async function showOrderDetail(order) {
     currentDetailOrder = order;
     
-    // Скрываем меню на детальной странице
     const bottomNav = document.getElementById('bottomNav');
     if (bottomNav) bottomNav.style.display = 'none';
     
@@ -886,7 +916,6 @@
     document.getElementById('stats-page').classList.add('active-page');
     window.Telegram?.WebApp?.BackButton.show();
     
-    // Скрываем меню на странице статистики
     const bottomNav = document.getElementById('bottomNav');
     if (bottomNav) bottomNav.style.display = 'none';
     
@@ -990,6 +1019,8 @@
   showAdminPage('orders');
   loadOrders();
   setInterval(loadOrders, 30000);
+  
+})(); // Конец самовызывающейся функции
 </script>
 </body>
 </html>

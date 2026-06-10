@@ -1898,6 +1898,55 @@
 </head>
 <body>
 
+<script>
+function waitForTelegram(callback, attempts) {
+  attempts = attempts || 0;
+  if (attempts > 50) {
+    // Через 5 секунд сдаёмся, запускаем без Telegram
+    callback();
+    return;
+  }
+  if (window.Telegram && window.Telegram.WebApp) {
+    callback();
+  } else {
+    setTimeout(function() {
+      waitForTelegram(callback, attempts + 1);
+    }, 100);
+  }
+}
+
+// Откладываем весь старт приложения до загрузки Telegram SDK
+document.addEventListener('DOMContentLoaded', function() {
+  waitForTelegram(function() {
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+      try { tg.requestFullscreen(); } catch(e) {}
+      try { tg.setHeaderColor("#121214"); tg.setBackgroundColor("#121214"); } catch(e) {}
+      try { if (tg.disableVerticalSwipes) tg.disableVerticalSwipes(); } catch(e) {}
+    }
+
+    // Парсим пользователя
+    let user = tg?.initDataUnsafe?.user || null;
+    if (!user && tg?.initData) {
+      try {
+        const params = new URLSearchParams(tg.initData);
+        const userStr = params.get('user');
+        if (userStr) user = JSON.parse(decodeURIComponent(userStr));
+      } catch(e) {}
+    }
+    if (user) window.__tgUser = user;
+
+    // Обновляем аватар в меню
+    if (user?.photo_url) {
+      const avatar = document.getElementById("profileMenuAvatar");
+      if (avatar) avatar.src = user.photo_url;
+    }
+  });
+});
+</script>
+
 <div id="debugPanel" style="position:fixed;bottom:100px;right:10px;background:#000;color:#0f0;font-size:10px;padding:5px;border-radius:5px;z-index:9999;max-width:80%;word-break:break-all;display:none;"></div>
 <button id="debugBtn" style="position:fixed;bottom:160px;right:10px;background:#4cb4e9;border:none;border-radius:20px;padding:8px 12px;color:white;font-size:12px;z-index:9999;cursor:pointer;">🐛 Отладка</button>
 

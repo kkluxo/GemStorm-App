@@ -2,6 +2,8 @@ const express = require('express');
 const { Telegraf } = require('telegraf');
 const cors = require('cors');
 const { Pool } = require('pg');
+const bcrypt = require('bcrypt');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -22,10 +24,97 @@ const NO_FORWARD = { protect_content: true };
 
 console.log('Запуск сервера...');
 
-app.use(cors());
+// Настройка CORS - только доверенные источники
+const allowedOrigins = [
+    'https://gemstorm.up.railway.app',
+    'https://gemstorm.up.railway.app',
+    'http://localhost:3000',
+    'http://localhost:5500'
+];
+
+app.use(cors({
+    origin: function(origin, callback) {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+            const msg = 'CORS policy does not allow this origin.';
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    },
+    credentials: true
+}));
+
 app.use(express.json());
 app.use(express.static('.'));
 
+// =============================================
+// ЗАЩИТА ОТ БРУТФОРСА (по IP)
+// =============================================
+const loginAttempts = new Map(); // IP -> { count, firstAttempt, lastAttempt, blockedUntil }
+
+// Очистка старых записей каждые 10 минут
+setInterval(() => {
+    const now = Date.now();
+    for (const [ip, data] of loginAttempts.entries()) {
+        if (now - data.lastAttempt > 30 * 60 * 1000) { // 30 минут бездействия
+            loginAttempts.delete(ip);
+        }
+    }
+}, 10 * 60 * 1000);
+
+function checkRateLimit(ip) {
+    const now = Date.now();
+    const data = loginAttempts.get(ip);
+    
+    if (!data) {
+        loginAttempts.set(ip, { count: 1, firstAttempt: now, lastAttempt: now, blockedUntil: null });
+        return { allowed: true, remaining: 4 };
+    }
+    
+    // Проверка блокировки
+    if (data.blockedUntil && now < data.blockedUntil) {
+        const remainingMinutes = Math.ceil((data.blockedUntil - now) / 60000);
+        return { allowed: false, blockedUntil: data.blockedUntil, remainingMinutes };
+    }
+    
+    // Сброс счётчика через 15 минут
+    if (now - data.firstAttempt > 15 * 60 * 1000) {
+        loginAttempts.set(ip, { count: 1, firstAttempt: now, lastAttempt: now, blockedUntil: null });
+        return { allowed: true, remaining: 4 };
+    }
+    
+    // 5 попыток = блокировка на 30 минут
+    if (data.count >= 5) {
+        const blockedUntil = now + 30 * 60 * 1000;
+        loginAttempts.set(ip, { ...data, blockedUntil, lastAttempt: now });
+        return { allowed: false, blockedUntil, remainingMinutes: 30 };
+    }
+    
+    // Увеличиваем счётчик
+    data.count++;
+    data.lastAttempt = now;
+    loginAttempts.set(ip, data);
+    return { allowed: true, remaining: 5 - data.count };
+}
+
+// =============================================
+// АДМИН АВТОРИЗАЦИЯ (токен для API)
+// =============================================
+const ADMIN_TOKEN = process.env.ADMIN_TOKEN || 'your-super-secret-token-change-me-in-production';
+
+function adminAuth(req, res, next) {
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.split(' ')[1];
+    
+    if (!token || token !== ADMIN_TOKEN) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+    next();
+}
+
+// =============================================
+// БД
+// =============================================
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false }
@@ -36,28 +125,27 @@ const pool = new Pool({
 // =============================================
 
 async function getNextOrderNumber() {
-  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const digits = '0123456789';
-  
-  let attempts = 0;
-  while (attempts < 100) {
-    const l1 = letters[Math.floor(Math.random() * 26)];
-    const d1 = digits[Math.floor(Math.random() * 10)];
-    const l2 = letters[Math.floor(Math.random() * 26)];
-    const d2 = digits[Math.floor(Math.random() * 10)];
-    const code = `${l1}${d1}${l2}${d2}`;
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const digits = '0123456789';
     
-    const exists = await pool.query(
-      'SELECT id FROM orders WHERE order_number = $1',
-      [code]
-    );
-    if (!exists.rows.length) return code;
-    attempts++;
-  }
-  throw new Error('Не удалось сгенерировать уникальный номер');
+    let attempts = 0;
+    while (attempts < 100) {
+        const l1 = letters[Math.floor(Math.random() * 26)];
+        const d1 = digits[Math.floor(Math.random() * 10)];
+        const l2 = letters[Math.floor(Math.random() * 26)];
+        const d2 = digits[Math.floor(Math.random() * 10)];
+        const code = `${l1}${d1}${l2}${d2}`;
+        
+        const exists = await pool.query(
+            'SELECT id FROM orders WHERE order_number = $1',
+            [code]
+        );
+        if (!exists.rows.length) return code;
+        attempts++;
+    }
+    throw new Error('Не удалось сгенерировать уникальный номер');
 }
 
-// Безопасное удаление сообщения (игнорирует ошибки если уже удалено)
 async function safeDeleteMessage(bot, chatId, messageId) {
     if (!messageId) return;
     try {
@@ -71,7 +159,6 @@ async function safeDeleteMessage(bot, chatId, messageId) {
 // УВЕДОМЛЕНИЯ АДМИНИСТРАТОРУ
 // =============================================
 
-// Отправить новый заказ админу, вернуть message_id
 async function notifyAdmin(bot, order) {
     const usernameText = order.user_username ? `@${order.user_username}` : (order.user_name || 'Неизвестен');
 
@@ -94,7 +181,6 @@ async function notifyAdmin(bot, order) {
     return sent.message_id;
 }
 
-// Отправить код от пользователя админу (удаляет предыдущее сообщение о заказе)
 async function notifyAdminCode(bot, order, code, prevAdminMsgId) {
     const usernameText = order.user_username ? `@${order.user_username}` : (order.user_name || 'Неизвестен');
 
@@ -118,7 +204,6 @@ async function notifyAdminCode(bot, order, code, prevAdminMsgId) {
     return sent.message_id;
 }
 
-// Уведомить админа об отзыве
 async function notifyAdminReview(bot, userName, userUsername, text) {
     const nick = userUsername ? `@${userUsername}` : (userName || 'Неизвестен');
 
@@ -141,7 +226,6 @@ async function notifyAdminReview(bot, userName, userUsername, text) {
 // УВЕДОМЛЕНИЯ ПОЛЬЗОВАТЕЛЮ
 // =============================================
 
-// Отправить сообщение о создании заказа, вернуть message_id
 async function notifyUser(bot, order) {
     try {
         const message =
@@ -166,7 +250,6 @@ async function notifyUser(bot, order) {
     }
 }
 
-// Отправить обновление статуса пользователю (удаляет предыдущее сообщение бота)
 async function notifyUserStatus(bot, order, status, prevUserMsgId) {
     try {
         await safeDeleteMessage(bot, order.user_id, prevUserMsgId);
@@ -202,7 +285,7 @@ async function initDB() {
         await pool.query(`
             CREATE TABLE IF NOT EXISTS orders (
                 id SERIAL PRIMARY KEY,
-                order_number INTEGER UNIQUE,
+                order_number TEXT UNIQUE,
                 date TEXT,
                 time TEXT,
                 timestamp BIGINT,
@@ -227,7 +310,6 @@ async function initDB() {
         `);
         console.log('Таблица orders готова');
 
-        // Миграция колонок
         const colDefs = [
             'user_username TEXT',
             'verification_code TEXT',
@@ -240,8 +322,6 @@ async function initDB() {
             await pool.query(`ALTER TABLE orders ADD COLUMN IF NOT EXISTS ${col}`);
         }
 
-        await pool.query(`ALTER TABLE orders ALTER COLUMN order_number TYPE TEXT USING order_number::TEXT`);
-
         await pool.query(`
             CREATE TABLE IF NOT EXISTS reviews (
                 id SERIAL PRIMARY KEY,
@@ -252,12 +332,11 @@ async function initDB() {
                 text TEXT,
                 stars INTEGER,
                 order_id INTEGER,
-                order_number INTEGER,
+                order_number TEXT,
                 created_at TIMESTAMP DEFAULT NOW()
             )
         `);
         await pool.query(`ALTER TABLE reviews ADD COLUMN IF NOT EXISTS order_id INTEGER`);
-        await pool.query(`ALTER TABLE reviews ALTER COLUMN order_number TYPE TEXT USING order_number::TEXT`);
         await pool.query(`ALTER TABLE reviews ADD COLUMN IF NOT EXISTS user_username TEXT`);
 
         await pool.query(`
@@ -320,7 +399,6 @@ function getBot() {
     if (!botInstance) {
         botInstance = new Telegraf(BOT_TOKEN);
 
-        // /start — сообщение НЕ удаляется, защита от пересылки
         botInstance.start(async (ctx) => {
             try {
                 const message =
@@ -359,30 +437,179 @@ function getBot() {
 // =============================================
 // API ЭНДПОИНТЫ
 // =============================================
-app.post('/api/admin/check-password', (req, res) => {
-  const { password } = req.body;
-  const correctPassword = process.env.ADMIN_PASSWORD;
-  
-  if (password === correctPassword) {
-    res.json({ success: true });
-  } else {
-    res.json({ success: false });
-  }
+
+// ПРОВЕРКА ПАРОЛЯ АДМИНА (с защитой от брутфорса)
+app.post('/api/admin/check-password', async (req, res) => {
+    const { password } = req.body;
+    const ip = req.ip || req.connection.remoteAddress || 'unknown';
+    
+    // Проверяем лимит попыток
+    const rateLimitCheck = checkRateLimit(ip);
+    if (!rateLimitCheck.allowed) {
+        return res.status(429).json({ 
+            success: false, 
+            blocked: true,
+            message: `Слишком много попыток. Попробуйте через ${rateLimitCheck.remainingMinutes} минут.`
+        });
+    }
+    
+    if (!password) {
+        return res.json({ success: false, message: 'Введите пароль' });
+    }
+    
+    const hashedPassword = process.env.ADMIN_PASSWORD_HASH;
+    if (!hashedPassword) {
+        console.error('ADMIN_PASSWORD_HASH не установлен');
+        return res.status(500).json({ success: false, message: 'Ошибка сервера' });
+    }
+    
+    try {
+        const isValid = await bcrypt.compare(password, hashedPassword);
+        
+        if (isValid) {
+            // Успешный вход — сбрасываем попытки для этого IP
+            loginAttempts.delete(ip);
+            res.json({ success: true });
+        } else {
+            res.json({ success: false, message: 'Неверный пароль' });
+        }
+    } catch (error) {
+        console.error('Ошибка проверки пароля:', error);
+        res.status(500).json({ success: false, message: 'Ошибка сервера' });
+    }
 });
 
-app.get('/api/status', async (req, res) => {
+// ЗАЩИЩЁННЫЕ ЭНДПОИНТЫ (требуют токен)
+app.get('/api/orders', adminAuth, async (req, res) => {
     try {
-        const result = await pool.query('SELECT COUNT(*) as count FROM orders');
-        res.json({ status: 'ok', bot: !!BOT_TOKEN, ordersCount: parseInt(result.rows[0].count) });
+        const result = await pool.query('SELECT * FROM orders ORDER BY id DESC');
+        res.json(result.rows);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-app.get('/api/orders', async (req, res) => {
+app.get('/api/users', adminAuth, async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM orders ORDER BY id DESC');
+        const checkEmpty = await pool.query('SELECT COUNT(*) as count FROM app_users');
+        if (parseInt(checkEmpty.rows[0].count) === 0) {
+            await pool.query(`
+                INSERT INTO app_users (user_id, user_name, user_username)
+                SELECT user_id, MAX(user_name), MAX(user_username)
+                FROM orders WHERE user_id IS NOT NULL
+                GROUP BY user_id
+                ON CONFLICT (user_id) DO UPDATE SET
+                    user_name = EXCLUDED.user_name,
+                    user_username = EXCLUDED.user_username
+            `);
+        }
+
+        const result = await pool.query(`
+            SELECT
+                au.user_id, au.user_name, au.user_username, au.photo_url,
+                au.first_seen, au.last_seen,
+                COALESCE(o.orders_count, 0) as orders_count,
+                COALESCE(o.total_spent, 0) as total_spent
+            FROM app_users au
+            LEFT JOIN (
+                SELECT user_id::TEXT, COUNT(*) as orders_count, SUM(total) as total_spent
+                FROM orders WHERE user_id IS NOT NULL
+                GROUP BY user_id::TEXT
+            ) o ON au.user_id::TEXT = o.user_id
+            ORDER BY COALESCE(o.total_spent, 0) DESC, au.first_seen DESC
+        `);
         res.json(result.rows);
+    } catch (err) {
+        console.error('Ошибка /api/users:', err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.get('/api/stats', adminAuth, async (req, res) => {
+    try {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const week = new Date(today);
+        week.setDate(week.getDate() - 7);
+
+        const todayStr = today.toLocaleDateString('ru-RU');
+        const weekAgo = week.toISOString();
+
+        const dayOrders = await pool.query(`SELECT COUNT(*) as count, COALESCE(SUM(total),0) as revenue FROM orders WHERE date = $1`, [todayStr]);
+        const dayUsers = await pool.query(`SELECT COUNT(DISTINCT user_id) as count FROM orders WHERE date = $1`, [todayStr]);
+        const weekOrders = await pool.query(`SELECT COUNT(*) as count, COALESCE(SUM(total),0) as revenue FROM orders WHERE timestamp >= $1`, [weekAgo]);
+        const weekUsers = await pool.query(`SELECT COUNT(DISTINCT user_id) as count FROM orders WHERE timestamp >= $1`, [weekAgo]);
+        const allOrders = await pool.query(`SELECT COUNT(*) as count, COALESCE(SUM(total),0) as revenue FROM orders`);
+        const allUsers = await pool.query(`SELECT COUNT(*) as count FROM app_users`);
+        const activeUsers = await pool.query(`SELECT COUNT(DISTINCT user_id) as count FROM orders WHERE user_id IS NOT NULL`);
+        const avgOrder = await pool.query(`SELECT COALESCE(AVG(total),0) as avg FROM orders`);
+        const topProduct = await pool.query(`
+            SELECT name, SUM(qty) as total_qty FROM (
+                SELECT jsonb_array_elements(items::jsonb)->>'name' as name,
+                       (jsonb_array_elements(items::jsonb)->>'qty')::int as qty
+                FROM orders
+            ) t GROUP BY name ORDER BY total_qty DESC LIMIT 1
+        `);
+
+        res.json({
+            day: {
+                orders: parseInt(dayOrders.rows[0].count),
+                revenue: parseInt(dayOrders.rows[0].revenue),
+                users: parseInt(dayUsers.rows[0].count)
+            },
+            week: {
+                orders: parseInt(weekOrders.rows[0].count),
+                revenue: parseInt(weekOrders.rows[0].revenue),
+                users: parseInt(weekUsers.rows[0].count)
+            },
+            all: {
+                orders: parseInt(allOrders.rows[0].count),
+                revenue: parseInt(allOrders.rows[0].revenue),
+                total_users: parseInt(allUsers.rows[0].count),
+                active_users: parseInt(activeUsers.rows[0].count),
+                avg_order: Math.round(parseFloat(avgOrder.rows[0].avg)),
+                top_product: topProduct.rows[0]?.name || '—'
+            }
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.get('/api/total-revenue', adminAuth, async (req, res) => {
+    try {
+        const result = await pool.query(`SELECT COALESCE(SUM(total), 0) as revenue FROM orders`);
+        res.json({ revenue: parseInt(result.rows[0].revenue) });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.delete('/api/orders/:id', adminAuth, async (req, res) => {
+    try {
+        const { id } = req.params;
+        await pool.query('DELETE FROM orders WHERE id = $1', [id]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.delete('/api/reviews/:id', adminAuth, async (req, res) => {
+    try {
+        const { id } = req.params;
+        await pool.query('DELETE FROM reviews WHERE id = $1', [id]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ПУБЛИЧНЫЕ ЭНДПОИНТЫ (без авторизации)
+app.get('/api/status', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT COUNT(*) as count FROM orders');
+        res.json({ status: 'ok', bot: !!BOT_TOKEN, ordersCount: parseInt(result.rows[0].count) });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -399,7 +626,6 @@ app.get('/api/user-orders', async (req, res) => {
     }
 });
 
-// Создать заказ
 app.post('/api/order', async (req, res) => {
     try {
         const o = req.body;
@@ -433,7 +659,6 @@ app.post('/api/order', async (req, res) => {
             adminMsgId = await notifyAdmin(bot, saved);
         }
 
-        // Сохраняем message_id сразу после отправки
         if (userMsgId !== null || adminMsgId !== null) {
             await pool.query(
                 'UPDATE orders SET user_msg_id = $1, admin_msg_id = $2 WHERE id = $3',
@@ -441,7 +666,6 @@ app.post('/api/order', async (req, res) => {
             );
         }
 
-        // Записать использование промокода
         if (o.promo && o.user_id) {
             try {
                 await pool.query(`
@@ -461,12 +685,10 @@ app.post('/api/order', async (req, res) => {
     }
 });
 
-// Обновить статус заказа
 app.post('/api/update-status', async (req, res) => {
     try {
         const { orderId, status, statusCode } = req.body;
 
-        // Читаем текущий заказ (нужны message_id)
         const orderBefore = await pool.query('SELECT * FROM orders WHERE id = $1', [orderId]);
         if (!orderBefore.rows.length) return res.status(404).json({ error: 'Заказ не найден' });
         const prev = orderBefore.rows[0];
@@ -501,14 +723,10 @@ app.post('/api/update-status', async (req, res) => {
         const order = result.rows[0];
         const isCompleted = finalStatusCode === 'completed';
 
-        // Уведомляем пользователя только если не "Ожидает проверки"
         if (order.user_id && finalStatusCode !== 'pending') {
             const bot = getBot();
             if (bot) {
-                // Отправляем новое сообщение (удаляя предыдущее)
                 const newUserMsgId = await notifyUserStatus(bot, order, status, prev.user_msg_id);
-
-                // Если заказ выполнен — не сохраняем msg_id (финальное сообщение не удаляем)
                 await pool.query(
                     'UPDATE orders SET user_msg_id = $1 WHERE id = $2',
                     [isCompleted ? null : newUserMsgId, orderId]
@@ -523,13 +741,11 @@ app.post('/api/update-status', async (req, res) => {
     }
 });
 
-// Пользователь отправил код верификации
 app.post('/api/submit-code', async (req, res) => {
     try {
         const { orderId, code } = req.body;
         console.log(`Получен код для заказа #${orderId}: ${code}`);
 
-        // Читаем заказ до обновления
         const orderResult = await pool.query('SELECT * FROM orders WHERE id = $1', [orderId]);
         if (!orderResult.rows.length) return res.status(404).json({ error: 'Заказ не найден' });
         const prev = orderResult.rows[0];
@@ -544,13 +760,8 @@ app.post('/api/submit-code', async (req, res) => {
 
         const bot = getBot();
         if (bot) {
-            // Пользователю — обновление статуса (удаляет предыдущее)
             const newUserMsgId = await notifyUserStatus(bot, order, 'Ожидает выполнения', prev.user_msg_id);
-
-            // Админу — сообщение с кодом (удаляет предыдущее "Новый заказ")
             const newAdminMsgId = await notifyAdminCode(bot, order, code, prev.admin_msg_id);
-
-            // Сохраняем новые message_id
             await pool.query(
                 'UPDATE orders SET user_msg_id = $1, admin_msg_id = $2 WHERE id = $3',
                 [newUserMsgId, newAdminMsgId, orderId]
@@ -593,7 +804,7 @@ app.post('/api/track-user', async (req, res) => {
     }
 });
 
-app.post('/api/migrate-users', async (req, res) => {
+app.post('/api/migrate-users', adminAuth, async (req, res) => {
     try {
         await pool.query(`
             INSERT INTO app_users (user_id, user_name, user_username)
@@ -610,7 +821,7 @@ app.post('/api/migrate-users', async (req, res) => {
     }
 });
 
-app.get('/api/debug-users', async (req, res) => {
+app.get('/api/debug-users', adminAuth, async (req, res) => {
     try {
         const appUsers = await pool.query('SELECT COUNT(*) as count FROM app_users');
         const orders = await pool.query('SELECT COUNT(DISTINCT user_id) as count FROM orders WHERE user_id IS NOT NULL');
@@ -620,51 +831,6 @@ app.get('/api/debug-users', async (req, res) => {
             orders_unique_users: parseInt(orders.rows[0].count),
             sample_order_users: sample.rows
         });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-app.get('/api/users', async (req, res) => {
-    try {
-        const checkEmpty = await pool.query('SELECT COUNT(*) as count FROM app_users');
-        if (parseInt(checkEmpty.rows[0].count) === 0) {
-            await pool.query(`
-                INSERT INTO app_users (user_id, user_name, user_username)
-                SELECT user_id, MAX(user_name), MAX(user_username)
-                FROM orders WHERE user_id IS NOT NULL
-                GROUP BY user_id
-                ON CONFLICT (user_id) DO UPDATE SET
-                    user_name = EXCLUDED.user_name,
-                    user_username = EXCLUDED.user_username
-            `);
-        }
-
-        const result = await pool.query(`
-            SELECT
-                au.user_id, au.user_name, au.user_username, au.photo_url,
-                au.first_seen, au.last_seen,
-                COALESCE(o.orders_count, 0) as orders_count,
-                COALESCE(o.total_spent, 0) as total_spent
-            FROM app_users au
-            LEFT JOIN (
-                SELECT user_id::TEXT, COUNT(*) as orders_count, SUM(total) as total_spent
-                FROM orders WHERE user_id IS NOT NULL
-                GROUP BY user_id::TEXT
-            ) o ON au.user_id::TEXT = o.user_id
-            ORDER BY COALESCE(o.total_spent, 0) DESC, au.first_seen DESC
-        `);
-        res.json(result.rows);
-    } catch (err) {
-        console.error('Ошибка /api/users:', err.message);
-        res.status(500).json({ error: err.message });
-    }
-});
-
-app.get('/api/total-revenue', async (req, res) => {
-    try {
-        const result = await pool.query(`SELECT COALESCE(SUM(total), 0) as revenue FROM orders`);
-        res.json({ revenue: parseInt(result.rows[0].revenue) });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -776,33 +942,13 @@ app.get('/api/settings', async (req, res) => {
     }
 });
 
-app.post('/api/settings', async (req, res) => {
+app.post('/api/settings', adminAuth, async (req, res) => {
     try {
         const { bot_status } = req.body;
         await pool.query(`
             INSERT INTO settings (id, bot_status) VALUES (1, $1)
             ON CONFLICT (id) DO UPDATE SET bot_status = $1
         `, [bot_status]);
-        res.json({ success: true });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-app.delete('/api/orders/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        await pool.query('DELETE FROM orders WHERE id = $1', [id]);
-        res.json({ success: true });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-app.delete('/api/reviews/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        await pool.query('DELETE FROM reviews WHERE id = $1', [id]);
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -818,57 +964,6 @@ app.get('/api/rating', async (req, res) => {
              ORDER BY total_spent DESC LIMIT 100`
         );
         res.json(result.rows);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-app.get('/api/stats', async (req, res) => {
-    try {
-        const now = new Date();
-        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const week = new Date(today);
-        week.setDate(week.getDate() - 7);
-
-        const todayStr = today.toLocaleDateString('ru-RU');
-        const weekAgo = week.toISOString();
-
-        const dayOrders = await pool.query(`SELECT COUNT(*) as count, COALESCE(SUM(total),0) as revenue FROM orders WHERE date = $1`, [todayStr]);
-        const dayUsers = await pool.query(`SELECT COUNT(DISTINCT user_id) as count FROM orders WHERE date = $1`, [todayStr]);
-        const weekOrders = await pool.query(`SELECT COUNT(*) as count, COALESCE(SUM(total),0) as revenue FROM orders WHERE timestamp >= $1`, [weekAgo]);
-        const weekUsers = await pool.query(`SELECT COUNT(DISTINCT user_id) as count FROM orders WHERE timestamp >= $1`, [weekAgo]);
-        const allOrders = await pool.query(`SELECT COUNT(*) as count, COALESCE(SUM(total),0) as revenue FROM orders`);
-        const allUsers = await pool.query(`SELECT COUNT(*) as count FROM app_users`);
-        const activeUsers = await pool.query(`SELECT COUNT(DISTINCT user_id) as count FROM orders WHERE user_id IS NOT NULL`);
-        const avgOrder = await pool.query(`SELECT COALESCE(AVG(total),0) as avg FROM orders`);
-        const topProduct = await pool.query(`
-            SELECT name, SUM(qty) as total_qty FROM (
-                SELECT jsonb_array_elements(items::jsonb)->>'name' as name,
-                       (jsonb_array_elements(items::jsonb)->>'qty')::int as qty
-                FROM orders
-            ) t GROUP BY name ORDER BY total_qty DESC LIMIT 1
-        `);
-
-        res.json({
-            day: {
-                orders: parseInt(dayOrders.rows[0].count),
-                revenue: parseInt(dayOrders.rows[0].revenue),
-                users: parseInt(dayUsers.rows[0].count)
-            },
-            week: {
-                orders: parseInt(weekOrders.rows[0].count),
-                revenue: parseInt(weekOrders.rows[0].revenue),
-                users: parseInt(weekUsers.rows[0].count)
-            },
-            all: {
-                orders: parseInt(allOrders.rows[0].count),
-                revenue: parseInt(allOrders.rows[0].revenue),
-                total_users: parseInt(allUsers.rows[0].count),
-                active_users: parseInt(activeUsers.rows[0].count),
-                avg_order: Math.round(parseFloat(avgOrder.rows[0].avg)),
-                top_product: topProduct.rows[0]?.name || '—'
-            }
-        });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

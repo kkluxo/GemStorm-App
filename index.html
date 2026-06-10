@@ -1899,24 +1899,22 @@
 <body>
 
 <script>
-function waitForTelegram(callback, attempts) {
-  attempts = attempts || 0;
-  if (window.Telegram && window.Telegram.WebApp) {
-    callback();
-    return;
+waitForTelegram(function() {
+  const tg = window.Telegram?.WebApp;
+  if (tg) {
+    tg.ready();
+    tg.expand();
+    try { tg.requestFullscreen(); } catch(e) {}
+    try { tg.setHeaderColor("#121214"); tg.setBackgroundColor("#121214"); } catch(e) {}
+    try { if (tg.disableClosingConfirmation) tg.disableClosingConfirmation(); } catch(e) {}
+    try { if (tg.disableVerticalSwipes) tg.disableVerticalSwipes(); } catch(e) {}
+    initBackButtonHandler();
+    tg.BackButton.hide();
   }
-  if (attempts > 20 && window.location.hash.length > 100) {
-    callback();
-    return;
-  }
-  if (attempts > 50) {
-    callback();
-    return;
-  }
-  setTimeout(function() {
-    waitForTelegram(callback, attempts + 1);
-  }, 100);
-}
+  initApp();
+  // Перерисовываем заголовок после инициализации
+  setTimeout(() => { injectPageHeader(); }, 50);
+});
 </script>
 
 <div id="browserBlocker" style="display: none;" class="browser-blocker">
@@ -2569,13 +2567,26 @@ if (!tgUser || !tgUser.id) {
   }
 
   async function loadUserOrders() {
-    try {
-      const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-      if (!tgUser?.id) return;
-      const r = await fetch(`https://gemstorm.up.railway.app/api/user-orders?userId=${tgUser.id}`);
-      if (r.ok) orders = await r.json();
-    } catch(e) { console.error('Ошибка загрузки заказов:', e); }
-  }
+  try {
+    const tgUser = window.__tgUser || window.Telegram?.WebApp?.initDataUnsafe?.user;
+    if (!tgUser?.id) return;
+    const r = await fetch(`https://gemstorm.up.railway.app/api/user-orders?userId=${tgUser.id}`);
+    if (r.ok) orders = await r.json();
+  } catch(e) { console.error('Ошибка загрузки заказов:', e); }
+}
+
+async function getUserTotalSpent() {
+  try {
+    const tgUser = window.__tgUser || window.Telegram?.WebApp?.initDataUnsafe?.user;
+    if (!tgUser?.id) return 0;
+    const response = await fetch(`https://gemstorm.up.railway.app/api/user-orders?userId=${tgUser.id}`);
+    if (!response.ok) return 0;
+    const userOrders = await response.json();
+    return userOrders
+      .filter(order => order.status_code === 'completed' || order.status_code === 'done')
+      .reduce((sum, order) => sum + (order.total || 0), 0);
+  } catch(e) { return 0; }
+}
 
   async function getUserTotalSpent() {
     try {

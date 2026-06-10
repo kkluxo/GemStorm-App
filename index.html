@@ -1898,6 +1898,27 @@
 </head>
 <body>
 
+<script>
+function waitForTelegram(callback, attempts) {
+  attempts = attempts || 0;
+  if (window.Telegram && window.Telegram.WebApp) {
+    callback();
+    return;
+  }
+  if (attempts > 20 && window.location.hash.length > 100) {
+    callback();
+    return;
+  }
+  if (attempts > 50) {
+    callback();
+    return;
+  }
+  setTimeout(function() {
+    waitForTelegram(callback, attempts + 1);
+  }, 100);
+}
+</script>
+
 <div id="browserBlocker" style="display: none;" class="browser-blocker">
   <div class="browser-blocker-content">
     <img class="browser-blocker-icon" src="https://storage.botpapa.me/files/fd86aa00-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="warning">

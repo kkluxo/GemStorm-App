@@ -3689,7 +3689,6 @@ async function renderRoulettePage() {
           const spinBtn = document.getElementById("spinBtn");
           if (spinBtn) { spinBtn.disabled = true; spinBtn.textContent = "Обработка..."; }
           try {
-            const ordersRes = await fetch(`https://gemstorm.up.railway.app/api/user-orders?userId=${userId}`).then(r => r.json());
             const spinsRes = await fetch(`https://gemstorm.up.railway.app/api/user-spins?userId=${userId}`).then(r => r.json()).catch(() => ({ spins: [] }));
             const usedOrderIds = (spinsRes.spins || []).map(s => String(s.order_id));
             const availableOrder = ordersRes.filter(o => (o.status_code === 'done' || o.status_code === 'completed') && !usedOrderIds.includes(String(o.id)))[0];

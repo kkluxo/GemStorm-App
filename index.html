@@ -1905,7 +1905,6 @@ function waitForTelegram(callback, attempts) {
     callback();
     return;
   }
-  // Если SDK нет но данные есть в URL — запускаем без SDK
   if (attempts > 20 && window.location.hash.length > 100) {
     callback();
     return;
@@ -1918,75 +1917,6 @@ function waitForTelegram(callback, attempts) {
     waitForTelegram(callback, attempts + 1);
   }, 100);
 }
-
-// Откладываем весь старт приложения до загрузки Telegram SDK
-document.addEventListener('DOMContentLoaded', function() {
-  waitForTelegram(function() {
-    const tg = window.Telegram?.WebApp;
-    if (tg) {
-      tg.ready();
-      tg.expand();
-      try { tg.requestFullscreen(); } catch(e) {}
-      try { tg.setHeaderColor("#121214"); tg.setBackgroundColor("#121214"); } catch(e) {}
-      try { if (tg.disableVerticalSwipes) tg.disableVerticalSwipes(); } catch(e) {}
-    }
-
-    // Парсим пользователя
-    let user = tg?.initDataUnsafe?.user || null;
-    if (!user && tg?.initData) {
-      try {
-        const params = new URLSearchParams(tg.initData);
-        const userStr = params.get('user');
-        if (userStr) user = JSON.parse(decodeURIComponent(userStr));
-      } catch(e) {}
-    }
-    if (user) window.__tgUser = user;
-
-    // Обновляем аватар в меню
-    if (user?.photo_url) {
-      const avatar = document.getElementById("profileMenuAvatar");
-      if (avatar) avatar.src = user.photo_url;
-    }
-  });
-});
-</script>
-
-<div id="debugPanel" style="position:fixed;bottom:100px;right:10px;background:#000;color:#0f0;font-size:10px;padding:5px;border-radius:5px;z-index:9999;max-width:80%;word-break:break-all;display:none;"></div>
-<button id="debugBtn" style="position:fixed;bottom:160px;right:10px;background:#4cb4e9;border:none;border-radius:20px;padding:8px 12px;color:white;font-size:12px;z-index:9999;cursor:pointer;">🐛 Отладка</button>
-
-<script>
-document.getElementById('debugBtn').addEventListener('click', function() {
-  const panel = document.getElementById('debugPanel');
-  
-  // Читаем hash напрямую
-  const hash = window.location.hash.slice(1);
-  let userFromHash = null;
-  let hashPreview = '';
-  
-  try {
-    const params = new URLSearchParams(hash);
-    hashPreview = hash.substring(0, 100);
-    const userStr = params.get('user');
-    if (userStr) {
-      userFromHash = JSON.parse(decodeURIComponent(userStr));
-    }
-  } catch(e) {}
-
-  const tg = window.Telegram?.WebApp;
-  const savedUser = window.__tgUser;
-  
-  panel.style.display = 'block';
-  panel.innerHTML = `
-    <b>Telegram SDK:</b> ${tg ? '✅' : '❌'}<br>
-    <b>Hash длина:</b> ${hash.length}<br>
-    <b>Hash начало:</b> ${hashPreview}<br>
-    <b>user из hash:</b> ${userFromHash?.id || '❌ Нет'}<br>
-    <b>user.name из hash:</b> ${userFromHash?.first_name || '❌'}<br>
-    <b>__tgUser:</b> ${savedUser?.id || '❌ Нет'}<br>
-  `;
-  
-  setTimeout(() => { panel.style.display = 'none'; }, 20000);
-});
 </script>
 
 <div id="browserBlocker" style="display: none;" class="browser-blocker">

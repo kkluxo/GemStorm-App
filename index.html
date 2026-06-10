@@ -3429,6 +3429,8 @@ if (!tgUser || !tgUser.id) {
   function getLastPage() { const savedPage = localStorage.getItem("lastPage"); const validPages = ["catalog", "cart", "orders", "profile"]; if (savedPage && validPages.includes(savedPage)) { return savedPage; } return "catalog"; }
 
   function injectPageHeader() {
+  // небольшая задержка чтобы DOM успел обновиться
+  setTimeout(function() {
     const pageConfigs = {
       'catalog': { icon: 'https://storage.botpapa.me/files/00f09750-5110-11f1-bef9-f1ec7a2c6e45.png', title: 'Каталог' },
       'cart': { icon: 'https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png', title: 'Корзина' },
@@ -3443,6 +3445,38 @@ if (!tgUser || !tgUser.id) {
       'write-review': { icon: 'https://storage.botpapa.me/files/f665c4e0-510f-11f1-bef9-f1ec7a2c6e45.png', title: 'Оставить отзыв' },
       'gifts': { icon: 'https://storage.botpapa.me/files/501ffee0-51e9-11f1-bef9-f1ec7a2c6e45.png', title: 'Подарки' },
     };
+    const activePage = document.querySelector('.page.active-page');
+    if (!activePage) return;
+    const pageId = activePage.id.replace('-page', '');
+    const cfg = pageConfigs[pageId];
+    if (!cfg) return;
+    const old = activePage.querySelector('.page-header-sticky');
+    if (old) old.remove();
+    activePage.insertAdjacentHTML('afterbegin', renderPageHeader(cfg.icon, cfg.title));
+    // Вешаем обработчик сразу после вставки
+    attachHeaderButtonHandlers();
+  }, 30);
+}
+    
+    function attachHeaderButtonHandlers() {
+  const btn = document.getElementById('headerDoubleBtn');
+  if (!btn) return;
+  // Удаляем старый обработчик через замену элемента
+  const newBtn = btn.cloneNode(true);
+  btn.parentNode.replaceChild(newBtn, btn);
+  
+  newBtn.addEventListener('click', function(e) {
+    const isRefresh = e.target.closest('#headerRefreshIcon') || 
+                      e.offsetX < newBtn.offsetWidth / 2;
+    if (isRefresh) {
+      hapticLight();
+      refreshCurrentPage();
+    } else {
+      hapticLight();
+      window.open('https://t.me/GemStormHelp', '_blank');
+    }
+  });
+}
 
     const activePage = document.querySelector('.page.active-page');
     if (!activePage) return;
@@ -3723,9 +3757,6 @@ if (!tgUser || !tgUser.id) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
   renderFilterModal();
 // Обработчик для двойной кнопки в хедере
-document.addEventListener('click', function(e) {
-  const doubleBtn = e.target.closest('#headerDoubleBtn');
-  if (!doubleBtn) return;
   
   // Определяем, на какую иконку нажали
   const isRefresh = e.target.closest('#headerRefreshIcon');

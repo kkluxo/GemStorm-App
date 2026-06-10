@@ -2368,28 +2368,36 @@
       fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${appliedPromo ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="checkoutBtn">Перейти к оформлению</button><button class="promo-btn" id="openPromoBtn"><img src="https://storage.botpapa.me/files/8324fec0-5933-11f1-bef9-f1ec7a2c6e45.png" alt="Промокод"></button></div></div>`;
       setTimeout(() => {
         document.getElementById("checkoutBtn")?.addEventListener("click", async () => {
-          hapticMedium();
-          const tgU = window.Telegram?.WebApp?.initDataUnsafe?.user;
-          try {
-            const r = await fetch('https://gemstorm.up.railway.app/api/settings');
-            const s = await r.json();
-            const status = s.bot_status || 'open';
-            if (status === 'closed') { alert('Оформить заказ временно не получится, попробуйте позже'); return; }
-            if (status === 'maintenance') { alert('Оформить заказ временно не получится, проводятся технические работы'); return; }
-            if (status === 'auto') {
-              const mskHour = (new Date().getUTCHours() + 3) % 24;
-              if (mskHour >= 0 && mskHour < 10) { alert('Оформить заказ временно не получится, возвращайтесь в 10:00 по московскому времени'); return; }
-            }
-          } catch(e) {}
-          try {
-            if (tgU?.id) {
-              const lr = await fetch(`https://gemstorm.up.railway.app/api/check-rate-limit?userId=${tgU.id}`);
-              const l = await lr.json();
-              if (l.limited) { alert('Оформление заказов для вас временно ограничено, попробуйте позже'); return; }
-            }
-          } catch(e) {}
-          showPage("checkout");
-        });
+  hapticMedium();
+  
+  // ===== ПРОВЕРКА (всего 3 строчки) =====
+  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  if (!tgUser || !tgUser.id) {
+    alert('Оформить заказ можно только через Telegram-бота\n\nПожалуйста, откройте приложение через @GemStormBot');
+    return;
+  }
+  // ======================================
+  
+  try {
+    const r = await fetch('https://gemstorm.up.railway.app/api/settings');
+    const s = await r.json();
+    const status = s.bot_status || 'open';
+    if (status === 'closed') { alert('Оформить заказ временно не получится, попробуйте позже'); return; }
+    if (status === 'maintenance') { alert('Оформить заказ временно не получится, проводятся технические работы'); return; }
+    if (status === 'auto') {
+      const mskHour = (new Date().getUTCHours() + 3) % 24;
+      if (mskHour >= 0 && mskHour < 10) { alert('Оформить заказ временно не получится, возвращайтесь в 10:00 по московскому времени'); return; }
+    }
+  } catch(e) {}
+  try {
+    if (tgUser?.id) {
+      const lr = await fetch(`https://gemstorm.up.railway.app/api/check-rate-limit?userId=${tgUser.id}`);
+      const l = await lr.json();
+      if (l.limited) { alert('Оформление заказов для вас временно ограничено, попробуйте позже'); return; }
+    }
+  } catch(e) {}
+  showPage("checkout");
+});
         document.getElementById("openPromoBtn")?.addEventListener("click", () => { hapticLight(); isPromoMode = true; renderCheckoutBlock(); });
       }, 0);
     }
@@ -2967,7 +2975,15 @@
         }, 0);
       });
       document.getElementById("promoGoCheckoutBtn")?.addEventListener("click", () => {
-        hapticMedium();
+  hapticMedium();
+  
+  // ===== ТА ЖЕ ПРОВЕРКА =====
+  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  if (!tgUser || !tgUser.id) {
+    alert('Оформить заказ можно только через Telegram-бота\n\nПожалуйста, откройте приложение через @GemStormBot');
+    return;
+  }
+  // ===========================
         const idx = document.getElementById("promoDealSelect")?.value;
         const nameVal = document.getElementById("promoNameInput")?.value.trim();
         const catVal = document.getElementById("promoCategorySelect")?.value;

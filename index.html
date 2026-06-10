@@ -2692,16 +2692,10 @@
           <span class="order-detail-label">Отправитель</span>
           <span class="order-detail-value">${escapeHtml(order.sender_name || '—')}</span>
         </div>
-                ${order.promo_item_category === 'Telegram Premium' || order.promo_item_category === 'Telegram Stars'
-          ? `<div class="order-detail-row">
-              <span class="order-detail-label">Получатель</span>
-              <span class="order-detail-value">${escapeHtml(order.promo_item_name || '—')}</span>
-            </div>`
-          : `<div class="order-detail-row">
-              <span class="order-detail-label">Почта</span>
-              <span class="order-detail-value">${escapeHtml(order.email || '—')}</span>
-            </div>`
-        }
+                <div class="order-detail-row">
+  <span class="order-detail-label">Почта</span>
+  <span class="order-detail-value">${escapeHtml(order.email || '—')}</span>
+</div>
         ${order.promo ? `<div class="order-detail-row">
           <span class="order-detail-label">Промокод</span>
           <span class="order-detail-value">${order.promo} (${order.promo_discount}%)</span>

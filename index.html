@@ -1898,6 +1898,32 @@
 </head>
 <body>
 
+<div id="debugPanel" style="position:fixed;bottom:100px;right:10px;background:#000;color:#0f0;font-size:10px;padding:5px;border-radius:5px;z-index:9999;max-width:80%;word-break:break-all;display:none;"></div>
+<button id="debugBtn" style="position:fixed;bottom:160px;right:10px;background:#4cb4e9;border:none;border-radius:20px;padding:8px 12px;color:white;font-size:12px;z-index:9999;cursor:pointer;">🐛 Отладка</button>
+
+<script>
+document.getElementById('debugBtn').addEventListener('click', function() {
+  const panel = document.getElementById('debugPanel');
+  const tg = window.Telegram?.WebApp;
+  const user = tg?.initDataUnsafe?.user;
+  
+  panel.style.display = 'block';
+  panel.innerHTML = `
+    <b>Telegram WebApp:</b> ${tg ? '✅ Есть' : '❌ Нет'}<br>
+    <b>User ID:</b> ${user?.id || '❌ Нет'}<br>
+    <b>User Name:</b> ${user?.first_name || '❌ Нет'}<br>
+    <b>User Username:</b> ${user?.username || '❌ Нет'}<br>
+    <b>Photo URL:</b> ${user?.photo_url ? '✅ Есть' : '❌ Нет'}<br>
+    <b>Platform:</b> ${tg?.platform || '❌ Нет'}<br>
+    <b>initData:</b> ${tg?.initData ? '✅ Есть' : '❌ Нет'}
+  `;
+  
+  setTimeout(() => {
+    panel.style.display = 'none';
+  }, 10000);
+});
+</script>
+
 <div id="browserBlocker" style="display: none;" class="browser-blocker">
   <div class="browser-blocker-content">
     <img class="browser-blocker-icon" src="https://storage.botpapa.me/files/fd86aa00-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="warning">
@@ -3501,42 +3527,10 @@
     }
   }
 
-  async function initApp() {
+  function initApp() {
   loadCartFromLocalStorage();
-  
-  // ========== УНИВЕРСАЛЬНАЯ ЗАГРУЗКА ПОЛЬЗОВАТЕЛЯ ==========
-  let tgU = null;
-  let attempts = 0;
-  const maxAttempts = 20; // 20 попыток (4 секунды)
-  
-  // Пытаемся получить пользователя несколько раз
-  while (attempts < maxAttempts && !tgU?.id) {
-    tgU = window.Telegram?.WebApp?.initDataUnsafe?.user;
-    
-    // Если уже получили пользователя — выходим
-    if (tgU?.id) break;
-    
-    // Ждём 200 мс перед следующей попыткой
-    await new Promise(resolve => setTimeout(resolve, 200));
-    attempts++;
-  }
-  
-  // Если так и не получили, пробуем ещё один способ
-  if (!tgU?.id && window.Telegram?.WebApp) {
-    try {
-      // Принудительно расширяем WebApp и пробуем ещё раз
-      window.Telegram.WebApp.expand();
-      window.Telegram.WebApp.ready();
-      
-      await new Promise(resolve => setTimeout(resolve, 500));
-      tgU = window.Telegram?.WebApp?.initDataUnsafe?.user;
-    } catch(e) {}
-  }
-  // ========================================================
-  
-  // Проверяем, есть ли пользователь
+  const tgU = window.Telegram?.WebApp?.initDataUnsafe?.user;
   if (tgU?.id) {
-    // Отправляем данные на сервер
     fetch('https://gemstorm.up.railway.app/api/track-user', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -3547,15 +3541,7 @@
         photoUrl: tgU.photo_url || null
       })
     }).catch(() => {});
-    
-    // Сохраняем данные в глобальную переменную для других функций
-    window.__tgUser = tgU;
-  } else {
-    console.warn('Не удалось загрузить данные пользователя Telegram');
-    window.__tgUser = null;
   }
-  
-  // ========== ОСТАЛЬНОЙ КОД initApp() ==========
   const savedCheckout = localStorage.getItem('checkoutData');
   if (savedCheckout) {
     try {
@@ -3563,21 +3549,18 @@
       checkoutData = { ...checkoutData, ...parsed };
     } catch(e) {}
   }
-  
   const lastPage = getLastPage();
   showPage(lastPage);
-  
-  // Обновляем аватар в меню, если есть
-  if (tgU?.photo_url) {
+  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  if (tgUser?.photo_url) {
     const avatar = document.getElementById("profileMenuAvatar");
-    if (avatar) avatar.src = tgU.photo_url;
+    if (avatar) avatar.src = tgUser.photo_url;
   }
-  
-  // Обработка реферальной ссылки
+
   const tg = window.Telegram?.WebApp;
   const startParam = tg?.initDataUnsafe?.start_param || new URLSearchParams(window.location.search).get("startapp");
-  const userId = tgU?.id;
-  
+  const userId = tg?.initDataUnsafe?.user?.id;
+
   if (startParam && startParam.startsWith("ref") && userId) {
     const referrerId = parseInt(startParam.replace("ref", ""));
     if (referrerId && referrerId !== userId) {

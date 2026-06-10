@@ -59,11 +59,20 @@
       --brand-blue: #4cb4e9;
     }
 
-    /* Светлая тема */
+    body {
+      background-color: #121214;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #ffffff;
+      padding-bottom: 130px;
+      transition: background-color 0.2s, color 0.2s;
+    }
+    
     body.light-theme {
       background-color: #f5f5f7;
       color: #1c1c1e;
     }
+
+    /* Светлая тема - полная перекраска всех элементов */
     body.light-theme .page-header-sticky {
       background: #f5f5f7;
     }
@@ -87,6 +96,7 @@
     }
     body.light-theme .filter-btn {
       border-color: #e5e5ea;
+      background: #ffffff;
     }
     body.light-theme .product-card {
       background: #ffffff;
@@ -108,9 +118,18 @@
     body.light-theme .cart-product-price {
       color: #1c1c1e;
     }
+    body.light-theme .cart-product-category {
+      color: #5c5c5e;
+    }
     body.light-theme .cart-item-delivery {
       background: #e8e8ed;
       border-color: #e5e5ea;
+    }
+    body.light-theme .cart-item-delivery-label {
+      color: #5c5c5e;
+    }
+    body.light-theme .cart-item-delivery-value {
+      color: #8e8e93;
     }
     body.light-theme .checkout-card {
       background: #ffffffcc;
@@ -141,7 +160,8 @@
     body.light-theme .review-compose-card,
     body.light-theme .order-main-card,
     body.light-theme .gift-main-card,
-    body.light-theme .gift-link-card {
+    body.light-theme .gift-link-card,
+    body.light-theme .settings-card {
       background: #ffffff;
       border-color: #e5e5ea;
     }
@@ -155,6 +175,9 @@
     body.light-theme .form-select-native,
     body.light-theme .promo-input {
       background: #f5f5f7;
+      color: #1c1c1e;
+    }
+    body.light-theme .form-label {
       color: #1c1c1e;
     }
     body.light-theme .order-detail-label,
@@ -174,7 +197,7 @@
     body.light-theme .menu-item.active .menu-label {
       color: #4cb4e9;
     }
-    body.light-theme .profileMenuWrapper {
+    body.light-theme #profileMenuWrapper {
       background: rgba(255, 255, 255, 0.7);
       border-color: rgba(0, 0, 0, 0.1);
     }
@@ -182,22 +205,106 @@
       color: #8e8e93;
     }
     body.light-theme .review-text,
-    body.light-theme .review-pinned-text,
-    body.light-theme .cart-product-category {
+    body.light-theme .review-pinned-text {
       color: #5c5c5e;
     }
     body.light-theme .profile-nickname {
       color: #1c1c1e;
     }
-
-    body {
-      background-color: #121214;
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      color: #ffffff;
-      padding-bottom: 130px;
-      transition: background-color 0.2s, color 0.2s;
+    body.light-theme .subscribe-title {
+      color: #1c1c1e;
     }
-    
+    body.light-theme .subscribe-text {
+      color: #8e8e93;
+    }
+    body.light-theme .review-author-name {
+      color: #1c1c1e;
+    }
+    body.light-theme .review-date {
+      color: #8e8e93;
+    }
+    body.light-theme .review-pinned-name {
+      color: #1c1c1e;
+    }
+    body.light-theme .review-pinned-role {
+      color: #8e8e93;
+    }
+    body.light-theme .review-pinned-text {
+      color: #5c5c5e;
+    }
+    body.light-theme .review-pinned-link-label {
+      color: #5c5c5e;
+    }
+    body.light-theme .cart-qty-value {
+      color: #1c1c1e;
+    }
+    body.light-theme .counter-value {
+      color: #1c1c1e;
+    }
+    body.light-theme .gift-name {
+      color: #1c1c1e;
+    }
+    body.light-theme .gift-price {
+      color: #1c1c1e;
+    }
+    body.light-theme .gift-category {
+      color: #8e8e93;
+    }
+    body.light-theme .expiry-label-bottom,
+    body.light-theme .expiry-status-bottom {
+      color: #8e8e93;
+    }
+    body.light-theme .settings-row-left {
+      color: #1c1c1e;
+    }
+    body.light-theme .settings-divider {
+      background: rgba(0,0,0,0.1);
+    }
+    body.light-theme .settings-row:active {
+      background: rgba(0,0,0,0.05);
+    }
+    body.light-theme .order-id {
+      color: #4cb4e9;
+    }
+    body.light-theme .order-date {
+      color: #8e8e93;
+    }
+    body.light-theme .order-total {
+      color: #1c1c1e;
+    }
+    body.light-theme .order-item-name {
+      color: #5c5c5e;
+    }
+    body.light-theme .order-item-price {
+      color: #1c1c1e;
+    }
+    body.light-theme .profile-stats-value {
+      color: #1c1c1e;
+    }
+    body.light-theme .filter-text {
+      color: #1c1c1e;
+    }
+    body.light-theme .filter-row {
+      border-bottom-color: rgba(0,0,0,0.1);
+    }
+    body.light-theme .promo-action-btn.apply-btn,
+    body.light-theme .promo-action-btn.back-btn {
+      background: rgba(56, 150, 200, 0.15);
+    }
+    body.light-theme .promo-btn {
+      background: rgba(56, 150, 200, 0.15);
+    }
+    body.light-theme .profile-gift-icon {
+      background: #ffffff;
+      border-color: #e5e5ea;
+    }
+    body.light-theme .cart-quantity {
+      background: rgba(56, 150, 200, 0.1);
+    }
+    body.light-theme .gift-claim-btn {
+      background: rgba(56, 150, 200, 0.1);
+    }
+
     body {
       padding-top: var(--tg-safe-area-inset-top, 0px);
     }
@@ -485,7 +592,7 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: border-color 0.2s;
+      transition: background 0.2s, border-color 0.2s;
     }
 
     .filter-icon {
@@ -602,6 +709,7 @@
       font-size: 16px;
       font-weight: 500;
       color: white;
+      transition: color 0.2s;
     }
 
     .empty-state-icon {
@@ -678,12 +786,14 @@
       font-size: 16px;
       color: #cbcdcd;
       font-weight: 500;
+      transition: color 0.2s;
     }
 
     .cart-item-delivery-value {
       font-size: 16px;
       color: #9e9e9e;
       font-weight: 500;
+      transition: color 0.2s;
     }
 
     .cart-img {
@@ -739,6 +849,7 @@
       background: rgba(56, 150, 200, 0.1);
       border-radius: 40px;
       padding: 6px 10px;
+      transition: background 0.2s;
     }
 
     .cart-qty-btn {
@@ -763,6 +874,7 @@
       color: white;
       min-width: 20px;
       text-align: center;
+      transition: color 0.2s;
     }
 
     .cart-checkout-fixed {
@@ -865,6 +977,7 @@
       justify-content: center;
       cursor: pointer;
       flex-shrink: 0;
+      transition: background 0.2s;
     }
 
     .promo-btn img {
@@ -916,6 +1029,7 @@
       justify-content: center;
       cursor: pointer;
       flex-shrink: 0;
+      transition: background 0.2s;
     }
 
     .promo-action-btn.apply-btn {
@@ -1329,6 +1443,7 @@
       padding: 14px 12px;
       border-bottom: 0.5px solid rgba(255, 255, 255, 0.1);
       cursor: pointer;
+      transition: border-color 0.2s;
     }
 
     .filter-row:last-child {
@@ -1338,6 +1453,7 @@
     .filter-text {
       font-size: 19px;
       font-weight: 500;
+      transition: color 0.2s;
     }
 
     .check-mark {
@@ -1477,12 +1593,14 @@
       font-size: 16px;
       font-weight: 600;
       color: #ffffff;
+      transition: color 0.2s;
     }
 
     .review-pinned-role {
       font-size: 13px;
       color: #9e9e9e;
       margin-top: 2px;
+      transition: color 0.2s;
     }
 
     .review-pinned-badge {
@@ -1533,6 +1651,7 @@
       font-size: 16px;
       color: #cbcdcd;
       font-weight: 500;
+      transition: color 0.2s;
     }
 
     .review-pinned-arrow {
@@ -1571,11 +1690,13 @@
       font-size: 15px;
       font-weight: 600;
       color: #ffffff;
+      transition: color 0.2s;
     }
 
     .review-date {
       font-size: 12px;
       color: #9e9e9e;
+      transition: color 0.2s;
     }
 
     .review-stars {
@@ -1855,12 +1976,14 @@
       color: #a1a1aa;
       font-size: 14px;
       margin-bottom: 8px;
+      transition: color 0.2s;
     }
 
     .order-total {
       font-weight: 600;
       color: white;
       font-size: 17px;
+      transition: color 0.2s;
     }
 
     .order-items-card {
@@ -1889,12 +2012,14 @@
       overflow: hidden;
       text-overflow: ellipsis;
       max-width: 60%;
+      transition: color 0.2s;
     }
 
     .order-item-price {
       font-size: 16px;
       color: #ffffff;
       font-weight: 500;
+      transition: color 0.2s;
     }
 
     .gifts-container {
@@ -1946,17 +2071,20 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      transition: color 0.2s;
     }
 
     .gift-price {
       font-size: 18px;
       font-weight: 500;
       color: white;
+      transition: color 0.2s;
     }
 
     .gift-category {
       font-size: 16px;
       color: #9e9e9e;
+      transition: color 0.2s;
     }
 
     .gift-link-card {
@@ -1984,12 +2112,14 @@
     .expiry-label-bottom {
       font-size: 16px;
       color: #9e9e9e;
+      transition: color 0.2s;
     }
 
     .expiry-status-bottom {
       font-size: 16px;
       color: #9e9e9e;
       font-weight: 500;
+      transition: color 0.2s;
     }
 
     .gift-claim-btn {
@@ -2012,7 +2142,6 @@
       gap: 8px;
     }
 
-    /* Настройки карточка */
     .settings-card {
       background: #222225;
       border: 1px solid #2B2B2D;
@@ -2046,15 +2175,7 @@
       height: 1px;
       background: rgba(255,255,255,0.1);
       margin: 0 18px;
-    }
-    body.light-theme .settings-row-left {
-      color: #1c1c1e;
-    }
-    body.light-theme .settings-divider {
-      background: rgba(0,0,0,0.1);
-    }
-    body.light-theme .settings-row:active {
-      background: rgba(0,0,0,0.05);
+      transition: background 0.2s;
     }
   </style>
 </head>
@@ -2251,208 +2372,12 @@
     { value: "alfa", label: "Альфа Банк" }
   ];
 
-  // Настройки приложения
+  // Настройки приложения (только тема и вибрация, язык только русский)
   let appSettings = {
-    language: 'ru', // 'ru' или 'en'
     theme: 'dark',  // 'dark' или 'light'
     vibration: true  // true или false
   };
 
-  // Функции перевода
-  const translations = {
-    ru: {
-      catalog: "Каталог",
-      cart: "Корзина",
-      orders: "Заказы",
-      profile: "Профиль",
-      filter: "Фильтры",
-      checkout: "Оформление",
-      payment: "Оплата",
-      reviews: "Отзывы",
-      buyPromo: "Покупка акций",
-      writeReview: "Оставить отзыв",
-      gifts: "Подарки",
-      settings: "Настройки",
-      findProduct: "Найти товар по названию",
-      allCategories: "Все категории",
-      emptyCart: "Корзина товаров пуста",
-      goToCatalog: "Перейти в каталог",
-      emptyOrders: "Заказов еще нет",
-      emptyCatalog: "Товары не найдены",
-      resetFilters: "Сбросить фильтры",
-      totalAmount: "Общая стоимость:",
-      enterPromoCode: "Введите промокод на скидку",
-      apply: "Применить",
-      back: "Назад",
-      proceedToCheckout: "Перейти к оформлению",
-      help: "Помощь",
-      cardNumber: "Номер карты",
-      recipient: "Получатель",
-      recipientBank: "Банк получателя",
-      ivePaid: "Я оплатил",
-      processing: "Обработка...",
-      email: "Почта Supercell ID",
-      paymentMethod: "Способ оплаты",
-      senderData: "Данные отправителя",
-      senderNamePlaceholder: "Укажите имя отправителя",
-      selectPayment: "Нажмите для выбора",
-      optional: "Необязательно",
-      promoCodeNotFound: "Промокод не найден",
-      promoCodeAlreadyUsed: "Данный промокод уже был использован ранее",
-      promoCodeFirstOrder: "Данный промокод доступен только на первый заказ",
-      orderClosed: "Оформить заказ временно не получится, попробуйте позже",
-      orderMaintenance: "Оформить заказ временно не получится, проводятся технические работы",
-      orderAuto: "Оформить заказ временно не получится, возвращайтесь в 10:00 по московскому времени",
-      orderLimit: "Оформление заказов для вас временно ограничено, попробуйте позже",
-      cartEmpty: "Корзина пуста",
-      checkPromoFirst: "Перед оформлением заказа пожалуйста проверьте наличие данной акции на вашем аккаунте",
-      enterCode: "Введите код который вам пришел",
-      submitCode: "Отправить код",
-      codeSent: "Код отправлен. Пожалуйста, не заходите на аккаунт пока ваш заказ не будет выполнен.",
-      codeError: "Ошибка отправки кода",
-      connectionError: "Ошибка соединения",
-      leaveReview: "Оставить отзыв",
-      writeReviewText: "Напишите ваш отзыв...",
-      sendReview: "Отправить отзыв",
-      selectOrder: "Выберите заказ",
-      yourReview: "Ваш отзыв",
-      characters: "символов",
-      reviewSubmitted: "Отзыв отправлен",
-      reviewError: "Ошибка при отправке",
-      giftClaim: "Получить",
-      giftExpiry: "Срок действия",
-      giftInfinite: "∞",
-      profilePurchaseVolume: "Объем покупок",
-      subscribeChannel: "Подпишитесь на канал",
-      subscribeText: "Следите за новостями и акциями",
-      watchReviews: "Смотреть наши отзывы",
-      watchReviewsText: "Посмотрите или оставьте отзывы",
-      buyPromoTitle: "Приобретение акций",
-      buyPromoText: "Приобрести любую акцию в игре",
-      contactSupport: "Связаться с поддержкой",
-      contactSupportText: "Получить помощь по всем заказам",
-      settingsCard: "Настройки",
-      language: "Язык",
-      russian: "Русский",
-      english: "English",
-      theme: "Тема",
-      darkTheme: "Тёмная",
-      lightTheme: "Светлая",
-      vibrationSetting: "Вибрация",
-      on: "Вкл.",
-      off: "Выкл.",
-      orderStatusPending: "Ожидает проверки",
-      orderStatusAwaiting: "Ожидание кода",
-      orderStatusCancelled: "Отменен",
-      orderStatusProcessing: "Ожидает выполнения",
-      orderStatusCompleted: "Заказ выполнен",
-      orderId: "Заказ",
-      orderDate: "Дата",
-      orderTotal: "Сумма заказа",
-      promoApplied: "Промокод",
-      promoCode: "Промокод",
-      copy: "Копировать"
-    },
-    en: {
-      catalog: "Catalog",
-      cart: "Cart",
-      orders: "Orders",
-      profile: "Profile",
-      filter: "Filter",
-      checkout: "Checkout",
-      payment: "Payment",
-      reviews: "Reviews",
-      buyPromo: "Buy Promo",
-      writeReview: "Write Review",
-      gifts: "Gifts",
-      settings: "Settings",
-      findProduct: "Find product by name",
-      allCategories: "All categories",
-      emptyCart: "Cart is empty",
-      goToCatalog: "Go to catalog",
-      emptyOrders: "No orders yet",
-      emptyCatalog: "No products found",
-      resetFilters: "Reset filters",
-      totalAmount: "Total:",
-      enterPromoCode: "Enter promo code",
-      apply: "Apply",
-      back: "Back",
-      proceedToCheckout: "Checkout",
-      help: "Help",
-      cardNumber: "Card number",
-      recipient: "Recipient",
-      recipientBank: "Recipient bank",
-      ivePaid: "I paid",
-      processing: "Processing...",
-      email: "Supercell ID Email",
-      paymentMethod: "Payment method",
-      senderData: "Sender name",
-      senderNamePlaceholder: "Enter sender name",
-      selectPayment: "Tap to select",
-      optional: "Optional",
-      promoCodeNotFound: "Promo code not found",
-      promoCodeAlreadyUsed: "Promo code already used",
-      promoCodeFirstOrder: "Promo code available only for first order",
-      orderClosed: "Orders are temporarily unavailable, please try later",
-      orderMaintenance: "Orders are temporarily unavailable, technical work in progress",
-      orderAuto: "Orders are temporarily unavailable, please come back at 10:00 Moscow time",
-      orderLimit: "Order placement is temporarily limited for you, please try later",
-      cartEmpty: "Cart is empty",
-      checkPromoFirst: "Before placing an order, please check if this promo is available on your account",
-      enterCode: "Enter the code you received",
-      submitCode: "Submit code",
-      codeSent: "Code sent. Please do not log into the account until your order is completed.",
-      codeError: "Error submitting code",
-      connectionError: "Connection error",
-      leaveReview: "Leave a review",
-      writeReviewText: "Write your review...",
-      sendReview: "Send review",
-      selectOrder: "Select order",
-      yourReview: "Your review",
-      characters: "characters",
-      reviewSubmitted: "Review submitted",
-      reviewError: "Error submitting review",
-      giftClaim: "Claim",
-      giftExpiry: "Expiry",
-      giftInfinite: "∞",
-      profilePurchaseVolume: "Purchase volume",
-      subscribeChannel: "Subscribe to channel",
-      subscribeText: "Follow news and promotions",
-      watchReviews: "View our reviews",
-      watchReviewsText: "View or leave reviews",
-      buyPromoTitle: "Buy Promo",
-      buyPromoText: "Buy any in-game promo",
-      contactSupport: "Contact support",
-      contactSupportText: "Get help with orders",
-      settingsCard: "Settings",
-      language: "Language",
-      russian: "Русский",
-      english: "English",
-      theme: "Theme",
-      darkTheme: "Dark",
-      lightTheme: "Light",
-      vibrationSetting: "Vibration",
-      on: "On",
-      off: "Off",
-      orderStatusPending: "Pending verification",
-      orderStatusAwaiting: "Awaiting code",
-      orderStatusCancelled: "Cancelled",
-      orderStatusProcessing: "Processing",
-      orderStatusCompleted: "Completed",
-      orderId: "Order",
-      orderDate: "Date",
-      orderTotal: "Total",
-      promoApplied: "Promo code",
-      promoCode: "Promo code",
-      copy: "Copy"
-    }
-  };
-
-  function t(key) {
-    return translations[appSettings.language]?.[key] || translations.ru[key] || key;
-  }
-
-  // Функции вибрации с учетом настроек
   function hapticLight() {
     if (appSettings.vibration && window.Telegram?.WebApp?.HapticFeedback) {
       window.Telegram.WebApp.HapticFeedback.impactOccurred("light");
@@ -2464,7 +2389,6 @@
     }
   }
 
-  // Функция применения темы
   function applyTheme() {
     if (appSettings.theme === 'light') {
       document.body.classList.add('light-theme');
@@ -2474,7 +2398,6 @@
     localStorage.setItem('appSettings', JSON.stringify(appSettings));
   }
 
-  // Загрузка настроек из localStorage
   function loadSettings() {
     const saved = localStorage.getItem('appSettings');
     if (saved) {
@@ -2486,54 +2409,9 @@
     applyTheme();
   }
 
-  // Сохранение настроек
   function saveSettings() {
     localStorage.setItem('appSettings', JSON.stringify(appSettings));
     applyTheme();
-  }
-
-  // Функция для обновления всех текстов на странице после смены языка
-  function updateAllTexts() {
-    // Обновляем статические элементы
-    const searchInput = document.getElementById("searchInput");
-    if (searchInput) searchInput.placeholder = t('findProduct');
-    
-    const menuLabels = document.querySelectorAll('.menu-label');
-    const menuPages = ['catalog', 'cart', 'orders'];
-    menuLabels.forEach((label, idx) => {
-      if (idx < 3) label.textContent = t(menuPages[idx]);
-    });
-    
-    // Обновляем заголовки страниц
-    injectPageHeader();
-    
-    // Перерендериваем текущую страницу
-    const activePage = document.querySelector('.page.active-page');
-    if (activePage) {
-      const pageId = activePage.id.replace('-page', '');
-      if (pageId === 'catalog') renderCatalog();
-      else if (pageId === 'cart') renderCartPage();
-      else if (pageId === 'orders') renderOrdersPage();
-      else if (pageId === 'profile') renderProfilePage();
-      else if (pageId === 'filter') renderFilterModal();
-      else if (pageId === 'checkout') renderCheckoutForm();
-      else if (pageId === 'payment') renderPaymentPage();
-      else if (pageId === 'reviews') loadReviewsList();
-      else if (pageId === 'buy-promo') renderBuyPromoPage();
-      else if (pageId === 'write-review') renderWriteReviewPage();
-      else if (pageId === 'gifts') renderGiftsPage();
-      else if (pageId === 'settings') renderSettingsPage();
-    }
-    
-    // Обновляем checkout блок если он виден
-    const checkoutBlock = document.getElementById("cartCheckoutFixed");
-    if (checkoutBlock && checkoutBlock.style.display !== 'none') {
-      const activePageId = document.querySelector('.page.active-page')?.id.replace('-page', '');
-      if (activePageId === 'cart') renderCheckoutBlock();
-      else if (activePageId === 'checkout') renderCheckoutForm();
-      else if (activePageId === 'payment') renderPaymentPage();
-      else if (activePageId === 'buy-promo') renderBuyPromoPage();
-    }
   }
 
   function formatPrice(p) { return Math.round(p).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + "₽"; }
@@ -2543,12 +2421,11 @@
   function getCardNumberFromValue(value) { const bank = getBankFromValue(value); return cardNumbers[bank] || ""; }
 
   function renderPageHeader(iconUrl, title) {
-    const displayTitle = appSettings.language === 'en' && translations.en[title.toLowerCase()] ? translations.en[title.toLowerCase()] : title;
     return `<div class="page-header-sticky">
       <div class="page-header-inner">
         <div class="page-header-title-btn">
           <img src="${iconUrl}" alt="">
-          <span>${displayTitle}</span>
+          <span>${title}</span>
         </div>
         <button class="page-header-settings-btn" id="headerSettingsBtn">
           <img src="https://storage.botpapa.me/files/e4196b10-5f66-11f1-af2e-f7a93121b83b.png" alt="settings">
@@ -2616,7 +2493,7 @@
         <span class="counter-plus" data-id="${productId}" style="${plusOpacity}"><img src="https://storage.botpapa.me/files/9a5d01f0-49de-11f1-bef9-f1ec7a2c6e45.png" alt="+"></span>
       </div>`;
     }
-    return `<div class="card-action-btn cart-add-btn" data-add="${productId}">${t('cart')}</div>`;
+    return `<div class="card-action-btn cart-add-btn" data-add="${productId}">В корзину</div>`;
   }
 
   function handleCartAction(pid, isIncrement) {
@@ -2656,7 +2533,7 @@
     if (!container) return;
     const items = Object.entries(cart);
     if (!items.length) { 
-      container.innerHTML = `<div class="empty-state-icon"><img class="empty-icon" src="https://storage.botpapa.me/files/00feb9c0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="empty cart"><div class="empty-title">${t('emptyCart')}</div><button class="empty-catalog-btn" id="emptyCartToCatalog">${t('goToCatalog')}</button></div>`;
+      container.innerHTML = `<div class="empty-state-icon"><img class="empty-icon" src="https://storage.botpapa.me/files/00feb9c0-4a0d-11f1-bef9-f1ec7a2c6e45.png" alt="empty cart"><div class="empty-title">Корзина товаров пуста</div><button class="empty-catalog-btn" id="emptyCartToCatalog">Перейти в каталог</button></div>`;
       document.getElementById("cartCheckoutFixed").style.display = "none";
       isPromoMode = false;
       appliedPromo = null;
@@ -2669,7 +2546,7 @@
       const prod = products.find(p => p.id == id);
       if (!prod) continue;
       html += `<div class="cart-item-wrapper"><div class="cart-item"><img class="cart-img" src="${prod.image}" alt="${escapeHtml(prod.name)}"><div class="cart-info"><div class="cart-product-name">${escapeHtml(prod.name)}</div><div class="cart-product-price">${formatPrice(prod.price)}</div><div class="cart-product-category">${escapeHtml(prod.label || prod.category)}</div></div><div class="cart-actions" style="display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-start;gap:11px;padding-right:0px;padding-top:0px;">${!['Пропуски', 'Кристаллы'].includes(prod.category) ? `<button class="cart-warn-btn" data-id="${id}" style="margin-right:5px;"><img src="https://storage.botpapa.me/files/ea9c0cf0-592a-11f1-bef9-f1ec7a2c6e45.png" style="width:21px;height:21px;"></button>` : ''}<div class="cart-quantity"><button class="cart-qty-btn" data-dec="${id}"><img src="https://storage.botpapa.me/files/975c4510-49de-11f1-bef9-f1ec7a2c6e45.png" alt="-"></button><span class="cart-qty-value">${qty}</span><button class="cart-qty-btn" data-inc="${id}" style="${qty >= (prod.category === 'Кристаллы' ? 3 : 1) ? 'opacity:0.4;pointer-events:none;' : ''}"><img src="https://storage.botpapa.me/files/9a5d01f0-49de-11f1-bef9-f1ec7a2c6e45.png" alt="+"></button></div>
-</div></div><div class="cart-item-delivery"><span class="cart-item-delivery-label">${t('checkout')}</span><span class="cart-item-delivery-value">${t('selectOrder')}</span></div></div>`;
+</div></div><div class="cart-item-delivery"><span class="cart-item-delivery-label">Способ получения</span><span class="cart-item-delivery-value">вход в аккаунт</span></div></div>`;
     }
     container.innerHTML = html;
     document.querySelectorAll("[data-dec]").forEach(btn => { btn.addEventListener("click", () => changeQty(parseInt(btn.dataset.dec), -1)); });
@@ -2678,7 +2555,7 @@
     document.querySelectorAll(".cart-warn-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         hapticLight();
-        alert(t('checkPromoFirst'));
+        alert("Перед оформлением заказа пожалуйста проверьте наличие данной акции на вашем аккаунте");
       });
     });
   }
@@ -2702,17 +2579,17 @@
   function renderCatalog() {
     const grid = document.getElementById("catalogGrid");
     if (!grid) return;
-    let filtered = products.filter(p => p.visible === true && (currentFilter === t('allCategories') || currentFilter === "Все категории" ? true : p.category === currentFilter));
+    let filtered = products.filter(p => p.visible === true && (currentFilter === "Все категории" ? true : p.category === currentFilter));
     if (searchQuery.trim()) filtered = filtered.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
     if (!filtered.length) {
       grid.style.display = "flex";
-      grid.innerHTML = `<div class="empty-state-icon" style="width:100%;"><img class="empty-icon" src="https://storage.botpapa.me/files/fa0bb410-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="empty catalog"><div class="empty-title">${t('emptyCatalog')}</div><button class="empty-catalog-btn" id="resetFiltersBtn">${t('resetFilters')}</button></div>`;
+      grid.innerHTML = `<div class="empty-state-icon" style="width:100%;"><img class="empty-icon" src="https://storage.botpapa.me/files/fa0bb410-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="empty catalog"><div class="empty-title">Товары не найдены</div><button class="empty-catalog-btn" id="resetFiltersBtn">Сбросить фильтры</button></div>`;
       setTimeout(() => { 
         const resetBtn = document.getElementById("resetFiltersBtn"); 
         if(resetBtn) resetBtn.addEventListener("click", () => { 
           searchQuery = ""; 
           document.getElementById("searchInput").value = ""; 
-          currentFilter = t('allCategories'); 
+          currentFilter = "Все категории"; 
           grid.style.display = ""; 
           renderCatalog(); 
           renderFilterModal(); 
@@ -2767,7 +2644,7 @@
     const rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
     const discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
     if (isPromoMode) {
-      fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="promo-label">${t('enterPromoCode')}</span></div><div class="promo-input-row"><input type="text" class="promo-input" id="promoInput" placeholder="${t('enterPromoCode')}" value="${appliedPromo ? appliedPromo.code : ''}"><button class="promo-action-btn apply-btn" id="promoApplyBtn"><img src="https://storage.botpapa.me/files/b254ec20-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="apply"></button><button class="promo-action-btn back-btn" id="promoBackBtn"><img src="https://storage.botpapa.me/files/af0747c0-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="back"></button></div></div>`;
+      fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="promo-label">Введите промокод на скидку</span></div><div class="promo-input-row"><input type="text" class="promo-input" id="promoInput" placeholder="Введите промокод" value="${appliedPromo ? appliedPromo.code : ''}"><button class="promo-action-btn apply-btn" id="promoApplyBtn"><img src="https://storage.botpapa.me/files/b254ec20-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="apply"></button><button class="promo-action-btn back-btn" id="promoBackBtn"><img src="https://storage.botpapa.me/files/af0747c0-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="back"></button></div></div>`;
       setTimeout(() => {
         const promoInput = document.getElementById("promoInput");
         const backBtn = document.getElementById("promoBackBtn");
@@ -2793,24 +2670,24 @@
               renderCartPage();
             } else {
               if (data.reason === 'not_found') {
-                alert(t('promoCodeNotFound'));
+                alert('Промокод не найден');
               } else if (data.reason === 'already_used') {
-                alert(t('promoCodeAlreadyUsed'));
+                alert('Данный промокод уже был использован ранее');
               } else if (data.reason === 'first_order_only') {
-                alert(t('promoCodeFirstOrder'));
+                alert('Данный промокод доступен только на первый заказ');
               }
               if (promoInput) {
                 promoInput.value = appliedPromo ? appliedPromo.code : '';
               }
             }
           } catch(e) {
-            alert(t('connectionError'));
+            alert('Ошибка проверки промокода');
           }
         });
         if (promoInput) promoInput.addEventListener("keypress", (e) => { if (e.key === "Enter") applyBtn?.click(); });
       }, 0);
     } else {
-      fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">${t('totalAmount')}</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${appliedPromo ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="checkoutBtn">${t('proceedToCheckout')}</button><button class="promo-btn" id="openPromoBtn"><img src="https://storage.botpapa.me/files/8324fec0-5933-11f1-bef9-f1ec7a2c6e45.png" alt="Промокод"></button></div></div>`;
+      fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${appliedPromo ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="checkoutBtn">Перейти к оформлению</button><button class="promo-btn" id="openPromoBtn"><img src="https://storage.botpapa.me/files/8324fec0-5933-11f1-bef9-f1ec7a2c6e45.png" alt="Промокод"></button></div></div>`;
       setTimeout(() => {
         document.getElementById("checkoutBtn")?.addEventListener("click", async () => {
           hapticMedium();
@@ -2819,18 +2696,18 @@
             const r = await fetch('https://gemstorm.up.railway.app/api/settings');
             const s = await r.json();
             const status = s.bot_status || 'open';
-            if (status === 'closed') { alert(t('orderClosed')); return; }
-            if (status === 'maintenance') { alert(t('orderMaintenance')); return; }
+            if (status === 'closed') { alert('Оформить заказ временно не получится, попробуйте позже'); return; }
+            if (status === 'maintenance') { alert('Оформить заказ временно не получится, проводятся технические работы'); return; }
             if (status === 'auto') {
               const mskHour = (new Date().getUTCHours() + 3) % 24;
-              if (mskHour >= 0 && mskHour < 10) { alert(t('orderAuto')); return; }
+              if (mskHour >= 0 && mskHour < 10) { alert('Оформить заказ временно не получится, возвращайтесь в 10:00 по московскому времени'); return; }
             }
           } catch(e) {}
           try {
             if (tgU?.id) {
               const lr = await fetch(`https://gemstorm.up.railway.app/api/check-rate-limit?userId=${tgU.id}`);
               const l = await lr.json();
-              if (l.limited) { alert(t('orderLimit')); return; }
+              if (l.limited) { alert('Оформление заказов для вас временно ограничено, попробуйте позже'); return; }
             }
           } catch(e) {}
           showPage("checkout");
@@ -2852,14 +2729,14 @@
       discountedTotal = appliedPromoDeal ? Math.round(rawTotal * (1 - appliedPromoDeal.discountPercent / 100)) : rawTotal;
     } else {
       const items = Object.entries(cart);
-      if (!items.length) { container.innerHTML = `<div class="empty-state">${t('cartEmpty')}</div>`; return; }
+      if (!items.length) { container.innerHTML = '<div class="empty-state">Корзина пуста</div>'; return; }
       rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
       discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
     }
-    container.innerHTML = `<div class="content-card"><div class="form-section"><div class="form-label">${t('email')}</div><input type="email" class="form-input" id="emailInput" placeholder="${t('email')}" value="${escapeHtml(checkoutData.email)}"></div><div class="form-section"><div class="form-label">${t('paymentMethod')}</div><select class="form-select-native" id="paymentMethodSelect"><option value="" disabled ${!checkoutData.paymentMethod ? 'selected' : ''}>${t('selectPayment')}</option>${paymentMethodsOptions.map(o => `<option value="${o.value}" ${checkoutData.paymentMethod === o.value ? 'selected' : ''}>${o.label}</option>`).join('')}</select></div><div class="form-section"><div class="form-label">${t('senderData')}</div><input type="text" class="form-input" id="senderNameInput" placeholder="${t('senderNamePlaceholder')}" value="${escapeHtml(checkoutData.senderName)}"></div></div>`;
+    container.innerHTML = `<div class="content-card"><div class="form-section"><div class="form-label">Почта Supercell ID</div><input type="email" class="form-input" id="emailInput" placeholder="Укажите почту аккаунта" value="${escapeHtml(checkoutData.email)}"></div><div class="form-section"><div class="form-label">Способ оплаты</div><select class="form-select-native" id="paymentMethodSelect"><option value="" disabled ${!checkoutData.paymentMethod ? 'selected' : ''}>Нажмите для выбора</option>${paymentMethodsOptions.map(o => `<option value="${o.value}" ${checkoutData.paymentMethod === o.value ? 'selected' : ''}>${o.label}</option>`).join('')}</select></div><div class="form-section"><div class="form-label">Данные отправителя</div><input type="text" class="form-input" id="senderNameInput" placeholder="Укажите имя отправителя" value="${escapeHtml(checkoutData.senderName)}"></div></div>`;
     const fixedBlock = document.getElementById("cartCheckoutFixed");
     fixedBlock.style.display = "block";
-    fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">${t('totalAmount')}</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${(orderMode === 'promo_deal' ? appliedPromoDeal : appliedPromo) ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="payBtn">${t('proceedToCheckout')}</button><button class="promo-btn" id="helpBtn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь"></button></div></div>`;
+    fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${(orderMode === 'promo_deal' ? appliedPromoDeal : appliedPromo) ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="payBtn">Перейти к оплате</button><button class="promo-btn" id="helpBtn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь"></button></div></div>`;
     setTimeout(() => {
       const paymentSelect = document.getElementById("paymentMethodSelect");
       paymentSelect?.addEventListener("change", function() {
@@ -2898,10 +2775,10 @@
       rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
       discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
     }
-    container.innerHTML = `<div class="content-card"><div class="form-section"><div class="form-label">${t('cardNumber')}</div><div class="form-select-readonly card-number-row"><span class="card-number-text">${cardNum}</span><img class="copy-icon" id="copyCardBtn" src="https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png" alt="copy"></div></div><div class="form-section"><div class="form-label">${t('recipient')}</div><div class="form-select-readonly"><span>Азат Ф.</span></div></div><div class="form-section"><div class="form-label">${t('recipientBank')}</div><div class="form-select-readonly"><span>${bank}</span></div></div></div>`;
+    container.innerHTML = `<div class="content-card"><div class="form-section"><div class="form-label">Номер карты</div><div class="form-select-readonly card-number-row"><span class="card-number-text">${cardNum}</span><img class="copy-icon" id="copyCardBtn" src="https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png" alt="copy"></div></div><div class="form-section"><div class="form-label">Получатель</div><div class="form-select-readonly"><span>Азат Ф.</span></div></div><div class="form-section"><div class="form-label">Банк получателя</div><div class="form-select-readonly"><span>${bank}</span></div></div></div>`;
     const fixedBlock = document.getElementById("cartCheckoutFixed");
     fixedBlock.style.display = "block";
-    fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">${t('totalAmount')}</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${(orderMode === 'promo_deal' ? appliedPromoDeal : appliedPromo) ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="paidBtn">${t('ivePaid')}</button><button class="promo-btn" id="helpBtn2"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь"></button></div></div>`;
+    fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${(orderMode === 'promo_deal' ? appliedPromoDeal : appliedPromo) ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="paidBtn">Я оплатил</button><button class="promo-btn" id="helpBtn2"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь"></button></div></div>`;
     setTimeout(() => {
       const copyBtn = document.getElementById("copyCardBtn");
       copyBtn?.addEventListener("click", async () => { if (navigator.clipboard) { copyBtn.style.transform = "scale(0.85)"; await navigator.clipboard.writeText(cardNum.replace(/\s/g, "")); setTimeout(() => { copyBtn.style.transform = "scale(1)"; }, 150); hapticLight(); } });
@@ -2910,7 +2787,7 @@
         if (isSubmitting) return;
         isSubmitting = true;
         const btn = document.getElementById("paidBtn");
-        if (btn) { btn.disabled = true; btn.textContent = t('processing'); }
+        if (btn) { btn.disabled = true; btn.textContent = "Обработка..."; }
         hapticMedium();
         let tgUser = null;
         if (window.Telegram?.WebApp?.initDataUnsafe?.user) tgUser = window.Telegram.WebApp.initDataUnsafe.user;
@@ -2978,7 +2855,7 @@
           navigationHistory = [afterPaymentBackPage];
           showPage("orders", true);
         }
-        if (btn) { btn.disabled = false; btn.textContent = t('ivePaid'); }
+        if (btn) { btn.disabled = false; btn.textContent = "Я оплатил"; }
         isSubmitting = false;
       });
     }, 0);
@@ -3036,17 +2913,17 @@
     return map[statusCode?.toLowerCase()] || '';
   }
 
-  function getStatusDisplayText(statusCode) {
+  function getStatusDisplayText(statusCode, originalStatus) {
     const map = {
-      'pending': 'orderStatusPending',
-      'awaiting_code': 'orderStatusAwaiting',
-      'cancelled': 'orderStatusCancelled',
-      'notfound': 'orderStatusCancelled',
-      'processing': 'orderStatusProcessing',
-      'completed': 'orderStatusCompleted',
-      'done': 'orderStatusCompleted',
+      'pending': 'Ожидает проверки',
+      'awaiting_code': 'Ожидание кода',
+      'cancelled': 'Отменен',
+      'notfound': 'Заказ отменён',
+      'processing': 'Ожидает выполнения',
+      'completed': 'Заказ выполнен',
+      'done': 'Заказ выполнен',
     };
-    return t(map[statusCode?.toLowerCase()] || 'orderStatusPending');
+    return map[statusCode?.toLowerCase()] || originalStatus || 'Ожидает проверки';
   }
 
   function renderOrdersPage() {
@@ -3054,7 +2931,7 @@
     if (!container) return;
     loadUserOrders().then(() => {
       if (!orders.length) {
-        container.innerHTML = `<div class="empty-state-icon"><img class="empty-icon" src="https://storage.botpapa.me/files/8a684130-49e6-11f1-bef9-f1ec7a2c6e45.png" alt=""><div class="empty-title">${t('emptyOrders')}</div><button class="empty-catalog-btn" id="emptyOrdersToCatalog">${t('goToCatalog')}</button></div>`;
+        container.innerHTML = `<div class="empty-state-icon"><img class="empty-icon" src="https://storage.botpapa.me/files/8a684130-49e6-11f1-bef9-f1ec7a2c6e45.png" alt=""><div class="empty-title">Заказов еще нет</div><button class="empty-catalog-btn" id="emptyOrdersToCatalog">Перейти в каталог</button></div>`;
         setTimeout(() => { document.getElementById("emptyOrdersToCatalog")?.addEventListener("click", () => showPage("catalog")); }, 0);
         return;
       }
@@ -3062,7 +2939,7 @@
       container.innerHTML = orders.map((o) => {
         let items = [];
         try { items = JSON.parse(o.items || '[]'); } catch(e) {}
-        const statusDisplay = getStatusDisplayText(o.status_code);
+        const statusDisplay = getStatusDisplayText(o.status_code, o.status);
         const status = String(o.status_code).trim().toLowerCase();
         const textClass = getStatusTextClass(status);
         const bgClass = getStatusBgClass(status);
@@ -3077,7 +2954,7 @@
         return `<div class="order-wrapper" data-order-id="${o.id}">
           <div class="order-main-card">
             <div class="order-header">
-              <span class="order-id">${t('orderId')} #${o.order_number}</span>
+              <span class="order-id">Заказ #${o.order_number}</span>
               <div class="order-header-right">
                 <span class="order-card-status ${textClass} ${bgClass}">${statusDisplay}</span>
                 <button class="order-refresh-btn" data-id="${o.id}">
@@ -3141,7 +3018,7 @@
     `).join('');
     
     const isAwaitingCode = order.status_code === 'awaiting_code';
-    const statusDisplay = getStatusDisplayText(order.status_code);
+    const statusDisplay = getStatusDisplayText(order.status_code, order.status);
     const statusColor = (() => {
       switch(order.status_code) {
         case 'pending': return '#4cb4e9';
@@ -3158,27 +3035,27 @@
     container.innerHTML = `
       <div class="order-data-card">
         <div class="order-detail-row">
-          <span class="order-detail-label">${t('orderStatusPending')}</span>
+          <span class="order-detail-label">Статус</span>
           <span class="order-detail-value" style="color:${statusColor}">${statusDisplay}</span>
         </div>
         <div class="order-detail-row">
-          <span class="order-detail-label">${t('orderDate')}</span>
+          <span class="order-detail-label">Дата</span>
           <span class="order-detail-value">${order.date} ${order.time || ''}</span>
         </div>
         <div class="order-detail-row">
-          <span class="order-detail-label">${t('paymentMethod')}</span>
+          <span class="order-detail-label">Способ оплаты</span>
           <span class="order-detail-value">${order.payment_method || '—'}</span>
         </div>
         <div class="order-detail-row">
-          <span class="order-detail-label">${t('senderData')}</span>
+          <span class="order-detail-label">Отправитель</span>
           <span class="order-detail-value">${escapeHtml(order.sender_name || '—')}</span>
         </div>
         <div class="order-detail-row">
-          <span class="order-detail-label">${t('email')}</span>
+          <span class="order-detail-label">Почта</span>
           <span class="order-detail-value">${escapeHtml(order.email || '—')}</span>
         </div>
         ${order.promo ? `<div class="order-detail-row">
-          <span class="order-detail-label">${t('promoCode')}</span>
+          <span class="order-detail-label">Промокод</span>
           <span class="order-detail-value">${order.promo} (${order.promo_discount}%)</span>
         </div>` : ''}
         ${order.verification_code ? `<div class="order-detail-row">
@@ -3186,7 +3063,7 @@
           <span class="order-detail-value" style="color:#ffffff;">${escapeHtml(order.verification_code)}</span>
         </div>` : ''}
         <div class="order-detail-row" style="padding-bottom:4px;">
-          <span class="order-detail-label" style="font-weight:400;">${t('orderTotal')}</span>
+          <span class="order-detail-label" style="font-weight:400;">Сумма заказа</span>
           <span class="order-detail-value" style="color:#ffffff; font-weight:500;">${formatPrice(order.total)}</span>
         </div>
       </div>
@@ -3197,7 +3074,7 @@
     
     showPage("order-detail", true);
     const titleSpan = document.querySelector('#order-detail-page .page-header-title-btn span');
-    if (titleSpan) titleSpan.textContent = `${t('orderId')} #${order.order_number}`;
+    if (titleSpan) titleSpan.textContent = `Заказ #${order.order_number}`;
 
     const fixedBlock = document.getElementById("cartCheckoutFixed");
     if (fixedBlock) {
@@ -3205,7 +3082,7 @@
       const isCompleted = order.status_code === 'done' || order.status_code === 'completed';
       if (isAwaitingCode) {
         fixedBlock.style.display = "block";
-        fixedBlock.innerHTML = `<div id="codeActionBlock" class="checkout-card"><div class="checkout-buttons-row"><button class="checkout-button" id="showCodeInputBtn">${t('submitCode')}</button><button onclick="hapticLight();window.open('https://t.me/GemStormHelp','_blank')" class="promo-btn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь"></button></div></div>`;
+        fixedBlock.innerHTML = `<div id="codeActionBlock" class="checkout-card"><div class="checkout-buttons-row"><button class="checkout-button" id="showCodeInputBtn">Указать код</button><button onclick="hapticLight();window.open('https://t.me/GemStormHelp','_blank')" class="promo-btn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь"></button></div></div>`;
       } else if (!isCompleted) {
         fixedBlock.style.display = "none";
       } else {
@@ -3217,11 +3094,11 @@
             fixedBlock.style.display = "none";
           } else {
             fixedBlock.style.display = "block";
-            fixedBlock.innerHTML = `<div class="checkout-card"><div class="checkout-buttons-row"><button onclick="hapticMedium();showPage('write-review')" class="checkout-button">${t('leaveReview')}</button><button onclick="hapticLight();window.open('https://t.me/GemStormHelp','_blank')" class="promo-btn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" style="width:24px;height:24px;"></button></div></div>`;
+            fixedBlock.innerHTML = `<div class="checkout-card"><div class="checkout-buttons-row"><button onclick="hapticMedium();showPage('write-review')" class="checkout-button">Оставить отзыв</button><button onclick="hapticLight();window.open('https://t.me/GemStormHelp','_blank')" class="promo-btn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" style="width:24px;height:24px;"></button></div></div>`;
           }
         }).catch(() => {
           fixedBlock.style.display = "block";
-          fixedBlock.innerHTML = `<div class="checkout-card"><div class="checkout-buttons-row"><button onclick="hapticMedium();showPage('write-review')" class="checkout-button">${t('leaveReview')}</button><button onclick="hapticLight();window.open('https://t.me/GemStormHelp','_blank')" class="promo-btn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" style="width:24px;height:24px;"></button></div></div>`;
+          fixedBlock.innerHTML = `<div class="checkout-card"><div class="checkout-buttons-row"><button onclick="hapticMedium();showPage('write-review')" class="checkout-button">Оставить отзыв</button><button onclick="hapticLight();window.open('https://t.me/GemStormHelp','_blank')" class="promo-btn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" style="width:24px;height:24px;"></button></div></div>`;
         });
       }
     }
@@ -3233,7 +3110,7 @@
           hapticLight();
           const fixedBlock = document.getElementById("cartCheckoutFixed");
           if (fixedBlock) {
-            fixedBlock.innerHTML = `<div id="codeActionBlock" class="checkout-card" style="width: 100%; box-sizing: border-box;"><div class="promo-label">${t('enterCode')}</div><div class="promo-input-row" style="display: flex; gap: 10px; width: 100%;"><input type="text" id="verificationCodeInput" class="promo-input" placeholder="${t('enterCode')}" style="flex: 1; min-width: 0; box-sizing: border-box;"><button id="submitCodeBtn" class="promo-action-btn apply-btn" style="flex-shrink: 0;"><img src="https://storage.botpapa.me/files/b254ec20-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="submit"></button></div></div>`;
+            fixedBlock.innerHTML = `<div id="codeActionBlock" class="checkout-card" style="width: 100%; box-sizing: border-box;"><div class="promo-label">Введите код который вам пришел</div><div class="promo-input-row" style="display: flex; gap: 10px; width: 100%;"><input type="text" id="verificationCodeInput" class="promo-input" placeholder="Введите код" style="flex: 1; min-width: 0; box-sizing: border-box;"><button id="submitCodeBtn" class="promo-action-btn apply-btn" style="flex-shrink: 0;"><img src="https://storage.botpapa.me/files/b254ec20-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="submit"></button></div></div>`;
             setTimeout(() => {
               const inp = document.getElementById("verificationCodeInput");
               if (inp) {
@@ -3243,12 +3120,12 @@
               document.getElementById("submitCodeBtn")?.addEventListener("click", async () => {
                 const codeInput = document.getElementById("verificationCodeInput");
                 const code = codeInput?.value.trim();
-                if (!code) { alert(t('enterCode')); return; }
+                if (!code) { alert("Введите код"); return; }
                 hapticLight();
                 try {
                   const response = await fetch('https://gemstorm.up.railway.app/api/submit-code', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderId: order.id, code: code }) });
-                  if (response.ok) { alert(t('codeSent')); order.status_code = 'processing'; order.status = 'Ожидает выполнения'; order.verification_code = code; showOrderDetail(order); renderOrdersPage(); } else alert(t('codeError'));
-                } catch(e) { alert(t('connectionError')); }
+                  if (response.ok) { alert("Код отправлен. Пожалуйста, не заходите на аккаунт пока ваш заказ не будет выполнен."); order.status_code = 'processing'; order.status = 'Ожидает выполнения'; order.verification_code = code; showOrderDetail(order); renderOrdersPage(); } else alert("Ошибка отправки кода");
+                } catch(e) { alert("Ошибка соединения"); }
               });
             }, 50);
           }
@@ -3291,7 +3168,7 @@
       fixedEl.className = 'reviews-fixed-action';
       fixedEl.innerHTML = `<div class="checkout-card">
         <div class="checkout-buttons-row">
-          <button class="checkout-button" id="goWriteReviewBtn">${t('leaveReview')}</button>
+          <button class="checkout-button" id="goWriteReviewBtn">Оставить отзыв</button>
           <button onclick="hapticLight();window.open('https://t.me/GemStormHelp','_blank')" class="promo-btn">
             <img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" style="width:24px;height:24px;">
           </button>
@@ -3359,14 +3236,14 @@
      fixedBlock.innerHTML = `
         <div class="checkout-card">
           <div class="total-row">
-             <span class="total-label">${t('totalAmount')}</span>
+             <span class="total-label">Общая стоимость:</span>
             <span class="total-price-wrapper">
               <span class="total-price">${priceText}</span>
               ${appliedPromoDeal && deal ? `<span class="total-old-price">${formatPrice(deal.price)}</span>` : ''}
             </span>
           </div>
           <div class="checkout-buttons-row">
-            <button class="checkout-button" id="promoGoCheckoutBtn">${t('proceedToCheckout')}</button>
+            <button class="checkout-button" id="promoGoCheckoutBtn">Перейти к оформлению</button>
             <button class="promo-btn" id="promoOpenPromoBtn"><img src="https://storage.botpapa.me/files/8324fec0-5933-11f1-bef9-f1ec7a2c6e45.png" alt="Промокод"></button>
           </div>
         </div>
@@ -3375,7 +3252,7 @@
         hapticLight();
         isPromoMode = true;
         const fixedBlock = document.getElementById("cartCheckoutFixed");
-        fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="promo-label">${t('enterPromoCode')}</span></div><div class="promo-input-row"><input type="text" class="promo-input" id="promoInputDeal" placeholder="${t('enterPromoCode')}"><button class="promo-action-btn apply-btn" id="promoApplyDealBtn"><img src="https://storage.botpapa.me/files/b254ec20-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="apply"></button><button class="promo-action-btn back-btn" id="promoBackDealBtn"><img src="https://storage.botpapa.me/files/af0747c0-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="back"></button></div></div>`;
+        fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="promo-label">Введите промокод на скидку</span></div><div class="promo-input-row"><input type="text" class="promo-input" id="promoInputDeal" placeholder="Введите промокод"><button class="promo-action-btn apply-btn" id="promoApplyDealBtn"><img src="https://storage.botpapa.me/files/b254ec20-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="apply"></button><button class="promo-action-btn back-btn" id="promoBackDealBtn"><img src="https://storage.botpapa.me/files/af0747c0-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="back"></button></div></div>`;
         setTimeout(() => {
           document.getElementById("promoInputDeal")?.focus();
           document.getElementById("promoBackDealBtn")?.addEventListener("click", () => {
@@ -3400,11 +3277,11 @@
                 isPromoMode = false;
                 renderBuyPromoPage();
               } else {
-                if (data.reason === 'not_found') alert(t('promoCodeNotFound'));
-                else if (data.reason === 'already_used') alert(t('promoCodeAlreadyUsed'));
-                else if (data.reason === 'first_order_only') alert(t('promoCodeFirstOrder'));
+                if (data.reason === 'not_found') alert('Промокод не найден');
+                else if (data.reason === 'already_used') alert('Данный промокод уже был использован ранее');
+                else if (data.reason === 'first_order_only') alert('Данный промокод доступен только на первый заказ');
               }
-            } catch(e) { alert(t('connectionError')); }
+            } catch(e) { alert('Ошибка проверки промокода'); }
           });
         }, 0);
       });
@@ -3442,11 +3319,11 @@
             const r = await fetch('https://gemstorm.up.railway.app/api/settings');
             const s = await r.json();
             const status = s.bot_status || 'open';
-            if (status === 'closed') { alert(t('orderClosed')); return; }
-            if (status === 'maintenance') { alert(t('orderMaintenance')); return; }
+            if (status === 'closed') { alert('Оформить заказ временно не получится, попробуйте позже'); return; }
+            if (status === 'maintenance') { alert('Оформить заказ временно не получится, проводятся технические работы'); return; }
             if (status === 'auto') {
               const mskHour = (new Date().getUTCHours() + 3) % 24;
-              if (mskHour >= 0 && mskHour < 10) { alert(t('orderAuto')); return; }
+              if (mskHour >= 0 && mskHour < 10) { alert('Оформить заказ временно не получится, возвращайтесь в 10:00 по московскому времени'); return; }
             }
           } catch(e) {}
           showPage("checkout");
@@ -3600,7 +3477,7 @@
         </div>
         <div class="profile-bottom-card">
           <div class="profile-stats-row">
-            <span class="profile-stats-label">${t('profilePurchaseVolume')}</span>
+            <span class="profile-stats-label">Объем покупок</span>
             <span class="profile-stats-value">${formatPrice(totalSpent)}</span>
           </div>
         </div>
@@ -3608,32 +3485,32 @@
 
       <div class="subscribe-card" id="subscribeChannelBtn">
         <div class="subscribe-info">
-          <div class="subscribe-title">${t('subscribeChannel')}</div>
-          <div class="subscribe-text">${t('subscribeText')}</div>
+          <div class="subscribe-title">Подпишитесь на канал</div>
+          <div class="subscribe-text">Следите за новостями и акциями</div>
         </div>
         ${arrowSvg}
       </div>
 
       <div class="subscribe-card" id="openReviewsPage">
         <div class="subscribe-info">
-          <div class="subscribe-title">${t('watchReviews')}</div>
-          <div class="subscribe-text">${t('watchReviewsText')}</div>
+          <div class="subscribe-title">Смотреть наши отзывы</div>
+          <div class="subscribe-text">Посмотрите или оставьте отзывы</div>
         </div>
         ${arrowSvg}
       </div>
 
       <div class="subscribe-card" id="openFaqBtn">
         <div class="subscribe-info">
-          <div class="subscribe-title">${t('buyPromoTitle')}</div>
-          <div class="subscribe-text">${t('buyPromoText')}</div>
+          <div class="subscribe-title">Приобретение акций</div>
+          <div class="subscribe-text">Приобрести любую акцию в игре</div>
         </div>
         ${arrowSvg}
       </div>
 
       <div class="subscribe-card" id="openSupportBtn">
         <div class="subscribe-info">
-          <div class="subscribe-title">${t('contactSupport')}</div>
-          <div class="subscribe-text">${t('contactSupportText')}</div>
+          <div class="subscribe-title">Связаться с поддержкой</div>
+          <div class="subscribe-text">Получить помощь по всем заказам</div>
         </div>
         ${arrowSvg}
       </div>`;
@@ -3651,49 +3528,35 @@
     const container = document.getElementById("settingsContent");
     if (!container) return;
     
-    const languageText = appSettings.language === 'ru' ? t('russian') : t('english');
-    const themeText = appSettings.theme === 'dark' ? t('darkTheme') : t('lightTheme');
-    const vibrationText = appSettings.vibration ? t('on') : t('off');
+    const themeText = appSettings.theme === 'dark' ? 'Тёмная' : 'Светлая';
+    const vibrationText = appSettings.vibration ? 'Вкл.' : 'Выкл.';
     
     container.innerHTML = `
       <div class="settings-card">
-        <div class="settings-row" id="settingsLanguageRow">
-          <span class="settings-row-left">${t('language')}</span>
-          <span class="settings-row-right" id="languageValue">${languageText}</span>
-        </div>
-        <div class="settings-divider"></div>
         <div class="settings-row" id="settingsThemeRow">
-          <span class="settings-row-left">${t('theme')}</span>
+          <span class="settings-row-left">Тема</span>
           <span class="settings-row-right" id="themeValue">${themeText}</span>
         </div>
         <div class="settings-divider"></div>
         <div class="settings-row" id="settingsVibrationRow">
-          <span class="settings-row-left">${t('vibrationSetting')}</span>
+          <span class="settings-row-left">Вибрация</span>
           <span class="settings-row-right" id="vibrationValue">${vibrationText}</span>
         </div>
       </div>
     `;
     
     setTimeout(() => {
-      document.getElementById("settingsLanguageRow")?.addEventListener("click", () => {
-        hapticLight();
-        appSettings.language = appSettings.language === 'ru' ? 'en' : 'ru';
-        saveSettings();
-        document.getElementById("languageValue").textContent = appSettings.language === 'ru' ? t('russian') : t('english');
-        updateAllTexts();
-      });
       document.getElementById("settingsThemeRow")?.addEventListener("click", () => {
         hapticLight();
         appSettings.theme = appSettings.theme === 'dark' ? 'light' : 'dark';
         saveSettings();
-        document.getElementById("themeValue").textContent = appSettings.theme === 'dark' ? t('darkTheme') : t('lightTheme');
-        updateAllTexts();
+        document.getElementById("themeValue").textContent = appSettings.theme === 'dark' ? 'Тёмная' : 'Светлая';
       });
       document.getElementById("settingsVibrationRow")?.addEventListener("click", () => {
         hapticLight();
         appSettings.vibration = !appSettings.vibration;
         saveSettings();
-        document.getElementById("vibrationValue").textContent = appSettings.vibration ? t('on') : t('off');
+        document.getElementById("vibrationValue").textContent = appSettings.vibration ? 'Вкл.' : 'Выкл.';
       });
     }, 0);
   }
@@ -3709,14 +3572,14 @@
           <div class="gift-info">
             <div class="gift-name">${escapeHtml(gift.name)}</div>
             <div class="gift-price">Free Gift</div>
-            <div class="gift-category">${t('gifts')}</div>
+            <div class="gift-category">Подарок</div>
           </div>
-          <button class="gift-claim-btn" data-link="${gift.link}">${t('giftClaim')}</button>
+          <button class="gift-claim-btn" data-link="${gift.link}">Получить</button>
         </div>
         <div class="gift-link-card">
           <div class="gift-expiry-bottom">
-            <span class="expiry-label-bottom">${t('giftExpiry')}</span>
-            <span class="expiry-status-bottom">${t('giftInfinite')}</span>
+            <span class="expiry-label-bottom">Срок действия</span>
+            <span class="expiry-status-bottom">∞</span>
           </div>
         </div>
       </div>
@@ -3757,28 +3620,28 @@
     } catch(e) {}
 
     if (!completedOrders.length) {
-      container.innerHTML = `<div class="review-empty">${t('emptyOrders')}</div>`;
+      container.innerHTML = `<div class="review-empty">Нет заказов для отзыва</div>`;
       return;
     }
 
     const orderOptions = completedOrders.map(o =>
-      `<option value="${o.id}" data-num="${o.order_number}">${t('orderId')} #${o.order_number}</option>`
+      `<option value="${o.id}" data-num="${o.order_number}">Заказ #${o.order_number}</option>`
     ).join('');
 
     container.innerHTML = `
       <div class="order-data-card">
-        <div style="font-size:19px;font-weight:600;color:#fff;margin-bottom:14px;">${t('leaveReview')}</div>
+        <div style="font-size:19px;font-weight:600;color:#fff;margin-bottom:14px;">Оставьте отзыв к заказу</div>
         <div class="form-section">
-          <div class="form-label">${t('selectOrder')}</div>
+          <div class="form-label">Выберите заказ</div>
           <select class="form-select-native" id="reviewOrderSelect">
             ${orderOptions}
           </select>
         </div>
         <div class="form-section" style="margin-bottom:0;">
-          <div class="form-label">${t('yourReview')} <span id="reviewCharCount" style="color:#9e9e9e;font-weight:400;font-size:14px;">0/70</span></div>
-          <textarea class="review-textarea" id="reviewTextarea" placeholder="${t('writeReviewText')}" maxlength="70" rows="3"></textarea>
+          <div class="form-label">Ваш отзыв <span id="reviewCharCount" style="color:#9e9e9e;font-weight:400;font-size:14px;">0/70</span></div>
+          <textarea class="review-textarea" id="reviewTextarea" placeholder="Напишите ваш отзыв..." maxlength="70" rows="3"></textarea>
         </div>
-        <button class="checkout-button" id="reviewSubmitBtn" style="width:100%;height:48px;margin-top:10px;">${t('sendReview')}</button>
+        <button class="checkout-button" id="reviewSubmitBtn" style="width:100%;height:48px;margin-top:10px;">Отправить отзыв</button>
       </div>`;
 
     setTimeout(() => {
@@ -3797,14 +3660,14 @@
 
       document.getElementById('reviewSubmitBtn')?.addEventListener('click', async () => {
         const text = textarea?.value.trim();
-        if (!text) { alert(t('writeReviewText')); return; }
+        if (!text) { alert('Напишите текст отзыва'); return; }
         const selectEl = document.getElementById('reviewOrderSelect');
         const orderId = selectEl?.value;
         const orderNum = selectEl?.options[selectEl.selectedIndex]?.dataset.num;
-        if (!orderId) { alert(t('selectOrder')); return; }
+        if (!orderId) { alert('Выберите заказ'); return; }
         hapticMedium();
         const btn = document.getElementById('reviewSubmitBtn');
-        if (btn) { btn.disabled = true; btn.textContent = t('processing'); }
+        if (btn) { btn.disabled = true; btn.textContent = 'Отправка...'; }
         try {
           const res = await fetch('https://gemstorm.up.railway.app/api/reviews', {
             method: 'POST',
@@ -3822,10 +3685,10 @@
             hapticLight();
             showPage('reviews');
           } else {
-            alert(t('reviewError'));
+            alert('Ошибка при отправке');
           }
-        } catch(e) { alert(t('connectionError')); }
-        if (btn) { btn.disabled = false; btn.textContent = t('sendReview'); }
+        } catch(e) { alert('Ошибка соединения'); }
+        if (btn) { btn.disabled = false; btn.textContent = 'Отправить отзыв'; }
       });
     }, 0);
   }
@@ -3835,19 +3698,19 @@
 
   function injectPageHeader() {
     const pageConfigs = {
-      'catalog': { icon: 'https://storage.botpapa.me/files/00f09750-5110-11f1-bef9-f1ec7a2c6e45.png', title: t('catalog') },
-      'cart': { icon: 'https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png', title: t('cart') },
-      'orders': { icon: 'https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png', title: t('orders') },
-      'profile': { icon: 'https://storage.botpapa.me/files/49df3ed0-5110-11f1-bef9-f1ec7a2c6e45.png', title: t('profile') },
-      'filter': { icon: 'https://storage.botpapa.me/files/9478fb40-49de-11f1-bef9-f1ec7a2c6e45.png', title: t('filter') },
-      'checkout': { icon: 'https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png', title: t('checkout') },
-      'payment': { icon: 'https://storage.botpapa.me/files/62edaf00-4a27-11f1-bef9-f1ec7a2c6e45.png', title: t('payment') },
-      'order-detail': { icon: 'https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png', title: t('orderId') },
-      'reviews': { icon: 'https://storage.botpapa.me/files/f665c4e0-510f-11f1-bef9-f1ec7a2c6e45.png', title: t('reviews') },
-      'buy-promo': { icon: 'https://storage.botpapa.me/files/9deb9760-5167-11f1-bef9-f1ec7a2c6e45.png', title: t('buyPromo') },
-      'write-review': { icon: 'https://storage.botpapa.me/files/f665c4e0-510f-11f1-bef9-f1ec7a2c6e45.png', title: t('writeReview') },
-      'gifts': { icon: 'https://storage.botpapa.me/files/501ffee0-51e9-11f1-bef9-f1ec7a2c6e45.png', title: t('gifts') },
-      'settings': { icon: 'https://storage.botpapa.me/files/e4196b10-5f66-11f1-af2e-f7a93121b83b.png', title: t('settings') },
+      'catalog': { icon: 'https://storage.botpapa.me/files/00f09750-5110-11f1-bef9-f1ec7a2c6e45.png', title: 'Каталог' },
+      'cart': { icon: 'https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png', title: 'Корзина' },
+      'orders': { icon: 'https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png', title: 'Заказы' },
+      'profile': { icon: 'https://storage.botpapa.me/files/49df3ed0-5110-11f1-bef9-f1ec7a2c6e45.png', title: 'Профиль' },
+      'filter': { icon: 'https://storage.botpapa.me/files/9478fb40-49de-11f1-bef9-f1ec7a2c6e45.png', title: 'Фильтры' },
+      'checkout': { icon: 'https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png', title: 'Оформление' },
+      'payment': { icon: 'https://storage.botpapa.me/files/62edaf00-4a27-11f1-bef9-f1ec7a2c6e45.png', title: 'Оплата' },
+      'order-detail': { icon: 'https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png', title: 'Заказ' },
+      'reviews': { icon: 'https://storage.botpapa.me/files/f665c4e0-510f-11f1-bef9-f1ec7a2c6e45.png', title: 'Отзывы' },
+      'buy-promo': { icon: 'https://storage.botpapa.me/files/9deb9760-5167-11f1-bef9-f1ec7a2c6e45.png', title: 'Покупка акций' },
+      'write-review': { icon: 'https://storage.botpapa.me/files/f665c4e0-510f-11f1-bef9-f1ec7a2c6e45.png', title: 'Оставить отзыв' },
+      'gifts': { icon: 'https://storage.botpapa.me/files/501ffee0-51e9-11f1-bef9-f1ec7a2c6e45.png', title: 'Подарки' },
+      'settings': { icon: 'https://storage.botpapa.me/files/e4196b10-5f66-11f1-af2e-f7a93121b83b.png', title: 'Настройки' },
     };
 
     const activePage = document.querySelector('.page.active-page');
@@ -4038,7 +3901,6 @@
   }
   const searchInputEl = document.getElementById("searchInput");
   if (searchInputEl) {
-    searchInputEl.placeholder = t('findProduct');
     searchInputEl.addEventListener("input", (e) => { searchQuery = e.target.value; renderCatalog(); });
   }
   document.querySelectorAll(".menu-item").forEach(btn => {
@@ -4082,9 +3944,8 @@
   function renderFilterModal() {
     const container = document.getElementById("filterOptionsContainer");
     if (!container) return;
-    const categories = [t('allCategories'), ...new Set(products.map(p => p.category))];
-    const displayCategories = categories.map(cat => cat === t('allCategories') ? t('allCategories') : cat);
-    container.innerHTML = displayCategories.map(cat => `<div class="filter-row" data-filter="${cat}"><span class="filter-text">${cat}</span>${currentFilter === cat ? '<span class="check-mark">✓</span>' : ''}</div>`).join("");
+    const categories = ["Все категории", ...new Set(products.map(p => p.category))];
+    container.innerHTML = categories.map(cat => `<div class="filter-row" data-filter="${cat}"><span class="filter-text">${cat}</span>${currentFilter === cat ? '<span class="check-mark">✓</span>' : ''}</div>`).join("");
     container.querySelectorAll(".filter-row").forEach(row => {
       row.addEventListener("click", () => {
         currentFilter = row.dataset.filter;

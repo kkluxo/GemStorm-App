@@ -82,7 +82,7 @@
     }
 
     body {
-      touch-action: pan-y;
+      touch-action: manipulation;
     }
 
     .page-header-sticky {
@@ -261,6 +261,22 @@
     body:has(#verificationCodeInput:focus) .cart-checkout-fixed {
       display: flex !important;
     }
+    
+    .bottom-menu {
+  transform: translateZ(0);
+  will-change: transform;
+  isolation: isolate;
+}
+
+.menu-item {
+  position: relative;
+  z-index: 5;
+  pointer-events: auto;
+}
+
+.menu-slider {
+  pointer-events: none;
+}
 
     .menu-item {
       display: flex;
@@ -3676,7 +3692,10 @@ if (!tgUser || !tgUser.id) {
     tg.BackButton.hide();
   }
   initApp();
-  setTimeout(() => { injectPageHeader(); }, 50);
+  requestAnimationFrame(() => {
+  requestAnimationFrame(() => {
+    injectPageHeader();
+  });
 });
 
   document.addEventListener("click", function(e) {

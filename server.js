@@ -197,6 +197,84 @@ async function notifyUserStatus(bot, order, status, prevUserMsgId) {
 // ИНИЦИАЛИЗАЦИЯ БД
 // =============================================
 
+// Рулетка: получить прокрутки пользователя
+app.get('/api/user-spins', async (req, res) => {
+    try {
+        const { userId } = req.query;
+        if (!userId) return res.json({ spins: [] });
+        const result = await pool.query(
+            'SELECT * FROM roulette_spins WHERE user_id = $1',
+            [userId]
+        );
+        res.json({ spins: result.rows });
+    } catch (err) {
+        res.json({ spins: [] });
+    }
+});
+
+// Рулетка: записать прокрутку и выдать промокод
+app.post('/api/spin-roulette', async (req, res) => {
+    try {
+        const { userId, orderId, discount } = req.body;
+        if (!userId || !orderId) return res.status(400).json({ error: 'Нет данных' });
+
+        // Проверяем не крутил ли уже по этому заказу
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS roulette_spins (
+                id SERIAL PRIMARY KEY,
+                user_id TEXT,
+                order_id INTEGER,
+                discount TEXT,
+                promo_code TEXT,
+                created_at TIMESTAMP DEFAULT NOW()
+            )
+        `);
+
+        const exists = await pool.query(
+            'SELECT id FROM roulette_spins WHERE user_id = $1 AND order_id = $2',
+            [userId, orderId]
+        );
+        if (exists.rows.length > 0) {
+            return res.status(400).json({ error: 'Уже крутил' });
+        }
+
+        // Генерируем уникальный промокод
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let promoCode = 'SPIN';
+        for (let i = 0; i < 6; i++) {
+            promoCode += chars[Math.floor(Math.random() * chars.length)];
+        }
+
+        // Сохраняем прокрутку
+        await pool.query(
+            'INSERT INTO roulette_spins (user_id, order_id, discount, promo_code) VALUES ($1, $2, $3, $4)',
+            [userId, orderId, discount, promoCode]
+        );
+
+        // Добавляем промокод в систему (процент скидки из discount типа "5%")
+        const discountNum = parseInt(discount);
+        if (discountNum && userId) {
+            // Уведомляем админа о выигрыше
+            const bot = getBot();
+            if (bot) {
+                try {
+                    await bot.telegram.sendMessage(ADMIN_ID,
+                        `🎰 <b>Пользователь выиграл в рулетке!</b>\n\n` +
+                        `<b>User ID:</b> ${userId}\n` +
+                        `<b>Скидка:</b> ${discount}\n` +
+                        `<b>Промокод:</b> <code>${promoCode}</code>`,
+                        { parse_mode: 'HTML' }
+                    );
+                } catch (e) {}
+            }
+        }
+
+        res.json({ success: true, promoCode });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 async function initDB() {
     try {
         await pool.query(`

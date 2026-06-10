@@ -25,7 +25,7 @@
       padding-bottom: 130px;
     }
 
-    /* Стили заголовка как в первом коде */
+    /* Заголовок как в первом коде */
     .page-header-sticky {
       position: relative;
       top: 0;
@@ -108,7 +108,7 @@
       display: block;
     }
 
-    /* Нижнее меню */
+    /* Нижнее меню (оригинальное, не трогаем) */
     .bottom-menu {
       position: fixed;
       bottom: 16px;
@@ -360,7 +360,7 @@
       margin-bottom: 16px;
     }
 
-    /* Фиксированная нижняя панель */
+    /* Фиксированная нижняя панель для детальной страницы */
     .fixed-bottom-bar {
       position: fixed;
       bottom: 16px;
@@ -907,7 +907,7 @@
   <div id="detailContent"></div>
 </div>
 
-<!-- Нижнее меню -->
+<!-- Нижнее меню (НЕ ТРОГАЕМ) -->
 <div class="bottom-menu" id="bottomMenu">
   <div class="menu-slider" id="menuSlider"></div>
   <button class="menu-item" data-page="orders">
@@ -933,7 +933,7 @@
 </div>
 
 <script>
-  // Функция для рендера заголовка (как в первом коде)
+  // Функция рендера заголовка (как в первом коде)
   function renderPageHeader(iconUrl, title) {
     return `<div class="page-header-sticky">
       <div class="page-header-inner">
@@ -1027,6 +1027,10 @@
       const pw = document.getElementById('profileMenuWrapper');
       if (pw) pw.classList.toggle('active', pageId === 'profile');
       updateMenuSlider(pageId);
+      
+      // Показываем меню при возврате на главные страницы
+      const bottomMenu = document.getElementById('bottomMenu');
+      if (bottomMenu) bottomMenu.style.display = 'flex';
     }
 
     if (window.Telegram?.WebApp) {
@@ -1068,7 +1072,6 @@
     const container = document.getElementById('ordersList');
     if (!container) return;
     
-    // Добавляем заголовок
     const headerContainer = document.getElementById('ordersHeader');
     if (headerContainer) headerContainer.innerHTML = renderPageHeader('https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png', 'Заказы');
 
@@ -1101,9 +1104,13 @@
     });
   }
 
-  // Детальная страница заказа
+  // Детальная страница заказа (меню скрываем)
   async function showOrderDetail(order) {
     currentDetailOrder = order;
+    
+    // Скрываем меню
+    const bottomMenu = document.getElementById('bottomMenu');
+    if (bottomMenu) bottomMenu.style.display = 'none';
     
     const headerContainer = document.getElementById('detailHeader');
     if (headerContainer) headerContainer.innerHTML = renderPageHeader('https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png', `Заказ #${order.order_number}`);
@@ -1173,8 +1180,6 @@
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
     document.getElementById('detail-page').classList.add('active-page');
     window.Telegram?.WebApp?.BackButton.show();
-    const bottomNav = document.getElementById('bottomMenu');
-    if (bottomNav) bottomNav.style.display = 'none';
     window.scrollTo({ top: 0 });
   }
 
@@ -1425,8 +1430,11 @@
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
     document.getElementById('stats-page').classList.add('active-page');
     window.Telegram?.WebApp?.BackButton.show();
-    const bottomNav = document.getElementById('bottomMenu');
-    if (bottomNav) bottomNav.style.display = 'none';
+    
+    // Скрываем меню на странице статистики
+    const bottomMenu = document.getElementById('bottomMenu');
+    if (bottomMenu) bottomMenu.style.display = 'none';
+    
     window.scrollTo({ top: 0 });
 
     const container = document.getElementById('statsContent');
@@ -1469,9 +1477,11 @@
         hapticLight();
         const oldFixed = document.getElementById('adminFixedBar');
         if (oldFixed) oldFixed.remove();
+        
         if (document.getElementById('stats-page').classList.contains('active-page')) {
           showAdminPage('profile');
         } else if (document.getElementById('detail-page').classList.contains('active-page')) {
+          // Возвращаемся на страницу заказов, меню появится снова
           showAdminPage('orders');
         } else {
           showAdminPage('orders');

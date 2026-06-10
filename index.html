@@ -3684,20 +3684,14 @@ if (!tgUser || !tgUser.id) {
     if (user && user.id == ADMIN_ID) { window.location.href = "admin-panel.html"; }
   })();
 
-  (function() {
-    if (window.Telegram && window.Telegram.WebApp) {
-      const tg = window.Telegram.WebApp;
-      tg.ready();
-      tg.expand();
-      try { tg.requestFullscreen(); } catch(e) {}
-      try { tg.setHeaderColor("#121214"); tg.setBackgroundColor("#121214"); } catch(e) {}
-      try { if (tg.disableClosingConfirmation) tg.disableClosingConfirmation(); } catch(e) {}
-      try { if (tg.isClosingConfirmationEnabled === false && tg.enableClosingConfirmation) tg.enableClosingConfirmation(); } catch(e) {}
-      try { if (tg.disableVerticalSwipes) tg.disableVerticalSwipes(); } catch(e) {}
-      initBackButtonHandler();
-      tg.BackButton.hide();
-    }
-  })();
+  waitForTelegram(function() {
+  const tg = window.Telegram?.WebApp;
+  if (tg) {
+    initBackButtonHandler();
+    tg.BackButton.hide();
+  }
+  initApp();
+});
 
   document.addEventListener("click", function(e) {
     if (e.target.tagName !== "INPUT" && e.target.tagName !== "TEXTAREA" && e.target.tagName !== "SELECT") {

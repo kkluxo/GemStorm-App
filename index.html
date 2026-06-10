@@ -56,7 +56,7 @@
     }
 
     :root {
-      --tg-theme-bg-color: #141416 !important;
+      --tg-theme-bg-color: #14 !important;
       --brand-blue: #4cb4e9;
     }
 
@@ -1851,62 +1851,6 @@
 </head>
 <body>
 
-<!-- Кнопка-отладчик для iPhone -->
-<button id="debugBtn" style="position:fixed; bottom:100px; right:10px; background:#ff0000; color:white; padding:10px; border-radius:50%; width:50px; height:50px; z-index:99999; font-size:20px;">🐞</button>
-
-<div id="debugPanel" style="position:fixed; top:0; left:0; right:0; background:#000; color:#0f0; font-size:12px; padding:10px; z-index:99999; display:none; max-height:50%; overflow:auto; font-family:monospace;">
-  <button id="closeDebug" style="float:right; background:red; color:white; border:none;">✖</button>
-  <div id="debugContent"></div>
-</div>
-
-<script>
-// Отладчик для iPhone
-const debugBtn = document.getElementById('debugBtn');
-const debugPanel = document.getElementById('debugPanel');
-const debugContent = document.getElementById('debugContent');
-
-function logToScreen(msg) {
-  debugContent.innerHTML += '<div>' + new Date().toLocaleTimeString() + ': ' + msg + '</div>';
-  debugContent.scrollTop = debugContent.scrollHeight;
-}
-
-// Ловим все ошибки
-window.onerror = function(msg, url, line) {
-  logToScreen('❌ ОШИБКА: ' + msg + ' (строка ' + line + ')');
-  return false;
-};
-
-// Открыть панель отладки
-debugBtn.onclick = () => {
-  debugPanel.style.display = 'block';
-  debugBtn.style.display = 'none';
-};
-
-document.getElementById('closeDebug').onclick = () => {
-  debugPanel.style.display = 'none';
-  debugBtn.style.display = 'block';
-};
-
-// Проверяем основные проблемы
-setTimeout(() => {
-  logToScreen('🔍 Диагностика запущена...');
-  
-  if (typeof products === 'undefined') {
-    logToScreen('❌ ПРОБЛЕМА: products не определён! Нужен файл products.js');
-  } else {
-    logToScreen('✅ products загружен: ' + products.length + ' товаров');
-  }
-  
-  if (!window.Telegram?.WebApp) {
-    logToScreen('⚠️ Telegram WebApp не обнаружен');
-  } else {
-    logToScreen('✅ Telegram WebApp: ' + window.Telegram.WebApp.platform);
-  }
-  
-  logToScreen('📱 iOS устройство: ' + /iPhone|iPad|iPod/.test(navigator.userAgent));
-}, 1000);
-</script>
-
 <div id="browserBlocker" style="display: none;" class="browser-blocker">
   <div class="browser-blocker-content">
     <img class="browser-blocker-icon" src="https://storage.botpapa.me/files/fd86aa00-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="warning">
@@ -1940,10 +1884,6 @@ setTimeout(() => {
   <div id="profileContent"></div>
 </div>
 
-<div id="roulette-page" class="page">
-  <div id="rouletteContent"></div>
-</div>
-
 <div id="filter-page" class="page">
   <div class="filter-options" id="filterOptionsContainer"></div>
 </div>
@@ -1966,6 +1906,10 @@ setTimeout(() => {
 
 <div id="buy-promo-page" class="page">
   <div id="buyPromoContent"></div>
+</div>
+
+<div id="premium-page" class="page">
+  <div id="premiumContent"></div>
 </div>
 
 <div id="write-review-page" class="page">
@@ -2127,6 +2071,7 @@ setTimeout(() => {
   let cart = {};
   let appliedPromo = null;        // для корзины
   let appliedPromoDeal = null;    // для покупки акций
+  let appliedPromoPremium = null; // для премиум и звёзд
   let isPromoMode = false;
   let checkoutData = { paymentMethod: "", senderName: "", email: "" };
   let isSubmitting = false;
@@ -2137,7 +2082,8 @@ setTimeout(() => {
   let orderMode = "cart";
   let afterPaymentBackPage = "cart";
   let promoOrderData = { deal: null, name: "", category: "" };
-  
+  let premiumOrderData = { category: 'stars', username: '', deal: null };
+
   const promoDeals = [
     { label: "Акция за 0.99$", price: 79 },
     { label: "Акция за 1.99$", price: 159 },
@@ -2165,6 +2111,17 @@ setTimeout(() => {
   const promoCategories = [
     "Кристаллы", "Скины", "Набор скинов", "Блинги", "Монеты",
     "Очки силы", "Ресурсы", "Набор Esport", "Значки", "Иконки", "Другое"
+  ];
+
+  const starsDeals = [
+    { label: "100 Telegram звёзд", price: 129 },
+    { label: "150 Telegram звёзд", price: 199 },
+  ];
+
+  const premiumDeals = [
+    { label: "Premium 3 месяца", price: 869 },
+    { label: "Premium 6 месяцев", price: 1199 },
+    { label: "Premium 12 месяцев", price: 2129 },
   ];
 
   function saveCartToLocalStorage() { localStorage.setItem('cart', JSON.stringify(cart)); }
@@ -2382,7 +2339,7 @@ setTimeout(() => {
         if (promoInput) promoInput.addEventListener("keypress", (e) => { if (e.key === "Enter") applyBtn?.click(); });
       }, 0);
     } else {
-      fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${(orderMode === 'promo_deal' ? appliedPromoDeal : appliedPromo) ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="checkoutBtn">Перейти к оформлению</button><button class="promo-btn" id="openPromoBtn"><img src="https://storage.botpapa.me/files/8324fec0-5933-11f1-bef9-f1ec7a2c6e45.png" alt="Промокод"></button></div></div>`;
+      fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${(orderMode === 'promo_deal' ? appliedPromoDeal : orderMode === 'premium' ? appliedPromoPremium : appliedPromo) ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="checkoutBtn">Перейти к оформлению</button><button class="promo-btn" id="openPromoBtn"><img src="https://storage.botpapa.me/files/8324fec0-5933-11f1-bef9-f1ec7a2c6e45.png" alt="Промокод"></button></div></div>`;
       setTimeout(() => {
         document.getElementById("checkoutBtn")?.addEventListener("click", async () => {
           hapticMedium();
@@ -2421,7 +2378,11 @@ setTimeout(() => {
     if (orderMode === "promo_deal") {
       if (!promoOrderData.deal) { container.innerHTML = '<div class="empty-state">Акция не выбрана</div>'; return; }
       rawTotal = promoOrderData.deal.price;
-      discountedTotal = appliedPromoDeal ? Math.round(rawTotal * (1 - appliedPromoDeal.discountPercent / 100)) : rawTotal; 
+      discountedTotal = appliedPromoDeal ? Math.round(rawTotal * (1 - appliedPromoDeal.discountPercent / 100)) : rawTotal;
+    } else if (orderMode === "premium") {
+      if (!premiumOrderData.deal) { container.innerHTML = '<div class="empty-state">Товар не выбран</div>'; return; }
+      rawTotal = premiumOrderData.deal.price;
+      discountedTotal = appliedPromoPremium ? Math.round(rawTotal * (1 - appliedPromoPremium.discountPercent / 100)) : rawTotal;
     } else {
 
       const items = Object.entries(cart);
@@ -2429,9 +2390,10 @@ setTimeout(() => {
       rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
       discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
     }
-    container.innerHTML = `<div class="content-card"><div class="form-section"><div class="form-label">Почта Supercell ID</div><input type="email" class="form-input" id="emailInput" placeholder="Укажите почту аккаунта" value="${escapeHtml(checkoutData.email)}"></div><div class="form-section"><div class="form-label">Способ оплаты</div><select class="form-select-native" id="paymentMethodSelect"><option value="" disabled ${!checkoutData.paymentMethod ? 'selected' : ''}>Нажмите для выбора</option>${paymentMethodsOptions.map(o => `<option value="${o.value}" ${checkoutData.paymentMethod === o.value ? 'selected' : ''}>${o.label}</option>`).join('')}</select></div><div class="form-section"><div class="form-label">Данные отправителя</div><input type="text" class="form-input" id="senderNameInput" placeholder="Укажите имя отправителя" value="${escapeHtml(checkoutData.senderName)}"></div></div>`;
-    const fixedBlock = document.getElementById("cartCheckoutFixed");    fixedBlock.style.display = "block";
-    fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${(orderMode === 'promo_deal' ? appliedPromoDeal : appliedPromo) ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="payBtn">Перейти к оплате</button><button class="promo-btn" id="helpBtn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь"></button></div></div>`;
+    container.innerHTML = `<div class="content-card"><div class="form-section"><div class="form-label">${orderMode === 'premium' ? 'Ваша почта' : 'Почта Supercell ID'}</div><input type="email" class="form-input" id="emailInput" placeholder="${orderMode === 'premium' ? 'Необязательно' : 'Укажите почту аккаунта'}" value="${escapeHtml(checkoutData.email)}"></div><div class="form-section"><div class="form-label">Способ оплаты</div><select class="form-select-native" id="paymentMethodSelect"><option value="" disabled ${!checkoutData.paymentMethod ? 'selected' : ''}>Нажмите для выбора</option>${paymentMethodsOptions.map(o => `<option value="${o.value}" ${checkoutData.paymentMethod === o.value ? 'selected' : ''}>${o.label}</option>`).join('')}</select></div><div class="form-section"><div class="form-label">Данные отправителя</div><input type="text" class="form-input" id="senderNameInput" placeholder="Укажите имя отправителя" value="${escapeHtml(checkoutData.senderName)}"></div></div>`;
+    const fixedBlock = document.getElementById("cartCheckoutFixed");
+    fixedBlock.style.display = "block";
+    fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${(orderMode === 'promo_deal' ? appliedPromoDeal : orderMode === 'premium' ? appliedPromoPremium : appliedPromo) ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="payBtn">Перейти к оплате</button><button class="promo-btn" id="helpBtn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь"></button></div></div>`;
     setTimeout(() => {
       const paymentSelect = document.getElementById("paymentMethodSelect");
       paymentSelect?.addEventListener("change", function() {
@@ -2440,7 +2402,7 @@ setTimeout(() => {
         localStorage.setItem('checkoutData', JSON.stringify(checkoutData));
       });
       document.getElementById("helpBtn")?.addEventListener("click", () => { hapticLight(); window.open("https://t.me/GemStormHelp", "_blank"); });
-      document.getElementById("payBtn")?.addEventListener("click", () => { hapticMedium(); let hasError = false; const senderInput = document.getElementById("senderNameInput"); const emailInput = document.getElementById("emailInput"); if (!checkoutData.paymentMethod) { paymentSelect.classList.add("error"); hasError = true; } if (!senderInput.value.trim()) { senderInput.classList.add("error"); hasError = true; } else { senderInput.classList.remove("error"); checkoutData.senderName = senderInput.value.trim(); } if (!emailInput.value.trim()) { emailInput.classList.add("error"); hasError = true; } else { emailInput.classList.remove("error"); checkoutData.email = emailInput.value.trim(); } if (!hasError) showPage("payment"); });
+      document.getElementById("payBtn")?.addEventListener("click", () => { hapticMedium(); let hasError = false; const senderInput = document.getElementById("senderNameInput"); const emailInput = document.getElementById("emailInput"); if (!checkoutData.paymentMethod) { paymentSelect.classList.add("error"); hasError = true; } if (!senderInput.value.trim()) { senderInput.classList.add("error"); hasError = true; } else { senderInput.classList.remove("error"); checkoutData.senderName = senderInput.value.trim(); } if (orderMode !== 'premium' && !emailInput.value.trim()) { emailInput.classList.add("error"); hasError = true; } else { emailInput.classList.remove("error"); checkoutData.email = emailInput.value.trim(); } if (!hasError) showPage("payment"); });
       document.getElementById("senderNameInput")?.addEventListener("input", function() {
         checkoutData.senderName = this.value;
         this.classList.remove("error");
@@ -2465,7 +2427,10 @@ setTimeout(() => {
         if (orderMode === "promo_deal") {
       rawTotal = promoOrderData.deal.price;
       discountedTotal = appliedPromoDeal ? Math.round(rawTotal * (1 - appliedPromoDeal.discountPercent / 100)) : rawTotal;
-      } else {
+    } else if (orderMode === "premium") {
+      rawTotal = premiumOrderData.deal.price;
+      discountedTotal = appliedPromoPremium ? Math.round(rawTotal * (1 - appliedPromoPremium.discountPercent / 100)) : rawTotal;
+    } else {
       const items = Object.entries(cart);
       rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
       discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
@@ -2473,7 +2438,7 @@ setTimeout(() => {
     container.innerHTML = `<div class="content-card"><div class="form-section"><div class="form-label">Номер карты</div><div class="form-select-readonly card-number-row"><span class="card-number-text">${cardNum}</span><img class="copy-icon" id="copyCardBtn" src="https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png" alt="copy"></div></div><div class="form-section"><div class="form-label">Получатель</div><div class="form-select-readonly"><span>Азат Ф.</span></div></div><div class="form-section"><div class="form-label">Банк получателя</div><div class="form-select-readonly"><span>${bank}</span></div></div></div>`;
     const fixedBlock = document.getElementById("cartCheckoutFixed");
     fixedBlock.style.display = "block";
-    fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${(orderMode === 'promo_deal' ? appliedPromoDeal : appliedPromo) ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="paidBtn">Я оплатил</button><button class="promo-btn" id="helpBtn2"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь"></button></div></div>`;
+    fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${(orderMode === 'promo_deal' ? appliedPromoDeal : orderMode === 'premium' ? appliedPromoPremium : appliedPromo) ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="paidBtn">Я оплатил</button><button class="promo-btn" id="helpBtn2"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь"></button></div></div>`;
     setTimeout(() => {
       const copyBtn = document.getElementById("copyCardBtn");
       copyBtn?.addEventListener("click", async () => { if (navigator.clipboard) { copyBtn.style.transform = "scale(0.85)"; await navigator.clipboard.writeText(cardNum.replace(/\s/g, "")); setTimeout(() => { copyBtn.style.transform = "scale(1)"; }, 150); hapticLight(); } });
@@ -2503,7 +2468,16 @@ setTimeout(() => {
           orderPromoDiscount = appliedPromoDeal ? appliedPromoDeal.discountPercent : 0;
           orderPromoItemName = promoOrderData.name;
           orderPromoItemCategory = promoOrderData.category;
-          } else {
+    } else if (orderMode === "premium") {
+          const premRaw = premiumOrderData.deal.price;
+          const premTotal = appliedPromoPremium ? Math.round(premRaw * (1 - appliedPromoPremium.discountPercent / 100)) : premRaw;
+          orderItems = [{ id: 0, name: premiumOrderData.deal.label, qty: 1, price: premRaw }];
+          total = premTotal;
+          orderPromo = appliedPromoPremium ? appliedPromoPremium.code : null;
+          orderPromoDiscount = appliedPromoPremium ? appliedPromoPremium.discountPercent : 0;
+          orderPromoItemName = premiumOrderData.username;
+          orderPromoItemCategory = premiumOrderData.category === 'premium' ? 'Telegram Premium' : 'Telegram Stars';
+        } else {
           const cartItems = Object.entries(cart);
           total = cartItems.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
           if (appliedPromo) total = Math.round(total * (1 - appliedPromo.discountPercent / 100));
@@ -2537,6 +2511,9 @@ setTimeout(() => {
         if (success) {
           if (orderMode === "promo_deal") {
             promoOrderData = { deal: null, name: "", category: "" };
+            orderMode = "cart";
+          } else if (orderMode === "premium") {
+            premiumOrderData = { category: 'stars', username: '', deal: null };
             orderMode = "cart";
           } else {
             cart = {};
@@ -2748,10 +2725,16 @@ setTimeout(() => {
           <span class="order-detail-label">Отправитель</span>
           <span class="order-detail-value">${escapeHtml(order.sender_name || '—')}</span>
         </div>
-                <div class="order-detail-row">
-  <span class="order-detail-label">Почта</span>
-  <span class="order-detail-value">${escapeHtml(order.email || '—')}</span>
-</div>
+                ${order.promo_item_category === 'Telegram Premium' || order.promo_item_category === 'Telegram Stars'
+          ? `<div class="order-detail-row">
+              <span class="order-detail-label">Получатель</span>
+              <span class="order-detail-value">${escapeHtml(order.promo_item_name || '—')}</span>
+            </div>`
+          : `<div class="order-detail-row">
+              <span class="order-detail-label">Почта</span>
+              <span class="order-detail-value">${escapeHtml(order.email || '—')}</span>
+            </div>`
+        }
         ${order.promo ? `<div class="order-detail-row">
           <span class="order-detail-label">Промокод</span>
           <span class="order-detail-value">${order.promo} (${order.promo_discount}%)</span>
@@ -3048,6 +3031,186 @@ setTimeout(() => {
     }, 0);
   }
 
+  function renderPremiumPage() {
+    const container = document.getElementById("premiumContent");
+    if (!container) return;
+
+    if (!premiumOrderData.deal) {
+      premiumOrderData.deal = starsDeals[0];
+    }
+
+    const currentDeals = premiumOrderData.category === 'premium' ? premiumDeals : starsDeals;
+
+    const categoryOptions = `
+      <option value="stars" ${premiumOrderData.category === 'stars' ? 'selected' : ''}>Telegram звёзды</option>
+      <option value="premium" ${premiumOrderData.category === 'premium' ? 'selected' : ''}>Telegram премиум</option>
+    `;
+
+    const dealOptions = currentDeals.map((d, i) =>
+      `<option value="${i}" ${premiumOrderData.deal && premiumOrderData.deal.label === d.label ? 'selected' : (i === 0 && !premiumOrderData.deal ? 'selected' : '')}>${d.label} — ${formatPrice(d.price)}</option>`
+    ).join('');
+
+    container.innerHTML = `
+      <div class="content-card">
+        <div class="form-section">
+          <div class="form-label">Категория</div>
+          <select class="form-select-native" id="premiumCategorySelect">
+            <option value="" disabled>Выберите категорию</option>
+            ${categoryOptions}
+          </select>
+        </div>
+        <div class="form-section">
+          <div class="form-label">Получатель</div>
+          <input type="text" class="form-input" id="premiumUsernameInput" placeholder="Имя пользователя «username»" value="${escapeHtml(premiumOrderData.username || localStorage.getItem('premiumUsername') || '')}">
+         </div>
+        <div class="form-section" style="margin-bottom:0;">
+          <div class="form-label">Количество</div>
+          <select class="form-select-native" id="premiumDealSelect">
+            ${dealOptions}
+          </select>
+        </div>
+      </div>
+    `;
+
+    const fixedBlock = document.getElementById("cartCheckoutFixed");
+    fixedBlock.style.display = "block";
+
+    function updatePremiumFixed() {
+      const idx = document.getElementById("premiumDealSelect")?.value;
+      const deals = premiumOrderData.category === 'premium' ? premiumDeals : starsDeals;
+      const deal = (idx !== "" && idx !== null && idx !== undefined) ? deals[parseInt(idx)] : (premiumOrderData.deal || deals[0]);
+      const rawPrice = deal ? deal.price : 0;
+const discountedPrice = appliedPromoPremium ? Math.round(rawPrice * (1 - appliedPromoPremium.discountPercent / 100)) : rawPrice;
+const priceText = deal ? formatPrice(discountedPrice) : "—";
+
+      fixedBlock.innerHTML = `
+        <div class="checkout-card">
+          <div class="total-row">
+            <span class="total-label">Общая стоимость:</span>
+            <span class="total-price-wrapper"><span class="total-price">${priceText}</span>${appliedPromoPremium && deal ? `<span class="total-old-price">${formatPrice(deal.price)}</span>` : ''}</span>
+          </div>
+          <div class="checkout-buttons-row">
+            <button class="checkout-button" id="premiumGoCheckoutBtn">Перейти к оформлению</button>
+            <button class="promo-btn" id="premiumPromoBtn"><img src="https://storage.botpapa.me/files/8324fec0-5933-11f1-bef9-f1ec7a2c6e45.png" alt="Промокод"></button>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("premiumPromoBtn")?.addEventListener("click", () => {
+        hapticLight();
+        isPromoMode = true;
+        const fixedBlock = document.getElementById("cartCheckoutFixed");
+        fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="promo-label">Введите промокод на скидку</span></div><div class="promo-input-row"><input type="text" class="promo-input" id="promoInputPremium" placeholder="Введите промокод"><button class="promo-action-btn apply-btn" id="promoApplyPremiumBtn"><img src="https://storage.botpapa.me/files/b254ec20-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="apply"></button><button class="promo-action-btn back-btn" id="promoBackPremiumBtn"><img src="https://storage.botpapa.me/files/af0747c0-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="back"></button></div></div>`;
+        setTimeout(() => {
+          document.getElementById("promoInputPremium")?.focus();
+          document.getElementById("promoBackPremiumBtn")?.addEventListener("click", () => {
+            hapticLight();
+            isPromoMode = false;
+            renderPremiumPage();
+          });
+          document.getElementById("promoApplyPremiumBtn")?.addEventListener("click", async () => {
+            hapticLight();
+            const code = document.getElementById("promoInputPremium")?.value.trim().toUpperCase();
+            if (!code) return;
+            const tgU = window.Telegram?.WebApp?.initDataUnsafe?.user;
+            try {
+              const r = await fetch('https://gemstorm.up.railway.app/api/check-promo', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code, userId: String(tgU?.id || '') })
+              });
+              const data = await r.json();
+if (data.valid) {
+  appliedPromoPremium = { code, discountPercent: data.discount };
+  isPromoMode = false;
+  renderPremiumPage();
+} else {
+                if (data.reason === 'not_found') alert('Промокод не найден');
+                else if (data.reason === 'already_used') alert('Данный промокод уже был использован ранее');
+                else if (data.reason === 'first_order_only') alert('Данный промокод доступен только на первый заказ');
+              }
+            } catch(e) { alert('Ошибка проверки промокода'); }
+          });
+          document.getElementById("promoInputPremium")?.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") document.getElementById("promoApplyPremiumBtn")?.click();
+          });
+        }, 0);
+      });
+
+      document.getElementById("premiumGoCheckoutBtn")?.addEventListener("click", async () => {
+        hapticMedium();
+        const catVal = document.getElementById("premiumCategorySelect")?.value;
+        const usernameVal = document.getElementById("premiumUsernameInput")?.value.trim();
+        const dealIdx = document.getElementById("premiumDealSelect")?.value;
+        let hasError = false;
+
+        if (!catVal) {
+          document.getElementById("premiumCategorySelect")?.classList.add("error");
+          hasError = true;
+        } else {
+          document.getElementById("premiumCategorySelect")?.classList.remove("error");
+        }
+        if (!usernameVal) {
+          document.getElementById("premiumUsernameInput")?.classList.add("error");
+          hasError = true;
+        } else {
+          document.getElementById("premiumUsernameInput")?.classList.remove("error");
+        }
+        if (dealIdx === "" || dealIdx === null || dealIdx === undefined) {
+          document.getElementById("premiumDealSelect")?.classList.add("error");
+          hasError = true;
+        } else {
+          document.getElementById("premiumDealSelect")?.classList.remove("error");
+        }
+        if (hasError) return;
+
+        const deals = premiumOrderData.category === 'premium' ? premiumDeals : starsDeals;
+        premiumOrderData.deal = deals[parseInt(dealIdx)];
+        premiumOrderData.username = usernameVal;
+        premiumOrderData.category = catVal;
+
+        try {
+          const r = await fetch('https://gemstorm.up.railway.app/api/settings');
+          const s = await r.json();
+          const status = s.bot_status || 'open';
+          if (status === 'closed') { alert('Оформить заказ временно не получится, попробуйте позже'); return; }
+          if (status === 'maintenance') { alert('Оформить заказ временно не получится, проводятся технические работы'); return; }
+          if (status === 'auto') {
+            const mskHour = (new Date().getUTCHours() + 3) % 24;
+            if (mskHour >= 0 && mskHour < 10) { alert('Оформить заказ временно не получится, возвращайтесь в 10:00 по московскому времени'); return; }
+          }
+        } catch(e) {}
+
+        orderMode = "premium";
+        afterPaymentBackPage = "premium";
+        showPage("checkout");
+      });
+    }
+
+    updatePremiumFixed();
+
+    setTimeout(() => {
+      document.getElementById("premiumCategorySelect")?.addEventListener("change", function() {
+        premiumOrderData.category = this.value;
+        this.classList.remove("error");
+        const deals = this.value === 'premium' ? premiumDeals : starsDeals;
+        premiumOrderData.deal = deals[0];
+        renderPremiumPage();
+      });
+      document.getElementById("premiumUsernameInput")?.addEventListener("input", function() {
+  premiumOrderData.username = this.value;
+  this.classList.remove("error");
+  localStorage.setItem('premiumUsername', this.value);
+});
+      document.getElementById("premiumDealSelect")?.addEventListener("change", function() {
+        const deals = premiumOrderData.category === 'premium' ? premiumDeals : starsDeals;
+        premiumOrderData.deal = deals[parseInt(this.value)];
+        this.classList.remove("error");
+        updatePremiumFixed();
+      });
+    }, 0);
+  }
+
   async function renderWriteReviewPage() {
     const container = document.getElementById("writeReviewContent");
     if (!container) return;
@@ -3312,19 +3475,6 @@ setTimeout(() => {
           </div>
         </div>
       </div>
-      
-      <div class="subscribe-card" id="openRouletteBtn" style="flex-direction:column;align-items:stretch;gap:10px;">
-  <div style="display:flex;justify-content:space-between;align-items:center;">
-    <div class="subscribe-title">Рулетка призов</div>
-    ${arrowSvg}
-  </div>
-  <div style="background:#1a1a1c;border-radius:18px;padding:8px;display:flex;gap:8px;">
-    <div style="flex:1;aspect-ratio:1;background:#2a2a2d;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px;">🎟️</div>
-    <div style="flex:1;aspect-ratio:1;background:#2a2a2d;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px;">🎟️</div>
-    <div style="flex:1;aspect-ratio:1;background:#2a2a2d;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px;">🎟️</div>
-    <div style="flex:1;aspect-ratio:1;background:#2a2a2d;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#4cb4e9;font-weight:700;">+3</div>
-  </div>
-</div>
 
       <div class="subscribe-card" id="subscribeChannelBtn">
         <div class="subscribe-info">
@@ -3350,6 +3500,14 @@ setTimeout(() => {
         ${arrowSvg}
       </div>
 
+      <div class="subscribe-card" id="openPremiumBtn">
+        <div class="subscribe-info">
+          <div class="subscribe-title">Приобретение звёзд</div>
+          <div class="subscribe-text">Приобрести премиум и звёзды</div>
+        </div>
+        ${arrowSvg}
+      </div>
+
       <div class="subscribe-card" id="openSupportBtn">
         <div class="subscribe-info">
           <div class="subscribe-title">Связаться с поддержкой</div>
@@ -3359,10 +3517,15 @@ setTimeout(() => {
       </div>`;
 
     setTimeout(() => {
-      document.getElementById("openRouletteBtn")?.addEventListener("click", () => { hapticLight(); showPage("roulette"); });
       document.getElementById("subscribeChannelBtn")?.addEventListener("click", () => { hapticLight(); window.open("https://t.me/GemStormStore", "_blank"); });
       document.getElementById("openReviewsPage")?.addEventListener("click", () => { hapticLight(); showPage("reviews"); });
       document.getElementById("openFaqBtn")?.addEventListener("click", () => { hapticLight(); orderMode = "cart"; promoOrderData = { deal: null, name: "", category: "" }; showPage("buy-promo"); });
+      document.getElementById("openPremiumBtn")?.addEventListener("click", () => {
+  hapticLight();
+  premiumOrderData = { category: 'stars', username: '', deal: null };
+  appliedPromoPremium = null;
+  showPage("premium");
+});
       document.getElementById("openSupportBtn")?.addEventListener("click", () => { hapticLight(); window.open("https://t.me/GemStormHelp", "_blank"); });
       document.getElementById("openGiftsBtn")?.addEventListener("click", openGiftsPage);
     }, 0);
@@ -3400,13 +3563,13 @@ setTimeout(() => {
       'cart': { icon: 'https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png', title: 'Корзина' },
       'orders': { icon: 'https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png', title: 'Заказы' },
       'profile': { icon: 'https://storage.botpapa.me/files/49df3ed0-5110-11f1-bef9-f1ec7a2c6e45.png', title: 'Профиль' },
-      'roulette': { icon: 'https://storage.botpapa.me/files/9deb9760-5167-11f1-bef9-f1ec7a2c6e45.png', title: 'Рулетка призов' },
       'filter': { icon: 'https://storage.botpapa.me/files/9478fb40-49de-11f1-bef9-f1ec7a2c6e45.png', title: 'Фильтры' },
       'checkout': { icon: 'https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png', title: 'Оформление' },
       'payment': { icon: 'https://storage.botpapa.me/files/62edaf00-4a27-11f1-bef9-f1ec7a2c6e45.png', title: 'Оплата' },
       'order-detail': { icon: 'https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png', title: 'Заказ' },
       'reviews': { icon: 'https://storage.botpapa.me/files/f665c4e0-510f-11f1-bef9-f1ec7a2c6e45.png', title: 'Отзывы' },
       'buy-promo': { icon: 'https://storage.botpapa.me/files/9deb9760-5167-11f1-bef9-f1ec7a2c6e45.png', title: 'Покупка акций' },
+      'premium': { icon: 'https://storage.botpapa.me/files/9deb9760-5167-11f1-bef9-f1ec7a2c6e45.png', title: 'Премиум и звёзды' },
       'write-review': { icon: 'https://storage.botpapa.me/files/f665c4e0-510f-11f1-bef9-f1ec7a2c6e45.png', title: 'Оставить отзыв' },
       'gifts': { icon: 'https://storage.botpapa.me/files/501ffee0-51e9-11f1-bef9-f1ec7a2c6e45.png', title: 'Подарки' },
       'settings': { icon: 'https://storage.botpapa.me/files/e4196b10-5f66-11f1-af2e-f7a93121b83b.png', title: 'Настройки' },
@@ -3454,11 +3617,10 @@ setTimeout(() => {
     if (targetPage) targetPage.classList.add("active-page");
     const checkoutBlock = document.getElementById("cartCheckoutFixed");
     if (pageId === "catalog") { renderCatalog(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
-    if (pageId === "catalog" || pageId === "cart") { if (orderMode === "promo_deal") orderMode = "cart"; }
+    if (pageId === "catalog" || pageId === "cart") { if (orderMode === "promo_deal" || orderMode === "premium") orderMode = "cart"; }
     if (pageId === "cart") { renderCartPage(); }
     if (pageId === "orders") { renderOrdersPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
     if (pageId === "profile") { renderProfilePage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
-    if (pageId === "roulette") { renderRoulettePage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
     if (pageId === "checkout") { renderCheckoutForm(); }
     if (pageId === "payment") { renderPaymentPage(); }
     if (pageId === "filter") { if (checkoutBlock) checkoutBlock.style.display = "none"; }
@@ -3467,8 +3629,9 @@ setTimeout(() => {
     if (pageId === "gifts") { renderGiftsPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
     if (pageId === "write-review") { renderWriteReviewPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
     if (pageId === "buy-promo") { renderBuyPromoPage(); }
+    if (pageId === "premium") { appliedPromoPremium = null; renderPremiumPage(); }
     if (pageId === "settings") { renderSettingsPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
-    if (pageId === "checkout") { afterPaymentBackPage = orderMode === "promo_deal" ? "buy-promo" : "cart"; }
+    if (pageId === "checkout") { afterPaymentBackPage = orderMode === "promo_deal" ? "buy-promo" : orderMode === "premium" ? "premium" : "cart"; }
     
     const mainPages = ["catalog", "cart", "orders", "profile"];
     if (mainPages.includes(pageId)) {
@@ -3517,231 +3680,6 @@ setTimeout(() => {
       });
     }
   }
-  
-  const rouletteItems = [
-  { label: "10%", chance: 5 },
-  { label: "5%", chance: 20 },
-  { label: "4%", chance: 25 },
-  { label: "3%", chance: 25 },
-  { label: "2%", chance: 15 },
-  { label: "1%", chance: 10 },
-];
-
-async function renderRoulettePage() {
-  const container = document.getElementById("rouletteContent");
-  if (!container) return;
-
-  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-  const userId = tgUser?.id;
-
-  // Проверяем есть ли выполненный заказ и не крутил ли уже
-  let canSpin = false;
-  let spinMessage = "Для участия необходим выполненный заказ";
-  let wonPromo = null;
-  let isDemoMode = true;
-
-  if (userId) {
-    try {
-      const [ordersRes, spinsRes] = await Promise.all([
-        fetch(`https://gemstorm.up.railway.app/api/user-orders?userId=${userId}`).then(r => r.json()),
-        fetch(`https://gemstorm.up.railway.app/api/user-spins?userId=${userId}`).then(r => r.json()).catch(() => ({ spins: [] }))
-      ]);
-      const completedOrders = ordersRes.filter(o => o.status_code === 'done' || o.status_code === 'completed');
-      const usedOrderIds = (spinsRes.spins || []).map(s => String(s.order_id));
-      const availableOrders = completedOrders.filter(o => !usedOrderIds.includes(String(o.id)));
-      if (availableOrders.length > 0) {
-        canSpin = true;
-        spinMessage = "";
-      } else if (completedOrders.length > 0) {
-        spinMessage = "Вы уже использовали все доступные прокрутки";
-      }
-    } catch(e) {}
-  }
-
-  // Текущие 3 видимых слота (индексы из rouletteItems)
-  let slotIndices = [0, 1, 2];
-  let isSpinning = false;
-
-  function renderSlots() {
-    return slotIndices.map((idx, pos) => {
-      const item = rouletteItems[idx % rouletteItems.length];
-      const isCenter = pos === 1;
-      return `<div style="flex:1;background:#1e1e21;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px 8px;border:${isCenter ? '2px solid #4cb4e9' : '1px solid #2B2B2D'};transition:border 0.3s;">
-        <div style="font-size:42px;">🎟️</div>
-        <div style="background:rgba(76,180,233,0.15);border-radius:20px;padding:5px 14px;font-size:15px;font-weight:600;color:#4cb4e9;">${item.label}</div>
-      </div>`;
-    }).join('');
-  }
-
-  container.innerHTML = `
-    <div style="display:flex;gap:10px;margin-bottom:20px;" id="rouletteSlots">
-      ${renderSlots()}
-    </div>
-
-    <div style="display:flex;align-items:center;justify-content:space-between;background:#222225;border:1px solid #2B2B2D;border-radius:20px;padding:14px 18px;margin-bottom:20px;">
-      <span style="font-size:16px;color:#cbcdcd;font-weight:500;">Демо режим</span>
-      <div id="demoToggle" style="width:50px;height:28px;background:${isDemoMode ? '#4cb4e9' : '#3a3a3e'};border-radius:20px;position:relative;cursor:pointer;transition:background 0.2s;">
-        <div id="demoKnob" style="position:absolute;top:3px;${isDemoMode ? 'right:3px' : 'left:3px'};width:22px;height:22px;background:white;border-radius:50%;transition:all 0.2s;"></div>
-      </div>
-    </div>
-
-    <div style="margin-bottom:20px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <span style="font-size:18px;font-weight:600;">Вы можете выиграть...</span>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
-        ${rouletteItems.map(item => `
-          <div style="background:#222225;border:1px solid #2B2B2D;border-radius:20px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:8px;">
-            <span style="font-size:13px;color:#9e9e9e;">${item.chance}%</span>
-            <div style="font-size:32px;">🎟️</div>
-            <div style="background:rgba(76,180,233,0.15);border-radius:20px;padding:4px 10px;font-size:14px;font-weight:600;color:#4cb4e9;">${item.label}</div>
-          </div>
-        `).join('')}
-      </div>
-    </div>
-
-    ${wonPromo ? `<div style="background:rgba(34,197,94,0.1);border:1px solid #22c55e;border-radius:20px;padding:16px;margin-bottom:20px;text-align:center;">
-      <div style="font-size:16px;color:#22c55e;font-weight:600;margin-bottom:8px;">🎉 Вы выиграли!</div>
-      <div style="font-size:20px;font-weight:700;color:white;">${wonPromo}</div>
-      <div style="font-size:14px;color:#9e9e9e;margin-top:6px;">Промокод добавлен в систему</div>
-    </div>` : ''}
-  `;
-
-  // Фиксированная кнопка снизу
-  const fixedBlock = document.getElementById("cartCheckoutFixed");
-  if (fixedBlock) {
-    fixedBlock.style.display = "block";
-    fixedBlock.innerHTML = `<div class="checkout-card">
-      <div class="checkout-buttons-row">
-        <button class="checkout-button" id="spinBtn" ${!canSpin && !isDemoMode ? 'style="background:#3a3a3e;color:#9e9e9e;"' : ''}>
-          ${isDemoMode ? 'Крутить (демо)' : canSpin ? 'Крутить колесо' : spinMessage}
-        </button>
-        <button class="promo-btn" onclick="hapticLight();window.open('https://t.me/GemStormHelp','_blank')">
-          <img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" style="width:24px;height:24px;">
-        </button>
-      </div>
-    </div>`;
-  }
-
-  // Логика демо-тоггла
-  let demoMode = isDemoMode;
-  document.getElementById("demoToggle")?.addEventListener("click", () => {
-    hapticLight();
-    demoMode = !demoMode;
-    const toggle = document.getElementById("demoToggle");
-    const knob = document.getElementById("demoKnob");
-    if (toggle) toggle.style.background = demoMode ? '#4cb4e9' : '#3a3a3e';
-    if (knob) { knob.style.right = demoMode ? '3px' : ''; knob.style.left = demoMode ? '' : '3px'; }
-    const spinBtn = document.getElementById("spinBtn");
-    if (spinBtn) {
-      if (!demoMode && !canSpin) {
-        spinBtn.textContent = spinMessage;
-        spinBtn.style.background = '#3a3a3e';
-        spinBtn.style.color = '#9e9e9e';
-      } else {
-        spinBtn.textContent = demoMode ? 'Крутить (демо)' : 'Крутить колесо';
-        spinBtn.style.background = '#4cb4e9';
-        spinBtn.style.color = 'white';
-      }
-    }
-  });
-
-  // Логика кручения
-  document.getElementById("spinBtn")?.addEventListener("click", async () => {
-    if (isSpinning) return;
-    if (!demoMode && !canSpin) return;
-    hapticMedium();
-    isSpinning = true;
-
-    // Выбираем результат
-    let result;
-    if (demoMode) {
-      const rand = Math.random() * 100;
-      let cum = 0;
-      for (const item of rouletteItems) { cum += item.chance; if (rand < cum) { result = item; break; } }
-    } else {
-      const rand = Math.random() * 100;
-      let cum = 0;
-      for (const item of rouletteItems) { cum += item.chance; if (rand < cum) { result = item; break; } }
-    }
-    if (!result) result = rouletteItems[rouletteItems.length - 1];
-
-    // Анимация прокрутки
-    const slotsEl = document.getElementById("rouletteSlots");
-    let spinCount = 0;
-    const totalSpins = 15 + Math.floor(Math.random() * 8);
-    const spinInterval = setInterval(() => {
-      spinCount++;
-      slotIndices = slotIndices.map(i => (i + 1) % rouletteItems.length);
-      if (slotsEl) slotsEl.innerHTML = renderSlots();
-      if (spinCount >= totalSpins) {
-        clearInterval(spinInterval);
-        // Финальная позиция — победный результат в центре
-        const winIdx = rouletteItems.indexOf(result);
-        slotIndices = [(winIdx - 1 + rouletteItems.length) % rouletteItems.length, winIdx, (winIdx + 1) % rouletteItems.length];
-        if (slotsEl) slotsEl.innerHTML = renderSlots();
-        isSpinning = false;
-
-        if (demoMode) {
-  setTimeout(() => alert(`Демо результат: промокод на ${result.label}!`), 300);
-} else {
-  const spinBtn = document.getElementById("spinBtn");
-  if (spinBtn) { 
-    spinBtn.disabled = true; 
-    spinBtn.textContent = "Обработка..."; 
-  }
-  
-  (async () => {
-    try {
-      // Простой способ - по очереди
-      const ordersResponse = await fetch(`https://gemstorm.up.railway.app/api/user-orders?userId=${userId}`);
-      const orders = await ordersResponse.json();
-      
-      let spins = { spins: [] };
-      try {
-        const spinsResponse = await fetch(`https://gemstorm.up.railway.app/api/user-spins?userId=${userId}`);
-        spins = await spinsResponse.json();
-      } catch(e) {}
-      
-      const usedOrderIds = (spins.spins || []).map(s => String(s.order_id));
-      const availableOrder = orders.filter(o => (o.status_code === 'done' || o.status_code === 'completed') && !usedOrderIds.includes(String(o.id)))[0];
-      
-      if (availableOrder) {
-        const res = await fetch('https://gemstorm.up.railway.app/api/spin-roulette', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: String(userId), orderId: availableOrder.id, discount: result.label })
-        });
-        
-        if (res.ok) {
-          const data = await res.json();
-          canSpin = false;
-          const promoCode = data.promoCode || result.label;
-          const wonDiv = document.createElement('div');
-          wonDiv.innerHTML = `<div style="background:rgba(34,197,94,0.1);border:1px solid #22c55e;border-radius:20px;padding:16px;margin-bottom:20px;text-align:center;">
-            <div style="font-size:16px;color:#22c55e;font-weight:600;margin-bottom:8px;">🎉 Вы выиграли!</div>
-            <div style="font-size:20px;font-weight:700;color:white;">${promoCode}</div>
-            <div style="font-size:14px;color:#9e9e9e;margin-top:6px;">Промокод добавлен в систему</div>
-          </div>`;
-          container.insertBefore(wonDiv.firstChild, container.firstChild);
-          if (fixedBlock) fixedBlock.style.display = "none";
-        }
-      } else {
-        alert("Нет доступных заказов для участия в рулетке");
-        if (spinBtn) {
-          spinBtn.disabled = false;
-          spinBtn.textContent = "Крутить колесо";
-        }
-      }
-    } catch(e) { 
-      alert('Ошибка: ' + e.message);
-      if (spinBtn) {
-        spinBtn.disabled = false;
-        spinBtn.textContent = "Крутить колесо";
-      }
-    }
-  })();
-}
 
   function initApp() {
     loadCartFromLocalStorage();

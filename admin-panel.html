@@ -22,7 +22,6 @@
     .page { display: none; padding: 0 14px 20px 14px; max-width: 600px; margin: 0 auto; }
     .page.active-page { display: block; }
 
-    /* Заголовок как в магазине */
     .page-header-sticky {
       position: relative;
       top: 0;
@@ -81,7 +80,6 @@
     .page-header-double-btn:active { opacity: 0.7; }
     .page-header-double-btn img { width: 21px; height: 21px; }
 
-    /* Нижнее меню */
     .bottom-menu {
       position: fixed; bottom: 18px; left: 18px; right: 18px;
       background: #202023f9; border: 1px solid rgba(255,255,255,0.15);
@@ -112,29 +110,6 @@
     .menu-item.active .menu-label { color: #4cb4e9; }
     #profileMenuWrapper.active { background: #28282af9 !important; }
 
-    /* Табы */
-    .tabs-container {
-      position: relative; background: #202023f9;
-      border: 1px solid rgba(255,255,255,0.1); border-radius: 60px;
-      display: flex; justify-content: space-around; align-items: center;
-      height: 46px; padding: 6px 4px 8px 4px; margin-bottom: 16px;
-      backdrop-filter: blur(10px);
-    }
-    .tab-slider {
-      position: absolute; top: 3px; left: 3px; height: calc(100% - 6px);
-      width: calc(50% - 3px); background: rgba(200,200,200,0.1);
-      border-radius: 50px; transition: left 0.2s cubic-bezier(0.4,0,0.2,1); pointer-events: none;
-    }
-    .tab-item {
-      flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
-      background: none; border: none; cursor: pointer; transition: all 0.1s;
-      padding: 5px 0 2px 0; position: relative; z-index: 1;
-    }
-    .tab-item:active { transform: scale(0.92); opacity: 0.8; }
-    .tab-label { font-size: 15px; font-weight: 550; color: #9e9e9e; }
-    .tab-item.active .tab-label { color: #4cb4e9; }
-
-    /* Карточки заказов */
     .orders-list { display: flex; flex-direction: column; gap: 14px; }
     .order-wrapper { position: relative; margin-bottom: 0; }
     .order-main-card {
@@ -145,13 +120,6 @@
     .order-main-card:active { transform: scale(0.98); opacity: 0.9; }
     .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
     .order-id { font-weight: 600; color: #4cb4e9; font-size: 17px; }
-    .order-header-right { display: flex; align-items: center; gap: 8px; }
-    .order-delete-btn {
-      background: rgba(239,68,68,0.12); border: none; border-radius: 50%;
-      width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
-      cursor: pointer; color: #ef4444; flex-shrink: 0;
-    }
-    .order-delete-btn:active { transform: scale(0.9); opacity: 0.8; }
     .order-card-status { padding: 4px 12px; border-radius: 20px; font-size: 16px; font-weight: 500; }
     .status-pending-text { color: #4cb4e9; }
     .status-pending-bg { background: rgba(76,180,233,0.1); }
@@ -181,7 +149,6 @@
     .empty-state { text-align: center; padding: 60px 20px; color: #9e9e9e; }
     .empty-title { font-size: 18px; color: #a1a1aa; }
 
-    /* Детальная страница */
     .order-data-card {
       background: #222225;
       border: 1px solid rgba(43,43,45,0.8);
@@ -198,7 +165,6 @@
       margin-top: -28px; padding-top: 36px; position: relative; z-index: 1; margin-bottom: 16px;
     }
 
-    /* Закреп блок */
     .fixed-bottom-bar {
       position: fixed; bottom: 18px; left: 18px; right: 18px; z-index: 1000;
       max-width: 600px; margin: 0 auto; width: calc(100% - 36px);
@@ -224,12 +190,10 @@
       width: 52px; height: 52px; min-width: 52px; border-radius: 50%;
       background: #202B32; display: flex; align-items: center; justify-content: center;
       cursor: pointer; flex-shrink: 0; border: none; outline: none;
-      transition: transform 0.2s, opacity 0.2s;
     }
     .refresh-circle-btn:active { opacity: 0.8; transform: scale(0.95); }
     .refresh-circle-btn img { width: 26px; height: 26px; }
 
-    /* Страница пользователей */
     .stats-card {
       background: #222225;
       border: 1px solid #2B2B2D; border-radius: 28px;
@@ -270,7 +234,6 @@
     .user-spent-label { font-size: 15px; color: #9e9e9e; }
     .user-spent-value { font-size: 15px; color: #ffffff; font-weight: 600; }
 
-    /* Страница отзывов */
     .review-card-wrapper { position: relative; margin-bottom: 14px; }
     .review-card { background: #222225; border: 1px solid #2B2B2D; border-radius: 30px; padding: 16px; position: relative; z-index: 2; margin-bottom: 0; }
     .review-items-card { background: #141416; border: 1px solid #2B2B2D; border-radius: 0 0 30px 30px; padding: 12px 16px; margin-top: -28px; padding-top: 36px; position: relative; z-index: 1; margin-bottom: 0; }
@@ -297,7 +260,6 @@
     .review-item-price { font-size: 16px; color: #ffffff; font-weight: 500; }
     .review-empty { text-align: center; padding: 30px 0; color: #9e9e9e; font-size: 15px; }
 
-    /* Страница профиля */
     .profile-wrapper { position: relative; margin-bottom: 18px; }
     .profile-main-card {
       background: #222225;
@@ -340,7 +302,6 @@
     .stat-label { font-size: 15px; color: #cbd5e1; }
     .stat-value { font-size: 15px; color: white; font-weight: 600; }
 
-    /* Карточка настроек бота */
     .settings-card {
       background: #222225;
       border: 1px solid #2B2B2D; border-radius: 32px;
@@ -351,43 +312,36 @@
 </head>
 <body>
 
-<!-- Страница заказов -->
 <div id="orders-page" class="page active-page">
   <div id="ordersHeader"></div>
   <div id="ordersList" class="orders-list"><div class="empty-state">Загрузка...</div></div>
 </div>
 
-<!-- Страница пользователей -->
 <div id="users-page" class="page">
   <div id="usersHeader"></div>
   <div id="usersContent"></div>
 </div>
 
-<!-- Страница отзывов -->
 <div id="reviews-page" class="page">
   <div id="reviewsHeader"></div>
   <div id="reviewsContent"></div>
 </div>
 
-<!-- Страница профиля -->
 <div id="profile-page" class="page">
   <div id="profileHeader"></div>
   <div id="profileContent"></div>
 </div>
 
-<!-- Страница статистики -->
 <div id="stats-page" class="page">
   <div id="statsHeader"></div>
   <div id="statsContent"></div>
 </div>
 
-<!-- Детальная страница заказа -->
 <div id="detail-page" class="page">
   <div id="detailHeader"></div>
   <div id="detailContent"></div>
 </div>
 
-<!-- Нижнее меню -->
 <div id="bottomNav" style="position:fixed;bottom:18px;left:18px;right:18px;z-index:1001;max-width:600px;margin:0 auto;width:calc(100% - 36px);display:flex;gap:10px;align-items:center;">
   <div style="flex:1;height:66px;background:#202023f9;border:1px solid rgba(255,255,255,0.15);border-radius:60px;display:flex;justify-content:space-around;align-items:center;padding:5px 4px 8px 4px;backdrop-filter:blur(10px);position:relative;overflow:hidden;">
     <div class="menu-slider" id="menuSlider"></div>
@@ -416,12 +370,10 @@
 
 <script>
 (async function() {
-  // Функция проверки пароля через сервер
   async function checkAdminPassword() {
     const savedAuth = localStorage.getItem('adminAuth');
     const savedTime = localStorage.getItem('adminAuthTime');
     
-    // Если авторизован меньше 24 часов
     if (savedAuth && savedTime && (Date.now() - parseInt(savedTime) < 86400000)) {
       return true;
     }
@@ -451,14 +403,11 @@
     }
   }
 
-  // Проверяем пароль
   const isAuth = await checkAdminPassword();
   if (!isAuth) {
     document.body.innerHTML = '<div style="color:white;text-align:center;margin-top:40vh;font-size:20px;">Доступ запрещён</div>';
     return;
   }
-
-  // ========== ВЕСЬ ОСТАЛЬНОЙ КОД АДМИНКИ ==========
 
   function renderPageHeader(iconUrl, title) {
     return `<div class="page-header-sticky">
@@ -478,7 +427,6 @@
   const API = 'https://gemstorm.up.railway.app';
   const ADMIN_TOKEN = 'g3m5t0rm_2026';
   let allOrders = [];
-  let currentTab = 'pending';
   let currentDetailOrder = null;
   let currentAdminPage = 'orders';
 
@@ -555,9 +503,9 @@
   async function loadOrders() {
     try {
       const r = await fetch(`${API}/api/orders`, {
-    headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
-});
-allOrders = await r.json();
+        headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
+      });
+      allOrders = await r.json();
       if (currentAdminPage === 'orders') renderOrders();
     } catch(e) {
       document.getElementById('ordersList').innerHTML = '<div class="empty-state">Ошибка загрузки</div>';
@@ -570,12 +518,15 @@ allOrders = await r.json();
     if (headerContainer) headerContainer.innerHTML = renderPageHeader('https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png', 'Заказы');
     
     if (!container) return;
-    let filtered = allOrders;
 
-    if (!filtered.length) { container.innerHTML = '<div class="empty-state"><div class="empty-title">Нет заказов</div></div>'; return; }
+    if (!allOrders.length) { 
+      container.innerHTML = '<div class="empty-state"><div class="empty-title">Нет заказов</div></div>'; 
+      return; 
+    }
 
-    container.innerHTML = filtered.map(order => {
-      let items = []; try { items = JSON.parse(order.items || '[]'); } catch(e) {}
+    container.innerHTML = allOrders.map(order => {
+      let items = []; 
+      try { items = JSON.parse(order.items || '[]'); } catch(e) {}
       const tc = getStatusTextClass(order.status_code);
       const bc = getStatusBgClass(order.status_code);
       const sd = getStatusDisplayText(order.status_code);
@@ -610,7 +561,8 @@ allOrders = await r.json();
     const headerContainer = document.getElementById('detailHeader');
     if (headerContainer) headerContainer.innerHTML = renderPageHeader('https://storage.botpapa.me/files/aa66c190-49e7-11f1-bef9-f1ec7a2c6e45.png', `Заказ #${order.order_number}`);
 
-    let items = []; try { items = JSON.parse(order.items || '[]'); } catch(e) {}
+    let items = []; 
+    try { items = JSON.parse(order.items || '[]'); } catch(e) {}
 
     const statusColor = {'pending':'#4cb4e9','awaiting_code':'#eab308','processing':'#4cb4e9','completed':'#22c55e','done':'#22c55e','notfound':'#ef4444','cancelled':'#ef4444'}[order.status_code] || '#4cb4e9';
     const itemsHtml = items.map(i => `<div class="order-item-row"><span class="order-item-name">${escapeHtml(i.name)} ${i.qty > 1 ? `x${i.qty}` : ''}</span><span class="order-item-price">${formatPrice(i.price * i.qty)}</span></div>`).join('');
@@ -657,15 +609,18 @@ allOrders = await r.json();
       hapticMedium();
       try {
         const r = await fetch(`${API}/api/update-status`, { 
-    method:'POST',
-    headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${ADMIN_TOKEN}` // добавить
-    },
-    body: JSON.stringify({ orderId: order.id, status: statusMap[newCode], statusCode: newCode })
-});
-        if (r.ok) { await loadOrders(); const upd = allOrders.find(o=>o.id===order.id); if(upd) showOrderDetail(upd); }
-        else alert('Ошибка обновления статуса');
+          method:'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${ADMIN_TOKEN}`
+          },
+          body: JSON.stringify({ orderId: order.id, status: statusMap[newCode], statusCode: newCode })
+        });
+        if (r.ok) { 
+          await loadOrders(); 
+          const upd = allOrders.find(o => o.id === order.id); 
+          if (upd) showOrderDetail(upd); 
+        } else alert('Ошибка обновления статуса');
       } catch(e) { alert('Ошибка соединения'); }
     });
 
@@ -691,9 +646,9 @@ allOrders = await r.json();
     container.innerHTML = '<div class="empty-state">Загрузка...</div>';
     try {
       const r = await fetch(`${API}/api/users`, {
-    headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
-});
-const data = await r.json();
+        headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
+      });
+      const data = await r.json();
       const users = Array.isArray(data) ? data : [];
       const activeCount = users.filter(u => parseInt(u.orders_count) > 0).length;
       const rankColors = ['#FFD700', '#C0C0C0', '#CD7F32'];
@@ -730,7 +685,7 @@ const data = await r.json();
           </div>`;
         }).join('')}`;
     } catch(e) {
-      container.innerHTML = `<div class="empty-state">Ошибка загрузки</div>`;
+      container.innerHTML = `<div class="empty-state">Ошибка загрузки: ${e.message}</div>`;
     }
   }
 
@@ -743,9 +698,9 @@ const data = await r.json();
     container.innerHTML = '<div class="review-empty">Загрузка...</div>';
     try {
       const r = await fetch(`${API}/api/reviews`, {
-    headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
-});
-const list = await r.json();
+        headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
+      });
+      const list = await r.json();
       if (!list.length) { container.innerHTML = '<div class="review-empty">Отзывов нет</div>'; return; }
 
       container.innerHTML = list.map(rv => {
@@ -777,33 +732,27 @@ const list = await r.json();
       }).join('');
 
       container.querySelectorAll('.review-delete-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+        btn.addEventListener('click', async (e) => {
           e.stopPropagation();
           hapticLight();
           const reviewId = btn.dataset.id;
-          if (window.Telegram?.WebApp) {
-            window.Telegram.WebApp.showConfirm('Удалить отзыв?', async (ok) => {
-              if (ok) await deleteReview(reviewId);
-            });
-          } else {
-            if (window.confirm('Удалить отзыв?')) deleteReview(reviewId);
+          if (confirm('Удалить отзыв?')) {
+            try {
+              const r = await fetch(`${API}/api/reviews/${reviewId}`, { 
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
+              });
+              if (r.ok) { 
+                hapticLight(); 
+                renderReviewsPage(); 
+              } else alert('Ошибка удаления');
+            } catch(e) { alert('Ошибка соединения'); }
           }
         });
       });
     } catch(e) {
       container.innerHTML = '<div class="review-empty">Ошибка загрузки</div>';
     }
-  }
-
-  async function deleteReview(reviewId) {
-    try {
-      const r = await fetch(`${API}/api/reviews/${reviewId}`, { 
-    method: 'DELETE',
-    headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` } // добавить
-});
-      if (r.ok) { hapticLight(); renderReviewsPage(); }
-      else alert('Ошибка удаления');
-    } catch(e) { alert('Ошибка соединения'); }
   }
 
   async function renderProfilePage() {
@@ -822,19 +771,19 @@ const list = await r.json();
 
     try {
       const ru = await fetch(`${API}/api/total-revenue`, {
-    headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
-});
-const data = await ru.json();
+        headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
+      });
+      const data = await ru.json();
       totalRevenue = data.revenue || 0;
     } catch(e) {}
 
     try {
       const rs = await fetch(`${API}/api/settings`, {
-    headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
-  });
-  const s = await rs.json();
-  botStatus = s.bot_status || 'open';
-} catch(e) {}
+        headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
+      });
+      const s = await rs.json();
+      botStatus = s.bot_status || 'open';
+    } catch(e) {}
 
     const statusMap = {
       'open': { text: 'Открыт', tc: 'status-completed-text', bc: 'status-completed-bg' },
@@ -895,7 +844,10 @@ const data = await ru.json();
         try {
           const r = await fetch(`${API}/api/settings`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${ADMIN_TOKEN}`
+            },
             body: JSON.stringify({ bot_status: val })
           });
           if (r.ok) {
@@ -946,7 +898,9 @@ const data = await ru.json();
     container.innerHTML = '<div class="empty-state">Загрузка...</div>';
 
     try {
-      const r = await fetch(`${API}/api/stats`);
+      const r = await fetch(`${API}/api/stats`, {
+        headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
+      });
       const s = await r.json();
       container.innerHTML = `
         <div class="stat-period-card">
@@ -1041,7 +995,7 @@ const data = await ru.json();
   loadOrders();
   setInterval(loadOrders, 30000);
   
-})(); // Конец самовызывающейся функции
+})();
 </script>
 </body>
 </html>

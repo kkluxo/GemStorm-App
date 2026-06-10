@@ -460,6 +460,19 @@
 
   // ========== ВЕСЬ ОСТАЛЬНОЙ КОД АДМИНКИ ==========
   
+  const ADMIN_TOKEN = 'g3m5t0rm_2024'; // Тот же, что в Railway
+
+async function fetchWithAuth(url, options = {}) {
+    const response = await fetch(url, {
+        ...options,
+        headers: {
+            ...options.headers,
+            'Authorization': `Bearer ${ADMIN_TOKEN}`
+        }
+    });
+    return response;
+}
+  
   function renderPageHeader(iconUrl, title) {
     return `<div class="page-header-sticky">
       <div class="page-header-inner">
@@ -553,8 +566,10 @@
 
   async function loadOrders() {
     try {
-      const r = await fetch(`${API}/api/orders`);
-      allOrders = await r.json();
+      const r = await fetch(`${API}/api/orders`, {
+    headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
+});
+allOrders = await r.json();
       if (currentAdminPage === 'orders') renderOrders();
     } catch(e) {
       document.getElementById('ordersList').innerHTML = '<div class="empty-state">Ошибка загрузки</div>';
@@ -680,8 +695,10 @@
     if (!container) return;
     container.innerHTML = '<div class="empty-state">Загрузка...</div>';
     try {
-      const r = await fetch(`${API}/api/users`);
-      const data = await r.json();
+      const r = await fetch(`${API}/api/users`, {
+    headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
+});
+const data = await r.json();
       const users = Array.isArray(data) ? data : [];
       const activeCount = users.filter(u => parseInt(u.orders_count) > 0).length;
       const rankColors = ['#FFD700', '#C0C0C0', '#CD7F32'];
@@ -730,8 +747,10 @@
     if (!container) return;
     container.innerHTML = '<div class="review-empty">Загрузка...</div>';
     try {
-      const r = await fetch(`${API}/api/reviews`);
-      const list = await r.json();
+      const r = await fetch(`${API}/api/reviews`, {
+    headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
+});
+const list = await r.json();
       if (!list.length) { container.innerHTML = '<div class="review-empty">Отзывов нет</div>'; return; }
 
       container.innerHTML = list.map(rv => {
@@ -804,8 +823,10 @@
     let botStatus = 'open';
 
     try {
-      const ru = await fetch(`${API}/api/total-revenue`);
-      const data = await ru.json();
+      const ru = await fetch(`${API}/api/total-revenue`, {
+    headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
+});
+const data = await ru.json();
       totalRevenue = data.revenue || 0;
     } catch(e) {}
 

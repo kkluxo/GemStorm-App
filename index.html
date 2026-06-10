@@ -1851,6 +1851,62 @@
 </head>
 <body>
 
+<!-- Кнопка-отладчик для iPhone -->
+<button id="debugBtn" style="position:fixed; bottom:100px; right:10px; background:#ff0000; color:white; padding:10px; border-radius:50%; width:50px; height:50px; z-index:99999; font-size:20px;">🐞</button>
+
+<div id="debugPanel" style="position:fixed; top:0; left:0; right:0; background:#000; color:#0f0; font-size:12px; padding:10px; z-index:99999; display:none; max-height:50%; overflow:auto; font-family:monospace;">
+  <button id="closeDebug" style="float:right; background:red; color:white; border:none;">✖</button>
+  <div id="debugContent"></div>
+</div>
+
+<script>
+// Отладчик для iPhone
+const debugBtn = document.getElementById('debugBtn');
+const debugPanel = document.getElementById('debugPanel');
+const debugContent = document.getElementById('debugContent');
+
+function logToScreen(msg) {
+  debugContent.innerHTML += '<div>' + new Date().toLocaleTimeString() + ': ' + msg + '</div>';
+  debugContent.scrollTop = debugContent.scrollHeight;
+}
+
+// Ловим все ошибки
+window.onerror = function(msg, url, line) {
+  logToScreen('❌ ОШИБКА: ' + msg + ' (строка ' + line + ')');
+  return false;
+};
+
+// Открыть панель отладки
+debugBtn.onclick = () => {
+  debugPanel.style.display = 'block';
+  debugBtn.style.display = 'none';
+};
+
+document.getElementById('closeDebug').onclick = () => {
+  debugPanel.style.display = 'none';
+  debugBtn.style.display = 'block';
+};
+
+// Проверяем основные проблемы
+setTimeout(() => {
+  logToScreen('🔍 Диагностика запущена...');
+  
+  if (typeof products === 'undefined') {
+    logToScreen('❌ ПРОБЛЕМА: products не определён! Нужен файл products.js');
+  } else {
+    logToScreen('✅ products загружен: ' + products.length + ' товаров');
+  }
+  
+  if (!window.Telegram?.WebApp) {
+    logToScreen('⚠️ Telegram WebApp не обнаружен');
+  } else {
+    logToScreen('✅ Telegram WebApp: ' + window.Telegram.WebApp.platform);
+  }
+  
+  logToScreen('📱 iOS устройство: ' + /iPhone|iPad|iPod/.test(navigator.userAgent));
+}, 1000);
+</script>
+
 <div id="browserBlocker" style="display: none;" class="browser-blocker">
   <div class="browser-blocker-content">
     <img class="browser-blocker-icon" src="https://storage.botpapa.me/files/fd86aa00-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="warning">

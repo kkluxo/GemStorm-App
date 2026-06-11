@@ -1934,7 +1934,10 @@ function waitForTelegram(callback, attempts) {
   setTimeout(function() {
     waitForTelegram(callback, attempts + 1);
   }, 100);
-  <script>
+}
+</script>
+
+<script>
   // ТЕСТ 1 - сразу при загрузке
   setTimeout(() => {
     const d = document.createElement('div');
@@ -1945,8 +1948,6 @@ function waitForTelegram(callback, attempts) {
     document.body.appendChild(d);
     setTimeout(() => d.remove(), 6000);
   }, 500);
-</script>
-}
 </script>
 
 <div id="browserBlocker" style="display: none;" class="browser-blocker">

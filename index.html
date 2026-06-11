@@ -265,13 +265,15 @@
     .bottom-menu {
   transform: translateZ(0);
   will-change: transform;
-  isolation: isolate;
 }
 
 .menu-item {
   position: relative;
   z-index: 5;
   pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+  /* Важно для Safari — явный touch-action */
+  touch-action: manipulation;
 }
 
 .menu-slider {
@@ -2003,7 +2005,7 @@ function waitForTelegram(callback, attempts) {
 <div id="cartCheckoutFixed" class="cart-checkout-fixed" style="display: none;"></div>
 
 <div style="position:fixed;bottom:16px;left:16px;right:16px;z-index:1001;max-width:600px;margin:0 auto;width:calc(100% - 32px);display:flex;gap:10px;align-items:center;">
-  <div style="flex:1;height:66px;background:#222225f9;border:1px solid rgba(255,255,255,0.15);border-radius:60px;display:flex;justify-content:space-between;align-items:center;padding:5px 4px 8px 4px;backdrop-filter:blur(10px);position:relative;overflow:hidden;">
+  <div style="flex:1;height:66px;background:#222225f9;border:1px solid rgba(255,255,255,0.15);border-radius:60px;display:flex;justify-content:space-between;align-items:center;padding:5px 4px 8px 4px;backdrop-filter:blur(10px);position:relative;">
     <div class="menu-slider" id="menuSlider"></div>
     <button class="menu-item" data-page="catalog">
       <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/a0ee77c0-5112-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
@@ -3471,19 +3473,22 @@ if (!tgUser || !tgUser.id) {
     activePage.insertAdjacentHTML('afterbegin', renderPageHeader(cfg.icon, cfg.title));
     // Вешаем обработчик сразу после вставки
     attachHeaderButtonHandlers();
-  }, 30);
+  }, 100);
 }
     
     function attachHeaderButtonHandlers() {
   const btn = document.getElementById('headerDoubleBtn');
   if (!btn) return;
-  // Удаляем старый обработчик через замену элемента
-  const newBtn = btn.cloneNode(true);
-  btn.parentNode.replaceChild(newBtn, btn);
+  // Убираем cloneNode — в Safari он теряет layout
+  // Вместо этого используем флаг
+  if (btn._handlerAttached) return;
+  btn._handlerAttached = true;
   
-  newBtn.addEventListener('click', function(e) {
-    const isRefresh = e.target.closest('#headerRefreshIcon') || 
-                      e.offsetX < newBtn.offsetWidth / 2;
+  btn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const rect = btn.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const isRefresh = clickX < rect.width / 2;
     if (isRefresh) {
       hapticLight();
       refreshCurrentPage();
@@ -3809,6 +3814,7 @@ function refreshCurrentPage() {
       }
   }
 }
+});
 </script>
 
 </body>

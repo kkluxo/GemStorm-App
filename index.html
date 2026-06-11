@@ -2110,7 +2110,6 @@
 
   let cart = {};
   let appliedPromo = null;
-  let searchQuery = "";
   let appliedPromoDeal = null;
   let isPromoMode = false;
   let checkoutData = { paymentMethod: "", senderName: "", email: "" };
@@ -3605,82 +3604,6 @@
       slider.style.width = "calc(33.33%)";
     }
   }
-  
-  function formatPrice(p) { 
-  return Math.round(p).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + "₽"; 
-}
-
-function renderCatalog() {
-  const grid = document.getElementById("catalogGrid");
-  if (!grid) return;
-  
-  let filtered = products.filter(p => p.visible === true && (currentFilter === "Все категории" || p.category === currentFilter));
-  
-  if (typeof searchQuery !== 'undefined' && searchQuery && searchQuery.trim()) {
-    filtered = filtered.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
-  }
-  
-  if (!filtered.length) {
-    grid.innerHTML = `<div class="empty-state-icon" style="width:100%;"><div class="empty-title">Товары не найдены</div><button class="empty-catalog-btn" id="resetFiltersBtn">Сбросить фильтры</button></div>`;
-    setTimeout(() => { 
-      const resetBtn = document.getElementById("resetFiltersBtn"); 
-      if(resetBtn) resetBtn.addEventListener("click", () => { 
-        if (typeof searchQuery !== 'undefined') searchQuery = ""; 
-        const searchInput = document.getElementById("searchInput");
-        if (searchInput) searchInput.value = ""; 
-        currentFilter = "Все категории"; 
-        renderCatalog(); 
-        if (typeof renderFilterModal === 'function') renderFilterModal(); 
-      }); 
-    }, 0);
-    return;
-  }
-  
-  grid.innerHTML = filtered.map(p => `
-    <div class="product-card" data-id="${p.id}">
-      <img class="card-img" src="${p.image}" alt="${escapeHtml(p.name)}" loading="lazy">
-      <div class="card-info">
-        <div class="product-title">${escapeHtml(p.name)}</div>
-        <div class="price-row">
-          <span class="current-price">${formatPrice(p.price)}</span>
-          <span class="old-price">${formatPrice(p.oldPrice)}</span>
-        </div>
-        <button class="card-action-btn cart-add-btn" data-add="${p.id}">В корзину</button>
-      </div>
-    </div>
-  `).join("");
-  
-  document.querySelectorAll('.cart-add-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const id = parseInt(btn.dataset.add);
-      if (typeof handleCartAction === 'function') {
-        handleCartAction(id, true);
-      } else {
-        const check = canAddToCart(id);
-        if (!check.allowed) { alert(check.reason); return; }
-        cart[id] = (cart[id] || 0) + 1;
-        renderCatalog();
-        if (typeof saveCartToLocalStorage === 'function') saveCartToLocalStorage();
-      }
-      if (typeof hapticLight === 'function') hapticLight();
-    });
-  });
-}
-
-function showPage(pageId) {
-  document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
-  const targetPage = document.getElementById(pageId + "-page");
-  if (targetPage) targetPage.classList.add("active-page");
-  
-  if (pageId === "catalog") {
-    renderCatalog();
-    const checkoutBlock = document.getElementById("cartCheckoutFixed");
-    if (checkoutBlock) checkoutBlock.style.display = "none";
-  }
-  
-  window.scrollTo({ top: 0 });
-}
 
   function renderFilterModal() {
     const container = document.getElementById("filterOptionsContainer");

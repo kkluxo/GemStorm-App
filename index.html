@@ -3612,9 +3612,15 @@ if (!tgUser || !tgUser.id) {
     }
     
     // ИСПРАВЛЕНИЕ: сначала ждём следующий кадр, потом вставляем заголовок
-    requestAnimationFrame(() => {
-      injectPageHeader();
-    });
+    try {
+  injectPageHeader();
+} catch(e) {
+  const d = document.createElement('div');
+  d.style.cssText = 'position:fixed;top:300px;left:10px;right:10px;background:orange;color:black;padding:10px;z-index:99999;font-size:11px;border-radius:10px;word-break:break-all;';
+  d.textContent = 'ОШИБКА в showPage: ' + e.message;
+  document.body.appendChild(d);
+  setTimeout(() => d.remove(), 10000);
+}
     
     if (window.Telegram && window.Telegram.WebApp) {
       const tg = window.Telegram.WebApp;
@@ -3745,12 +3751,15 @@ if (tgUser?.photo_url) {
     tg.BackButton.hide();
   }
   initApp();
-  requestAnimationFrame(() => {
-  requestAnimationFrame(() => {
-    injectPageHeader();
-  });
-  setTimeout(() => injectPageHeader(), 300);
-});
+  try {
+  injectPageHeader();
+} catch(e) {
+  const d = document.createElement('div');
+  d.style.cssText = 'position:fixed;top:200px;left:10px;right:10px;background:orange;color:black;padding:10px;z-index:99999;font-size:11px;border-radius:10px;word-break:break-all;';
+  d.textContent = 'ОШИБКА: ' + e.message + ' | ' + e.stack;
+  document.body.appendChild(d);
+  setTimeout(() => d.remove(), 10000);
+}
 
   document.addEventListener("click", function(e) {
     if (e.target.tagName !== "INPUT" && e.target.tagName !== "TEXTAREA" && e.target.tagName !== "SELECT") {

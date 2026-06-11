@@ -1,110 +1,91 @@
 // === КОНФИГУРАЦИЯ ЦЕН (ДОЛЛАР → РУБЛИ) ===
-// Формат: "цена_в_долларах": { rub: "текущая_цена_в_рублях", oldRub: "старая_цена_в_рублях" }
+// Формат: "цена_в_долларах": [текущая_цена_в_рублях, старая_цена_в_рублях]
 const USD_TO_RUB = {
-  "0.99": { rub: 85, oldRub: 89 },
-  "1.99": { rub: 169, oldRub: 179 },
-  "2.99": { rub: 249, oldRub: 269 },
-  "3.99": { rub: 339, oldRub: 359 },
-  "4.99": { rub: 429, oldRub: 449 },
-  "5.99": { rub: 509, oldRub: 529 },
-  "6.99": { rub: 589, oldRub: 619 },
-  "7.99": { rub: 679, oldRub: 709 },
-  "8.99": { rub: 769, oldRub: 799 },
-  "9.99": { rub: 849, oldRub: 889 },
-  "10.99": { rub: 939, oldRub: 979 },
-  "11.99": { rub: 1019, oldRub: 1069 },
-  "12.99": { rub: 1099, oldRub: 1159 },
-  "13.99": { rub: 1189, oldRub: 1249 },
-  "14.99": { rub: 1269, oldRub: 1339 },
-  "15.99": { rub: 1359, oldRub: 1419 },
-  "16.99": { rub: 1439, oldRub: 1509 },
-  "17.99": { rub: 1529, oldRub: 1599 },
-  "18.99": { rub: 1619, oldRub: 1689 },
-  "19.99": { rub: 1699, oldRub: 1779 },
-  "24.99": { rub: 2129, oldRub: 2229 },
-  "44.99": { rub: 3949, oldRub: 4249 },
-  "48.99": { rub: 4249, oldRub: 4549 },
-  "89.99": { rub: 7899, oldRub: 8469 },
-  "96.99": { rub: 8469, oldRub: 8999 }
+  "0.99": [85, 89], "1.99": [169, 179], "2.99": [249, 269], "3.99": [339, 359],
+  "4.99": [429, 449], "5.99": [509, 529], "6.99": [589, 619], "7.99": [679, 709],
+  "8.99": [769, 799], "9.99": [849, 889], "10.99": [939, 979], "11.99": [1019, 1069],
+  "12.99": [1099, 1159], "13.99": [1189, 1249], "14.99": [1269, 1339], "15.99": [1359, 1419],
+  "16.99": [1439, 1509], "17.99": [1529, 1599], "18.99": [1619, 1689], "19.99": [1699, 1779],
+  "24.99": [2129, 2229], "44.99": [3949, 4249], "48.99": [4249, 4549], "89.99": [7899, 8469],
+  "96.99": [8469, 8999]
 };
 
-// Функция получения рублёвой цены по доллару
 function getRubPrice(usdPrice, isOld = false) {
   const prices = USD_TO_RUB[usdPrice];
-  if (prices) {
-    return isOld ? prices.oldRub : prices.rub;
-  }
-  // fallback: если цена не найдена
-  return isOld ? Math.round(parseFloat(usdPrice) * 89) : Math.round(parseFloat(usdPrice) * 85);
+  if (prices) return isOld ? prices[1] : prices[0];
+  return Math.round(parseFloat(usdPrice) * (isOld ? 89 : 85));
 }
 
-// === ТОВАРЫ (цены в рублях для совместимости с основным кодом) ===
-const products = [
+// === ТОВАРЫ (только долларовые цены!) ===
+const productsRaw = [
+  // [id, name, usdPrice, oldUsdPrice, label, category, maxQty, conflictGroup, visible, image]
   // Пропуски
-  { id: 1, name: "Brawl Pass", price: getRubPrice("8.99"), oldPrice: getRubPrice("8.99", true), label: "Пропуск", category: "Пропуски", maxQty: 1, conflictGroup: [1, 2, 3], visible: true, image: "https://storage.botpapa.me/files/6b57bf60-499a-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 2, name: "Brawl Pass Plus", price: getRubPrice("12.99"), oldPrice: getRubPrice("12.99", true), label: "Пропуск", category: "Пропуски", maxQty: 1, conflictGroup: [1, 2, 3], visible: true, image: "https://storage.botpapa.me/files/6f97da10-499a-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 3, name: "Улучш. до BP+", price: getRubPrice("4.99"), oldPrice: getRubPrice("4.99", true), label: "Пропуск", category: "Пропуски", maxQty: 1, conflictGroup: [1, 2, 3], visible: true, image: "https://storage.botpapa.me/files/6f97da10-499a-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 4, name: "Pro Pass", price: getRubPrice("24.99"), oldPrice: getRubPrice("24.99", true), label: "Пропуск", category: "Пропуски", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/72f535e0-499a-11f1-bef9-f1ec7a2c6e45.jpeg" },
-
+  [1, "Brawl Pass", "8.99", "8.99", "Пропуск", "Пропуски", 1, [1,2,3], true, "https://storage.botpapa.me/files/6b57bf60-499a-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [2, "Brawl Pass Plus", "12.99", "12.99", "Пропуск", "Пропуски", 1, [1,2,3], true, "https://storage.botpapa.me/files/6f97da10-499a-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [3, "Улучш. до BP+", "4.99", "4.99", "Пропуск", "Пропуски", 1, [1,2,3], true, "https://storage.botpapa.me/files/6f97da10-499a-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [4, "Pro Pass", "24.99", "24.99", "Пропуск", "Пропуски", 1, [], true, "https://storage.botpapa.me/files/72f535e0-499a-11f1-bef9-f1ec7a2c6e45.jpeg"],
   // Боец Болт
-  { id: 47, name: "Боец Болт", price: getRubPrice("8.99"), oldPrice: getRubPrice("9.99", true), label: "Боец Болт", category: "Боец Болт", maxQty: 1, conflictGroup: [], visible: true, image: "https://store.supercell.com/assets/offer-images/brawlstars/ab15739c18373b4c23c775819fc499026cc0a0f6abbe55ba0d761f8be59a69e1/brawlstars.16000106-x1-Hero.png" },
-  { id: 48, name: "Набор: Болт", price: getRubPrice("18.99"), oldPrice: getRubPrice("9.99", true), label: "Боец Болт", category: "Боец Болт", maxQty: 1, conflictGroup: [], visible: true, image: "https://store.supercell.com/assets/offer-images/brawlstars/85b256626eb1cfcc67ea45c337c3822d7ba5a37820b79486f6940518151f6575/brawlstars.16000106-x1-Hero_23001279-x1-Item_23001280-x1-Item_23001281-x1-Item_23001282-x1-Item.png" },
-
+  [47, "Боец Болт", "8.99", "9.99", "Боец Болт", "Боец Болт", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/ab15739c18373b4c23c775819fc499026cc0a0f6abbe55ba0d761f8be59a69e1/brawlstars.16000106-x1-Hero.png"],
+  [48, "Набор: Болт", "18.99", "9.99", "Боец Болт", "Боец Болт", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/85b256626eb1cfcc67ea45c337c3822d7ba5a37820b79486f6940518151f6575/brawlstars.16000106-x1-Hero_23001279-x1-Item_23001280-x1-Item_23001281-x1-Item_23001282-x1-Item.png"],
   // Strikers
-  { id: 11, name: "Набор: 3 скина", price: getRubPrice("24.99"), oldPrice: getRubPrice("24.99", true), label: "Strikers", category: "Strikers", maxQty: 1, conflictGroup: [11, 12], visible: true, image: "https://storage.botpapa.me/files/58cac0f0-6032-11f1-af2e-f7a93121b83b.jpeg" },
-  { id: 12, name: "Табло Вольт", price: getRubPrice("8.99"), oldPrice: getRubPrice("9.99", true), label: "Strikers", category: "Strikers", maxQty: 1, conflictGroup: [11, 12], visible: true, image: "https://storage.botpapa.me/files/63247140-6032-11f1-af2e-f7a93121b83b.jpeg" },
-  { id: 13, name: "Судья Милп", price: getRubPrice("8.99"), oldPrice: getRubPrice("9.99", true), label: "Strikers", category: "Strikers", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/673b3200-6032-11f1-af2e-f7a93121b83b.jpeg" },
-  { id: 14, name: "Суперфорвард Лу", price: getRubPrice("13.99"), oldPrice: getRubPrice("14.99", true), label: "Strikers", category: "Strikers", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/5ed5b090-6032-11f1-af2e-f7a93121b83b.jpeg" },
-  
+  [11, "Набор: 3 скина", "24.99", "24.99", "Strikers", "Strikers", 1, [11,12], true, "https://storage.botpapa.me/files/58cac0f0-6032-11f1-af2e-f7a93121b83b.jpeg"],
+  [12, "Табло Вольт", "8.99", "9.99", "Strikers", "Strikers", 1, [11,12], true, "https://storage.botpapa.me/files/63247140-6032-11f1-af2e-f7a93121b83b.jpeg"],
+  [13, "Судья Милп", "8.99", "9.99", "Strikers", "Strikers", 1, [], true, "https://storage.botpapa.me/files/673b3200-6032-11f1-af2e-f7a93121b83b.jpeg"],
+  [14, "Суперфорвард Лу", "13.99", "14.99", "Strikers", "Strikers", 1, [], true, "https://storage.botpapa.me/files/5ed5b090-6032-11f1-af2e-f7a93121b83b.jpeg"],
   // Esports
-  { id: 15, name: "Победитель Отис", price: getRubPrice("4.99"), oldPrice: getRubPrice("4.99", true), label: "Esports", category: "Esports", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/12adebb0-505b-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 16, name: "Чемпион мира Гас", price: getRubPrice("4.99"), oldPrice: getRubPrice("4.99", true), label: "Esports", category: "Esports", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/0de56720-505b-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 17, name: "Яростная Тара", price: getRubPrice("4.99"), oldPrice: getRubPrice("4.99", true), label: "Esports", category: "Esports", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/08e35c00-505b-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 45, name: "Фанат Фэнг", price: getRubPrice("4.99"), oldPrice: getRubPrice("4.99", true), label: "Esports", category: "Esports", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/1fdcdc10-505b-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 46, name: "Хоккеист Мортис", price: getRubPrice("4.99"), oldPrice: getRubPrice("4.99", true), label: "Esports", category: "Esports", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/cd577140-60d0-11f1-af2e-f7a93121b83b.jpeg" },
-  { id: 18, name: "Кошка-воровка Джесси", price: getRubPrice("3.99"), oldPrice: getRubPrice("3.99", true), label: "Esports", category: "Esports", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/027f28d0-505b-11f1-bef9-f1ec7a2c6e45.jpeg" },
-
+  [15, "Победитель Отис", "4.99", "4.99", "Esports", "Esports", 1, [], true, "https://storage.botpapa.me/files/12adebb0-505b-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [16, "Чемпион мира Гас", "4.99", "4.99", "Esports", "Esports", 1, [], true, "https://storage.botpapa.me/files/0de56720-505b-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [17, "Яростная Тара", "4.99", "4.99", "Esports", "Esports", 1, [], true, "https://storage.botpapa.me/files/08e35c00-505b-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [45, "Фанат Фэнг", "4.99", "4.99", "Esports", "Esports", 1, [], true, "https://storage.botpapa.me/files/1fdcdc10-505b-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [46, "Хоккеист Мортис", "4.99", "4.99", "Esports", "Esports", 1, [], true, "https://storage.botpapa.me/files/cd577140-60d0-11f1-af2e-f7a93121b83b.jpeg"],
+  [18, "Кошка-воровка Джесси", "3.99", "3.99", "Esports", "Esports", 1, [], true, "https://storage.botpapa.me/files/027f28d0-505b-11f1-bef9-f1ec7a2c6e45.jpeg"],
   // Bling Deals
-  { id: 19, name: "4000 блингов", price: getRubPrice("0.99"), oldPrice: getRubPrice("0.99", true), label: "Bling Deal", category: "Bling Deals", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 20, name: "5000 блингов", price: getRubPrice("4.99"), oldPrice: getRubPrice("4.99", true), label: "Bling Deal", category: "Bling Deals", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 41, name: "8000 блингов", price: getRubPrice("5.99"), oldPrice: getRubPrice("5.99", true), label: "Bling Deal", category: "Bling Deals", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 42, name: "8500 блингов", price: getRubPrice("5.99"), oldPrice: getRubPrice("5.99", true), label: "Bling Deal", category: "Bling Deals", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 43, name: "12500 блингов", price: getRubPrice("7.99"), oldPrice: getRubPrice("7.99", true), label: "Bling Deal", category: "Bling Deals", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 44, name: "20000 блингов", price: getRubPrice("8.99"), oldPrice: getRubPrice("9.99", true), label: "Bling Deal", category: "Bling Deals", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg" },
-
+  [19, "4000 блингов", "0.99", "0.99", "Bling Deal", "Bling Deals", 1, [], true, "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [20, "5000 блингов", "4.99", "4.99", "Bling Deal", "Bling Deals", 1, [], true, "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [41, "8000 блингов", "5.99", "5.99", "Bling Deal", "Bling Deals", 1, [], true, "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [42, "8500 блингов", "5.99", "5.99", "Bling Deal", "Bling Deals", 1, [], true, "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [43, "12500 блингов", "7.99", "7.99", "Bling Deal", "Bling Deals", 1, [], true, "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [44, "20000 блингов", "8.99", "9.99", "Bling Deal", "Bling Deals", 1, [], true, "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg"],
   // Еженедельные акции
-  { id: 21, name: "Гипнос Сенди", price: getRubPrice("8.99"), oldPrice: getRubPrice("8.99", true), label: "Ежен. акция", category: "Ежен. акции", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/c079d530-60d0-11f1-af2e-f7a93121b83b.jpeg" },
-  { id: 22, name: "Фигурка Пенни", price: getRubPrice("6.99"), oldPrice: getRubPrice("6.99", true), label: "Ежен. акция", category: "Ежен. акции", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/c76b2d30-60d0-11f1-af2e-f7a93121b83b.jpeg" },
-  { id: 23, name: "Равана Гром", price: getRubPrice("6.99"), oldPrice: getRubPrice("6.99", true), label: "Ежен. акция", category: "Ежен. акции", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/ca413090-60d0-11f1-af2e-f7a93121b83b.jpeg" },
-  { id: 24, name: "Вирус Чарли", price: getRubPrice("8.99"), oldPrice: getRubPrice("8.99", true), label: "Ежен. акция", category: "Ежен. акции", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/c3f8c2c0-60d0-11f1-af2e-f7a93121b83b.jpeg" },
-
-  // Ежедневные акции (монеты, гемы, сила)
-  { id: 35, name: "600 монет", price: getRubPrice("1.99"), oldPrice: getRubPrice("1.99", true), label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/c04d8e50-56ba-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 36, name: "900 монет", price: getRubPrice("0.99"), oldPrice: getRubPrice("0.99", true), label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/c04d8e50-56ba-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 37, name: "1100 монет", price: getRubPrice("3.99"), oldPrice: getRubPrice("3.99", true), label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/c04d8e50-56ba-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 38, name: "1750 монет", price: getRubPrice("1.99"), oldPrice: getRubPrice("1.99", true), label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/c4c55ad0-56ba-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 39, name: "900 очков силы", price: getRubPrice("0.99"), oldPrice: getRubPrice("0.99", true), label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [], visible: false, image: "https://storage.botpapa.me/files/bc0695d0-56ba-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 40, name: "1000 очков силы", price: getRubPrice("2.99"), oldPrice: getRubPrice("2.99", true), label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [], visible: false, image: "https://storage.botpapa.me/files/bc0695d0-56ba-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 25, name: "50 гемов", price: getRubPrice("1.99"), oldPrice: getRubPrice("1.99", true), label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/de7124e0-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 26, name: "60 гемов", price: getRubPrice("2.99"), oldPrice: getRubPrice("2.99", true), label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/e2281260-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 27, name: "90 гемов", price: getRubPrice("0.99"), oldPrice: getRubPrice("0.99", true), label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/e2281260-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 28, name: "95 гемов", price: getRubPrice("3.99"), oldPrice: getRubPrice("3.99", true), label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/e2281260-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 29, name: "100 гемов", price: getRubPrice("4.99"), oldPrice: getRubPrice("4.99", true), label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/e2281260-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 30, name: "120 гемов", price: getRubPrice("5.99"), oldPrice: getRubPrice("5.99", true), label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/e2281260-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 31, name: "140 гемов", price: getRubPrice("6.99"), oldPrice: getRubPrice("6.99", true), label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 32, name: "160 гемов", price: getRubPrice("7.99"), oldPrice: getRubPrice("7.99", true), label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 33, name: "180 гемов", price: getRubPrice("8.99"), oldPrice: getRubPrice("8.99", true), label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 34, name: "180 гемов", price: getRubPrice("1.99"), oldPrice: getRubPrice("1.99", true), label: "Ежедн. акция", category: "Ежедн. акции", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
-
+  [21, "Гипнос Сенди", "8.99", "8.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://storage.botpapa.me/files/c079d530-60d0-11f1-af2e-f7a93121b83b.jpeg"],
+  [22, "Фигурка Пенни", "6.99", "6.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://storage.botpapa.me/files/c76b2d30-60d0-11f1-af2e-f7a93121b83b.jpeg"],
+  [23, "Равана Гром", "6.99", "6.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://storage.botpapa.me/files/ca413090-60d0-11f1-af2e-f7a93121b83b.jpeg"],
+  [24, "Вирус Чарли", "8.99", "8.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://storage.botpapa.me/files/c3f8c2c0-60d0-11f1-af2e-f7a93121b83b.jpeg"],
+  // Ежедневные акции
+  [35, "600 монет", "1.99", "1.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://storage.botpapa.me/files/c04d8e50-56ba-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [36, "900 монет", "0.99", "0.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://storage.botpapa.me/files/c04d8e50-56ba-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [37, "1100 монет", "3.99", "3.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://storage.botpapa.me/files/c04d8e50-56ba-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [38, "1750 монет", "1.99", "1.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://storage.botpapa.me/files/c4c55ad0-56ba-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [39, "900 очков силы", "0.99", "0.99", "Ежедн. акция", "Ежедн. акции", 1, [], false, "https://storage.botpapa.me/files/bc0695d0-56ba-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [40, "1000 очков силы", "2.99", "2.99", "Ежедн. акция", "Ежедн. акции", 1, [], false, "https://storage.botpapa.me/files/bc0695d0-56ba-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [25, "50 гемов", "1.99", "1.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://storage.botpapa.me/files/de7124e0-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [26, "60 гемов", "2.99", "2.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://storage.botpapa.me/files/e2281260-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [27, "90 гемов", "0.99", "0.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://storage.botpapa.me/files/e2281260-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [28, "95 гемов", "3.99", "3.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://storage.botpapa.me/files/e2281260-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [29, "100 гемов", "4.99", "4.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://storage.botpapa.me/files/e2281260-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [30, "120 гемов", "5.99", "5.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://storage.botpapa.me/files/e2281260-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [31, "140 гемов", "6.99", "6.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [32, "160 гемов", "7.99", "7.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [33, "180 гемов", "8.99", "8.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [34, "180 гемов", "1.99", "1.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg"],
   // Кристаллы
-  { id: 5, name: "30 гемов", price: getRubPrice("1.99"), oldPrice: getRubPrice("1.99", true), label: "Кристаллы", category: "Кристаллы", maxQty: 3, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/de7124e0-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 6, name: "80 гемов", price: getRubPrice("4.99"), oldPrice: getRubPrice("4.99", true), label: "Кристаллы", category: "Кристаллы", maxQty: 3, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/e2281260-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 7, name: "170 гемов", price: getRubPrice("8.99"), oldPrice: getRubPrice("9.99", true), label: "Кристаллы", category: "Кристаллы", maxQty: 3, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 8, name: "360 гемов", price: getRubPrice("18.99"), oldPrice: getRubPrice("19.99", true), label: "Кристаллы", category: "Кристаллы", maxQty: 3, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/e8aa06c0-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 9, name: "950 гемов", price: getRubPrice("44.99"), oldPrice: getRubPrice("48.99", true), label: "Кристаллы", category: "Кристаллы", maxQty: 3, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/ec10b160-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg" },
-  { id: 10, name: "2000 гемов", price: getRubPrice("89.99"), oldPrice: getRubPrice("96.99", true), label: "Кристаллы", category: "Кристаллы", maxQty: 3, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/767ed1d0-499a-11f1-bef9-f1ec7a2c6e45.jpeg" }
+  [5, "30 гемов", "1.99", "1.99", "Кристаллы", "Кристаллы", 3, [], true, "https://storage.botpapa.me/files/de7124e0-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [6, "80 гемов", "4.99", "4.99", "Кристаллы", "Кристаллы", 3, [], true, "https://storage.botpapa.me/files/e2281260-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [7, "170 гемов", "8.99", "9.99", "Кристаллы", "Кристаллы", 3, [], true, "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [8, "360 гемов", "18.99", "19.99", "Кристаллы", "Кристаллы", 3, [], true, "https://storage.botpapa.me/files/e8aa06c0-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [9, "950 гемов", "44.99", "48.99", "Кристаллы", "Кристаллы", 3, [], true, "https://storage.botpapa.me/files/ec10b160-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [10, "2000 гемов", "89.99", "96.99", "Кристаллы", "Кристаллы", 3, [], true, "https://storage.botpapa.me/files/767ed1d0-499a-11f1-bef9-f1ec7a2c6e45.jpeg"]
 ];
 
+// Преобразуем в удобный формат с вычисляемыми ценами
+const products = productsRaw.map(p => ({
+  id: p[0], name: p[1], 
+  price: getRubPrice(p[2]), oldPrice: getRubPrice(p[3], true),
+  label: p[4], category: p[5], maxQty: p[6], 
+  conflictGroup: p[7], visible: p[8], image: p[9]
+}));
+
+// Остальной код без изменений...
 const FILTER_CATEGORIES = [
   "Все категории",
   "Пропуски",

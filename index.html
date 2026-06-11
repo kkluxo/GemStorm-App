@@ -3447,8 +3447,12 @@ if (!tgUser || !tgUser.id) {
   function getLastPage() { const savedPage = localStorage.getItem("lastPage"); const validPages = ["catalog", "cart", "orders", "profile"]; if (savedPage && validPages.includes(savedPage)) { return savedPage; } return "catalog"; }
 
   function injectPageHeader() {
-  // небольшая задержка чтобы DOM успел обновиться
-  setTimeout(function() {
+  function tryInject(attempts) {
+    const activePage = document.querySelector('.page.active-page');
+    if (!activePage) {
+      if (attempts < 10) setTimeout(() => tryInject(attempts + 1), 50);
+      return;
+    }
     const pageConfigs = {
       'catalog': { icon: 'https://storage.botpapa.me/files/00f09750-5110-11f1-bef9-f1ec7a2c6e45.png', title: 'Каталог' },
       'cart': { icon: 'https://storage.botpapa.me/files/0d3678e0-4a0d-11f1-bef9-f1ec7a2c6e45.png', title: 'Корзина' },
@@ -3463,17 +3467,15 @@ if (!tgUser || !tgUser.id) {
       'write-review': { icon: 'https://storage.botpapa.me/files/f665c4e0-510f-11f1-bef9-f1ec7a2c6e45.png', title: 'Оставить отзыв' },
       'gifts': { icon: 'https://storage.botpapa.me/files/501ffee0-51e9-11f1-bef9-f1ec7a2c6e45.png', title: 'Подарки' },
     };
-    const activePage = document.querySelector('.page.active-page');
-    if (!activePage) return;
     const pageId = activePage.id.replace('-page', '');
     const cfg = pageConfigs[pageId];
     if (!cfg) return;
     const old = activePage.querySelector('.page-header-sticky');
     if (old) old.remove();
     activePage.insertAdjacentHTML('afterbegin', renderPageHeader(cfg.icon, cfg.title));
-    // Вешаем обработчик сразу после вставки
     attachHeaderButtonHandlers();
-  }, 100);
+  }
+  tryInject(0);
 }
     
     function attachHeaderButtonHandlers() {
@@ -3661,7 +3663,11 @@ if (!tgUser || !tgUser.id) {
   }
   const lastPage = getLastPage();
   showPage(lastPage);
-  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  const tgUser = window.__tgUser || window.Telegram?.WebApp?.initDataUnsafe?.user;
+if (tgUser?.photo_url) {
+  const avatar = document.getElementById("profileMenuAvatar");
+  if (avatar) avatar.src = tgUser.photo_url;
+}
   if (tgUser?.photo_url) {
     const avatar = document.getElementById("profileMenuAvatar");
     if (avatar) avatar.src = tgUser.photo_url;
@@ -3701,6 +3707,7 @@ if (!tgUser || !tgUser.id) {
   requestAnimationFrame(() => {
     injectPageHeader();
   });
+  setTimeout(() => injectPageHeader(), 300);
 });
 
   document.addEventListener("click", function(e) {

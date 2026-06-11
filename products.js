@@ -19,13 +19,13 @@ const productsRaw = [
   
   // Боец Болт
   [47, "Боец Болт", "8.99", "9.99", "Боец Болт", "Боец Болт", 1, [47,48], true, "https://store.supercell.com/assets/offer-images/brawlstars/ab15739c18373b4c23c775819fc499026cc0a0f6abbe55ba0d761f8be59a69e1/brawlstars.16000106-x1-Hero.png"],
-  [48, "Набор: Болт", "18.99", "9.99", "Боец Болт", "Боец Болт", 1, [47,48], true, "https://store.supercell.com/assets/offer-images/brawlstars/85b256626eb1cfcc67ea45c337c3822d7ba5a37820b79486f6940518151f6575/brawlstars.16000106-x1-Hero_23001279-x1-Item_23001280-x1-Item_23001281-x1-Item_23001282-x1-Item.png"],
+  [48, "Набор: Болт", "18.99", "18.99", "Боец Болт", "Боец Болт", 1, [47,48], true, "https://store.supercell.com/assets/offer-images/brawlstars/85b256626eb1cfcc67ea45c337c3822d7ba5a37820b79486f6940518151f6575/brawlstars.16000106-x1-Hero_23001279-x1-Item_23001280-x1-Item_23001281-x1-Item_23001282-x1-Item.png"],
   
   // Strikers
   [11, "Набор: 3 скина", "24.99", "24.99", "Strikers", "Strikers", 1, [11,12], true, "https://storage.botpapa.me/files/58cac0f0-6032-11f1-af2e-f7a93121b83b.jpeg"],
-  [12, "Табло Вольт", "8.99", "9.99", "Strikers", "Strikers", 1, [11,12], true, "https://storage.botpapa.me/files/63247140-6032-11f1-af2e-f7a93121b83b.jpeg"],
-  [13, "Судья Милп", "8.99", "9.99", "Strikers", "Strikers", 1, [], true, "https://storage.botpapa.me/files/673b3200-6032-11f1-af2e-f7a93121b83b.jpeg"],
-  [14, "Суперфорвард Лу", "13.99", "14.99", "Strikers", "Strikers", 1, [], true, "https://storage.botpapa.me/files/5ed5b090-6032-11f1-af2e-f7a93121b83b.jpeg"],
+  [12, "Табло Вольт", "9.99", "9.99", "Strikers", "Strikers", 1, [11,12], true, "https://storage.botpapa.me/files/63247140-6032-11f1-af2e-f7a93121b83b.jpeg"],
+  [13, "Судья Милп", "9.99", "9.99", "Strikers", "Strikers", 1, [], true, "https://storage.botpapa.me/files/673b3200-6032-11f1-af2e-f7a93121b83b.jpeg"],
+  [14, "Суперфорвард Лу", "14.99", "14.99", "Strikers", "Strikers", 1, [], true, "https://storage.botpapa.me/files/5ed5b090-6032-11f1-af2e-f7a93121b83b.jpeg"],
   
   // Esports
   [15, "Победитель Отис", "4.99", "4.99", "Esports", "Esports", 1, [], true, "https://storage.botpapa.me/files/12adebb0-505b-11f1-bef9-f1ec7a2c6e45.jpeg"],

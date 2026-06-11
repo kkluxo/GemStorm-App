@@ -3567,20 +3567,23 @@ if (!tgUser || !tgUser.id) {
     const targetPage = document.getElementById(pageId + "-page");
     if (targetPage) targetPage.classList.add("active-page");
     const checkoutBlock = document.getElementById("cartCheckoutFixed");
-    if (pageId === "catalog") { renderCatalog(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
-    if (pageId === "cart") { if (orderMode === "promo_deal") orderMode = "cart"; renderCartPage(); }
-    if (pageId === "orders") { renderOrdersPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
-    if (pageId === "profile") { renderProfilePage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
-    if (pageId === "checkout") { renderCheckoutForm(); }
-    if (pageId === "payment") { renderPaymentPage(); }
-    if (pageId === "filter") { if (checkoutBlock) checkoutBlock.style.display = "none"; }
-    if (pageId === "order-detail") { if (checkoutBlock) checkoutBlock.style.display = "none"; }
-    if (pageId === "reviews") { renderReviewsPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
-    if (pageId === "gifts") { renderGiftsPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
-    if (pageId === "write-review") { renderWriteReviewPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
-    if (pageId === "buy-promo") { renderBuyPromoPage(); }
-    if (pageId === "checkout") { afterPaymentBackPage = orderMode === "promo_deal" ? "buy-promo" : "cart"; }
-    
+    // Сначала вставляем заголовок
+injectPageHeader();
+
+// Потом рендерим контент
+if (pageId === "catalog") { renderCatalog(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
+if (pageId === "cart") { if (orderMode === "promo_deal") orderMode = "cart"; renderCartPage(); }
+if (pageId === "orders") { renderOrdersPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
+if (pageId === "profile") { renderProfilePage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
+if (pageId === "checkout") { renderCheckoutForm(); }
+if (pageId === "payment") { renderPaymentPage(); }
+if (pageId === "filter") { if (checkoutBlock) checkoutBlock.style.display = "none"; }
+if (pageId === "order-detail") { if (checkoutBlock) checkoutBlock.style.display = "none"; }
+if (pageId === "reviews") { renderReviewsPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
+if (pageId === "gifts") { renderGiftsPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
+if (pageId === "write-review") { renderWriteReviewPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
+if (pageId === "buy-promo") { renderBuyPromoPage(); }
+if (pageId === "checkout") { afterPaymentBackPage = orderMode === "promo_deal" ? "buy-promo" : "cart"; }    
     const mainPages = ["catalog", "cart", "orders", "profile"];
     if (mainPages.includes(pageId)) {
       document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
@@ -3887,49 +3890,6 @@ function refreshCurrentPage() {
   }
 }
 });
-</script>
-
-<script>
-setTimeout(() => {
-  let log = [];
-  
-  // 1. Проверка Telegram
-  log.push('TG: ' + (window.Telegram ? 'да' : 'нет'));
-  log.push('WebApp: ' + (window.Telegram?.WebApp ? 'да' : 'нет'));
-  
-  // 2. Проверка функций
-  log.push('injectPageHeader: ' + (typeof injectPageHeader));
-  log.push('showPage: ' + (typeof showPage));
-  log.push('renderPageHeader: ' + (typeof renderPageHeader));
-  log.push('attachHeaderButtonHandlers: ' + (typeof attachHeaderButtonHandlers));
-  
-  // 3. Проверка страниц
-  const active = document.querySelector('.page.active-page');
-  log.push('activePage: ' + (active?.id || 'нет'));
-  
-  // 4. Проверка заголовка
-  const header = document.querySelector('.page-header-sticky');
-  log.push('header в DOM: ' + (header ? 'да' : 'нет'));
-  
-  // 5. Попробуем вставить вручную
-  if (active && typeof renderPageHeader === 'function') {
-    try {
-      const html = renderPageHeader('https://storage.botpapa.me/files/00f09750-5110-11f1-bef9-f1ec7a2c6e45.png', 'ТЕСТ');
-      active.insertAdjacentHTML('afterbegin', html);
-      log.push('вставка: УСПЕХ');
-    } catch(e) {
-      log.push('вставка ОШИБКА: ' + e.message);
-    }
-  } else {
-    log.push('вставка: невозможна - active=' + !!active + ' renderFn=' + (typeof renderPageHeader));
-  }
-  
-  const d = document.createElement('div');
-  d.style.cssText = 'position:fixed;top:50px;left:5px;right:5px;background:#000;color:#0f0;padding:10px;z-index:99999;font-size:11px;border-radius:10px;word-break:break-all;';
-  d.innerHTML = log.join('<br>');
-  document.body.appendChild(d);
-  setTimeout(() => d.remove(), 10000);
-}, 2500);
 </script>
 
 </body>

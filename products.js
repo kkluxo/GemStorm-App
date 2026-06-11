@@ -6,8 +6,8 @@ const products = [
   { id: 4, name: "Pro Pass", price: 1979, oldPrice: 2129, label: "Пропуск", category: "Пропуски", maxQty: 1, conflictGroup: [], visible: true, image: "https://storage.botpapa.me/files/72f535e0-499a-11f1-bef9-f1ec7a2c6e45.jpeg" },
 
   // Боец Болт
-  { id: 47, name: "Боец Болт", price: 769, oldPrice: 849, label: "Особая акция", category: "Особые акции", maxQty: 1, conflictGroup: [], visible: false, image: "https://store.supercell.com/assets/offer-images/brawlstars/ab15739c18373b4c23c775819fc499026cc0a0f6abbe55ba0d761f8be59a69e1/brawlstars.16000106-x1-Hero.png" },
-  { id: 48, name: "Набор: Болт", price: 1579, oldPrice: 849, label: "Особая акция", category: "Особые акции", maxQty: 1, conflictGroup: [], visible: false, image: "https://store.supercell.com/assets/offer-images/brawlstars/85b256626eb1cfcc67ea45c337c3822d7ba5a37820b79486f6940518151f6575/brawlstars.16000106-x1-Hero_23001279-x1-Item_23001280-x1-Item_23001281-x1-Item_23001282-x1-Item.png" },
+  { id: 47, name: "Боец Болт", price: 769, oldPrice: 849, label: "Боец Болт", category: "Боец Болт", maxQty: 1, conflictGroup: [], visible: false, image: "https://store.supercell.com/assets/offer-images/brawlstars/ab15739c18373b4c23c775819fc499026cc0a0f6abbe55ba0d761f8be59a69e1/brawlstars.16000106-x1-Hero.png" },
+  { id: 48, name: "Набор: Болт", price: 1579, oldPrice: 849, label: "Боец Болт", category: "Боец Болт", maxQty: 1, conflictGroup: [], visible: false, image: "https://store.supercell.com/assets/offer-images/brawlstars/85b256626eb1cfcc67ea45c337c3822d7ba5a37820b79486f6940518151f6575/brawlstars.16000106-x1-Hero_23001279-x1-Item_23001280-x1-Item_23001281-x1-Item_23001282-x1-Item.png" },
 
   // Strikers
   { id: 11, name: "Набор: 3 скина", price: 2129, oldPrice: 2289, label: "Strikers", category: "Strikers", maxQty: 1, conflictGroup: [11, 12], visible: true, image: "https://storage.botpapa.me/files/58cac0f0-6032-11f1-af2e-f7a93121b83b.jpeg" },
@@ -71,6 +71,7 @@ const products = [
 const FILTER_CATEGORIES = [
   "Все категории",
   "Пропуски",
+  "Боец Болт",
   "Кристаллы",
   "Esports",
   "Strikers",

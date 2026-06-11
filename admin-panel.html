@@ -370,38 +370,67 @@
 
 <script>
 (async function() {
-  async function checkAdminPassword() {
-    const savedAuth = localStorage.getItem('adminAuth');
-    const savedTime = localStorage.getItem('adminAuthTime');
-    
-    if (savedAuth && savedTime && (Date.now() - parseInt(savedTime) < 86400000)) {
-      return true;
-    }
-    
-    const pwd = prompt('Введите пароль администратора:');
-    if (!pwd) return false;
-    
-    try {
-      const res = await fetch('https://gemstorm.up.railway.app/api/admin/check-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: pwd })
-      });
-      const data = await res.json();
-      
-      if (data.success) {
-        localStorage.setItem('adminAuth', pwd);
-        localStorage.setItem('adminAuthTime', Date.now().toString());
-        return true;
-      } else {
-        alert('Неверный пароль');
-        return false;
-      }
-    } catch(e) {
-      alert('Ошибка проверки пароля');
-      return false;
-    }
+
+  // ШАГ 1: Проверяем что открыто в Telegram
+  const tg = window.Telegram?.WebApp;
+  if (!tg || !tg.initData) {
+    document.body.innerHTML = `
+      <div style="color:white;text-align:center;margin-top:40vh;font-size:20px;padding:20px;">
+        Доступ только через Telegram
+      </div>`;
+    return;
   }
+
+  // ШАГ 2: Проверяем ID пользователя
+  const ADMIN_ID = 7509324385;
+  const tgUser = tg.initDataUnsafe?.user;
+
+  if (!tgUser || tgUser.id !== ADMIN_ID) {
+    document.body.innerHTML = `
+      <div style="color:white;text-align:center;margin-top:40vh;font-size:20px;padding:20px;">
+        Доступ запрещён
+      </div>`;
+    return;
+  }
+
+  // ШАГ 3: Проверяем подпись на сервере (защита от подделки)
+  try {
+    const res = await fetch('https://gemstorm.up.railway.app/api/admin/verify-telegram', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ initData: tg.initData })
+    });
+    const data = await res.json();
+
+    if (!data.success) {
+      document.body.innerHTML = `
+        <div style="color:white;text-align:center;margin-top:40vh;font-size:20px;padding:20px;">
+          Проверка не пройдена
+        </div>`;
+      return;
+    }
+
+    // Сохраняем sessionToken для дальнейших запросов
+    sessionStorage.setItem('adminSessionToken', data.sessionToken);
+
+  } catch(e) {
+    document.body.innerHTML = `
+      <div style="color:white;text-align:center;margin-top:40vh;font-size:20px;padding:20px;">
+        Ошибка проверки
+      </div>`;
+    return;
+  }
+
+  // Удаляем старые данные пароля если остались
+  localStorage.removeItem('adminAuth');
+  localStorage.removeItem('adminAuthTime');
+
+  // Дальше весь твой существующий код админки без изменений...
+  function getAdminToken() {
+    return sessionStorage.getItem('adminSessionToken') || '';
+  }
+
+  const ADMIN_TOKEN = getAdminToken; // заменяй ADMIN_TOKEN() везде на getAdminToken()
 
   const isAuth = await checkAdminPassword();
   if (!isAuth) {
@@ -425,7 +454,6 @@
   }
 
   const API = 'https://gemstorm.up.railway.app';
-  const ADMIN_TOKEN = 'g3m5t0rm_2026';
   let allOrders = [];
   let currentDetailOrder = null;
   let currentAdminPage = 'orders';
@@ -503,8 +531,8 @@
   async function loadOrders() {
     try {
       const r = await fetch(`${API}/api/orders`, {
-        headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
-      });
+        headers: { 'Authorization': `Bearer ${getAdminToken()}` }
+              });
       allOrders = await r.json();
       if (currentAdminPage === 'orders') renderOrders();
     } catch(e) {
@@ -610,10 +638,7 @@
       try {
         const r = await fetch(`${API}/api/update-status`, { 
           method:'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${ADMIN_TOKEN}`
-          },
+          headers: { 'Authorization': `Bearer ${getAdminToken()}` },
           body: JSON.stringify({ orderId: order.id, status: statusMap[newCode], statusCode: newCode })
         });
         if (r.ok) { 
@@ -646,8 +671,8 @@
     container.innerHTML = '<div class="empty-state">Загрузка...</div>';
     try {
       const r = await fetch(`${API}/api/users`, {
-        headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
-      });
+        headers: { 'Authorization': `Bearer ${getAdminToken()}` }
+              });
       const data = await r.json();
       const users = Array.isArray(data) ? data : [];
       const activeCount = users.filter(u => parseInt(u.orders_count) > 0).length;
@@ -698,7 +723,7 @@
     container.innerHTML = '<div class="review-empty">Загрузка...</div>';
     try {
       const r = await fetch(`${API}/api/reviews`, {
-        headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
+        headers: { 'Authorization': `Bearer ${getAdminToken()}` }
       });
       const list = await r.json();
       if (!list.length) { container.innerHTML = '<div class="review-empty">Отзывов нет</div>'; return; }
@@ -740,8 +765,8 @@
             try {
               const r = await fetch(`${API}/api/reviews/${reviewId}`, { 
                 method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
-              });
+                headers: { 'Authorization': `Bearer ${getAdminToken()}` }
+                            });
               if (r.ok) { 
                 hapticLight(); 
                 renderReviewsPage(); 
@@ -771,16 +796,16 @@
 
     try {
       const ru = await fetch(`${API}/api/total-revenue`, {
-        headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
-      });
+        headers: { 'Authorization': `Bearer ${getAdminToken()}` }
+              });
       const data = await ru.json();
       totalRevenue = data.revenue || 0;
     } catch(e) {}
 
     try {
       const rs = await fetch(`${API}/api/settings`, {
-        headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
-      });
+        headers: { 'Authorization': `Bearer ${getAdminToken()}` }
+              });
       const s = await rs.json();
       botStatus = s.bot_status || 'open';
     } catch(e) {}
@@ -846,7 +871,7 @@
             method: 'POST',
             headers: { 
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${ADMIN_TOKEN}`
+              'Authorization': `Bearer ${getAdminToken()}`
             },
             body: JSON.stringify({ bot_status: val })
           });
@@ -899,9 +924,11 @@
 
     try {
       const r = await fetch(`${API}/api/stats`, {
-        headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
-      });
-      const s = await r.json();
+           headers: { 
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${getAdminToken()}`
+            },
+                  const s = await r.json();
       container.innerHTML = `
         <div class="stat-period-card">
           <div class="stat-period-title">За сегодня</div>

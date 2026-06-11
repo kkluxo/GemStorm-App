@@ -1,14 +1,22 @@
+// === СИСТЕМА ЦЕН В ДОЛЛАРАХ (ДВЕ СТРОКИ) ===
+// Формат: цена_в_долларах: [старая_цена_руб, цена_руб]
+// Ориентир - вторая цена (цена_руб) соответствует доллару
 const PRICE_TABLE = {
-  0.99:  [85, 89]; 1.99:  [169, 179]; 2.99:  [249, 269]; 3.99:  [339, 359]; 4.99:  [429, 449]; 5.99:  [509, 529]; 6.99:  [589, 619]; 7.99:  [679, 709]; 8.99:  [769, 799]; 9.99:  [849, 889]; 10.99: [939, 979]; 11.99: [1019, 1069]; 12.99: [1099, 1159]; 13.99: [1189, 1249]; 14.99: [1269, 1339];
-  15.99: [1359, 1419]; 16.99: [1439, 1509]; 17.99: [1529, 1599]; 18.99: [1619, 1689]; 19.99: [1699, 1779]; 24.99: [2129, 2229]
+  0.99:  [85, 89]; 1.99:  [169, 179]; 2.99:  [249, 269]; 3.99:  [339, 359]; 4.99:  [429, 449];
+  5.99:  [509, 529]; 6.99:  [589, 619]; 7.99:  [679, 709]; 8.99:  [769, 799]; 9.99:  [849, 889];
+  10.99: [939, 979]; 11.99: [1019, 1069]; 12.99: [1099, 1159]; 13.99: [1189, 1249]; 14.99: [1269, 1339];
+  15.99: [1359, 1419]; 16.99: [1439, 1509]; 17.99: [1529, 1599]; 18.99: [1619, 1689]; 19.99: [1699, 1779];
+  24.99: [2129, 2229]
 };
 
+// Функция получения цен в рублях по долларам
 function getRubPrices(usdPrice) {
   const rubPrices = PRICE_TABLE[usdPrice];
   if (!rubPrices) return { price: 0, oldPrice: 0 };
   return { price: rubPrices[0], oldPrice: rubPrices[1] };
 }
 
+// Функция для получения цены в долларах из рублей (для обратной совместимости)
 function getUsdFromRub(rubPrice) {
   for (const [usd, rub] of Object.entries(PRICE_TABLE)) {
     if (rub[1] === rubPrice) return parseFloat(usd);
@@ -88,10 +96,32 @@ const FILTER_CATEGORIES = [
   "Esports",
   "Strikers",
   "Bling Deals",
-  "Особые акции",
   "Ежен. акции",
   "Ежедн. акции"
 ];
+
+// Функция для получения товара с рублевыми ценами
+function getProductWithRubPrices(product) {
+  const rubPrices = getRubPrices(product.usdPrice);
+  return {
+    ...product,
+    price: rubPrices.price,
+    oldPrice: rubPrices.oldPrice
+  };
+}
+
+// Остальной код (корзина, рендер и т.д.) должен использовать getProductWithRubPrices()
+// при отображении цен товаров
+
+let cart = {};
+let currentFilter = "Все категории";
+
+function hapticLight() {
+  // Вибрация при нажатии (если поддерживается)
+  if (window.navigator && window.navigator.vibrate) {
+    window.navigator.vibrate(10);
+  }
+}
 
 function canAddToCart(productId) {
   const product = products.find(p => p.id == productId);
@@ -139,3 +169,65 @@ function renderFilterModal() {
     });
   });
 }
+
+// Функция рендера каталога (пример)
+function renderCatalog() {
+  const container = document.getElementById("catalogContainer");
+  if (!container) return;
+
+  let filteredProducts = products.filter(p => p.visible === true);
+  
+  if (currentFilter !== "Все категории") {
+    filteredProducts = filteredProducts.filter(p => p.category === currentFilter);
+  }
+
+  container.innerHTML = filteredProducts.map(product => {
+    const rubPrices = getRubPrices(product.usdPrice);
+    return `
+      <div class="product-card">
+        <img src="${product.image}" alt="${product.name}">
+        <h3>${product.name}</h3>
+        <div class="price">
+          <span class="old-price">${rubPrices.oldPrice}₽</span>
+          <span class="current-price">${rubPrices.price}₽</span>
+        </div>
+        <button onclick="addToCart(${product.id})">В корзину</button>
+      </div>
+    `;
+  }).join("");
+}
+
+function showPage(page) {
+  // Логика переключения страниц
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(`${page}Page`).classList.add("active");
+}
+
+function addToCart(productId) {
+  const check = canAddToCart(productId);
+  if (!check.allowed) {
+    alert(check.reason);
+    return;
+  }
+  
+  cart[productId] = (cart[productId] || 0) + 1;
+  renderCatalog();
+  updateCartDisplay();
+  hapticLight();
+}
+
+function updateCartDisplay() {
+  // Обновление отображения корзины
+  const cartCount = document.getElementById("cartCount");
+  if (cartCount) {
+    const totalItems = Object.values(cart).reduce((a, b) => a + b, 0);
+    cartCount.textContent = totalItems;
+  }
+}
+
+// Инициализация
+document.addEventListener("DOMContentLoaded", () => {
+  renderFilterModal();
+  renderCatalog();
+  updateCartDisplay();
+});

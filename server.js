@@ -32,6 +32,17 @@ const allowedOrigins = [
     'http://localhost:5500'
 ];
 
+const adminSessions = new Map();
+
+setInterval(() => {
+  const now = Date.now();
+  for (const [token, data] of adminSessions.entries()) {
+    if (now - data.createdAt > 24 * 60 * 60 * 1000) {
+      adminSessions.delete(token);
+    }
+  }
+}, 60 * 60 * 1000);
+
 app.use(cors({
     origin: function(origin, callback) {
         if (!origin) return callback(null, true);
@@ -103,13 +114,20 @@ function checkRateLimit(ip) {
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || 'your-super-secret-token-change-me-in-production';
 
 function adminAuth(req, res, next) {
-    const authHeader = req.headers.authorization;
-    const token = authHeader && authHeader.split(' ')[1];
-    
-    if (!token || token !== ADMIN_TOKEN) {
-        return res.status(401).json({ error: 'Unauthorized' });
-    }
-    next();
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) return res.status(401).json({ error: 'Unauthorized' });
+
+  const session = adminSessions.get(token);
+  if (!session) return res.status(401).json({ error: 'Unauthorized' });
+
+  if (Date.now() - session.createdAt > 24 * 60 * 60 * 1000) {
+    adminSessions.delete(token);
+    return res.status(401).json({ error: 'Session expired' });
+  }
+
+  next();
 }
 
 // =============================================
@@ -437,42 +455,6 @@ function getBot() {
 // =============================================
 // API ЭНДПОИНТЫ
 // =============================================
-
-// ПРОВЕРКА ПАРОЛЯ АДМИНА (с защитой от брутфорса)
-app.post('/api/admin/check-password', async (req, res) => {
-    const { password } = req.body;
-    const ip = req.ip || req.connection.remoteAddress || 'unknown';
-    
-    // Проверяем лимит попыток (защита от брутфорса)
-    const rateLimitCheck = checkRateLimit(ip);
-    if (!rateLimitCheck.allowed) {
-        return res.status(429).json({ 
-            success: false, 
-            blocked: true,
-            message: `Слишком много попыток. Попробуйте через ${rateLimitCheck.remainingMinutes} минут.`
-        });
-    }
-    
-    if (!password) {
-        return res.json({ success: false, message: 'Введите пароль' });
-    }
-    
-    // Пароль берётся ТОЛЬКО из переменной окружения (не в коде!)
-    const validPassword = process.env.ADMIN_PASSWORD;
-    
-    if (!validPassword) {
-        console.error('ADMIN_PASSWORD не установлен в переменных окружения');
-        return res.status(500).json({ success: false, message: 'Ошибка сервера' });
-    }
-    
-    // Прямое сравнение (без хеша, но пароль в переменной, а не в коде)
-    if (password === validPassword) {
-        loginAttempts.delete(ip); // Сбрасываем попытки при успешном входе
-        res.json({ success: true });
-    } else {
-        res.json({ success: false, message: 'Неверный пароль' });
-    }
-});
 
 // ЗАЩИЩЁННЫЕ ЭНДПОИНТЫ (требуют токен)
 app.get('/api/orders', adminAuth, async (req, res) => {
@@ -1035,6 +1017,65 @@ initDB().then(async () => {
     } else {
         console.warn('BOT_TOKEN не установлен, бот не запущен');
     }
+
+    app.post('/api/admin/verify-telegram', async (req, res) => {
+  try {
+    const { initData } = req.body;
+    if (!initData) return res.status(400).json({ success: false });
+
+    // Проверяем подпись initData через секретный ключ бота
+    const crypto = require('crypto');
+    const params = new URLSearchParams(initData);
+    const hash = params.get('hash');
+    params.delete('hash');
+
+    // Собираем строку для проверки
+    const dataCheckString = Array.from(params.entries())
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([k, v]) => `${k}=${v}`)
+      .join('\n');
+
+    // Генерируем секретный ключ из токена бота
+    const secretKey = crypto
+      .createHmac('sha256', 'WebAppData')
+      .update(BOT_TOKEN)
+      .digest();
+
+    // Вычисляем ожидаемый хеш
+    const expectedHash = crypto
+      .createHmac('sha256', secretKey)
+      .update(dataCheckString)
+      .digest('hex');
+
+    // Сравниваем хеши
+    if (hash !== expectedHash) {
+      return res.status(403).json({ success: false, reason: 'invalid_signature' });
+    }
+
+    // Проверяем что данные свежие (не старше 24 часов)
+    const authDate = parseInt(params.get('auth_date'));
+    const now = Math.floor(Date.now() / 1000);
+    if (now - authDate > 86400) {
+      return res.status(403).json({ success: false, reason: 'expired' });
+    }
+
+    // Проверяем ID пользователя
+    const user = JSON.parse(params.get('user') || '{}');
+    if (user.id !== 7509324385) {
+      return res.status(403).json({ success: false, reason: 'not_admin' });
+    }
+
+    // Всё ок — генерируем сессионный токен
+    const sessionToken = crypto.randomBytes(32).toString('hex');
+    adminSessions.set(sessionToken, { createdAt: Date.now(), userId: user.id });
+
+    res.json({ success: true, sessionToken });
+
+  } catch(e) {
+    console.error('Ошибка верификации Telegram:', e.message);
+    res.status(500).json({ success: false });
+  }
+});
 
     app.listen(PORT, () => console.log(`Сервер запущен на порту ${PORT}`));
 }).catch((err) => {

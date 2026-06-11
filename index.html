@@ -3572,7 +3572,10 @@ if (!tgUser || !tgUser.id) {
       }
     }
     
-    injectPageHeader();
+    // ИСПРАВЛЕНИЕ: сначала ждём следующий кадр, потом вставляем заголовок
+    requestAnimationFrame(() => {
+      injectPageHeader();
+    });
     
     if (window.Telegram && window.Telegram.WebApp) {
       const tg = window.Telegram.WebApp;

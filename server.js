@@ -443,7 +443,7 @@ app.post('/api/admin/check-password', async (req, res) => {
     const { password } = req.body;
     const ip = req.ip || req.connection.remoteAddress || 'unknown';
     
-    // Проверяем лимит попыток
+    // Проверяем лимит попыток (защита от брутфорса)
     const rateLimitCheck = checkRateLimit(ip);
     if (!rateLimitCheck.allowed) {
         return res.status(429).json({ 
@@ -457,26 +457,20 @@ app.post('/api/admin/check-password', async (req, res) => {
         return res.json({ success: false, message: 'Введите пароль' });
     }
     
-    // БЕЗОПАСНАЯ ПРОВЕРКА через bcrypt и хеш из переменных
-    const hashedPassword = process.env.ADMIN_PASSWORD_HASH;
+    // Пароль берётся ТОЛЬКО из переменной окружения (не в коде!)
+    const validPassword = process.env.ADMIN_PASSWORD;
     
-    if (!hashedPassword) {
-        console.error('ADMIN_PASSWORD_HASH не установлен');
+    if (!validPassword) {
+        console.error('ADMIN_PASSWORD не установлен в переменных окружения');
         return res.status(500).json({ success: false, message: 'Ошибка сервера' });
     }
     
-    try {
-        const isValid = await bcrypt.compare(password, hashedPassword);
-        
-        if (isValid) {
-            loginAttempts.delete(ip);
-            res.json({ success: true });
-        } else {
-            res.json({ success: false, message: 'Неверный пароль' });
-        }
-    } catch (error) {
-        console.error('Ошибка проверки пароля:', error);
-        res.status(500).json({ success: false, message: 'Ошибка сервера' });
+    // Прямое сравнение (без хеша, но пароль в переменной, а не в коде)
+    if (password === validPassword) {
+        loginAttempts.delete(ip); // Сбрасываем попытки при успешном входе
+        res.json({ success: true });
+    } else {
+        res.json({ success: false, message: 'Неверный пароль' });
     }
 });
 

@@ -1934,6 +1934,18 @@ function waitForTelegram(callback, attempts) {
   setTimeout(function() {
     waitForTelegram(callback, attempts + 1);
   }, 100);
+  <script>
+  // ТЕСТ 1 - сразу при загрузке
+  setTimeout(() => {
+    const d = document.createElement('div');
+    d.style.cssText = 'position:fixed;top:150px;left:10px;right:10px;background:green;color:white;padding:10px;z-index:99999;font-size:12px;border-radius:10px;';
+    d.textContent = 'Telegram: ' + (window.Telegram ? 'ЕСТЬ' : 'НЕТ') + 
+                    ' | WebApp: ' + (window.Telegram?.WebApp ? 'ЕСТЬ' : 'НЕТ') +
+                    ' | initData: ' + (window.Telegram?.WebApp?.initData ? 'ЕСТЬ' : 'НЕТ');
+    document.body.appendChild(d);
+    setTimeout(() => d.remove(), 6000);
+  }, 500);
+</script>
 }
 </script>
 

@@ -430,14 +430,6 @@
     return sessionStorage.getItem('adminSessionToken') || '';
   }
 
-  const ADMIN_TOKEN = getAdminToken; // заменяй ADMIN_TOKEN() везде на getAdminToken()
-
-  const isAuth = await checkAdminPassword();
-  if (!isAuth) {
-    document.body.innerHTML = '<div style="color:white;text-align:center;margin-top:40vh;font-size:20px;">Доступ запрещён</div>';
-    return;
-  }
-
   function renderPageHeader(iconUrl, title) {
     return `<div class="page-header-sticky">
       <div class="page-header-inner">
@@ -924,11 +916,12 @@
 
     try {
       const r = await fetch(`${API}/api/stats`, {
-           headers: { 
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${getAdminToken()}`
-            },
-                  const s = await r.json();
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${getAdminToken()}`
+  }
+});
+const s = await r.json();
       container.innerHTML = `
         <div class="stat-period-card">
           <div class="stat-period-title">За сегодня</div>

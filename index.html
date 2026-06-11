@@ -3470,6 +3470,14 @@ if (!tgUser || !tgUser.id) {
   function getLastPage() { const savedPage = localStorage.getItem("lastPage"); const validPages = ["catalog", "cart", "orders", "profile"]; if (savedPage && validPages.includes(savedPage)) { return savedPage; } return "catalog"; }
 
   function injectPageHeader() {
+  // ТЕСТ
+  const d = document.createElement('div');
+  d.style.cssText = 'position:fixed;top:200px;left:10px;right:10px;background:purple;color:white;padding:10px;z-index:99999;font-size:12px;border-radius:10px;';
+  d.textContent = 'injectPageHeader ВЫЗВАНА';
+  document.body.appendChild(d);
+  setTimeout(() => d.remove(), 5000);
+  // КОНЕЦ ТЕСТА
+
   function tryInject(attempts) {
     const activePage = document.querySelector('.page.active-page');
     if (!activePage) {

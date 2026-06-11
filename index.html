@@ -3685,15 +3685,13 @@ if (pageId === "checkout") { afterPaymentBackPage = orderMode === "promo_deal" ?
 }
 
   function initApp() {
-  // Парсим пользователя сразу при старте
   const parsedUser = parseTgInitData();
   if (parsedUser) {
     window.__tgUser = parsedUser;
   }
-  // ... остальной твой код initApp без изменений
   loadCartFromLocalStorage();
   const tgU = window.__tgUser || window.Telegram?.WebApp?.initDataUnsafe?.user;
-    if (tgU?.id) {
+  if (tgU?.id) {
     fetch('https://gemstorm.up.railway.app/api/track-user', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -3714,20 +3712,10 @@ if (pageId === "checkout") { afterPaymentBackPage = orderMode === "promo_deal" ?
   }
   const lastPage = getLastPage();
   showPage(lastPage);
-  const tgUser = window.__tgUser || window.Telegram?.WebApp?.initDataUnsafe?.user;
-if (tgUser?.photo_url) {
-  const avatar = document.getElementById("profileMenuAvatar");
-  if (avatar) avatar.src = tgUser.photo_url;
-}
-  if (tgUser?.photo_url) {
-    const avatar = document.getElementById("profileMenuAvatar");
-    if (avatar) avatar.src = tgUser.photo_url;
-  }
 
   const tg = window.Telegram?.WebApp;
   const startParam = tg?.initDataUnsafe?.start_param || new URLSearchParams(window.location.search).get("startapp");
   const userId = tg?.initDataUnsafe?.user?.id;
-
   if (startParam && startParam.startsWith("ref") && userId) {
     const referrerId = parseInt(startParam.replace("ref", ""));
     if (referrerId && referrerId !== userId) {
@@ -3738,6 +3726,15 @@ if (tgUser?.photo_url) {
       }).catch(() => {});
     }
   }
+
+  // Фото профиля с задержкой
+  setTimeout(() => {
+    const tgUser = window.__tgUser || window.Telegram?.WebApp?.initDataUnsafe?.user;
+    if (tgUser?.photo_url) {
+      const avatar = document.getElementById("profileMenuAvatar");
+      if (avatar) avatar.src = tgUser.photo_url;
+    }
+  }, 500);
 }
 
   (function() {
@@ -3773,7 +3770,15 @@ if (tgUser?.photo_url) {
     }
   });
 
-  const openFilterBtn = document.getElementById("openFilterBtn");
+  document.addEventListener('click', function(e) {
+  const filterBtn = e.target.closest('#openFilterBtn');
+  if (filterBtn) { hapticLight(); renderFilterModal(); showPage("filter"); }
+});
+
+const searchInputEl = document.getElementById("searchInput");
+if (searchInputEl) {
+  searchInputEl.addEventListener("input", (e) => { searchQuery = e.target.value; renderCatalog(); });
+}
   if (openFilterBtn) {
     openFilterBtn.addEventListener("click", () => { hapticLight(); renderFilterModal(); showPage("filter"); });
   }
@@ -3781,8 +3786,10 @@ if (tgUser?.photo_url) {
   if (searchInputEl) {
     searchInputEl.addEventListener("input", (e) => { searchQuery = e.target.value; renderCatalog(); });
   }
-  document.querySelectorAll(".menu-item").forEach(btn => {
-    btn.addEventListener("click", () => { hapticLight(); showPage(btn.dataset.page); });
+  document.addEventListener('click', function(e) {
+  const menuBtn = e.target.closest('.menu-item[data-page]');
+  if (menuBtn && menuBtn.dataset.page) { hapticLight(); showPage(menuBtn.dataset.page); }
+});
    // ОТЛАДКА - удалить после
 setTimeout(() => {
   const activePage = document.querySelector('.page.active-page');

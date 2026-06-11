@@ -3747,19 +3747,11 @@ if (pageId === "checkout") { afterPaymentBackPage = orderMode === "promo_deal" ?
   waitForTelegram(function() {
   const tg = window.Telegram?.WebApp;
   if (tg) {
+    tg.expand();
     initBackButtonHandler();
     tg.BackButton.hide();
   }
   initApp();
-  try {
-  injectPageHeader();
-} catch(e) {
-  const d = document.createElement('div');
-  d.style.cssText = 'position:fixed;top:200px;left:10px;right:10px;background:orange;color:black;padding:10px;z-index:99999;font-size:11px;border-radius:10px;word-break:break-all;';
-  d.textContent = 'ОШИБКА: ' + e.message + ' | ' + e.stack;
-  document.body.appendChild(d);
-  setTimeout(() => d.remove(), 10000);
-}
 
   document.addEventListener("click", function(e) {
     if (e.target.tagName !== "INPUT" && e.target.tagName !== "TEXTAREA" && e.target.tagName !== "SELECT") {
@@ -3771,40 +3763,68 @@ if (pageId === "checkout") { afterPaymentBackPage = orderMode === "promo_deal" ?
   });
 
   document.addEventListener('click', function(e) {
-  const filterBtn = e.target.closest('#openFilterBtn');
-  if (filterBtn) { hapticLight(); renderFilterModal(); showPage("filter"); }
-});
+    const filterBtn = e.target.closest('#openFilterBtn');
+    if (filterBtn) { hapticLight(); renderFilterModal(); showPage("filter"); }
+    const menuBtn = e.target.closest('.menu-item[data-page]');
+    if (menuBtn && menuBtn.dataset.page) { hapticLight(); showPage(menuBtn.dataset.page); }
+  });
 
-const searchInputEl = document.getElementById("searchInput");
-if (searchInputEl) {
-  searchInputEl.addEventListener("input", (e) => { searchQuery = e.target.value; renderCatalog(); });
-}
-  if (openFilterBtn) {
-    openFilterBtn.addEventListener("click", () => { hapticLight(); renderFilterModal(); showPage("filter"); });
-  }
   const searchInputEl = document.getElementById("searchInput");
   if (searchInputEl) {
     searchInputEl.addEventListener("input", (e) => { searchQuery = e.target.value; renderCatalog(); });
   }
-  document.addEventListener('click', function(e) {
-  const menuBtn = e.target.closest('.menu-item[data-page]');
-  if (menuBtn && menuBtn.dataset.page) { hapticLight(); showPage(menuBtn.dataset.page); }
+
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
+  renderFilterModal();
+
+  function updateMenuSlider(pageId) {
+    const slider = document.getElementById("menuSlider");
+    if (!slider) return;
+    const pages = ["catalog", "cart", "orders"];
+    const index = pages.indexOf(pageId);
+    if (index === -1) {
+      slider.style.left = "calc(100%)";
+      slider.style.width = "calc(33.33% - 3px)";
+      slider.style.opacity = "0";
+      return;
+    }
+    slider.style.opacity = "1";
+    if (index === 0) {
+      slider.style.left = "3px";
+      slider.style.width = "calc(33.33% - 3px)";
+    } else if (index === 2) {
+      slider.style.left = "calc(66.66%)";
+      slider.style.width = "calc(33.33% - 3px)";
+    } else {
+      slider.style.left = "calc(33.33%)";
+      slider.style.width = "calc(33.33%)";
+    }
+  }
+
+  function refreshCurrentPage() {
+    const activePage = document.querySelector('.page.active-page');
+    if (!activePage) return;
+    const pageId = activePage.id.replace('-page', '');
+    switch(pageId) {
+      case 'catalog': renderCatalog(); break;
+      case 'cart': renderCartPage(); renderCheckoutBlock(); break;
+      case 'orders': loadUserOrders().then(() => renderOrdersPage()); break;
+      case 'profile': renderProfilePage(); break;
+      case 'reviews': loadReviewsList(); break;
+      case 'gifts': renderGiftsPage(); break;
+      case 'buy-promo': renderBuyPromoPage(); break;
+      case 'order-detail':
+        loadUserOrders().then(() => {
+          const orderId = activePage.dataset.currentOrderId;
+          if (orderId) {
+            const updatedOrder = orders.find(o => o.id == orderId);
+            if (updatedOrder) showOrderDetail(updatedOrder);
+          }
+        });
+        break;
+    }
+  }
 });
-   // ОТЛАДКА - удалить после
-setTimeout(() => {
-  const activePage = document.querySelector('.page.active-page');
-  const header = document.querySelector('.page-header-sticky');
-  const debugDiv = document.createElement('div');
-  debugDiv.style.cssText = 'position:fixed;top:50%;left:10px;right:10px;background:red;color:white;padding:10px;z-index:99999;font-size:14px;border-radius:10px;';
-  debugDiv.innerHTML = `
-    activePage: ${activePage?.id || 'НЕТ'}<br>
-    header: ${header ? 'ЕСТЬ' : 'НЕТ'}<br>
-    pages with active: ${document.querySelectorAll('.page.active-page').length}
-  `;
-  document.body.appendChild(debugDiv);
-  setTimeout(() => debugDiv.remove(), 5000);
-}, 1000);
-  });
 
   let lastSliderIndex = 0;
 

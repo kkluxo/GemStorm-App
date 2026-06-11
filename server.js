@@ -993,32 +993,7 @@ app.post('/api/reviews', async (req, res) => {
 // =============================================
 // ЗАПУСК
 // =============================================
-
-initDB().then(async () => {
-    try {
-        await pool.query(`
-            INSERT INTO app_users (user_id, user_name, user_username)
-            SELECT user_id::TEXT, MAX(user_name), MAX(user_username)
-            FROM orders WHERE user_id IS NOT NULL
-            GROUP BY user_id::TEXT
-            ON CONFLICT (user_id) DO UPDATE SET
-                user_name = EXCLUDED.user_name,
-                user_username = EXCLUDED.user_username
-        `);
-        const count = await pool.query('SELECT COUNT(*) as count FROM app_users');
-        console.log(`app_users после миграции: ${count.rows[0].count} пользователей`);
-    } catch (e) {
-        console.error('Ошибка автомиграции:', e.message);
-    }
-
-    if (BOT_TOKEN) {
-        getBot();
-        console.log('Telegram бот запущен');
-    } else {
-        console.warn('BOT_TOKEN не установлен, бот не запущен');
-    }
-
-    app.post('/api/admin/verify-telegram', async (req, res) => {
+app.post('/api/admin/verify-telegram', async (req, res) => {
   try {
     const { initData } = req.body;
     if (!initData) return res.status(400).json({ success: false });
@@ -1076,6 +1051,30 @@ initDB().then(async () => {
     res.status(500).json({ success: false });
   }
 });
+
+initDB().then(async () => {
+    try {
+        await pool.query(`
+            INSERT INTO app_users (user_id, user_name, user_username)
+            SELECT user_id::TEXT, MAX(user_name), MAX(user_username)
+            FROM orders WHERE user_id IS NOT NULL
+            GROUP BY user_id::TEXT
+            ON CONFLICT (user_id) DO UPDATE SET
+                user_name = EXCLUDED.user_name,
+                user_username = EXCLUDED.user_username
+        `);
+        const count = await pool.query('SELECT COUNT(*) as count FROM app_users');
+        console.log(`app_users после миграции: ${count.rows[0].count} пользователей`);
+    } catch (e) {
+        console.error('Ошибка автомиграции:', e.message);
+    }
+
+    if (BOT_TOKEN) {
+        getBot();
+        console.log('Telegram бот запущен');
+    } else {
+        console.warn('BOT_TOKEN не установлен, бот не запущен');
+    }
 
     app.listen(PORT, () => console.log(`Сервер запущен на порту ${PORT}`));
 }).catch((err) => {

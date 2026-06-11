@@ -1,4 +1,4 @@
-// === СИСТЕМА ЦЕН В  (ДВЕ ) ===
+// === СИСТЕМА ЦЕН В ДОЛЛАРАХ (ДВЕ СТРОКИ) ===
 const PRICE_TABLE = {
   0.99:  [85, 89]; 1.99:  [169, 179]; 2.99:  [249, 269]; 3.99:  [339, 359]; 4.99:  [429, 449]; 5.99:  [509, 529]; 6.99:  [589, 619]; 7.99:  [679, 709]; 8.99:  [769, 799]; 9.99:  [849, 889]; 10.99: [939, 979]; 11.99: [1019, 1069]; 12.99: [1099, 1159]; 13.99: [1189, 1249]; 14.99: [1269, 1339];
   15.99: [1359, 1419]; 16.99: [1439, 1509]; 17.99: [1529, 1599]; 18.99: [1619, 1689]; 19.99: [1699, 1779]; 24.99: [2129, 2229]
@@ -10,6 +10,7 @@ function getRubPrices(usdPrice) {
   return { price: rubPrices[0], oldPrice: rubPrices[1] };
 }
 
+// ТОВАРЫ В ДОЛЛАРАХ
 const productsRaw = [
   // Пропуски
   { id: 1, name: "Brawl Pass", usdPrice: 8.99, label: "Пропуск", category: "Пропуски", maxQty: 1, conflictGroup: [1, 2, 3], visible: true, image: "https://storage.botpapa.me/files/6b57bf60-499a-11f1-bef9-f1ec7a2c6e45.jpeg" },
@@ -73,3 +74,81 @@ const products = productsRaw.map(p => ({
   price: getRubPrices(p.usdPrice).price,
   oldPrice: getRubPrices(p.usdPrice).oldPrice
 }));
+
+const FILTER_CATEGORIES = [
+  "Все категории",
+  "Пропуски",
+  "Боец Болт",
+  "Кристаллы",
+  "Esports",
+  "Strikers",
+  "Bling Deals",
+  "Особые акции",
+  "Ежен. акции",
+  "Ежедн. акции"
+];
+
+// ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
+let cart = {};
+let currentFilter = "Все категории";
+
+function hapticLight() {
+  if (window.Telegram?.WebApp?.HapticFeedback) {
+    window.Telegram.WebApp.HapticFeedback.impactOccurred("light");
+  }
+}
+
+function canAddToCart(productId) {
+  const product = products.find(p => p.id == productId);
+  if (!product) return { allowed: false, reason: "Товар не найден" };
+
+  const uniqueCount = Object.keys(cart).length;
+  if (!cart[productId] && uniqueCount >= 4) {
+    return { allowed: false, reason: "В корзину можно добавить не более 4 товаров" };
+  }
+
+  const currentQty = cart[productId] || 0;
+  if (currentQty >= product.maxQty) {
+    return { allowed: false, reason: `Максимум ${product.maxQty} шт.` };
+  }
+
+  if (product.conflictGroup && product.conflictGroup.length > 0) {
+    const conflicts = product.conflictGroup.filter(id => id !== productId && cart[id]);
+    if (conflicts.length > 0) {
+      const conflictName = products.find(p => p.id === conflicts[0])?.name || "";
+      return { allowed: false, reason: `Удалите "${conflictName}" из корзины, чтобы добавить этот товар` };
+    }
+  }
+
+  return { allowed: true };
+}
+
+function renderFilterModal() {
+  const container = document.getElementById("filterOptionsContainer");
+  if (!container) return;
+
+  container.innerHTML = FILTER_CATEGORIES.map(cat => `
+    <div class="filter-row" data-filter="${cat}">
+      <span class="filter-text">${cat}</span>
+      <span class="check-mark">${currentFilter === cat ? "✓" : ""}</span>
+    </div>
+  `).join("");
+
+  document.querySelectorAll(".filter-row").forEach(row => {
+    row.addEventListener("click", () => {
+      hapticLight();
+      currentFilter = row.dataset.filter;
+      renderFilterModal();
+      if (typeof renderCatalog === 'function') renderCatalog();
+      if (typeof showPage === 'function') showPage("catalog");
+    });
+  });
+}
+
+// ЭКСПОРТ ДЛЯ ГЛОБАЛЬНОГО ДОСТУПА
+window.products = products;
+window.cart = cart;
+window.currentFilter = currentFilter;
+window.canAddToCart = canAddToCart;
+window.renderFilterModal = renderFilterModal;
+window.hapticLight = hapticLight;

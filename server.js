@@ -457,14 +457,26 @@ app.post('/api/admin/check-password', async (req, res) => {
         return res.json({ success: false, message: 'Введите пароль' });
     }
     
-    // ПРЯМАЯ ПРОВЕРКА ПАРОЛЯ (без хеша)
-    const validPassword = 'usa2026';
+    // БЕЗОПАСНАЯ ПРОВЕРКА через bcrypt и хеш из переменных
+    const hashedPassword = process.env.ADMIN_PASSWORD_HASH;
     
-    if (password === validPassword) {
-        loginAttempts.delete(ip);
-        res.json({ success: true });
-    } else {
-        res.json({ success: false, message: 'Неверный пароль' });
+    if (!hashedPassword) {
+        console.error('ADMIN_PASSWORD_HASH не установлен');
+        return res.status(500).json({ success: false, message: 'Ошибка сервера' });
+    }
+    
+    try {
+        const isValid = await bcrypt.compare(password, hashedPassword);
+        
+        if (isValid) {
+            loginAttempts.delete(ip);
+            res.json({ success: true });
+        } else {
+            res.json({ success: false, message: 'Неверный пароль' });
+        }
+    } catch (error) {
+        console.error('Ошибка проверки пароля:', error);
+        res.status(500).json({ success: false, message: 'Ошибка сервера' });
     }
 });
 

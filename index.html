@@ -2017,8 +2017,11 @@ function waitForTelegram(callback, attempts) {
 
 <div id="cartCheckoutFixed" class="cart-checkout-fixed" style="display: none;"></div>
 
-<div style="position:fixed;bottom:16px;left:16px;right:16px;z-index:1001;max-width:600px;margin:0 auto;width:calc(100% - 32px);display:flex;gap:10px;align-items:center;">
-  <div style="flex:1;height:66px;background:#222225f9;border:1px solid rgba(255,255,255,0.15);border-radius:60px;display:flex;justify-content:space-between;align-items:center;padding:5px 4px 8px 4px;backdrop-filter:blur(10px);position:relative;">
+<div style="position:fixed;bottom:16px;left:16px;right:16px;z-index:1001;
+  max-width:600px;margin:0 auto;width:calc(100% - 32px);
+  display:flex;gap:10px;align-items:center;
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;">
+    <div style="flex:1;height:66px;background:#222225f9;border:1px solid rgba(255,255,255,0.15);border-radius:60px;display:flex;justify-content:space-between;align-items:center;padding:5px 4px 8px 4px;backdrop-filter:blur(10px);position:relative;">
     <div class="menu-slider" id="menuSlider"></div>
     <button class="menu-item" data-page="catalog">
       <img class="menu-icon menu-icon-inactive" src="https://storage.botpapa.me/files/a0ee77c0-5112-11f1-bef9-f1ec7a2c6e45.png" alt="catalog">
@@ -3824,7 +3827,6 @@ if (pageId === "checkout") { afterPaymentBackPage = orderMode === "promo_deal" ?
         break;
     }
   }
-});
 
   let lastSliderIndex = 0;
 
@@ -3870,52 +3872,6 @@ if (pageId === "checkout") { afterPaymentBackPage = orderMode === "promo_deal" ?
 
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
   renderFilterModal();
-
-// Функция обновлениял
-function refreshCurrentPage() {
-  const activePage = document.querySelector('.page.active-page');
-  if (!activePage) return;
-  
-  const pageId = activePage.id.replace('-page', '');
-  
-  switch(pageId) {
-    case 'catalog':
-      renderCatalog();
-      break;
-    case 'cart':
-      renderCartPage();
-      renderCheckoutBlock();
-      break;
-    case 'orders':
-      loadUserOrders().then(() => renderOrdersPage());
-      break;
-    case 'profile':
-      renderProfilePage();
-      break;
-    case 'reviews':
-      loadReviewsList();
-      break;
-    case 'gifts':
-      renderGiftsPage();
-      break;
-    case 'buy-promo':
-      renderBuyPromoPage();
-      break;
-    case 'order-detail':
-      loadUserOrders().then(() => {
-        const orderId = activePage.dataset.currentOrderId;
-        if (orderId) {
-          const updatedOrder = orders.find(o => o.id == orderId);
-          if (updatedOrder) showOrderDetail(updatedOrder);
-        }
-      });
-      break;
-    default:
-      if (typeof window[`render${pageId.charAt(0).toUpperCase() + pageId.slice(1)}Page`] === 'function') {
-        window[`render${pageId.charAt(0).toUpperCase() + pageId.slice(1)}Page`]();
-      }
-  }
-}
 });
 </script>
 

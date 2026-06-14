@@ -42,6 +42,11 @@ const productsRaw = [
   [46, "Хоккеист Мортис", "4.99", "4.99", "Esports", "Esports", 1, [], true, "https://storage.botpapa.me/files/cd577140-60d0-11f1-af2e-f7a93121b83b.jpeg"],
   [18, "Кошка-воровка Джесси", "3.99", "3.99", "Esports", "Esports", 1, [], true, "https://storage.botpapa.me/files/027f28d0-505b-11f1-bef9-f1ec7a2c6e45.jpeg"],
   
+  // Особые акции
+  //[58, "90 гемов", "0.99", "0.99", "Особая акция", "Особые акции", 1, [], true, "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  [59, "150 гемов", "4.99", "4.99", "Особая акция", "Особые акции", 1, [], true, "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  //[60, "300 гемов", "9.99", "9.99", "Особая акция", "Особые акции", 1, [], true, "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  
   // Bling Deals
   [19, "4000 блингов", "0.99", "0.99", "Bling Deal", "Bling Deals", 1, [], true, "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg"],
   [20, "5000 блингов", "4.99", "4.99", "Bling Deal", "Bling Deals", 1, [], true, "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg"],
@@ -52,10 +57,13 @@ const productsRaw = [
   [44, "20000 блингов", "8.99", "8.99", "Bling Deal", "Bling Deals", 1, [], true, "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg"],
   
   // Еженедельные акции
-  [21, "Гипнос Сенди", "8.99", "8.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://storage.botpapa.me/files/c079d530-60d0-11f1-af2e-f7a93121b83b.jpeg"],
-  [22, "Фигурка Пенни", "6.99", "6.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://storage.botpapa.me/files/c76b2d30-60d0-11f1-af2e-f7a93121b83b.jpeg"],
-  [23, "Равана Гром", "6.99", "6.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://storage.botpapa.me/files/ca413090-60d0-11f1-af2e-f7a93121b83b.jpeg"],
-  [24, "Вирус Чарли", "8.99", "8.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://storage.botpapa.me/files/c3f8c2c0-60d0-11f1-af2e-f7a93121b83b.jpeg"],
+  //[21, "Гипнос Сенди", "8.99", "8.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://storage.botpapa.me/files/c079d530-60d0-11f1-af2e-f7a93121b83b.jpeg"],
+  //[22, "Фигурка Пенни", "6.99", "6.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://storage.botpapa.me/files/c76b2d30-60d0-11f1-af2e-f7a93121b83b.jpeg"],
+  //[23, "Равана Гром", "6.99", "6.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://storage.botpapa.me/files/ca413090-60d0-11f1-af2e-f7a93121b83b.jpeg"],
+  //[24, "Вирус Чарли", "8.99", "8.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://storage.botpapa.me/files/c3f8c2c0-60d0-11f1-af2e-f7a93121b83b.jpeg"],
+  [55, "Злая королева Пэм", "8.99", "8.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/94f663077bdf674241b0e60705aa2949eb3e96a5c4bd9672f6540bc29b5e6d00/brawlstars.29000354-x1-Skin.png"],
+  [56, "Арджуна Бо", "6.99", "6.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/6fe55fe9ac9cde53a0eef8ad9a63909fc063ca6cb5de88a78438f192d138f6e7/brawlstars.29000731-x1-Skin.png"],
+  [57, "Снежная королева Амбер", "8.99", "8.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/c49da0d47d2b1873a81c33dcbd6e6b501155b205266ddfe6ec8db2a290168037/brawlstars.29000597-x1-Skin.png"],
   
   // Ежедневные акции
   [35, "600 монет", "1.99", "1.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://storage.botpapa.me/files/c04d8e50-56ba-11f1-bef9-f1ec7a2c6e45.jpeg"],

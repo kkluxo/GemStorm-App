@@ -866,7 +866,7 @@ app.post('/api/check-promo', async (req, res) => {
 
         if (!validCodes[upperCode]) return res.json({ valid: false, reason: 'not_found' });
 
-        if (upperCode === 'GEMSTORMP3') {
+        if (upperCode === 'GEMSTORM3') {
             const ordersResult = await pool.query(
                 `SELECT COUNT(*) as count FROM orders WHERE user_id = $1`, [userId]
             );

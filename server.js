@@ -862,7 +862,7 @@ app.post('/api/check-promo', async (req, res) => {
         if (!code || !userId) return res.status(400).json({ error: 'Нет данных' });
 
         const upperCode = code.toUpperCase();
-        const validCodes = { 'GEMSTORMP3': 3, 'CL3PER0': 5, 'WEL9825H0': 1 };
+        const validCodes = { 'GEMSTORM3': 3, 'FUKEVANSND50': 50, 'WEL9825H0': 1 };
 
         if (!validCodes[upperCode]) return res.json({ valid: false, reason: 'not_found' });
 

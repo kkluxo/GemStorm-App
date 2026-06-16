@@ -1329,24 +1329,26 @@
     }
 
     .review-pinned-badge {
-      width: 34px;
-      height: 34px;
-      background: rgba(234, 179, 8, 0.15);
-      border-radius: 50%;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      gap: 2px;
-      font-weight: 600;
-      color: #eab308;
-      font-size: 13px;
+      gap: 4px;
+      background: rgba(234, 179, 8, 0.15);
+      border-radius: 50px;
+      padding: 4px 12px;
+      height: 34px;
       cursor: pointer;
+      flex-shrink: 0;
     }
 
     .review-pinned-badge img {
       width: 14px;
       height: 14px;
+    }
+
+    .review-pinned-badge span {
+      font-size: 13px;
+      font-weight: 600;
+      color: #eab308;
     }
 
     .review-pinned-text {
@@ -1570,8 +1572,9 @@
       display: inline-flex;
       align-items: center;
       background: rgba(234, 179, 8, 0.12);
-      border-radius: 20px;
-      padding: 4px 10px;
+      border-radius: 50px;
+      padding: 4px 12px;
+      min-height: 32px;
       font-size: 15px;
       font-weight: 500;
       color: #eab308;
@@ -1584,6 +1587,7 @@
     .review-order-badge img {
       width: 16px;
       height: 16px;
+      flex-shrink: 0;
     }
 
     .review-popup-overlay {
@@ -3090,7 +3094,6 @@
 
           container.innerHTML = `
             <div class="order-data-card">
-              <div style="font-size:19px;font-weight:600;color:#fff;margin-bottom:14px;">Оставьте отзыв к заказу</div>
               <div class="form-section">
                 <div class="form-label">Выберите заказ</div>
                 <select class="form-select-native" id="reviewOrderSelect">
@@ -3253,9 +3256,9 @@
     let html = '';
     for (let i = 0; i < 5; i++) {
       if (i < rating) {
-        html += `<img src="${starIcon}" style="width:16px;height:16px;">`;
+        html += `<img src="${starIcon}" style="width:16px;height:16px;flex-shrink:0;">`;
       } else {
-        html += `<img src="${starIcon}" style="width:16px;height:16px;opacity:0.15;">`;
+        html += `<img src="${starIcon}" style="width:16px;height:16px;opacity:0.15;flex-shrink:0;">`;
       }
     }
     return html;
@@ -3286,9 +3289,9 @@
       const avgDisplay = avgRating.toFixed(1);
 
       // Формируем кнопку рейтинга в админ-карточке
-      const ratingBadgeHtml = `<div class="review-pinned-badge" id="ratingBadgeBtn" style="background: rgba(234, 179, 8, 0.15); color: #eab308; cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 0 10px; border-radius: 50px; height: 34px;">
-        <span style="font-size:13px; font-weight:600;">★</span>
-        <span style="font-size:13px; font-weight:600;">${avgDisplay}</span>
+      const ratingBadgeHtml = `<div class="review-pinned-badge" id="ratingBadgeBtn">
+        <img src="https://storage.botpapa.me/files/66e366f0-69a7-11f1-af2e-f7a93121b83b.png" alt="star">
+        <span>${avgDisplay}</span>
       </div>`;
 
       const pinnedCard = `

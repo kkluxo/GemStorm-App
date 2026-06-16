@@ -67,7 +67,7 @@ const productsRaw = [
   [44, "20000 блингов", "8.99", "8.99", "Bling Deal", "Bling Deals", 1, [], true, "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg"],
     
   // Esports
-  [62, "Набор: SK Gaming", "2.49", "2.49", "Esports", "Esports", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/a9e85d7aa92b4f683fc527706f8ff5263720706ff378c6be6574aaec9e698850/brawlstars.52002969-x1-Emote_28001084-x1-PlayerIcon_68000621-x1-Spray.pnggh"],
+  [62, "Набор: SK Gaming", "2.49", "2.49", "Esports", "Esports", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/a9e85d7aa92b4f683fc527706f8ff5263720706ff378c6be6574aaec9e698850/brawlstars.52002969-x1-Emote_28001084-x1-PlayerIcon_68000621-x1-Spray.png"],
   [63, "Набор: ZETA Division", "2.49", "2.49", "Esports", "Esports", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/1ee7c3e247a03e25e2ce750c3db253ddccafe4426b636a2850b8b69c3d5c36b8/brawlstars.52002973-x1-Emote_28001079-x1-PlayerIcon_68000618-x1-Spray.png"],
   [64, "Набор: LOUD", "2.49", "2.49", "Esports", "Esports", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/f9d9d9042d346be24549212b444933e9b9971f6ca8083ec8134e149838f2fd40/brawlstars.52002967-x1-Emote_28001082-x1-PlayerIcon_68000623-x1-Spray.png"],
   [65, "Набор: Team Heretics", "2.49", "2.49", "Esports", "Esports", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/ff20de05be75d8f80d8e10575ae291c1fc33a4b06c1f190c2d35adb14d66735f/brawlstars.52002970-x1-Emote_28001080-x1-PlayerIcon_68000625-x1-Spray.png"],

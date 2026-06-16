@@ -131,7 +131,7 @@ function canAddToCart(productId) {
 
   const uniqueCount = Object.keys(cart).length;
   if (!cart[productId] && uniqueCount >= 6) {
-    return { allowed: false, reason: "В корзину можно добавить не более 6 товаров" };
+    return { allowed: false, reason: "В корзину можно добавить не более 6 различных товаров" };
   }
 
   const currentQty = cart[productId] || 0;

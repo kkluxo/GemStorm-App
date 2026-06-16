@@ -28,7 +28,6 @@
   <link rel="preload" as="image" href="https://storage.botpapa.me/files/ea9c0cf0-592a-11f1-bef9-f1ec7a2c6e45.png">
   <link rel="preload" as="image" href="https://storage.botpapa.me/files/ad2b96d0-53bf-11f1-bef9-f1ec7a2c6e45.png">
   <link rel="preload" as="image" href="https://storage.botpapa.me/files/a7996ec0-53c1-11f1-bef9-f1ec7a2c6e45.png">
-  <link rel="preload" as="image" href="https://storage.botpapa.me/files/66e366f0-69a7-11f1-af2e-f7a93121b83b.png">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
     (function() {
@@ -1329,26 +1328,19 @@
     }
 
     .review-pinned-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background: rgba(234, 179, 8, 0.15);
-      border-radius: 50px;
-      padding: 4px 12px;
+      width: 34px;
       height: 34px;
-      cursor: pointer;
+      background: rgba(56, 150, 200, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       flex-shrink: 0;
     }
 
     .review-pinned-badge img {
-      width: 14px;
-      height: 14px;
-    }
-
-    .review-pinned-badge span {
-      font-size: 13px;
-      font-weight: 600;
-      color: #eab308;
+      width: 16px;
+      height: 16px;
     }
 
     .review-pinned-text {
@@ -1571,23 +1563,15 @@
     .review-order-badge {
       display: inline-flex;
       align-items: center;
-      background: rgba(234, 179, 8, 0.12);
-      border-radius: 50px;
-      padding: 4px 12px;
-      min-height: 32px;
-      font-size: 15px;
+      background: rgba(56, 150, 200, 0.1);
+      border-radius: 20px;
+      padding: 4px 10px;
+      font-size: 17px;
       font-weight: 500;
-      color: #eab308;
+      color: #4cb4e9;
       margin-left: auto;
       flex-shrink: 0;
       cursor: pointer;
-      gap: 4px;
-    }
-
-    .review-order-badge img {
-      width: 16px;
-      height: 16px;
-      flex-shrink: 0;
     }
 
     .review-popup-overlay {
@@ -2137,7 +2121,6 @@
   let orderMode = "cart";
   let afterPaymentBackPage = "cart";
   let promoOrderData = { deal: null, name: "", category: "" };
-  let allReviewsCache = [];
 
   const promoDeals = [
     { label: "Акция за 0.99$", price: 79 },
@@ -2889,7 +2872,7 @@
       }, 0);
     }
 
-    await loadReviewsList();
+    loadReviewsList();
   }
 
   function renderBuyPromoPage() {
@@ -3094,20 +3077,11 @@
 
           container.innerHTML = `
             <div class="order-data-card">
+              <div style="font-size:19px;font-weight:600;color:#fff;margin-bottom:14px;">Оставьте отзыв к заказу</div>
               <div class="form-section">
                 <div class="form-label">Выберите заказ</div>
                 <select class="form-select-native" id="reviewOrderSelect">
                   ${orderOptions}
-                </select>
-              </div>
-              <div class="form-section">
-                <div class="form-label">Оцените заказ</div>
-                <select class="form-select-native" id="reviewRatingSelect">
-                  <option value="5">5 (Отлично)</option>
-                  <option value="4">4 (Хорошо)</option>
-                  <option value="3">3 (Нормально)</option>
-                  <option value="2">2 (Плохо)</option>
-                  <option value="1">1 (Очень плохо)</option>
                 </select>
               </div>
               <div class="form-section" style="margin-bottom:0;">
@@ -3137,7 +3111,6 @@
               const selectEl = document.getElementById('reviewOrderSelect');
               const orderId = selectEl?.value;
               const orderNum = selectEl?.options[selectEl.selectedIndex]?.dataset.num;
-              const rating = parseInt(document.getElementById('reviewRatingSelect')?.value || 5);
               if (!orderId) { alert('Выберите заказ'); return; }
               hapticMedium();
               const btn = document.getElementById('reviewSubmitBtn');
@@ -3152,14 +3125,12 @@
                     photoUrl: photoUrl,
                     text: text,
                     orderId: orderId,
-                    orderNumber: orderNum,
-                    rating: rating
+                    orderNumber: orderNum
                   })
                 });
                 if (res.ok) {
                   hapticLight();
                   showPage('reviews');
-                  await loadReviewsList();
                 } else {
                   alert('Ошибка при отправке');
                 }
@@ -3240,70 +3211,22 @@
     }
   }
 
-  function getRatingText(rating) {
-    const map = {
-      5: 'Отлично',
-      4: 'Хорошо',
-      3: 'Нормально',
-      2: 'Плохо',
-      1: 'Очень плохо'
-    };
-    return map[rating] || '';
-  }
-
-  function renderStars(rating) {
-    const starIcon = 'https://storage.botpapa.me/files/66e366f0-69a7-11f1-af2e-f7a93121b83b.png';
-    let html = '';
-    for (let i = 0; i < 5; i++) {
-      if (i < rating) {
-        html += `<img src="${starIcon}" style="width:16px;height:16px;flex-shrink:0;">`;
-      } else {
-        html += `<img src="${starIcon}" style="width:16px;height:16px;opacity:0.15;flex-shrink:0;">`;
-      }
-    }
-    return html;
-  }
-
   async function loadReviewsList() {
     const container = document.getElementById('reviewsList');
     if (!container) return;
     container.innerHTML = `<div class="review-empty">Загрузка...</div>`;
-    
-    try {
-      const r = await fetch('https://gemstorm.up.railway.app/api/reviews');
-      if (!r.ok) throw new Error();
-      const list = await r.json();
-      allReviewsCache = list;
-
-      // Вычисляем средний рейтинг
-      let totalRating = 0;
-      let positiveCount = 0;
-      let negativeCount = 0;
-      list.forEach(rv => {
-        const rating = rv.rating || 5;
-        totalRating += rating;
-        if (rating >= 3 && rating <= 5) positiveCount++;
-        else if (rating >= 1 && rating <= 2) negativeCount++;
-      });
-      const avgRating = list.length ? (totalRating / list.length) : 0;
-      const avgDisplay = avgRating.toFixed(1);
-
-      // Формируем кнопку рейтинга в админ-карточке
-      const ratingBadgeHtml = `<div class="review-pinned-badge" id="ratingBadgeBtn">
-        <img src="https://storage.botpapa.me/files/66e366f0-69a7-11f1-af2e-f7a93121b83b.png" alt="star">
-        <span>${avgDisplay}</span>
-      </div>`;
-
-      const pinnedCard = `
+    const pinnedCard = `
   <div class="review-pinned-wrapper">
     <div class="review-pinned-main">
       <div class="review-pinned-header">
         <img class="review-pinned-avatar" src="https://storage.botpapa.me/files/a7996ec0-53c1-11f1-bef9-f1ec7a2c6e45.png" alt="GemStorm">
         <div class="review-pinned-info">
           <div class="review-pinned-name">GemStorm Store</div>
-          <div class="review-pinned-role">магазин</div>
+          <div class="review-pinned-role">администратор</div>
         </div>
-        ${ratingBadgeHtml}
+        <div class="review-pinned-badge">
+          <img src="https://storage.botpapa.me/files/ad2b96d0-53bf-11f1-bef9-f1ec7a2c6e45.png" alt="pin">
+        </div>
       </div>
       <div class="review-pinned-text">Видеоотчеты по выполненным заказам можно посмотреть в @GemStormReviews</div>
     </div>
@@ -3313,27 +3236,22 @@
     </div>
   </div>
 `;
-
+    try {
+      const r = await fetch('https://gemstorm.up.railway.app/api/reviews');
+      if (!r.ok) throw new Error();
+      const list = await r.json();
       if (!list.length) {
         container.innerHTML = pinnedCard + `<div class="review-empty">Пока нет отзывов</div>`;
         document.getElementById('pinnedReviewsLink')?.addEventListener('click', () => { hapticLight(); window.open('https://t.me/GemStormReviews', '_blank'); });
-        document.getElementById('ratingBadgeBtn')?.addEventListener('click', () => {
-          hapticLight();
-          showRatingStats(list);
-        });
         return;
       }
-
       container.innerHTML = pinnedCard + list.map(rv => {
         const avatar = rv.photo_url
           ? `<img style="width:38px;height:38px;border-radius:50%;object-fit:cover;flex-shrink:0;" src="${rv.photo_url}" alt="avatar">`
           : `<div class="review-avatar">👤</div>`;
         const dt = rv.created_at ? new Date(rv.created_at) : null;
         const dateStr = dt ? `${dt.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})} ${dt.toLocaleDateString('ru-RU')}` : '';
-        const rating = rv.rating || 5;
-        const ratingText = getRatingText(rating);
-        const starsHtml = renderStars(rating);
-        const orderBadge = rv.order_number ? `<span class="review-order-badge" data-order-num="${rv.order_number}" data-user-name="${escapeHtml(rv.user_name || 'Пользователь')}" data-rating="${rating}" data-rating-text="${ratingText}">${starsHtml}</span>` : '';
+        const orderBadge = rv.order_number ? `<span class="review-order-badge" data-order-num="${rv.order_number}" data-user-name="${escapeHtml(rv.user_name || 'Пользователь')}">#${rv.order_number}</span>` : '';
         let itemsHtml = '';
         let items = [];
         try { items = JSON.parse(rv.order_items || '[]'); } catch(e) {}
@@ -3342,13 +3260,7 @@
         }
         return `<div class="review-card-wrapper"><div class="review-card"><div class="review-header">${avatar}<div><div class="review-author-name">${escapeHtml(rv.user_name || 'Пользователь')}</div><div class="review-date">${dateStr}</div></div>${orderBadge}</div><div class="review-text">${escapeHtml(rv.text)}</div></div>${itemsHtml ? `<div class="review-items-card">${itemsHtml}</div>` : ''}</div>`;
       }).join('');
-
       document.getElementById('pinnedReviewsLink')?.addEventListener('click', () => { hapticLight(); window.open('https://t.me/GemStormReviews', '_blank'); });
-      document.getElementById('ratingBadgeBtn')?.addEventListener('click', () => {
-        hapticLight();
-        showRatingStats(list);
-      });
-
       setTimeout(() => {
         container.querySelectorAll('.review-order-badge').forEach(badge => {
           badge.addEventListener('click', (e) => {
@@ -3356,38 +3268,12 @@
             hapticLight();
             const orderNum = badge.dataset.orderNum;
             const userName = badge.dataset.userName;
-            const rating = badge.dataset.rating || 5;
-            const ratingText = badge.dataset.ratingText || 'Отлично';
-            if (window.Telegram?.WebApp) {
-              window.Telegram.WebApp.showAlert(`Отзыв к заказу #${orderNum}\nОценка: ${rating} (${ratingText})\nПолучатель: ${userName}`);
-            } else {
-              alert(`Отзыв к заказу #${orderNum}\nОценка: ${rating} (${ratingText})\nПолучатель: ${userName}`);
-            }
+            if (window.Telegram?.WebApp) { window.Telegram.WebApp.showAlert(`Отзыв к заказу #${orderNum}\nПокупатель: ${userName}`); } else { alert(`Отзыв к заказу #${orderNum}\nПокупатель: ${userName}`); }
           });
         });
       }, 0);
-
     } catch(e) {
       container.innerHTML = `<div class="review-empty">Не удалось загрузить отзывы</div>`;
-    }
-  }
-
-  function showRatingStats(reviews) {
-    let total = 0;
-    let positive = 0;
-    let negative = 0;
-    reviews.forEach(rv => {
-      const rating = rv.rating || 5;
-      total++;
-      if (rating >= 3 && rating <= 5) positive++;
-      else if (rating >= 1 && rating <= 2) negative++;
-    });
-    const avg = reviews.length ? (reviews.reduce((s, r) => s + (r.rating || 5), 0) / reviews.length).toFixed(1) : 0;
-    const msg = `Рейтинг магазина: ${avg} ★\nВсего отзывов: ${total}\nПоложительных: ${positive}\nОтрицательных: ${negative}`;
-    if (window.Telegram?.WebApp) {
-      window.Telegram.WebApp.showAlert(msg);
-    } else {
-      alert(msg);
     }
   }
 
@@ -3737,69 +3623,69 @@
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
   renderFilterModal();
   initApp();
-
-  // Обработчик для двойной кнопки в хедере
-  document.addEventListener('click', function(e) {
-    const doubleBtn = e.target.closest('#headerDoubleBtn');
-    if (!doubleBtn) return;
-    
-    const isRefresh = e.target.closest('#headerRefreshIcon');
-    const isSupport = e.target.closest('#headerSupportIcon');
-    
-    if (isRefresh) {
-      hapticLight();
-      refreshCurrentPage();
-    } else if (isSupport) {
-      hapticLight();
-      window.open('https://t.me/GemStormHelp', '_blank');
-    }
-  });
-
-  // Функция обновления
-  function refreshCurrentPage() {
-    const activePage = document.querySelector('.page.active-page');
-    if (!activePage) return;
-    
-    const pageId = activePage.id.replace('-page', '');
-    
-    switch(pageId) {
-      case 'catalog':
-        renderCatalog();
-        break;
-      case 'cart':
-        renderCartPage();
-        renderCheckoutBlock();
-        break;
-      case 'orders':
-        loadUserOrders().then(() => renderOrdersPage());
-        break;
-      case 'profile':
-        renderProfilePage();
-        break;
-      case 'reviews':
-        loadReviewsList();
-        break;
-      case 'gifts':
-        renderGiftsPage();
-        break;
-      case 'buy-promo':
-        renderBuyPromoPage();
-        break;
-      case 'order-detail':
-        loadUserOrders().then(() => {
-          const orderId = activePage.dataset.currentOrderId;
-          if (orderId) {
-            const updatedOrder = orders.find(o => o.id == orderId);
-            if (updatedOrder) showOrderDetail(updatedOrder);
-          }
-        });
-        break;
-      default:
-        if (typeof window[`render${pageId.charAt(0).toUpperCase() + pageId.slice(1)}Page`] === 'function') {
-          window[`render${pageId.charAt(0).toUpperCase() + pageId.slice(1)}Page`]();
-        }
-    }
+// Обработчик для двойной кнопки в хедере
+document.addEventListener('click', function(e) {
+  const doubleBtn = e.target.closest('#headerDoubleBtn');
+  if (!doubleBtn) return;
+  
+  // Определяем, на какую иконку нажали
+  const isRefresh = e.target.closest('#headerRefreshIcon');
+  const isSupport = e.target.closest('#headerSupportIcon');
+  
+  if (isRefresh) {
+    hapticLight(); // вибрация при обновлении
+    refreshCurrentPage();
+  } else if (isSupport) {
+    hapticLight();
+    window.open('https://t.me/GemStormHelp', '_blank');
   }
+});
+
+// Функция обновления
+function refreshCurrentPage() {
+  const activePage = document.querySelector('.page.active-page');
+  if (!activePage) return;
+  
+  const pageId = activePage.id.replace('-page', '');
+  
+  switch(pageId) {
+    case 'catalog':
+      renderCatalog();
+      break;
+    case 'cart':
+      renderCartPage();
+      renderCheckoutBlock();
+      break;
+    case 'orders':
+      loadUserOrders().then(() => renderOrdersPage());
+      break;
+    case 'profile':
+      renderProfilePage();
+      break;
+    case 'reviews':
+      loadReviewsList();
+      break;
+    case 'gifts':
+      renderGiftsPage();
+      break;
+    case 'buy-promo':
+      renderBuyPromoPage();
+      break;
+    case 'order-detail':
+      loadUserOrders().then(() => {
+        const orderId = activePage.dataset.currentOrderId;
+        if (orderId) {
+          const updatedOrder = orders.find(o => o.id == orderId);
+          if (updatedOrder) showOrderDetail(updatedOrder);
+        }
+      });
+      break;
+    default:
+      if (typeof window[`render${pageId.charAt(0).toUpperCase() + pageId.slice(1)}Page`] === 'function') {
+        window[`render${pageId.charAt(0).toUpperCase() + pageId.slice(1)}Page`]();
+      }
+  }
+}
 </script>
 
 </body>

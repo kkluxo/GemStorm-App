@@ -428,7 +428,16 @@ async function initDB() {
             )
         `);
         console.log('Таблица tickets готова');
-
+        
+        // После CREATE TABLE IF NOT EXISTS tickets (...)
+const ticketCols = [
+    "status TEXT DEFAULT 'sent'",
+    "admin_reply TEXT",
+    "ticket_number TEXT"
+];
+for (const col of ticketCols) {
+    await pool.query(`ALTER TABLE tickets ADD COLUMN IF NOT EXISTS ${col}`);
+}
         // Добавляем недостающие колонки в tickets для существующих баз
         const ticketCols = [
             'status TEXT DEFAULT \'sent\'',

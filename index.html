@@ -1985,6 +1985,20 @@
       text-align: center;
       padding: 16px 0;
     }
+    .dropdown-item {
+  padding: 13px 16px;
+  font-size: 16px;
+  font-weight: 500;
+  color: white;
+  cursor: pointer;
+  border-bottom: 0.5px solid rgba(255,255,255,0.07);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.dropdown-item:last-child { border-bottom: none; }
+.dropdown-item.selected { color: #4cb4e9; }
+.dropdown-item:active { opacity: 0.7; }
   </style>
 </head>
 <body>
@@ -1998,23 +2012,31 @@
 </div>
 
 <div id="catalog-page" class="page">
-  <!-- Карточка подписки на канал (в каталоге сверху) -->
-  <div class="catalog-subscribe-card" id="catalogSubscribeBtn">
-    <div class="catalog-subscribe-info">
-      <div class="catalog-subscribe-title">Подпишитесь на канал</div>
-      <div class="catalog-subscribe-text">Следите за новостями и акциями</div>
-    </div>
-    <svg style="width:18px;height:18px;opacity:0.4;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-  </div>
   <div class="search-section">
-    <div class="search-bar">
-      <img class="search-icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'%3E%3C/path%3E%3C/svg%3E">
-      <input type="text" class="search-input" id="searchInput" placeholder="Найти товар по названию">
-    </div>
-    <div class="filter-btn" id="openFilterBtn">
-      <img class="filter-icon" src="https://storage.botpapa.me/files/bc7cbf30-49e0-11f1-bef9-f1ec7a2c6e45.png" alt="filter">
-    </div>
+  <div class="search-bar">
+    <img class="search-icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'%3E%3C/path%3E%3C/svg%3E">
+    <input type="text" class="search-input" id="searchInput" placeholder="Найти товар по названию">
   </div>
+  <div class="filter-btn" id="resetFiltersMainBtn" style="background:#2a2a2d;border-color:#3a3a3e;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+  </div>
+</div>
+<div style="display:flex;gap:10px;margin-bottom:14px;">
+  <div style="position:relative;flex:1;">
+    <button id="categoryDropdownBtn" style="width:100%;height:46px;background:#212124;border:1px solid #2B2B2D;border-radius:34px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;cursor:pointer;color:white;font-size:16px;font-weight:500;">
+      <span id="categoryBtnLabel">Категория</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div id="categoryDropdown" style="display:none;position:absolute;top:52px;left:0;right:0;background:#222225;border:1px solid #2B2B2D;border-radius:20px;z-index:200;overflow:hidden;"></div>
+  </div>
+  <div style="position:relative;flex:1;">
+    <button id="sortDropdownBtn" style="width:100%;height:46px;background:#212124;border:1px solid #2B2B2D;border-radius:34px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;cursor:pointer;color:white;font-size:16px;font-weight:500;">
+      <span id="sortBtnLabel">Сортировка</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div id="sortDropdown" style="display:none;position:absolute;top:52px;left:0;right:0;background:#222225;border:1px solid #2B2B2D;border-radius:20px;z-index:200;overflow:hidden;"></div>
+  </div>
+</div>
   <div id="catalogGrid" class="products-grid"></div>
 </div>
 
@@ -2214,6 +2236,7 @@
   let checkoutData = { paymentMethod: "", senderName: "", email: "" };
   let isSubmitting = false;
   let currentFilter = "Все категории";
+  let currentSort = "default";
   let searchQuery = "";
   let orders = [];
   let navigationHistory = [];
@@ -2324,34 +2347,38 @@
   }
 
   function renderCatalog() {
-    const grid = document.getElementById("catalogGrid");
-    if (!grid) return;
-    
-    let filtered = products.filter(p => p.visible === true && (currentFilter === "Все категории" || p.category === currentFilter));
-    
-    if (searchQuery.trim()) filtered = filtered.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
-    
-    if (!filtered.length) {
-      grid.style.display = "flex";
-      grid.innerHTML = `<div class="empty-state-icon" style="width:100%;"><img class="empty-icon" src="https://storage.botpapa.me/files/fa0bb410-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="empty catalog"><div class="empty-title">Товары не найдены</div><button class="empty-catalog-btn" id="resetFiltersBtn">Сбросить фильтры</button></div>`;
-      setTimeout(() => { 
-        const resetBtn = document.getElementById("resetFiltersBtn"); 
-        if(resetBtn) resetBtn.addEventListener("click", () => { 
-          searchQuery = ""; 
-          document.getElementById("searchInput").value = ""; 
-          currentFilter = "Все категории"; 
-          grid.style.display = ""; 
-          renderCatalog(); 
-          renderFilterModal(); 
-        }); 
-      }, 0);
-      return;
-    }
-    
-    grid.style.display = "";
-    grid.innerHTML = filtered.map(p => `<div class="product-card" data-id="${p.id}"><img class="card-img" src="${p.image}" alt="${escapeHtml(p.name)}" loading="lazy"><div class="card-info"><div class="product-title">${escapeHtml(p.name)}</div><div class="price-row"><span class="current-price">${formatPrice(p.price)}</span><span class="old-price">${formatPrice(p.oldPrice)}</span></div>${renderCartButtonHtml(p.id)}</div></div>`).join("");
-    attachCardEvents();
+  const grid = document.getElementById("catalogGrid");
+  if (!grid) return;
+  
+  let filtered = products.filter(p => p.visible === true && (currentFilter === "Все категории" || p.category === currentFilter));
+  
+  if (searchQuery.trim()) filtered = filtered.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  
+  if (currentSort === "cheap") filtered = [...filtered].sort((a, b) => a.price - b.price);
+  else if (currentSort === "expensive") filtered = [...filtered].sort((a, b) => b.price - a.price);
+  
+  if (!filtered.length) {
+    grid.style.display = "flex";
+    grid.innerHTML = `<div class="empty-state-icon" style="width:100%;"><img class="empty-icon" src="https://storage.botpapa.me/files/fa0bb410-4a0c-11f1-bef9-f1ec7a2c6e45.png" alt="empty catalog"><div class="empty-title">Товары не найдены</div><button class="empty-catalog-btn" id="resetFiltersBtn">Сбросить фильтры</button></div>`;
+    setTimeout(() => { 
+      const resetBtn = document.getElementById("resetFiltersBtn"); 
+      if(resetBtn) resetBtn.addEventListener("click", () => { 
+        searchQuery = ""; 
+        currentFilter = "Все категории";
+        currentSort = "default";
+        document.getElementById("searchInput").value = ""; 
+        grid.style.display = ""; 
+        updateDropdownLabels();
+        renderCatalog(); 
+      }); 
+    }, 0);
+    return;
   }
+  
+  grid.style.display = "";
+  grid.innerHTML = filtered.map(p => `<div class="product-card" data-id="${p.id}"><img class="card-img" src="${p.image}" alt="${escapeHtml(p.name)}" loading="lazy"><div class="card-info"><div class="product-title">${escapeHtml(p.name)}</div><div class="price-row"><span class="current-price">${formatPrice(p.price)}</span><span class="old-price">${formatPrice(p.oldPrice)}</span></div>${renderCartButtonHtml(p.id)}</div></div>`).join("");
+  attachCardEvents();
+}
 
   function attachCardEvents() {
     document.querySelectorAll('.product-card').forEach(card => {
@@ -3309,6 +3336,15 @@
           </div>
         </div>
       </div>
+      
+      <!-- Карточка подписки на канал -->
+<div class="subscribe-card" id="openChannelBtn">
+  <div class="subscribe-info">
+    <div class="subscribe-title">Подпишитесь на канал</div>
+    <div class="subscribe-text">Следите за новостями и акциями</div>
+  </div>
+  ${arrowSvg}
+</div>
 
       <!-- Карточка "Смотреть видеоотчеты" - открывает Telegram канал -->
       <div class="subscribe-card" id="openVideoReports">
@@ -3361,8 +3397,7 @@
       document.getElementById("openGiftsBtn")?.addEventListener("click", openGiftsPage);
 
       // Каталог - подписка на канал
-      document.getElementById("catalogSubscribeBtn")?.addEventListener("click", () => { hapticLight(); window.open("https://t.me/GemStormStore", "_blank"); });
-    }, 0);
+      document.getElementById("openChannelBtn")?.addEventListener("click", () => { hapticLight(); window.open("https://t.me/GemStormStore", "_blank"); });    }, 0);
   }
 
   function saveCurrentPage(pageId) { localStorage.setItem("lastPage", pageId); }
@@ -3562,10 +3597,92 @@
     }
   });
 
-  const openFilterBtn = document.getElementById("openFilterBtn");
-  if (openFilterBtn) {
-    openFilterBtn.addEventListener("click", () => { hapticLight(); renderFilterModal(); showPage("filter"); });
+  function updateDropdownLabels() {
+  const catLabel = document.getElementById("categoryBtnLabel");
+  const sortLabel = document.getElementById("sortBtnLabel");
+  if (catLabel) catLabel.textContent = currentFilter === "Все категории" ? "Категория" : currentFilter;
+  if (sortLabel) {
+    const sortMap = { default: "Сортировка", cheap: "Дешевле", expensive: "Дороже" };
+    sortLabel.textContent = sortMap[currentSort] || "Сортировка";
   }
+}
+
+function closAllDropdowns() {
+  const cd = document.getElementById("categoryDropdown");
+  const sd = document.getElementById("sortDropdown");
+  if (cd) cd.style.display = "none";
+  if (sd) sd.style.display = "none";
+}
+
+document.getElementById("resetFiltersMainBtn")?.addEventListener("click", () => {
+  hapticLight();
+  searchQuery = "";
+  currentFilter = "Все категории";
+  currentSort = "default";
+  const inp = document.getElementById("searchInput");
+  if (inp) inp.value = "";
+  updateDropdownLabels();
+  closAllDropdowns();
+  renderCatalog();
+});
+
+document.getElementById("categoryDropdownBtn")?.addEventListener("click", (e) => {
+  hapticLight();
+  e.stopPropagation();
+  const sd = document.getElementById("sortDropdown");
+  if (sd) sd.style.display = "none";
+  const dd = document.getElementById("categoryDropdown");
+  if (!dd) return;
+  if (dd.style.display === "block") { dd.style.display = "none"; return; }
+  const cats = ["Все категории", ...new Set(products.filter(p => p.visible).map(p => p.category))];
+  dd.innerHTML = cats.map(cat => {
+    const isSelected = cat === currentFilter;
+    const label = cat === "Все категории" ? "Все категории" : cat;
+    return `<div class="dropdown-item${isSelected ? ' selected' : ''}" data-cat="${cat}">${label}${isSelected ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4cb4e9" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>' : ''}</div>`;
+  }).join("");
+  dd.querySelectorAll(".dropdown-item").forEach(item => {
+    item.addEventListener("click", () => {
+      hapticLight();
+      currentFilter = item.dataset.cat;
+      updateDropdownLabels();
+      dd.style.display = "none";
+      renderCatalog();
+    });
+  });
+  dd.style.display = "block";
+});
+
+document.getElementById("sortDropdownBtn")?.addEventListener("click", (e) => {
+  hapticLight();
+  e.stopPropagation();
+  const cd = document.getElementById("categoryDropdown");
+  if (cd) cd.style.display = "none";
+  const dd = document.getElementById("sortDropdown");
+  if (!dd) return;
+  if (dd.style.display === "block") { dd.style.display = "none"; return; }
+  const sorts = [
+    { value: "default", label: "По умолчанию" },
+    { value: "cheap", label: "Сначала дешевые" },
+    { value: "expensive", label: "Сначала дорогие" },
+  ];
+  dd.innerHTML = sorts.map(s => {
+    const isSelected = s.value === currentSort;
+    return `<div class="dropdown-item${isSelected ? ' selected' : ''}" data-sort="${s.value}">${s.label}${isSelected ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4cb4e9" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>' : ''}</div>`;
+  }).join("");
+  dd.querySelectorAll(".dropdown-item").forEach(item => {
+    item.addEventListener("click", () => {
+      hapticLight();
+      currentSort = item.dataset.sort;
+      updateDropdownLabels();
+      dd.style.display = "none";
+      renderCatalog();
+    });
+  });
+  dd.style.display = "block";
+});
+
+document.addEventListener("click", () => closAllDropdowns());
+
   const searchInputEl = document.getElementById("searchInput");
   if (searchInputEl) {
     searchInputEl.addEventListener("input", (e) => { searchQuery = e.target.value; renderCatalog(); });

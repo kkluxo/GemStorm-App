@@ -397,20 +397,12 @@
 <script>
 ['log','warn','error','info','debug','table','trace'].forEach(m => console[m] = () => {});
 
-if (!window.Telegram?.WebApp?.initData) {
+(async function() {
+  if (!window.Telegram?.WebApp?.initData) {
   document.body.innerHTML = ''; // или любая заглушка
   return;
 }
-
-(async function() {
-
-  // =============================================
-  // ШАГ 1: Проверяем что открыто в Telegram
-  // =============================================
-  // =============================================
-// ПРОВЕРКА АДМИНА (упрощенная)
-// =============================================
-const tg = window.Telegram?.WebApp;
+  const tg = window.Telegram?.WebApp;
 const tgUser = tg?.initDataUnsafe?.user;
 
 // Проверяем ID

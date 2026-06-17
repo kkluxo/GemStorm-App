@@ -2998,46 +2998,93 @@ function buildItemsHtml(itemsArr) {
           `;
 
           // Фиксированный блок с кнопкой отправки и поддержкой
-          const fixedBlock = document.getElementById("cartCheckoutFixed");
-          fixedBlock.style.display = "block";
-          fixedBlock.innerHTML = `
-            <div class="checkout-card">
-              <div class="checkout-buttons-row">
-                <button class="checkout-button" id="reviewSubmitBtnFixed">Отправить отзыв</button>
-                <button class="promo-btn" onclick="hapticLight();window.open('https://t.me/GemStormHelp','_blank')">
-                  <img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" style="width:24px;height:24px;">
-                </button>
-              </div>
-            </div>
-          `;
+          // Фиксированный блок с кнопкой отправки и поддержкой
+const fixedBlock = document.getElementById("cartCheckoutFixed");
+fixedBlock.style.display = "block";
+fixedBlock.innerHTML = `
+  <div class="checkout-card">
+    <div class="checkout-buttons-row">
+      <button class="checkout-button" id="reviewSubmitBtnFixed">Отправить отзыв</button>
+      <button class="promo-btn" onclick="hapticLight();window.open('https://t.me/GemStormHelp','_blank')">
+        <img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" style="width:24px;height:24px;">
+      </button>
+    </div>
+  </div>
+`;
 
-          setTimeout(() => {
-  const textarea = document.getElementById('reviewTextarea');
-  const counter = document.getElementById('reviewCharCount');
-  const previewText = document.getElementById('previewText');
-  const previewOrderBadge = document.getElementById('previewOrderBadge');
-  const previewItemsCard = document.getElementById('previewItemsCard');
-  const orderSelect = document.getElementById('reviewOrderSelect');
-
-  textarea?.addEventListener('input', () => {
-    let val = textarea.value.replace(/[\r\n]/g, '');
-    if (val !== textarea.value) textarea.value = val;
-    if (counter) counter.textContent = `${val.length}/70`;
-    if (previewText) previewText.textContent = val.trim() || '...';
-  });
-
-  textarea?.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') e.preventDefault();
-  });
-
-  orderSelect?.addEventListener('change', () => {
-    const selected = orderSelect.options[orderSelect.selectedIndex];
-    const num = selected?.dataset.num || '';
-    const orderId = orderSelect.value;
-    if (previewOrderBadge) previewOrderBadge.textContent = `#${num}`;
-    if (previewItemsCard) previewItemsCard.innerHTML = buildItemsHtml(orderItemsMap[orderId]);
-  });
-}, 0);
+// НОВЫЙ ОБРАБОТЧИК ДЛЯ КНОПКИ ОТПРАВКИ
+setTimeout(() => {
+  const submitBtn = document.getElementById("reviewSubmitBtnFixed");
+  if (submitBtn) {
+    submitBtn.addEventListener("click", function() {
+      hapticLight();
+      
+      const orderSelect = document.getElementById("reviewOrderSelect");
+      const textarea = document.getElementById("reviewTextarea");
+      
+      if (!orderSelect || !textarea) {
+        alert("Ошибка: не найдены поля формы");
+        return;
+      }
+      
+      const orderId = orderSelect.value;
+      const text = textarea.value.trim();
+      
+      if (!text) {
+        alert("Пожалуйста, напишите текст отзыва");
+        return;
+      }
+      
+      if (text.length < 10) {
+        alert("Отзыв должен содержать минимум 10 символов");
+        return;
+      }
+      
+      const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+      if (!tgUser) {
+        alert("Ошибка: пользователь не авторизован");
+        return;
+      }
+      
+      // Отправка отзыва
+      fetch(`https://gemstorm.up.railway.app/api/user-orders?userId=${tgUser.id}`)
+        .then(r => r.json())
+        .then(orders => {
+          const order = orders.find(o => String(o.id) === String(orderId));
+          if (!order) {
+            alert("Заказ не найден");
+            return;
+          }
+          
+          return fetch('https://gemstorm.up.railway.app/api/review', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              orderId: orderId,
+              userId: tgUser.id,
+              userName: tgUser.first_name || 'Пользователь',
+              photoUrl: tgUser.photo_url || '',
+              text: text,
+              orderNumber: order.order_number,
+              orderItems: order.items || '[]'
+            })
+          });
+        })
+        .then(response => {
+          if (response && response.ok) {
+            alert("Спасибо за отзыв! 🙌");
+            showPage("reviews");
+          } else if (response) {
+            alert("Ошибка при отправке отзыва. Попробуйте позже.");
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Ошибка соединения. Попробуйте позже.");
+        });
+    });
+  }
+}, 100);
      });
       });
     } catch(e) {

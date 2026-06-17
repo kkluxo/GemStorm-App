@@ -2977,7 +2977,6 @@
     `;
   }
 
-  // Загружаем заказы
   fetch(`https://gemstorm.up.railway.app/api/user-orders?userId=${userId}`)
     .then(r => r.json())
     .then(ordersRes => {
@@ -3002,14 +3001,12 @@
             `<option value="${o.id}" data-num="${o.order_number}">Заказ #${o.order_number}</option>`
           ).join('');
 
-          // Обновляем превью при выборе заказа
           orderSelect.addEventListener('change', function() {
             const selected = this.options[this.selectedIndex];
             const badge = document.getElementById('previewOrderBadge');
             if (badge) badge.textContent = `#${selected?.dataset.num || ''}`;
           });
 
-          // Триггерим первое обновление
           orderSelect.dispatchEvent(new Event('change'));
         });
     })
@@ -3020,7 +3017,6 @@
       }
     });
 
-  // Обработчик текста и кнопки отправки
   setTimeout(() => {
     const textarea = document.getElementById('reviewTextarea');
     const counter = document.getElementById('reviewCharCount');
@@ -3039,7 +3035,6 @@
       });
     }
 
-    // Кнопка отправки
     const submitBtn = document.getElementById('reviewSubmitBtnFixed');
     if (submitBtn) {
       submitBtn.addEventListener('click', function() {
@@ -3058,14 +3053,12 @@
           return;
         }
 
-        // Отправляем отзыв на сервер
         const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
         if (!tgUser) {
           alert('Ошибка: пользователь не авторизован');
           return;
         }
 
-        // Находим заказ
         fetch(`https://gemstorm.up.railway.app/api/user-orders?userId=${tgUser.id}`)
           .then(r => r.json())
           .then(orders => {
@@ -3104,7 +3097,7 @@
       });
     }
   }, 100);
-}
+}  // <-- ТОЛЬКО ОДНА ЗАКРЫВАЮЩАЯ СКОБКА!
   
   function renderGiftsPage() {
     const container = document.getElementById("giftsList");

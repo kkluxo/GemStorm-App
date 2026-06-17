@@ -61,13 +61,13 @@ app.use(express.static('.'));
 // =============================================
 // ЗАЩИТА ОТ БРУТФОРСА (по IP)
 // =============================================
-const loginAttempts = new Map(); // IP -> { count, firstAttempt, lastAttempt, blockedUntil }
+const loginAttempts = new Map();
 
 // Очистка старых записей каждые 10 минут
 setInterval(() => {
     const now = Date.now();
     for (const [ip, data] of loginAttempts.entries()) {
-        if (now - data.lastAttempt > 30 * 60 * 1000) { // 30 минут бездействия
+        if (now - data.lastAttempt > 30 * 60 * 1000) {
             loginAttempts.delete(ip);
         }
     }
@@ -82,26 +82,22 @@ function checkRateLimit(ip) {
         return { allowed: true, remaining: 4 };
     }
     
-    // Проверка блокировки
     if (data.blockedUntil && now < data.blockedUntil) {
         const remainingMinutes = Math.ceil((data.blockedUntil - now) / 60000);
         return { allowed: false, blockedUntil: data.blockedUntil, remainingMinutes };
     }
     
-    // Сброс счётчика через 15 минут
     if (now - data.firstAttempt > 15 * 60 * 1000) {
         loginAttempts.set(ip, { count: 1, firstAttempt: now, lastAttempt: now, blockedUntil: null });
         return { allowed: true, remaining: 4 };
     }
     
-    // 5 попыток = блокировка на 30 минут
     if (data.count >= 5) {
         const blockedUntil = now + 30 * 60 * 1000;
         loginAttempts.set(ip, { ...data, blockedUntil, lastAttempt: now });
         return { allowed: false, blockedUntil, remainingMinutes: 30 };
     }
     
-    // Увеличиваем счётчик
     data.count++;
     data.lastAttempt = now;
     loginAttempts.set(ip, data);
@@ -240,6 +236,28 @@ async function notifyAdminReview(bot, userName, userUsername, text) {
     });
 }
 
+// Уведомление о новом обращении
+async function notifyAdminTicket(bot, ticket) {
+    const usernameText = ticket.user_username ? `@${ticket.user_username}` : (ticket.user_name || 'Неизвестен');
+    const orderText = ticket.order_id ? `Заказ #${ticket.order_id}` : 'Не указан';
+
+    const message =
+        `${INVISIBLE_LINK}<b>🆕 Новое обращение от ${usernameText}</b>\n\n` +
+        `<b>Причина:</b> ${ticket.reason || 'Другая проблема'}\n` +
+        `<b>Заказ:</b> ${orderText}\n\n` +
+        `<b>Текст:</b>\n${ticket.message}`;
+
+    await bot.telegram.sendMessage(ADMIN_ID, message, {
+        parse_mode: 'HTML',
+        ...NO_FORWARD,
+        reply_markup: {
+            inline_keyboard: [[
+                { text: 'Открыть обращения', web_app: { url: APP_URL + '?tab=tickets' } }
+            ]]
+        }
+    });
+}
+
 // =============================================
 // УВЕДОМЛЕНИЯ ПОЛЬЗОВАТЕЛЮ
 // =============================================
@@ -320,8 +338,6 @@ async function initDB() {
                 status_code TEXT DEFAULT 'pending',
                 verification_code TEXT,
                 user_username TEXT,
-                promo_item_name TEXT,
-                promo_item_category TEXT,
                 user_msg_id BIGINT,
                 admin_msg_id BIGINT
             )
@@ -331,8 +347,6 @@ async function initDB() {
         const colDefs = [
             'user_username TEXT',
             'verification_code TEXT',
-            'promo_item_name TEXT',
-            'promo_item_category TEXT',
             'user_msg_id BIGINT',
             'admin_msg_id BIGINT'
         ];
@@ -395,6 +409,22 @@ async function initDB() {
                 created_at TIMESTAMP DEFAULT NOW()
             )
         `);
+
+        // Новая таблица для обращений
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS tickets (
+                id SERIAL PRIMARY KEY,
+                user_id TEXT,
+                user_name TEXT,
+                user_username TEXT,
+                reason TEXT,
+                order_id TEXT,
+                message TEXT,
+                resolved BOOLEAN DEFAULT FALSE,
+                created_at TIMESTAMP DEFAULT NOW()
+            )
+        `);
+        console.log('Таблица tickets готова');
 
         console.log('Все таблицы готовы');
 
@@ -582,7 +612,72 @@ app.delete('/api/reviews/:id', adminAuth, async (req, res) => {
     }
 });
 
+// =============================================
+// ЭНДПОИНТЫ ДЛЯ ОБРАЩЕНИЙ
+// =============================================
+
+// Получение всех обращений (админ)
+app.get('/api/tickets', adminAuth, async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM tickets ORDER BY created_at DESC');
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Создание нового обращения (пользователь)
+app.post('/api/ticket', async (req, res) => {
+    try {
+        const { userId, userName, userUsername, reason, orderId, message } = req.body;
+        
+        if (!message || !message.trim()) {
+            return res.status(400).json({ error: 'Сообщение обязательно' });
+        }
+        if (!userUsername) {
+            return res.status(400).json({ error: 'Укажите @username' });
+        }
+
+        const result = await pool.query(
+            `INSERT INTO tickets (user_id, user_name, user_username, reason, order_id, message)
+             VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+            [userId || null, userName || 'Пользователь', userUsername, reason || 'Другая проблема', orderId || null, message.trim()]
+        );
+
+        const ticket = result.rows[0];
+
+        // Уведомление админу
+        const bot = getBot();
+        if (bot) {
+            try {
+                await notifyAdminTicket(bot, ticket);
+            } catch (e) {
+                console.error('Ошибка уведомления об обращении:', e.message);
+            }
+        }
+
+        res.json({ success: true, ticketId: ticket.id });
+    } catch (err) {
+        console.error('Ошибка создания обращения:', err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Закрыть обращение (админ)
+app.post('/api/ticket/resolve', adminAuth, async (req, res) => {
+    try {
+        const { ticketId } = req.body;
+        await pool.query('UPDATE tickets SET resolved = TRUE WHERE id = $1', [ticketId]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// =============================================
 // ПУБЛИЧНЫЕ ЭНДПОИНТЫ (без авторизации)
+// =============================================
+
 app.get('/api/status', async (req, res) => {
     try {
         const result = await pool.query('SELECT COUNT(*) as count FROM orders');
@@ -611,14 +706,13 @@ app.post('/api/order', async (req, res) => {
         const result = await pool.query(
             `INSERT INTO orders (
                 order_number, date, time, timestamp, items, total, promo,
-                promo_discount, payment_method, sender_name, email, user_id, user_name, user_username,
-                promo_item_name, promo_item_category
-            ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16) RETURNING *`,
+                promo_discount, payment_method, sender_name, email, user_id, user_name, user_username
+            ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING *`,
             [
                 nextNumber, o.date, o.time, o.timestamp, JSON.stringify(o.items), o.total,
                 o.promo || null, o.promo_discount || 0, o.payment_method || null,
                 o.sender_name || null, o.email || null, o.user_id || null, o.user_name || null,
-                o.user_username || null, o.promo_item_name || null, o.promo_item_category || null
+                o.user_username || null
             ]
         );
 
@@ -991,56 +1085,48 @@ app.post('/api/reviews', async (req, res) => {
 });
 
 // =============================================
-// ЗАПУСК
+// АДМИН ВЕРИФИКАЦИЯ TELEGRAM
 // =============================================
 app.post('/api/admin/verify-telegram', async (req, res) => {
   try {
     const { initData } = req.body;
     if (!initData) return res.status(400).json({ success: false });
 
-    // Проверяем подпись initData через секретный ключ бота
     const crypto = require('crypto');
     const params = new URLSearchParams(initData);
     const hash = params.get('hash');
     params.delete('hash');
 
-    // Собираем строку для проверки
     const dataCheckString = Array.from(params.entries())
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([k, v]) => `${k}=${v}`)
       .join('\n');
 
-    // Генерируем секретный ключ из токена бота
     const secretKey = crypto
       .createHmac('sha256', 'WebAppData')
       .update(BOT_TOKEN)
       .digest();
 
-    // Вычисляем ожидаемый хеш
     const expectedHash = crypto
       .createHmac('sha256', secretKey)
       .update(dataCheckString)
       .digest('hex');
 
-    // Сравниваем хеши
     if (hash !== expectedHash) {
       return res.status(403).json({ success: false, reason: 'invalid_signature' });
     }
 
-    // Проверяем что данные свежие (не старше 24 часов)
     const authDate = parseInt(params.get('auth_date'));
     const now = Math.floor(Date.now() / 1000);
     if (now - authDate > 86400) {
       return res.status(403).json({ success: false, reason: 'expired' });
     }
 
-    // Проверяем ID пользователя
     const user = JSON.parse(params.get('user') || '{}');
     if (user.id !== 7509324385) {
       return res.status(403).json({ success: false, reason: 'not_admin' });
     }
 
-    // Всё ок — генерируем сессионный токен
     const sessionToken = crypto.randomBytes(32).toString('hex');
     adminSessions.set(sessionToken, { createdAt: Date.now(), userId: user.id });
 
@@ -1052,6 +1138,9 @@ app.post('/api/admin/verify-telegram', async (req, res) => {
   }
 });
 
+// =============================================
+// ЗАПУСК
+// =============================================
 initDB().then(async () => {
     try {
         await pool.query(`

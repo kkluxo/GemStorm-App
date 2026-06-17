@@ -1999,6 +1999,11 @@
 .dropdown-item:last-child { border-bottom: none; }
 .dropdown-item.selected { color: #4cb4e9; }
 .dropdown-item:active { opacity: 0.7; }
+  
+  #categorySelect option, #sortSelect option {
+  background: #222225;
+  color: white;
+}
   </style>
 </head>
 <body>
@@ -2012,23 +2017,25 @@
 </div>
 
 <div id="catalog-page" class="page">
-  <div class="search-section">
+  <div class="search-section" style="margin-bottom:11px;">
   <div class="search-bar">
     <img class="search-icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'%3E%3C/path%3E%3C/svg%3E">
     <input type="text" class="search-input" id="searchInput" placeholder="Найти товар по названию">
   </div>
-  <div class="filter-btn" id="resetFiltersMainBtn" style="background:#2a2a2d;border-color:#3a3a3e;">
+  <div class="filter-btn" id="resetFiltersMainBtn" style="background:#212124;border-color:#2B2B2D;">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
   </div>
 </div>
-<div style="display:flex;gap:10px;margin-bottom:14px;">
-  <div style="position:relative;flex:1;">
-    <button id="categoryDropdownBtn" style="width:100%;height:46px;background:#212124;border:1px solid #2B2B2D;border-radius:34px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;cursor:pointer;color:white;font-size:16px;font-weight:500;">
-      <span id="categoryBtnLabel">Категория</span>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-    </button>
-    <div id="categoryDropdown" style="display:none;position:absolute;top:52px;left:0;right:0;background:#222225;border:1px solid #2B2B2D;border-radius:20px;z-index:200;overflow:hidden;"></div>
-  </div>
+<div style="display:flex;gap:7px;margin-bottom:11px;">
+  <select id="categorySelect" style="flex:1;height:46px;background:#212124;border:1px solid #2B2B2D;border-radius:34px;padding:0 40px 0 16px;color:white;font-size:18px;font-weight:500;outline:none;cursor:pointer;appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 14px center;background-size:20px;">
+    <option value="all">Категория</option>
+  </select>
+  <select id="sortSelect" style="flex:1;height:46px;background:#212124;border:1px solid #2B2B2D;border-radius:34px;padding:0 40px 0 16px;color:white;font-size:18px;font-weight:500;outline:none;cursor:pointer;appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 14px center;background-size:20px;">
+    <option value="default">Сортировка</option>
+    <option value="cheap">Сначала дешевые</option>
+    <option value="expensive">Сначала дорогие</option>
+  </select>
+</div>
   <div style="position:relative;flex:1;">
     <button id="sortDropdownBtn" style="width:100%;height:46px;background:#212124;border:1px solid #2B2B2D;border-radius:34px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;cursor:pointer;color:white;font-size:16px;font-weight:500;">
       <span id="sortBtnLabel">Сортировка</span>
@@ -3458,7 +3465,7 @@
     const targetPage = document.getElementById(pageId + "-page");
     if (targetPage) targetPage.classList.add("active-page");
     const checkoutBlock = document.getElementById("cartCheckoutFixed");
-    if (pageId === "catalog") { renderCatalog(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
+    if (pageId === "catalog") { renderCatalog(); initCategorySelect(); initSortSelect(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
     if (pageId === "cart") { renderCartPage(); }
     if (pageId === "orders") { renderOrdersPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
     if (pageId === "profile") { renderProfilePage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
@@ -3544,6 +3551,7 @@
     }
     const lastPage = getLastPage();
     showPage(lastPage);
+    if (lastPage === "catalog") { initCategorySelect(); initSortSelect(); }
     const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
     if (tgUser?.photo_url) {
       const avatar = document.getElementById("profileMenuAvatar");
@@ -3598,20 +3606,41 @@
   });
 
   function updateDropdownLabels() {
-  const catLabel = document.getElementById("categoryBtnLabel");
-  const sortLabel = document.getElementById("sortBtnLabel");
-  if (catLabel) catLabel.textContent = currentFilter === "Все категории" ? "Категория" : currentFilter;
-  if (sortLabel) {
-    const sortMap = { default: "Сортировка", cheap: "Дешевле", expensive: "Дороже" };
-    sortLabel.textContent = sortMap[currentSort] || "Сортировка";
+  const catSelect = document.getElementById("categorySelect");
+  const sortSelect = document.getElementById("sortSelect");
+  if (catSelect) {
+    for (const opt of catSelect.options) {
+      if (opt.value === (currentFilter === "Все категории" ? "all" : currentFilter)) {
+        catSelect.value = opt.value;
+        break;
+      }
+    }
   }
+  if (sortSelect) sortSelect.value = currentSort;
 }
 
-function closAllDropdowns() {
-  const cd = document.getElementById("categoryDropdown");
-  const sd = document.getElementById("sortDropdown");
-  if (cd) cd.style.display = "none";
-  if (sd) sd.style.display = "none";
+function initCategorySelect() {
+  const catSelect = document.getElementById("categorySelect");
+  if (!catSelect) return;
+  const cats = [...new Set(products.filter(p => p.visible).map(p => p.category))];
+  catSelect.innerHTML = `<option value="all">Категория</option>` + cats.map(c => `<option value="${c}">${c}</option>`).join("");
+  catSelect.value = currentFilter === "Все категории" ? "all" : currentFilter;
+  catSelect.addEventListener("change", function() {
+    hapticLight();
+    currentFilter = this.value === "all" ? "Все категории" : this.value;
+    renderCatalog();
+  });
+}
+
+function initSortSelect() {
+  const sortSelect = document.getElementById("sortSelect");
+  if (!sortSelect) return;
+  sortSelect.value = currentSort;
+  sortSelect.addEventListener("change", function() {
+    hapticLight();
+    currentSort = this.value;
+    renderCatalog();
+  });
 }
 
 document.getElementById("resetFiltersMainBtn")?.addEventListener("click", () => {
@@ -3621,67 +3650,12 @@ document.getElementById("resetFiltersMainBtn")?.addEventListener("click", () => 
   currentSort = "default";
   const inp = document.getElementById("searchInput");
   if (inp) inp.value = "";
-  updateDropdownLabels();
-  closAllDropdowns();
+  const catSelect = document.getElementById("categorySelect");
+  const sortSelect = document.getElementById("sortSelect");
+  if (catSelect) catSelect.value = "all";
+  if (sortSelect) sortSelect.value = "default";
   renderCatalog();
 });
-
-document.getElementById("categoryDropdownBtn")?.addEventListener("click", (e) => {
-  hapticLight();
-  e.stopPropagation();
-  const sd = document.getElementById("sortDropdown");
-  if (sd) sd.style.display = "none";
-  const dd = document.getElementById("categoryDropdown");
-  if (!dd) return;
-  if (dd.style.display === "block") { dd.style.display = "none"; return; }
-  const cats = ["Все категории", ...new Set(products.filter(p => p.visible).map(p => p.category))];
-  dd.innerHTML = cats.map(cat => {
-    const isSelected = cat === currentFilter;
-    const label = cat === "Все категории" ? "Все категории" : cat;
-    return `<div class="dropdown-item${isSelected ? ' selected' : ''}" data-cat="${cat}">${label}${isSelected ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4cb4e9" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>' : ''}</div>`;
-  }).join("");
-  dd.querySelectorAll(".dropdown-item").forEach(item => {
-    item.addEventListener("click", () => {
-      hapticLight();
-      currentFilter = item.dataset.cat;
-      updateDropdownLabels();
-      dd.style.display = "none";
-      renderCatalog();
-    });
-  });
-  dd.style.display = "block";
-});
-
-document.getElementById("sortDropdownBtn")?.addEventListener("click", (e) => {
-  hapticLight();
-  e.stopPropagation();
-  const cd = document.getElementById("categoryDropdown");
-  if (cd) cd.style.display = "none";
-  const dd = document.getElementById("sortDropdown");
-  if (!dd) return;
-  if (dd.style.display === "block") { dd.style.display = "none"; return; }
-  const sorts = [
-    { value: "default", label: "По умолчанию" },
-    { value: "cheap", label: "Сначала дешевые" },
-    { value: "expensive", label: "Сначала дорогие" },
-  ];
-  dd.innerHTML = sorts.map(s => {
-    const isSelected = s.value === currentSort;
-    return `<div class="dropdown-item${isSelected ? ' selected' : ''}" data-sort="${s.value}">${s.label}${isSelected ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4cb4e9" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>' : ''}</div>`;
-  }).join("");
-  dd.querySelectorAll(".dropdown-item").forEach(item => {
-    item.addEventListener("click", () => {
-      hapticLight();
-      currentSort = item.dataset.sort;
-      updateDropdownLabels();
-      dd.style.display = "none";
-      renderCatalog();
-    });
-  });
-  dd.style.display = "block";
-});
-
-document.addEventListener("click", () => closAllDropdowns());
 
   const searchInputEl = document.getElementById("searchInput");
   if (searchInputEl) {

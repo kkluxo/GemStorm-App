@@ -395,6 +395,13 @@
 </div>
 
 <script>
+['log','warn','error','info','debug','table','trace'].forEach(m => console[m] = () => {});
+
+if (!window.Telegram?.WebApp?.initData) {
+  document.body.innerHTML = ''; // или любая заглушка
+  return;
+}
+
 (async function() {
 
   // =============================================

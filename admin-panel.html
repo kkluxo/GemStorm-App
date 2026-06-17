@@ -309,13 +309,7 @@
     }
     .settings-title { font-size: 18px; font-weight: 600; color: white; margin-bottom: 14px; }
 
-    .ticket-reply-textarea {
-      width: 100%; background: #303032; border: 1px solid rgba(58,58,62,0.8);
-      border-radius: 34px; padding: 14px 16px; color: white; font-size: 17px;
-      font-family: inherit; outline: none; resize: none; min-height: 100px;
-    }
-    .ticket-reply-textarea::placeholder { color: #8e8e93; }
-
+    /* Загрузчик */
     .loader-overlay {
       position: fixed; inset: 0; background: #121214; z-index: 9999;
       display: flex; align-items: center; justify-content: center; flex-direction: column;
@@ -372,12 +366,6 @@
 <div id="tickets-page" class="page">
   <div id="ticketsHeader"></div>
   <div id="ticketsContent"></div>
-</div>
-
-<!-- Детальная страница обращения -->
-<div id="ticket-detail-page" class="page">
-  <div id="ticketDetailHeader"></div>
-  <div id="ticketDetailContent"></div>
 </div>
 
 <div id="bottomNav" style="position:fixed;bottom:18px;left:18px;right:18px;z-index:1001;max-width:600px;margin:0 auto;width:calc(100% - 36px);display:flex;gap:10px;align-items:center;">
@@ -825,124 +813,35 @@
         return;
       }
 
-      const statusColorMap = { sent:'#4cb4e9', processing:'#eab308', cancelled:'#ef4444', resolved:'#22c55e' };
-      const statusBgMap = { sent:'rgba(76,180,233,0.1)', processing:'rgba(234,179,8,0.1)', cancelled:'rgba(239,68,68,0.1)', resolved:'rgba(34,197,94,0.1)' };
-      const statusTextMap = { sent:'Отправлено', processing:'В процессе', cancelled:'Отменено', resolved:'Решено' };
-
       container.innerHTML = tickets.map(t => {
         const dt = new Date(t.created_at);
-        const dateStr = dt.toLocaleString('ru-RU', { hour:'2-digit', minute:'2-digit', day:'2-digit', month:'2-digit', year:'numeric' });
-        const sColor = statusColorMap[t.status] || '#4cb4e9';
-        const sBg = statusBgMap[t.status] || 'rgba(76,180,233,0.1)';
-        const sText = statusTextMap[t.status] || 'Отправлено';
-        return `<div class="order-wrapper" data-ticket-id="${t.id}" style="cursor:pointer;margin-bottom:14px;">
+        const dateStr = dt.toLocaleString('ru-RU', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' });
+        return `<div class="order-wrapper">
           <div class="order-main-card">
             <div class="order-header">
-              <span class="order-id">Обращение #${escapeHtml(t.ticket_number || t.id)}</span>
-              <span class="order-card-status" style="color:${sColor};background:${sBg};">${sText}</span>
+              <span class="order-id">${escapeHtml(t.user_username || t.user_name || 'Пользователь')}</span>
+              <span class="order-card-status status-pending-text status-pending-bg">${escapeHtml(t.reason || 'Другая проблема')}</span>
             </div>
-            <div class="order-date">${dateStr} <span style="float:right;color:#9e9e9e;font-size:13px;" id="refreshTickets">⟳</span></div>
-            <div class="order-total" style="font-size:16px;color:${sColor};">${sText === 'Отправлено' ? 'Обращение отправлено' : sText === 'В процессе' ? 'Обращение в процессе' : sText === 'Отменено' ? 'Обращение отменено' : 'Обращение решено'}</div>
+            <div class="order-date">${dateStr}</div>
+            <div class="order-total" style="font-size:15px;font-weight:400;color:#cbcdcd;">${escapeHtml(t.message)}</div>
+            ${t.order_id ? `<div style="font-size:14px;color:#9e9e9e;margin-top:6px;">Заказ #${t.order_id}</div>` : ''}
           </div>
           <div class="order-items-card">
             <div class="order-item-row">
-              <span class="order-item-name">${escapeHtml(t.reason || 'Другая проблема')}</span>
-              <span class="order-item-price">${t.order_id ? '#' + escapeHtml(String(t.order_id)) : '—'}</span>
+              <span class="order-item-name">Статус</span>
+              <span class="order-item-price" style="color:#4cb4e9;">${t.resolved ? '✅ Закрыто' : '⏳ Ожидает'}</span>
+            </div>
+            <div class="order-item-row">
+              <span class="order-item-name">ID пользователя</span>
+              <span class="order-item-price">${t.user_id || '—'}</span>
             </div>
           </div>
         </div>`;
       }).join('');
 
-      container.querySelectorAll('.order-wrapper[data-ticket-id]').forEach(card => {
-        card.addEventListener('click', () => {
-          hapticLight();
-          const tid = card.dataset.ticketId;
-          const ticket = tickets.find(t => String(t.id) === String(tid));
-          if (ticket) showTicketDetail(ticket);
-        });
-      });
-
     } catch(e) {
       container.innerHTML = `<div class="empty-state">Ошибка загрузки: ${e.message}</div>`;
     }
-  }
-
-  async function showTicketDetail(ticket) {
-    const headerContainer = document.getElementById('ticketDetailHeader');
-    if (headerContainer) headerContainer.innerHTML = renderPageHeader(
-      'https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png',
-      `Обращение #${ticket.ticket_number || ticket.id}`
-    );
-
-    const bottomNav = document.getElementById('bottomNav');
-    if (bottomNav) bottomNav.style.display = 'none';
-
-    const statusColorMap = { sent:'#4cb4e9', processing:'#eab308', cancelled:'#ef4444', resolved:'#22c55e' };
-    const statusTextMap = { sent:'Отправлено', processing:'В процессе', cancelled:'Отменено', resolved:'Решено' };
-    const sColor = statusColorMap[ticket.status] || '#4cb4e9';
-    const sText = statusTextMap[ticket.status] || 'Отправлено';
-
-    const dt = new Date(ticket.created_at);
-    const dateStr = dt.toLocaleString('ru-RU', { hour:'2-digit', minute:'2-digit', day:'2-digit', month:'2-digit', year:'numeric' });
-
-    document.getElementById('ticketDetailContent').innerHTML = `
-      <div class="order-data-card">
-        <div class="order-detail-row"><span class="order-detail-label">Статус</span><span class="order-detail-value" style="color:${sColor};">${sText}</span></div>
-        <div class="order-detail-row"><span class="order-detail-label">Дата</span><span class="order-detail-value">${dateStr}</span></div>
-        <div class="order-detail-row"><span class="order-detail-label">Отправитель</span><span class="order-detail-value">${escapeHtml(ticket.user_username || ticket.user_name || '—')}</span></div>
-        <div class="order-detail-row"><span class="order-detail-label">Причина</span><span class="order-detail-value">${escapeHtml(ticket.reason || '—')}</span></div>
-        <div class="order-detail-row"><span class="order-detail-label">Номер заказа</span><span class="order-detail-value">${ticket.order_id ? '#' + ticket.order_id : '—'}</span></div>
-      </div>
-      <div class="detail-items-card">
-        <div style="font-size:16px;color:#cbcdcd;line-height:1.5;">${escapeHtml(ticket.message || '')}</div>
-      </div>
-      <div class="order-data-card" style="margin-top:14px;">
-        <div style="font-size:18px;font-weight:600;color:#fff;margin-bottom:14px;">Ответ по обращению #${escapeHtml(ticket.ticket_number || String(ticket.id))}</div>
-        <select class="status-select" id="ticketStatusSelect" style="margin-bottom:12px;">
-          <option value="sent" ${ticket.status==='sent'?'selected':''}>Отправлено</option>
-          <option value="processing" ${ticket.status==='processing'?'selected':''}>В процессе</option>
-          <option value="cancelled" ${ticket.status==='cancelled'?'selected':''}>Отменено</option>
-          <option value="resolved" ${ticket.status==='resolved'?'selected':''}>Решено</option>
-        </select>
-        <textarea class="ticket-reply-textarea" id="ticketReplyText" placeholder="Введите ответ (необязательно)...">${escapeHtml(ticket.admin_reply || '')}</textarea>
-        <button class="update-status-btn" id="sendTicketReplyBtn" style="margin-top:12px;width:100%;">Отправить ответ</button>
-      </div>`;
-
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-    document.getElementById('ticket-detail-page').classList.add('active-page');
-    window.Telegram?.WebApp?.BackButton.show();
-    window.scrollTo({ top: 0 });
-
-    setTimeout(() => {
-      document.getElementById('sendTicketReplyBtn')?.addEventListener('click', async () => {
-        const status = document.getElementById('ticketStatusSelect')?.value;
-        const reply = document.getElementById('ticketReplyText')?.value.trim();
-        const statusTextMap = { sent:'Отправлено', processing:'В процессе', cancelled:'Отменено', resolved:'Решено' };
-        hapticMedium();
-        const confirmed = await new Promise(res => {
-          window.Telegram?.WebApp?.showConfirm(
-            `Отправить ответ со статусом "${statusTextMap[status]}"?`,
-            res
-          );
-        });
-        if (!confirmed) return;
-        try {
-          const r = await fetch(`${API}/api/ticket/respond`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getAdminToken()}` },
-            body: JSON.stringify({ ticketId: ticket.id, status, reply })
-          });
-          if (r.ok) {
-            hapticLight();
-            ticket.status = status;
-            ticket.admin_reply = reply;
-            showTicketDetail(ticket);
-          } else {
-            alert('Ошибка отправки');
-          }
-        } catch(e) { alert('Ошибка соединения'); }
-      });
-    }, 0);
   }
 
   async function renderProfilePage() {
@@ -1145,8 +1044,6 @@
           showAdminPage('orders');
         } else if (document.getElementById('tickets-page').classList.contains('active-page')) {
           showAdminPage('profile');
-        } else if (document.getElementById('ticket-detail-page').classList.contains('active-page')) {
-          showAdminPage('tickets');
         } else {
           showAdminPage('orders');
         }
@@ -1168,7 +1065,6 @@
       else if (currentAdminPage === 'reviews') renderReviewsPage();
       else if (currentAdminPage === 'profile') renderProfilePage();
       else if (currentAdminPage === 'tickets') renderTicketsPage();
-      else if (currentAdminPage === 'ticket-detail') { /* ничего, страница детали не обновляется */ }
     } else if (isSupport) {
       hapticLight();
       window.open('https://t.me/GemStormHelp', '_blank');
@@ -1197,8 +1093,6 @@
       showAdminPage('orders');
     } else if (document.getElementById('tickets-page').classList.contains('active-page')) {
       showAdminPage('profile');
-    } else if (document.getElementById('ticket-detail-page').classList.contains('active-page')) {
-      showAdminPage('tickets');
     } else {
       showAdminPage('orders');
     }

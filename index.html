@@ -3039,7 +3039,13 @@ function buildItemsHtml(itemsArr) {
     if (previewItemsCard) previewItemsCard.innerHTML = buildItemsHtml(orderItemsMap[orderId]);
   });
 }, 0);
-
+     });
+      });
+    } catch(e) {
+      container.innerHTML = `<div class="review-empty">Ошибка загрузки заказов</div>`;
+    }
+  }
+  
   function renderGiftsPage() {
     const container = document.getElementById("giftsList");
     if (!container) return;

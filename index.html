@@ -29,18 +29,6 @@
   <link rel="preload" as="image" href="https://storage.botpapa.me/files/ad2b96d0-53bf-11f1-bef9-f1ec7a2c6e45.png">
   <link rel="preload" as="image" href="https://storage.botpapa.me/files/a7996ec0-53c1-11f1-bef9-f1ec7a2c6e45.png">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script>
-    (function() {
-      try {
-        const tg = window.Telegram?.WebApp;
-        const photoUrl = tg?.initDataUnsafe?.user?.photo_url;
-        if (photoUrl) {
-          const img = new Image();
-          img.src = photoUrl;
-        }
-      } catch(e) {}
-    })();
-  </script>
   <meta name="theme-color" content="#121214">
   <title>GemStorm Store</title>
   <style>
@@ -2060,10 +2048,20 @@
 <script>
 ['log','warn','error','info','debug','table','trace'].forEach(m => console[m] = () => {});
 
-if (!window.Telegram?.WebApp?.initData) {
+    (async function() {
+      if (!window.Telegram?.WebApp?.initData) {
   document.body.innerHTML = ''; // или любая заглушка
   return;
 }
+      try {
+        const tg = window.Telegram?.WebApp;
+        const photoUrl = tg?.initDataUnsafe?.user?.photo_url;
+        if (photoUrl) {
+          const img = new Image();
+          img.src = photoUrl;
+        }
+      } catch(e) {}
+    })();
 
   window.addEventListener('load', function() {
     const imagesToPreload = [

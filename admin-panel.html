@@ -400,28 +400,30 @@
   // =============================================
   // ШАГ 1: Проверяем что открыто в Telegram
   // =============================================
-  const tg = window.Telegram?.WebApp;
-  if (!tg || !tg.initData) {
+  // =============================================
+// ПРОВЕРКА АДМИНА (упрощенная)
+// =============================================
+const tg = window.Telegram?.WebApp;
+const tgUser = tg?.initDataUnsafe?.user;
+
+// Проверяем ID
+if (!tgUser || tgUser.id !== 7509324385) {
     document.body.innerHTML = `
-      <div style="color:white;text-align:center;margin-top:40vh;font-size:20px;padding:20px;">
-        Доступ только через Telegram
-      </div>`;
+        <div style="color:white;text-align:center;margin-top:40vh;font-size:20px;padding:20px;">
+            Доступ запрещён
+        </div>`;
     return;
-  }
+}
+
+// Если ID совпадает - даем доступ без проверки подписи
+// (только для отладки! потом вернуть полноценную проверку)
+sessionStorage.setItem('adminSessionToken', 'debug-token');
+const loader = document.getElementById('loaderOverlay');
+if (loader) loader.style.display = 'none';
 
   // =============================================
   // ШАГ 2: Проверяем ID пользователя
-  // =============================================
-  const ADMIN_ID = 7509324385;
-  const tgUser = tg.initDataUnsafe?.user;
-
-  if (!tgUser || tgUser.id !== ADMIN_ID) {
-    document.body.innerHTML = `
-      <div style="color:white;text-align:center;margin-top:40vh;font-size:20px;padding:20px;">
-        Доступ запрещён
-      </div>`;
-    return;
-  }
+  // ============================================
 
   // =============================================
   // ШАГ 3: Проверяем подпись на сервере

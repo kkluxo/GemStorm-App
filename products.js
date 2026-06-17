@@ -134,8 +134,8 @@ function canAddToCart(productId) {
   if (!product) return { allowed: false, reason: "Товар не найден" };
 
   const uniqueCount = Object.keys(cart).length;
-  if (!cart[productId] && uniqueCount >= 6) {
-    return { allowed: false, reason: "В корзину можно добавить не более 6 различных товаров" };
+  if (!cart[productId] && uniqueCount >= 4) {
+    return { allowed: false, reason: "В корзину можно добавить не более 4 различных товаров" };
   }
 
   const currentQty = cart[productId] || 0;

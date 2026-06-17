@@ -308,11 +308,31 @@
       padding: 18px; margin-bottom: 16px;
     }
     .settings-title { font-size: 18px; font-weight: 600; color: white; margin-bottom: 14px; }
+
+    /* Загрузчик */
+    .loader-overlay {
+      position: fixed; inset: 0; background: #121214; z-index: 9999;
+      display: flex; align-items: center; justify-content: center; flex-direction: column;
+      gap: 20px;
+    }
+    .loader-spinner {
+      width: 48px; height: 48px; border: 3px solid #2B2B2D;
+      border-top-color: #4cb4e9; border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loader-text { color: #9e9e9e; font-size: 16px; }
   </style>
 </head>
 <body>
 
-<div id="orders-page" class="page active-page">
+<!-- Загрузчик -->
+<div class="loader-overlay" id="loaderOverlay">
+  <div class="loader-spinner"></div>
+  <div class="loader-text">Проверка доступа...</div>
+</div>
+
+<div id="orders-page" class="page">
   <div id="ordersHeader"></div>
   <div id="ordersList" class="orders-list"><div class="empty-state">Загрузка...</div></div>
 </div>
@@ -340,6 +360,12 @@
 <div id="detail-page" class="page">
   <div id="detailHeader"></div>
   <div id="detailContent"></div>
+</div>
+
+<!-- Обращения (новый раздел) -->
+<div id="tickets-page" class="page">
+  <div id="ticketsHeader"></div>
+  <div id="ticketsContent"></div>
 </div>
 
 <div id="bottomNav" style="position:fixed;bottom:18px;left:18px;right:18px;z-index:1001;max-width:600px;margin:0 auto;width:calc(100% - 36px);display:flex;gap:10px;align-items:center;">
@@ -371,7 +397,9 @@
 <script>
 (async function() {
 
+  // =============================================
   // ШАГ 1: Проверяем что открыто в Telegram
+  // =============================================
   const tg = window.Telegram?.WebApp;
   if (!tg || !tg.initData) {
     document.body.innerHTML = `
@@ -381,7 +409,9 @@
     return;
   }
 
+  // =============================================
   // ШАГ 2: Проверяем ID пользователя
+  // =============================================
   const ADMIN_ID = 7509324385;
   const tgUser = tg.initDataUnsafe?.user;
 
@@ -393,7 +423,10 @@
     return;
   }
 
-  // ШАГ 3: Проверяем подпись на сервере (защита от подделки)
+  // =============================================
+  // ШАГ 3: Проверяем подпись на сервере
+  // =============================================
+  let sessionToken = null;
   try {
     const res = await fetch('https://gemstorm.up.railway.app/api/admin/verify-telegram', {
       method: 'POST',
@@ -405,27 +438,30 @@
     if (!data.success) {
       document.body.innerHTML = `
         <div style="color:white;text-align:center;margin-top:40vh;font-size:20px;padding:20px;">
-          Проверка не пройдена
+          Проверка не пройдена<br><span style="font-size:14px;color:#9e9e9e;">${data.reason || ''}</span>
         </div>`;
       return;
     }
 
-    // Сохраняем sessionToken для дальнейших запросов
-    sessionStorage.setItem('adminSessionToken', data.sessionToken);
+    sessionToken = data.sessionToken;
+    sessionStorage.setItem('adminSessionToken', sessionToken);
 
   } catch(e) {
     document.body.innerHTML = `
       <div style="color:white;text-align:center;margin-top:40vh;font-size:20px;padding:20px;">
-        Ошибка проверки
+        Ошибка проверки<br><span style="font-size:14px;color:#9e9e9e;">${e.message}</span>
       </div>`;
     return;
   }
 
-  // Удаляем старые данные пароля если остались
-  localStorage.removeItem('adminAuth');
-  localStorage.removeItem('adminAuthTime');
+  // Убираем загрузчик
+  const loader = document.getElementById('loaderOverlay');
+  if (loader) loader.style.display = 'none';
 
-  // Дальше весь твой существующий код админки без изменений...
+  // =============================================
+  // ДАЛЬШЕ ВЕСЬ КОД АДМИНКИ
+  // =============================================
+
   function getAdminToken() {
     return sessionStorage.getItem('adminSessionToken') || '';
   }
@@ -485,7 +521,7 @@
     document.getElementById(pageId + '-page')?.classList.add('active-page');
     currentAdminPage = pageId;
 
-    const mainPages = ['orders', 'users', 'reviews', 'profile'];
+    const mainPages = ['orders', 'users', 'reviews', 'profile', 'tickets'];
     if (mainPages.includes(pageId)) {
       document.querySelectorAll('.menu-item').forEach(b => b.classList.remove('active'));
       document.querySelector(`.menu-item[data-page="${pageId}"]`)?.classList.add('active');
@@ -504,6 +540,7 @@
     if (pageId === 'users') { renderUsersPage(); }
     if (pageId === 'reviews') { renderReviewsPage(); }
     if (pageId === 'profile') { renderProfilePage(); }
+    if (pageId === 'tickets') { renderTicketsPage(); }
 
     window.scrollTo({ top: 0 });
   }
@@ -524,7 +561,8 @@
     try {
       const r = await fetch(`${API}/api/orders`, {
         headers: { 'Authorization': `Bearer ${getAdminToken()}` }
-              });
+      });
+      if (!r.ok) throw new Error('Ошибка загрузки');
       allOrders = await r.json();
       if (currentAdminPage === 'orders') renderOrders();
     } catch(e) {
@@ -595,8 +633,6 @@
         <div class="order-detail-row"><span class="order-detail-label">Отправитель</span><span class="order-detail-value">${escapeHtml(order.sender_name || '—')}</span></div>
         <div class="order-detail-row"><span class="order-detail-label">Почта</span><span class="order-detail-value">${escapeHtml(order.email || '—')}</span></div>
         ${order.promo ? `<div class="order-detail-row"><span class="order-detail-label">Промокод</span><span class="order-detail-value">${order.promo} (${order.promo_discount}%)</span></div>` : ''}
-        ${order.promo_item_name ? `<div class="order-detail-row"><span class="order-detail-label">Название</span><span class="order-detail-value">${escapeHtml(order.promo_item_name)}</span></div>` : ''}
-        ${order.promo_item_category ? `<div class="order-detail-row"><span class="order-detail-label">Категория</span><span class="order-detail-value">${escapeHtml(order.promo_item_category)}</span></div>` : ''}
         ${order.verification_code ? `<div class="order-detail-row"><span class="order-detail-label">Код</span><span class="order-detail-value">${escapeHtml(order.verification_code)}</span></div>` : ''}
         <div class="order-detail-row" style="padding-bottom:4px;"><span class="order-detail-label">Сумма заказа</span><span class="order-detail-value">${formatPrice(order.total)}</span></div>
       </div>
@@ -664,7 +700,8 @@
     try {
       const r = await fetch(`${API}/api/users`, {
         headers: { 'Authorization': `Bearer ${getAdminToken()}` }
-              });
+      });
+      if (!r.ok) throw new Error('Ошибка загрузки');
       const data = await r.json();
       const users = Array.isArray(data) ? data : [];
       const activeCount = users.filter(u => parseInt(u.orders_count) > 0).length;
@@ -717,6 +754,7 @@
       const r = await fetch(`${API}/api/reviews`, {
         headers: { 'Authorization': `Bearer ${getAdminToken()}` }
       });
+      if (!r.ok) throw new Error('Ошибка загрузки');
       const list = await r.json();
       if (!list.length) { container.innerHTML = '<div class="review-empty">Отзывов нет</div>'; return; }
 
@@ -758,7 +796,7 @@
               const r = await fetch(`${API}/api/reviews/${reviewId}`, { 
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${getAdminToken()}` }
-                            });
+              });
               if (r.ok) { 
                 hapticLight(); 
                 renderReviewsPage(); 
@@ -769,6 +807,56 @@
       });
     } catch(e) {
       container.innerHTML = '<div class="review-empty">Ошибка загрузки</div>';
+    }
+  }
+
+  // ===== СТРАНИЦА ОБРАЩЕНИЙ (новая) =====
+  async function renderTicketsPage() {
+    const container = document.getElementById('ticketsContent');
+    const headerContainer = document.getElementById('ticketsHeader');
+    if (headerContainer) headerContainer.innerHTML = renderPageHeader('https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png', 'Обращения');
+    
+    if (!container) return;
+    container.innerHTML = '<div class="empty-state">Загрузка...</div>';
+    try {
+      const r = await fetch(`${API}/api/tickets`, {
+        headers: { 'Authorization': `Bearer ${getAdminToken()}` }
+      });
+      if (!r.ok) throw new Error('Ошибка загрузки');
+      const tickets = await r.json();
+      if (!tickets.length) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-title">Нет обращений</div></div>';
+        return;
+      }
+
+      container.innerHTML = tickets.map(t => {
+        const dt = new Date(t.created_at);
+        const dateStr = dt.toLocaleString('ru-RU', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' });
+        return `<div class="order-wrapper">
+          <div class="order-main-card">
+            <div class="order-header">
+              <span class="order-id">${escapeHtml(t.user_username || t.user_name || 'Пользователь')}</span>
+              <span class="order-card-status status-pending-text status-pending-bg">${escapeHtml(t.reason || 'Другая проблема')}</span>
+            </div>
+            <div class="order-date">${dateStr}</div>
+            <div class="order-total" style="font-size:15px;font-weight:400;color:#cbcdcd;">${escapeHtml(t.message)}</div>
+            ${t.order_id ? `<div style="font-size:14px;color:#9e9e9e;margin-top:6px;">Заказ #${t.order_id}</div>` : ''}
+          </div>
+          <div class="order-items-card">
+            <div class="order-item-row">
+              <span class="order-item-name">Статус</span>
+              <span class="order-item-price" style="color:#4cb4e9;">${t.resolved ? '✅ Закрыто' : '⏳ Ожидает'}</span>
+            </div>
+            <div class="order-item-row">
+              <span class="order-item-name">ID пользователя</span>
+              <span class="order-item-price">${t.user_id || '—'}</span>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+
+    } catch(e) {
+      container.innerHTML = `<div class="empty-state">Ошибка загрузки: ${e.message}</div>`;
     }
   }
 
@@ -789,7 +877,7 @@
     try {
       const ru = await fetch(`${API}/api/total-revenue`, {
         headers: { 'Authorization': `Bearer ${getAdminToken()}` }
-              });
+      });
       const data = await ru.json();
       totalRevenue = data.revenue || 0;
     } catch(e) {}
@@ -797,7 +885,7 @@
     try {
       const rs = await fetch(`${API}/api/settings`, {
         headers: { 'Authorization': `Bearer ${getAdminToken()}` }
-              });
+      });
       const s = await rs.json();
       botStatus = s.bot_status || 'open';
     } catch(e) {}
@@ -831,6 +919,14 @@
         <div>
           <div class="subscribe-title">Полная статистика</div>
           <div class="subscribe-text">Получить полную статистику</div>
+        </div>
+        <svg style="width:18px;height:18px;opacity:0.4;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+
+      <div class="subscribe-card" id="goTicketsBtn">
+        <div>
+          <div class="subscribe-title">Обращения пользователей</div>
+          <div class="subscribe-text">Просмотр обращений в поддержку</div>
         </div>
         <svg style="width:18px;height:18px;opacity:0.4;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
       </div>
@@ -895,6 +991,11 @@
         hapticLight();
         showStatsPage();
       });
+
+      document.getElementById('goTicketsBtn')?.addEventListener('click', () => {
+        hapticLight();
+        showAdminPage('tickets');
+      });
     }, 0);
   }
 
@@ -916,12 +1017,10 @@
 
     try {
       const r = await fetch(`${API}/api/stats`, {
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${getAdminToken()}`
-  }
-});
-const s = await r.json();
+        headers: { 'Authorization': `Bearer ${getAdminToken()}` }
+      });
+      if (!r.ok) throw new Error('Ошибка загрузки');
+      const s = await r.json();
       container.innerHTML = `
         <div class="stat-period-card">
           <div class="stat-period-title">За сегодня</div>
@@ -959,6 +1058,8 @@ const s = await r.json();
           showAdminPage('profile');
         } else if (document.getElementById('detail-page').classList.contains('active-page')) {
           showAdminPage('orders');
+        } else if (document.getElementById('tickets-page').classList.contains('active-page')) {
+          showAdminPage('profile');
         } else {
           showAdminPage('orders');
         }
@@ -979,6 +1080,7 @@ const s = await r.json();
       else if (currentAdminPage === 'users') renderUsersPage();
       else if (currentAdminPage === 'reviews') renderReviewsPage();
       else if (currentAdminPage === 'profile') renderProfilePage();
+      else if (currentAdminPage === 'tickets') renderTicketsPage();
     } else if (isSupport) {
       hapticLight();
       window.open('https://t.me/GemStormHelp', '_blank');
@@ -1005,6 +1107,8 @@ const s = await r.json();
       showAdminPage('profile');
     } else if (document.getElementById('detail-page').classList.contains('active-page')) {
       showAdminPage('orders');
+    } else if (document.getElementById('tickets-page').classList.contains('active-page')) {
+      showAdminPage('profile');
     } else {
       showAdminPage('orders');
     }

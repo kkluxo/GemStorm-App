@@ -756,7 +756,7 @@ app.post('/api/order', async (req, res) => {
     }
 });
 
-app.post('/api/update-status', async (req, res) => {
+app.post('/api/update-status', adminAuth, async (req, res) => {
     try {
         const { orderId, status, statusCode } = req.body;
 

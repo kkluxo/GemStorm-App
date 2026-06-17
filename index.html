@@ -2937,7 +2937,17 @@
             .filter(r => String(r.user_id) === String(userId))
             .map(r => String(r.order_id));
           completedOrders = allCompleted.filter(o => !reviewedOrderIds.includes(String(o.id)));
-          
+          const orderItemsMap = {};
+completedOrders.forEach(o => {
+  let arr = [];
+  try { arr = JSON.parse(o.items || '[]'); } catch(e) {}
+  orderItemsMap[o.id] = arr;
+});
+function buildItemsHtml(itemsArr) {
+  if (!itemsArr || !itemsArr.length) return '';
+  return itemsArr.map(i => `<div class="review-item-row"><span class="review-item-name">${escapeHtml(i.name)}</span><span class="review-item-price">${formatPrice(i.price)}</span></div>`).join('');
+}
+
           if (!completedOrders.length) {
             container.innerHTML = `<div class="review-empty">Нет заказов для отзыва</div>`;
             return;
@@ -2970,18 +2980,22 @@
               </div>
             </div>
             <!-- Карточка предпросмотра -->
-            <div class="review-preview-card" id="reviewPreviewCard">
-              <div class="review-preview-header">
-                ${photoUrl ? `<img class="review-preview-avatar" src="${photoUrl}" alt="avatar">` : `<div class="review-preview-avatar" style="background:#303032;display:flex;align-items:center;justify-content:center;font-size:16px;color:#9e9e9e;">👤</div>`}
-                <div>
-                  <div class="review-preview-name">${escapeHtml(nickname)}</div>
-                  <div class="review-preview-date">сейчас</div>
-                </div>
-              </div>
-              <div class="review-preview-text" id="previewText">Ваш отзыв появится здесь...</div>
-              <div class="review-preview-order" id="previewOrder">Заказ #${completedOrders[0]?.order_number || ''}</div>
-            </div>
-          `;
+            <div class="review-card-wrapper" id="reviewPreviewWrapper">
+  <div class="review-card">
+    <div class="review-header">
+      ${photoUrl
+        ? `<img style="width:38px;height:38px;border-radius:50%;object-fit:cover;flex-shrink:0;" src="${photoUrl}" alt="avatar">`
+        : `<div class="review-avatar">👤</div>`}
+      <div>
+        <div class="review-author-name">${escapeHtml(nickname)}</div>
+        <div class="review-date">сейчас</div>
+      </div>
+      <span class="review-order-badge" id="previewOrderBadge">#${completedOrders[0]?.order_number || ''}</span>
+    </div>
+    <div class="review-text" id="previewText">...</div>
+  </div>
+  <div class="review-items-card" id="previewItemsCard">${buildItemsHtml(orderItemsMap[completedOrders[0]?.id])}</div>
+</div>
 
           // Фиксированный блок с кнопкой отправки и поддержкой
           const fixedBlock = document.getElementById("cartCheckoutFixed");
@@ -2998,67 +3012,32 @@
           `;
 
           setTimeout(() => {
-            const textarea = document.getElementById('reviewTextarea');
-            const counter = document.getElementById('reviewCharCount');
-            const previewText = document.getElementById('previewText');
-            const previewOrder = document.getElementById('previewOrder');
-            const orderSelect = document.getElementById('reviewOrderSelect');
+  const textarea = document.getElementById('reviewTextarea');
+  const counter = document.getElementById('reviewCharCount');
+  const previewText = document.getElementById('previewText');
+  const previewOrderBadge = document.getElementById('previewOrderBadge');
+  const previewItemsCard = document.getElementById('previewItemsCard');
+  const orderSelect = document.getElementById('reviewOrderSelect');
 
-            // Обновление предпросмотра при вводе
-            textarea?.addEventListener('input', () => {
-              let val = textarea.value.replace(/[\r\n]/g, '');
-              if (val !== textarea.value) textarea.value = val;
-              if (counter) counter.textContent = `${val.length}/70`;
-              if (previewText) {
-                previewText.textContent = val.trim() || 'Ваш отзыв появится здесь...';
-              }
-            });
+  textarea?.addEventListener('input', () => {
+    let val = textarea.value.replace(/[\r\n]/g, '');
+    if (val !== textarea.value) textarea.value = val;
+    if (counter) counter.textContent = `${val.length}/70`;
+    if (previewText) previewText.textContent = val.trim() || '...';
+  });
 
-            textarea?.addEventListener('keydown', (e) => {
-              if (e.key === 'Enter') e.preventDefault();
-            });
+  textarea?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') e.preventDefault();
+  });
 
-            // Обновление номера заказа в предпросмотре
-            orderSelect?.addEventListener('change', () => {
-              const selected = orderSelect.options[orderSelect.selectedIndex];
-              const num = selected?.dataset.num || '';
-              if (previewOrder) previewOrder.textContent = `Заказ #${num}`;
-            });
-
-            // Отправка отзыва
-            document.getElementById('reviewSubmitBtnFixed')?.addEventListener('click', async () => {
-              const text = textarea?.value.trim();
-              if (!text) { alert('Напишите текст отзыва'); return; }
-              const selectEl = document.getElementById('reviewOrderSelect');
-              const orderId = selectEl?.value;
-              const orderNum = selectEl?.options[selectEl.selectedIndex]?.dataset.num;
-              if (!orderId) { alert('Выберите заказ'); return; }
-              hapticMedium();
-              const btn = document.getElementById('reviewSubmitBtnFixed');
-              if (btn) { btn.disabled = true; btn.textContent = 'Отправка...'; }
-              try {
-                const res = await fetch('https://gemstorm.up.railway.app/api/reviews', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    userId: userId,
-                    userName: nickname,
-                    photoUrl: photoUrl,
-                    text: text,
-                    orderId: orderId,
-                    orderNumber: orderNum
-                  })
-                });
-                if (res.ok) {
-                  hapticLight();
-                  showPage('reviews');
-                } else {
-                  alert('Ошибка при отправке');
-                }
-              } catch(e) { alert('Ошибка соединения'); }
-              if (btn) { btn.disabled = false; btn.textContent = 'Отправить отзыв'; }
-            });
-          }, 0);
+  orderSelect?.addEventListener('change', () => {
+    const selected = orderSelect.options[orderSelect.selectedIndex];
+    const num = selected?.dataset.num || '';
+    const orderId = orderSelect.value;
+    if (previewOrderBadge) previewOrderBadge.textContent = `#${num}`;
+    if (previewItemsCard) previewItemsCard.innerHTML = buildItemsHtml(orderItemsMap[orderId]);
+  });
+}, 0);
         });
       });
     } catch(e) {

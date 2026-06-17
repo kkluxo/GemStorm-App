@@ -647,7 +647,10 @@
       try {
         const r = await fetch(`${API}/api/update-status`, { 
           method:'POST',
-          headers: { 'Authorization': `Bearer ${getAdminToken()}` },
+          headers: { 
+  'Content-Type': 'application/json',
+  'Authorization': `Bearer ${getAdminToken()}` 
+},
           body: JSON.stringify({ orderId: order.id, status: statusMap[newCode], statusCode: newCode })
         });
         if (r.ok) { 

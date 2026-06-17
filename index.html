@@ -2926,162 +2926,249 @@
   const nickname = tgUser?.first_name || "Пользователь";
   const photoUrl = tgUser?.photo_url || "";
 
-  let completedOrders = [];
-  let reviewedOrderIds = [];
-  try {
-    fetch(`https://gemstorm.up.railway.app/api/user-orders?userId=${userId}`).then(r => r.json()).then(ordersRes => {
-      fetch(`https://gemstorm.up.railway.app/api/reviews`).then(r => r.json()).then(reviewsRes => {
-        const allCompleted = ordersRes.filter(o => o.status_code === 'done' || o.status_code === 'completed');
-        reviewedOrderIds = reviewsRes
-          .filter(r => String(r.user_id) === String(userId))
-          .map(r => String(r.order_id));
-        completedOrders = allCompleted.filter(o => !reviewedOrderIds.includes(String(o.id)));
-        const orderItemsMap = {};
-        completedOrders.forEach(o => {
-          let arr = [];
-          try { arr = JSON.parse(o.items || '[]'); } catch(e) {}
-          orderItemsMap[o.id] = arr;
-        });
-        function buildItemsHtml(itemsArr) {
-          if (!itemsArr || !itemsArr.length) return '';
-          return itemsArr.map(i => `<div class="review-item-row"><span class="review-item-name">${escapeHtml(i.name)}</span><span class="review-item-price">${formatPrice(i.price)}</span></div>`).join('');
-        }
+  // Проверяем, есть ли пользователь
+  if (!userId) {
+    container.innerHTML = `<div class="review-empty">Ошибка: пользователь не авторизован</div>`;
+    return;
+  }
 
-        if (!completedOrders.length) {
-          container.innerHTML = `<div class="review-empty">Нет заказов для отзыва</div>`;
-          return;
-        }
+  fetch(`https://gemstorm.up.railway.app/api/user-orders?userId=${userId}`)
+    .then(r => {
+      if (!r.ok) throw new Error('Ошибка загрузки заказов');
+      return r.json();
+    })
+    .then(ordersRes => {
+      return fetch(`https://gemstorm.up.railway.app/api/reviews`)
+        .then(r => {
+          if (!r.ok) throw new Error('Ошибка загрузки отзывов');
+          return r.json();
+        })
+        .then(reviewsRes => {
+          // Фильтруем выполненные заказы
+          const allCompleted = ordersRes.filter(o => o.status_code === 'done' || o.status_code === 'completed');
+          
+          // Находим уже оставленные отзывы
+          const reviewedOrderIds = reviewsRes
+            .filter(r => String(r.user_id) === String(userId))
+            .map(r => String(r.order_id));
+          
+          // Заказы без отзывов
+          const completedOrders = allCompleted.filter(o => !reviewedOrderIds.includes(String(o.id)));
+          
+          // Карта товаров по заказам
+          const orderItemsMap = {};
+          completedOrders.forEach(o => {
+            let arr = [];
+            try { arr = JSON.parse(o.items || '[]'); } catch(e) {}
+            orderItemsMap[o.id] = arr;
+          });
 
-        const orderOptions = completedOrders.map(o => {
-          const dateObj = o.date ? new Date(o.date) : null;
-          let dateStr = '';
-          if (dateObj && !isNaN(dateObj)) {
-            const d = String(dateObj.getDate()).padStart(2, '0');
-            const m = String(dateObj.getMonth() + 1).padStart(2, '0');
-            const y = String(dateObj.getFullYear()).slice(2);
-            dateStr = ` (${d}.${m}.${y})`;
+          function buildItemsHtml(itemsArr) {
+            if (!itemsArr || !itemsArr.length) return '';
+            return itemsArr.map(i => 
+              `<div class="review-item-row">
+                <span class="review-item-name">${escapeHtml(i.name)}</span>
+                <span class="review-item-price">${formatPrice(i.price)}</span>
+              </div>`
+            ).join('');
           }
-          return `<option value="${o.id}" data-num="${o.order_number}">Заказ #${o.order_number}${dateStr}</option>`;
-        }).join('');
 
-        container.innerHTML = `
-          <div class="order-data-card" style="margin-bottom:16px;">
-            <div class="form-section">
-              <div class="form-label">Выберите заказ</div>
-              <select class="form-select-native" id="reviewOrderSelect">
-                ${orderOptions}
-              </select>
-            </div>
-            <div class="form-section" style="margin-bottom:0;">
-              <div class="form-label" style="font-size:20px;">Напишите ваш отзыв <span id="reviewCharCount" style="color:#9e9e9e;font-weight:400;font-size:14px;">0/70</span></div>
-              <textarea class="review-textarea" id="reviewTextarea" placeholder="Напишите ваш отзыв..." maxlength="70" rows="3" style="font-size:17px; margin-bottom:0;"></textarea>
-            </div>
-          </div>
-          <div class="review-card-wrapper" id="reviewPreviewWrapper">
-            <div class="review-card">
-              <div class="review-header">
-                ${photoUrl
-                  ? `<img style="width:38px;height:38px;border-radius:50%;object-fit:cover;flex-shrink:0;" src="${photoUrl}" alt="avatar">`
-                  : `<div class="review-avatar">👤</div>`}
-                <div>
-                  <div class="review-author-name">${escapeHtml(nickname)}</div>
-                  <div class="review-date">сейчас</div>
-                </div>
-                <span class="review-order-badge" id="previewOrderBadge">#${completedOrders[0]?.order_number || ''}</span>
+          if (!completedOrders.length) {
+            container.innerHTML = `<div class="review-empty">Нет заказов для отзыва</div>`;
+            // Скрываем фиксированный блок
+            const fixedBlock = document.getElementById("cartCheckoutFixed");
+            if (fixedBlock) fixedBlock.style.display = "none";
+            return;
+          }
+
+          // Опции для выбора заказа
+          const orderOptions = completedOrders.map(o => {
+            const dateObj = o.date ? new Date(o.date) : null;
+            let dateStr = '';
+            if (dateObj && !isNaN(dateObj)) {
+              const d = String(dateObj.getDate()).padStart(2, '0');
+              const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+              const y = String(dateObj.getFullYear()).slice(2);
+              dateStr = ` (${d}.${m}.${y})`;
+            }
+            return `<option value="${o.id}" data-num="${o.order_number}">Заказ #${o.order_number}${dateStr}</option>`;
+          }).join('');
+
+          // Рендерим HTML
+          container.innerHTML = `
+            <div class="order-data-card" style="margin-bottom:16px;">
+              <div class="form-section">
+                <div class="form-label">Выберите заказ</div>
+                <select class="form-select-native" id="reviewOrderSelect">
+                  ${orderOptions}
+                </select>
               </div>
-              <div class="review-text" id="previewText">...</div>
+              <div class="form-section" style="margin-bottom:0;">
+                <div class="form-label" style="font-size:20px;">Напишите ваш отзыв <span id="reviewCharCount" style="color:#9e9e9e;font-weight:400;font-size:14px;">0/70</span></div>
+                <textarea class="review-textarea" id="reviewTextarea" placeholder="Напишите ваш отзыв..." maxlength="70" rows="3" style="font-size:17px; margin-bottom:0;"></textarea>
+              </div>
             </div>
-            <div class="review-items-card" id="previewItemsCard">${buildItemsHtml(orderItemsMap[completedOrders[0]?.id])}</div>
-          </div>
-        `;
-
-        // Фиксированный блок с кнопкой отправки
-        const fixedBlock = document.getElementById("cartCheckoutFixed");
-        fixedBlock.style.display = "block";
-        fixedBlock.innerHTML = `
-          <div class="checkout-card">
-            <div class="checkout-buttons-row">
-              <button class="checkout-button" id="reviewSubmitBtnFixed">Отправить отзыв</button>
-              <button class="promo-btn" onclick="hapticLight();window.open('https://t.me/GemStormHelp','_blank')">
-                <img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" style="width:24px;height:24px;">
-              </button>
+            <div class="review-card-wrapper" id="reviewPreviewWrapper">
+              <div class="review-card">
+                <div class="review-header">
+                  ${photoUrl
+                    ? `<img style="width:38px;height:38px;border-radius:50%;object-fit:cover;flex-shrink:0;" src="${photoUrl}" alt="avatar">`
+                    : `<div class="review-avatar">👤</div>`}
+                  <div>
+                    <div class="review-author-name">${escapeHtml(nickname)}</div>
+                    <div class="review-date">сейчас</div>
+                  </div>
+                  <span class="review-order-badge" id="previewOrderBadge">#${completedOrders[0]?.order_number || ''}</span>
+                </div>
+                <div class="review-text" id="previewText">...</div>
+              </div>
+              <div class="review-items-card" id="previewItemsCard">
+                ${buildItemsHtml(orderItemsMap[completedOrders[0]?.id])}
+              </div>
             </div>
-          </div>
-        `;
+          `;
 
-        // ОБРАБОТЧИК КНОПКИ ОТПРАВКИ
-        setTimeout(() => {
-          const submitBtn = document.getElementById("reviewSubmitBtnFixed");
-          if (submitBtn) {
-            submitBtn.addEventListener("click", function() {
-              hapticLight();
-              
-              const orderSelect = document.getElementById("reviewOrderSelect");
-              const textarea = document.getElementById("reviewTextarea");
-              
-              if (!orderSelect || !textarea) {
-                alert("Ошибка: не найдены поля формы");
-                return;
-              }
-              
-              const orderId = orderSelect.value;
-              const text = textarea.value.trim();
-              
-              if (!text) {
-                alert("Пожалуйста, напишите текст отзыва");
-                return;
-              }
-              
-              if (text.length < 10) {
-                alert("Отзыв должен содержать минимум 10 символов");
-                return;
-              }
-              
-              const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-              if (!tgUser) {
-                alert("Ошибка: пользователь не авторизован");
-                return;
-              }
-              
-              // Отправка отзыва
-              fetch(`https://gemstorm.up.railway.app/api/user-orders?userId=${tgUser.id}`)
-                .then(r => r.json())
-                .then(orders => {
-                  const order = orders.find(o => String(o.id) === String(orderId));
-                  if (!order) {
-                    alert("Заказ не найден");
-                    return;
-                  }
-                  
-                  return fetch('https://gemstorm.up.railway.app/api/review', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                      orderId: orderId,
-                      userId: tgUser.id,
-                      userName: tgUser.first_name || 'Пользователь',
-                      photoUrl: tgUser.photo_url || '',
-                      text: text,
-                      orderNumber: order.order_number,
-                      orderItems: order.items || '[]'
-                    })
-                  });
+          // Фиксированный блок с кнопкой
+          const fixedBlock = document.getElementById("cartCheckoutFixed");
+          if (fixedBlock) {
+            fixedBlock.style.display = "block";
+            fixedBlock.innerHTML = `
+              <div class="checkout-card">
+                <div class="checkout-buttons-row">
+                  <button class="checkout-button" id="reviewSubmitBtnFixed">Отправить отзыв</button>
+                  <button class="promo-btn" onclick="hapticLight();window.open('https://t.me/GemStormHelp','_blank')">
+                    <img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" style="width:24px;height:24px;">
+                  </button>
+                </div>
+              </div>
+            `;
+          }
+
+          // Обработчики событий
+          setTimeout(() => {
+            // Обновление превью при вводе текста
+            const textarea = document.getElementById('reviewTextarea');
+            const counter = document.getElementById('reviewCharCount');
+            const previewText = document.getElementById('previewText');
+            const previewOrderBadge = document.getElementById('previewOrderBadge');
+            const previewItemsCard = document.getElementById('previewItemsCard');
+            const orderSelect = document.getElementById('reviewOrderSelect');
+
+            if (textarea) {
+              textarea.addEventListener('input', () => {
+                let val = textarea.value.replace(/[\r\n]/g, '');
+                if (val !== textarea.value) textarea.value = val;
+                if (counter) counter.textContent = `${val.length}/70`;
+                if (previewText) previewText.textContent = val.trim() || '...';
+              });
+
+              textarea.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') e.preventDefault();
+              });
+            }
+
+            if (orderSelect) {
+              orderSelect.addEventListener('change', () => {
+                const selected = orderSelect.options[orderSelect.selectedIndex];
+                const num = selected?.dataset.num || '';
+                const orderId = orderSelect.value;
+                if (previewOrderBadge) previewOrderBadge.textContent = `#${num}`;
+                if (previewItemsCard) {
+                  previewItemsCard.innerHTML = buildItemsHtml(orderItemsMap[orderId] || []);
+                }
+              });
+            }
+
+            // Обработчик кнопки отправки
+            const submitBtn = document.getElementById("reviewSubmitBtnFixed");
+            if (submitBtn) {
+              submitBtn.addEventListener("click", function() {
+                hapticLight();
+                
+                const orderSelect = document.getElementById("reviewOrderSelect");
+                const textarea = document.getElementById("reviewTextarea");
+                
+                if (!orderSelect || !textarea) {
+                  alert("Ошибка: не найдены поля формы");
+                  return;
+                }
+                
+                const orderId = orderSelect.value;
+                const text = textarea.value.trim();
+                
+                if (!text) {
+                  alert("Пожалуйста, напишите текст отзыва");
+                  return;
+                }
+                
+                if (text.length < 10) {
+                  alert("Отзыв должен содержать минимум 10 символов");
+                  return;
+                }
+                
+                const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+                if (!tgUser) {
+                  alert("Ошибка: пользователь не авторизован");
+                  return;
+                }
+                
+                // Блокируем кнопку
+                submitBtn.disabled = true;
+                submitBtn.textContent = "Отправка...";
+                
+                // Находим заказ
+                const order = completedOrders.find(o => String(o.id) === String(orderId));
+                if (!order) {
+                  alert("Заказ не найден");
+                  submitBtn.disabled = false;
+                  submitBtn.textContent = "Отправить отзыв";
+                  return;
+                }
+                
+                // Отправляем отзыв
+                fetch('https://gemstorm.up.railway.app/api/review', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    orderId: orderId,
+                    userId: tgUser.id,
+                    userName: tgUser.first_name || 'Пользователь',
+                    photoUrl: tgUser.photo_url || '',
+                    text: text,
+                    orderNumber: order.order_number,
+                    orderItems: order.items || '[]'
+                  })
                 })
                 .then(response => {
-                  if (response && response.ok) {
-                    alert("Спасибо за отзыв! 🙌");
-                    showPage("reviews");
-                  } else if (response) {
-                    alert("Ошибка при отправке отзыва. Попробуйте позже.");
-                  }
+                  if (!response.ok) throw new Error('Ошибка сервера');
+                  return response.json();
+                })
+                .then(data => {
+                  alert("Спасибо за отзыв! 🙌");
+                  // Переходим на страницу отзывов
+                  showPage("reviews");
                 })
                 .catch(err => {
-                  console.error(err);
-                  alert("Ошибка соединения. Попробуйте позже.");
+                  console.error('Ошибка:', err);
+                  alert("Ошибка при отправке отзыва. Попробуйте позже.");
+                })
+                .finally(() => {
+                  submitBtn.disabled = false;
+                  submitBtn.textContent = "Отправить отзыв";
                 });
-            });
-          }
-        }, 100);
+              });
+            }
+          }, 100);
+        });
+    })
+    .catch(err => {
+      console.error('Ошибка загрузки:', err);
+      container.innerHTML = `<div class="review-empty">Ошибка загрузки данных. Попробуйте позже.</div>`;
+      // Скрываем фиксированный блок
+      const fixedBlock = document.getElementById("cartCheckoutFixed");
+      if (fixedBlock) fixedBlock.style.display = "none";
+    });
+}
 
         setTimeout(() => {
           const textarea = document.getElementById('reviewTextarea');

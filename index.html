@@ -3063,7 +3063,7 @@
             submitBtn.textContent = 'Отправка...';
 
             try {
-              const response = await fetch('https://gemstorm.up.railway.app/api/review', {
+              const response = await fetch('https://gemstorm.up.railway.app/api/reviews', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

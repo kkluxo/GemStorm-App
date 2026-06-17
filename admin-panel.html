@@ -403,16 +403,6 @@
   return;
 }
   const tg = window.Telegram?.WebApp;
-const tgUser = tg?.initDataUnsafe?.user;
-
-// Проверяем ID
-if (!tgUser || tgUser.id !== 7509324385) {
-    document.body.innerHTML = `
-        <div style="color:white;text-align:center;margin-top:40vh;font-size:20px;padding:20px;">
-            Доступ запрещён
-        </div>`;
-    return;
-}
 
   // =============================================
   // ШАГ 3: Проверяем подпись на сервере

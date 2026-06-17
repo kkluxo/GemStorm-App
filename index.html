@@ -2058,6 +2058,13 @@
 
 <script src="products.js"></script>
 <script>
+['log','warn','error','info','debug','table','trace'].forEach(m => console[m] = () => {});
+
+if (!window.Telegram?.WebApp?.initData) {
+  document.body.innerHTML = ''; // или любая заглушка
+  return;
+}
+
   window.addEventListener('load', function() {
     const imagesToPreload = [
       'https://storage.botpapa.me/files/1656bed0-4a0d-11f1-bef9-f1ec7a2c6e45.png',

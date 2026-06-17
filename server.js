@@ -410,21 +410,56 @@ async function initDB() {
             )
         `);
 
-        // Новая таблица для обращений
+        // Таблица для обращений (полная версия)
         await pool.query(`
             CREATE TABLE IF NOT EXISTS tickets (
                 id SERIAL PRIMARY KEY,
+                ticket_number TEXT,
                 user_id TEXT,
                 user_name TEXT,
                 user_username TEXT,
                 reason TEXT,
                 order_id TEXT,
                 message TEXT,
+                status TEXT DEFAULT 'sent',
+                admin_reply TEXT,
                 resolved BOOLEAN DEFAULT FALSE,
                 created_at TIMESTAMP DEFAULT NOW()
             )
         `);
         console.log('Таблица tickets готова');
+
+        // Добавляем недостающие колонки в tickets для существующих баз
+        const ticketCols = [
+            'status TEXT DEFAULT \'sent\'',
+            'admin_reply TEXT',
+            'ticket_number TEXT'
+        ];
+        for (const col of ticketCols) {
+            await pool.query(`ALTER TABLE tickets ADD COLUMN IF NOT EXISTS ${col}`);
+        }
+
+        // Таблица для промокодов
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS promo_codes (
+                id SERIAL PRIMARY KEY,
+                code TEXT UNIQUE,
+                discount INTEGER NOT NULL,
+                type TEXT DEFAULT 'all',
+                active BOOLEAN DEFAULT TRUE,
+                created_at TIMESTAMP DEFAULT NOW()
+            )
+        `);
+        console.log('Таблица promo_codes готова');
+
+        // Заполняем начальные промокоды
+        await pool.query(`
+            INSERT INTO promo_codes (code, discount, type) VALUES
+                ('GEMSTORM3', 3, 'first_order'),
+                ('FUKEVANSND50', 50, 'all'),
+                ('WEL9825H0', 1, 'all')
+            ON CONFLICT (code) DO NOTHING
+        `);
 
         console.log('Все таблицы готовы');
 
@@ -638,10 +673,14 @@ app.post('/api/ticket', async (req, res) => {
             return res.status(400).json({ error: 'Укажите @username' });
         }
 
+        // Генерируем номер обращения
+        const ticketNumber = `T${Date.now().toString(36).toUpperCase()}`;
+
         const result = await pool.query(
-            `INSERT INTO tickets (user_id, user_name, user_username, reason, order_id, message)
-             VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-            [userId || null, userName || 'Пользователь', userUsername, reason || 'Другая проблема', orderId || null, message.trim()]
+            `INSERT INTO tickets (ticket_number, user_id, user_name, user_username, reason, order_id, message, status)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, 'sent') RETURNING *`,
+            [ticketNumber, userId || null, userName || 'Пользователь', userUsername, 
+             reason || 'Другая проблема', orderId || null, message.trim()]
         );
 
         const ticket = result.rows[0];
@@ -663,11 +702,50 @@ app.post('/api/ticket', async (req, res) => {
     }
 });
 
-// Закрыть обращение (админ)
+// Ответ на обращение (админ)
+app.post('/api/ticket/respond', adminAuth, async (req, res) => {
+    try {
+        const { ticketId, status, reply } = req.body;
+        if (!ticketId) return res.status(400).json({ error: 'Нет ticketId' });
+
+        // Обновляем обращение
+        await pool.query(
+            `UPDATE tickets SET status = $1, admin_reply = $2, resolved = TRUE WHERE id = $3`,
+            [status || 'resolved', reply || null, ticketId]
+        );
+
+        // Получаем обновлённый тикет для уведомления пользователя
+        const ticketResult = await pool.query('SELECT * FROM tickets WHERE id = $1', [ticketId]);
+        if (ticketResult.rows.length) {
+            const ticket = ticketResult.rows[0];
+            const bot = getBot();
+            
+            // Отправляем ответ пользователю в Telegram
+            if (bot && ticket.user_id && reply) {
+                try {
+                    await bot.telegram.sendMessage(
+                        ticket.user_id,
+                        `<b>✅ Ответ по обращению #${ticket.ticket_number || ticket.id}</b>\n\n${reply}`,
+                        { parse_mode: 'HTML', ...NO_FORWARD }
+                    );
+                } catch(e) {
+                    console.error('Ошибка отправки ответа пользователю:', e.message);
+                }
+            }
+        }
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error('Ошибка ответа на обращение:', err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Закрыть обращение (админ) - устаревший, оставлен для совместимости
 app.post('/api/ticket/resolve', adminAuth, async (req, res) => {
     try {
         const { ticketId } = req.body;
-        await pool.query('UPDATE tickets SET resolved = TRUE WHERE id = $1', [ticketId]);
+        await pool.query('UPDATE tickets SET resolved = TRUE, status = $1 WHERE id = $2', ['resolved', ticketId]);
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -774,7 +852,9 @@ app.post('/api/update-status', adminAuth, async (req, res) => {
                 'Ожидает выполнения': 'processing',
                 'Выполнен': 'completed',
                 'Заказ выполнен': 'completed',
-                'Отменён': 'cancelled'
+                'Отменён': 'cancelled',
+                'done': 'completed',
+                'notfound': 'cancelled'
             };
             for (const [key, value] of Object.entries(statusMap)) {
                 if (status === key || status.includes(key)) {
@@ -792,7 +872,7 @@ app.post('/api/update-status', adminAuth, async (req, res) => {
         );
 
         const order = result.rows[0];
-        const isCompleted = finalStatusCode === 'completed';
+        const isCompleted = finalStatusCode === 'completed' || finalStatusCode === 'done';
 
         if (order.user_id && finalStatusCode !== 'pending') {
             const bot = getBot();
@@ -925,7 +1005,7 @@ app.get('/api/check-rate-limit', async (req, res) => {
         const { userId } = req.query;
         if (!userId) return res.json({ limited: false });
 
-        const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+        const tenMinutesAgo = Date.now() - 10 * 60 * 1000; // число (миллисекунды)
         const recentResult = await pool.query(`
             SELECT COUNT(*) as count FROM orders
             WHERE user_id = $1 AND timestamp >= $2
@@ -939,7 +1019,7 @@ app.get('/api/check-rate-limit', async (req, res) => {
             `, [userId]);
             const oldest = firstResult.rows[firstResult.rows.length - 1];
             if (oldest) {
-                const limitUntil = new Date(oldest.timestamp).getTime() + 30 * 60 * 1000;
+                const limitUntil = Number(oldest.timestamp) + 30 * 60 * 1000;
                 if (Date.now() < limitUntil) return res.json({ limited: true });
             }
         }
@@ -956,11 +1036,17 @@ app.post('/api/check-promo', async (req, res) => {
         if (!code || !userId) return res.status(400).json({ error: 'Нет данных' });
 
         const upperCode = code.toUpperCase();
-        const validCodes = { 'GEMSTORM3': 3, 'FUKEVANSND50': 50, 'WEL9825H0': 1 };
+        
+        // Проверяем в БД
+        const codeResult = await pool.query(
+            `SELECT * FROM promo_codes WHERE code = $1 AND active = TRUE`, [upperCode]
+        );
 
-        if (!validCodes[upperCode]) return res.json({ valid: false, reason: 'not_found' });
+        if (!codeResult.rows.length) return res.json({ valid: false, reason: 'not_found' });
+        const promoRow = codeResult.rows[0];
 
-        if (upperCode === 'GEMSTORM3') {
+        // Проверка для first_order промокодов
+        if (promoRow.type === 'first_order') {
             const ordersResult = await pool.query(
                 `SELECT COUNT(*) as count FROM orders WHERE user_id = $1`, [userId]
             );
@@ -969,6 +1055,7 @@ app.post('/api/check-promo', async (req, res) => {
             }
         }
 
+        // Проверка на использование
         const usageResult = await pool.query(`
             SELECT pu.id, o.status_code FROM promo_usage pu
             LEFT JOIN orders o ON o.id = pu.order_id
@@ -980,7 +1067,7 @@ app.post('/api/check-promo', async (req, res) => {
             if (!allNotFound) return res.json({ valid: false, reason: 'already_used' });
         }
 
-        res.json({ valid: true, discount: validCodes[upperCode] });
+        res.json({ valid: true, discount: promoRow.discount });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -999,6 +1086,75 @@ app.post('/api/use-promo', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
+// =============================================
+// ЭНДПОИНТЫ ДЛЯ УПРАВЛЕНИЯ ПРОМОКОДАМИ (АДМИН)
+// =============================================
+
+// Получить все промокоды
+app.get('/api/promo-codes', adminAuth, async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM promo_codes ORDER BY id DESC');
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Добавить промокод
+app.post('/api/promo-codes', adminAuth, async (req, res) => {
+    try {
+        const { code, discount, type } = req.body;
+        if (!code || discount === undefined) {
+            return res.status(400).json({ error: 'Код и скидка обязательны' });
+        }
+        await pool.query(
+            `INSERT INTO promo_codes (code, discount, type) VALUES ($1, $2, $3)`,
+            [code.toUpperCase(), parseInt(discount), type || 'all']
+        );
+        res.json({ success: true });
+    } catch (err) {
+        if (err.code === '23505') {
+            res.status(400).json({ error: 'Промокод с таким названием уже существует' });
+        } else {
+            res.status(500).json({ error: err.message });
+        }
+    }
+});
+
+// Деактивировать промокод
+app.delete('/api/promo-codes/:id', adminAuth, async (req, res) => {
+    try {
+        await pool.query('UPDATE promo_codes SET active = FALSE WHERE id = $1', [req.params.id]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Активировать промокод
+app.post('/api/promo-codes/:id/activate', adminAuth, async (req, res) => {
+    try {
+        await pool.query('UPDATE promo_codes SET active = TRUE WHERE id = $1', [req.params.id]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Удалить промокод (полностью)
+app.delete('/api/promo-codes/:id/delete', adminAuth, async (req, res) => {
+    try {
+        await pool.query('DELETE FROM promo_codes WHERE id = $1', [req.params.id]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// =============================================
+// НАСТРОЙКИ
+// =============================================
 
 app.get('/api/settings', async (req, res) => {
     try {
@@ -1025,6 +1181,10 @@ app.post('/api/settings', adminAuth, async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
+// =============================================
+// РЕЙТИНГ И ОТЗЫВЫ
+// =============================================
 
 app.get('/api/rating', async (req, res) => {
     try {

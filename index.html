@@ -3593,12 +3593,12 @@
     }
     
     if (startParam && startParam.startsWith('order_')) {
-  const orderNum = startParam.slice(6); // убираем 'order_'
+  const orderNum = startParam.slice(6);
   loadUserOrders().then(() => {
     const found = orders.find(o => String(o.order_number) === orderNum);
     if (found) {
       showPage('orders', true);
-      setTimeout(() => setTimeout(() => showOrderDetail(found, false), 100);
+      setTimeout(() => showOrderDetail(found, false), 100);
     }
   });
 }

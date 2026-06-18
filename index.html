@@ -2870,20 +2870,21 @@ fetch('https://gemstorm.up.railway.app/api/reviews')
       </div>`).join('');
 
     reviewBlock.innerHTML = `
-      <div style="margin-top:14px;" class="review-card-wrapper">
-        <div class="review-card" style="margin-bottom:0;">
-          <div class="review-header">
-            ${avatar}
-            <div>
-              <div class="review-author-name">${escapeHtml(review.user_name || 'Пользователь')}</div>
-              <div class="review-date">${dateStr}</div>
-            </div>
-          </div>
-          <div class="review-text" style="-webkit-line-clamp:unset;">${escapeHtml(review.text)}</div>
+  <div style="margin-top:14px;" class="review-card-wrapper">
+    <div class="review-card" style="margin-bottom:0;">
+      <div class="review-header">
+        ${avatar}
+        <div>
+          <div class="review-author-name">${escapeHtml(review.user_name || 'Пользователь')}</div>
+          <div class="review-date">${dateStr}</div>
         </div>
-        ${itemsHtml ? `<div class="review-items-card">${itemsHtml}</div>` : ''}
+        <span class="review-order-badge">#${order.order_number}</span>
       </div>
-    `;
+      <div class="review-text" style="-webkit-line-clamp:unset;">${escapeHtml(review.text)}</div>
+    </div>
+    ${itemsHtml ? `<div class="review-items-card">${itemsHtml}</div>` : ''}
+  </div>
+`;
   })
   .catch(() => {});
   const titleSpan = document.querySelector('#order-detail-page .page-header-title-btn span');
@@ -3360,6 +3361,38 @@ fetch('https://gemstorm.up.railway.app/api/reviews')
         return `<div class="review-card-wrapper"><div class="review-card"><div class="review-header">${avatar}<div><div class="review-author-name">${escapeHtml(rv.user_name || 'Пользователь')}</div><div class="review-date">${dateStr}</div></div>${orderBadge}</div><div class="review-text">${escapeHtml(rv.text)}</div></div>${itemsHtml ? `<div class="review-items-card">${itemsHtml}</div>` : ''}</div>`;
       }).join('');
       // Убрал addEventListener на review-order-badge (алерт удалён)
+      container.querySelectorAll('.review-order-badge').forEach(badge => {
+  badge.addEventListener('click', async () => {
+    hapticLight();
+    const orderNum = badge.textContent.replace('#', '').trim();
+    const tgUserId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
+
+    // Сначала ищем в своих заказах
+    await loadUserOrders();
+    let found = orders.find(o => String(o.order_number) === orderNum);
+
+    if (found) {
+      const isOwner = String(found.user_id) === String(tgUserId);
+      showPage('orders', true);
+      setTimeout(() => showOrderDetail(found, isOwner), 100);
+    } else {
+      // Грузим с сервера
+      try {
+        const r = await fetch('https://gemstorm.up.railway.app/api/refresh-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orderNumber: orderNum })
+        });
+        const order = await r.json();
+        if (order && order.id) {
+          const isOwner = String(order.user_id) === String(tgUserId);
+          showPage('orders', true);
+          setTimeout(() => showOrderDetail(order, isOwner), 100);
+        }
+      } catch(e) {}
+    }
+  });
+});
     } catch(e) {
       container.innerHTML = `<div class="review-empty">Не удалось загрузить отзывы</div>`;
     }

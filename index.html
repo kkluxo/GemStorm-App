@@ -2235,6 +2235,7 @@
   }
 
   let cart = {};
+  let currentOpenOrder = null;
   let appliedPromo = null;
   let isPromoMode = false;
   let checkoutData = { paymentMethod: "", senderName: "", email: "" };
@@ -2767,6 +2768,7 @@
 
   function showOrderDetail(order) {
     const container = document.getElementById("orderDetailContent");
+    currentOpenOrder = order;
     let items = [];
     try { items = JSON.parse(order.items || '[]'); } catch(e) {}
     
@@ -3786,14 +3788,23 @@ document.getElementById("resetFiltersMainBtn")?.addEventListener("click", () => 
         renderGiftsPage();
         break;
       case 'order-detail':
-        loadUserOrders().then(() => {
-          const orderId = activePage.dataset.currentOrderId;
-          if (orderId) {
-            const updatedOrder = orders.find(o => o.id == orderId);
-            if (updatedOrder) showOrderDetail(updatedOrder);
-          }
-        });
-        break;
+  if (currentOpenOrder) {
+    fetch('https://gemstorm.up.railway.app/api/refresh-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ orderId: currentOpenOrder.id })
+    })
+    .then(r => r.json())
+    .then(updatedOrder => {
+      currentOpenOrder = updatedOrder;
+      const index = orders.findIndex(o => o.id == updatedOrder.id);
+      if (index !== -1) orders[index] = updatedOrder;
+      showOrderDetail(updatedOrder);
+      hapticLight();
+    })
+    .catch(() => {});
+  }
+  break;
       // 'ticket' удалён
       default:
         if (typeof window[`render${pageId.charAt(0).toUpperCase() + pageId.slice(1)}Page`] === 'function') {

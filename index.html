@@ -2941,7 +2941,7 @@ fetch('https://gemstorm.up.railway.app/api/reviews')
                     body: JSON.stringify({ orderId: order.id, code: code })
                   });
                   if (response.ok) {
-                    alert("Код отправлен. Пожалуйста, не заходите на аккаунт пока ваш заказ не будет выполнен.");
+                    alert("Код отправлен. Пожалуйста, не заходите на аккаунт пока ваш заказ не будет выполнен.\n\nВ противном случае ваш заказ может быть отменён без возврата денежных средств");
                     order.status_code = 'processing';
                     order.status = 'Ожидает выполнения';
                     order.verification_code = code;

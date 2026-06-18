@@ -3571,7 +3571,18 @@
         }).catch(() => {});
       }
     }
-  }
+    
+    if (startParam && startParam.startsWith('order_')) {
+  const orderNum = startParam.slice(6); // убираем 'order_'
+  loadUserOrders().then(() => {
+    const found = orders.find(o => String(o.order_number) === orderNum);
+    if (found) {
+      showPage('orders', true);
+      setTimeout(() => showOrderDetail(found), 100);
+    }
+  });
+}
+}
 
   (function() {
     const tg = window.Telegram?.WebApp;

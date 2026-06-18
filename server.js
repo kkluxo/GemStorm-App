@@ -274,7 +274,7 @@ async function notifyUser(bot, order) {
             ...NO_FORWARD,
             reply_markup: {
                 inline_keyboard: [[
-                    { text: 'Открыть заказ в приложении', web_app: { url: ORDERS_PAGE_URL } }
+                    { text: 'Открыть заказ в приложении', web_app: { url: `${APP_URL}?startapp=order_${order.order_number}` } }
                 ]]
             }
         });
@@ -300,8 +300,8 @@ async function notifyUserStatus(bot, order, status, prevUserMsgId) {
             ...NO_FORWARD,
             reply_markup: {
                 inline_keyboard: [[
-                    { text: 'Открыть заказ в приложении', web_app: { url: ORDERS_PAGE_URL } }
-                ]]
+                    { text: 'Открыть заказ в приложении', web_app: { url: `${APP_URL}?startapp=order_${order.order_number}` } }
+               ]]
             }
         });
 

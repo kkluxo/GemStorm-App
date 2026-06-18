@@ -927,8 +927,15 @@ app.post('/api/submit-code', async (req, res) => {
 
 app.post('/api/refresh-order', async (req, res) => {
     try {
-        const { orderId } = req.body;
-        const result = await pool.query('SELECT * FROM orders WHERE id = $1', [orderId]);
+        const { orderId, orderNumber } = req.body;
+        let result;
+        if (orderId) {
+            result = await pool.query('SELECT * FROM orders WHERE id = $1', [orderId]);
+        } else if (orderNumber) {
+            result = await pool.query('SELECT * FROM orders WHERE order_number = $1', [orderNumber]);
+        } else {
+            return res.status(400).json({ error: 'Нет данных' });
+        }
         if (!result.rows.length) return res.status(404).json({ error: 'Заказ не найден' });
         res.json(result.rows[0]);
     } catch (err) {

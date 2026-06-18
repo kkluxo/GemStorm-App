@@ -3373,9 +3373,8 @@ fetch('https://gemstorm.up.railway.app/api/reviews')
 
     if (found) {
       const isOwner = String(found.user_id) === String(tgUserId);
-      showPage('orders', true);
-      setTimeout(() => showOrderDetail(found, isOwner), 100);
-    } else {
+      setTimeout(() => showOrderDetail(found, isOwner), 0);
+        } else {
       // Грузим с сервера
       try {
         const r = await fetch('https://gemstorm.up.railway.app/api/refresh-order', {
@@ -3386,9 +3385,8 @@ fetch('https://gemstorm.up.railway.app/api/reviews')
         const order = await r.json();
         if (order && order.id) {
           const isOwner = String(order.user_id) === String(tgUserId);
-          showPage('orders', true);
-          setTimeout(() => showOrderDetail(order, isOwner), 100);
-        }
+          setTimeout(() => showOrderDetail(found, isOwner), 0);
+          }
       } catch(e) {}
     }
   });
@@ -3673,9 +3671,8 @@ fetch('https://gemstorm.up.railway.app/api/reviews')
     const found = orders.find(o => String(o.order_number) === orderNum);
     if (found) {
       const isOwner = String(found.user_id) === String(tgUserId);
-      showPage('orders', true);
-      setTimeout(() => showOrderDetail(found, isOwner), 100);
-    } else {
+      setTimeout(() => showOrderDetail(found, isOwner), 0);
+          } else {
       // Заказ не найден в заказах пользователя — пробуем загрузить с сервера
       fetch('https://gemstorm.up.railway.app/api/refresh-order', {
         method: 'POST',
@@ -3686,8 +3683,7 @@ fetch('https://gemstorm.up.railway.app/api/reviews')
       .then(order => {
         if (order && order.id) {
           const isOwner = String(order.user_id) === String(tgUserId);
-          showPage('orders', true);
-          setTimeout(() => showOrderDetail(order, isOwner), 100);
+setTimeout(() => showOrderDetail(found, isOwner), 0);
         }
       })
       .catch(() => {});

@@ -2034,9 +2034,9 @@
 </svg>
     <input type="text" class="search-input" id="searchInput" placeholder="Найти товар по названию">
   </div>
-  <div class="filter-btn" id="resetFiltersMainBtn" style="background:#202023;border:1px solid #2B2B2D;display:flex;align-items:center;justify-content:center;">
-    <img src="https://storage.botpapa.me/files/03c3f330-6a99-11f1-af2e-f7a93121b83b.png" width="26" height="26">
-  </div>
+  <div class="filter-btn" id="resetFiltersMainBtn" onclick="hapticLight();showPage('filter')" style="background:#202023;border:1px solid #2B2B2D;display:flex;align-items:center;justify-content:center;">
+  <img src="https://storage.botpapa.me/files/03c3f330-6a99-11f1-af2e-f7a93121b83b.png" width="26" height="26">
+</div>
   </div>
   <div id="catalogGrid" class="products-grid"></div>
 </div>
@@ -2054,7 +2054,9 @@
 </div>
 
 <div id="filter-page" class="page">
-  <div class="filter-options" id="filterOptionsContainer"></div>
+  <div style="background:#1a1a1c;border:1px solid #2B2B2D;border-radius:28px;overflow:hidden;">
+    <div id="filterOptionsContainer"></div>
+  </div>
 </div>
 
 <div id="checkout-page" class="page">

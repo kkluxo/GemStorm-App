@@ -3385,7 +3385,7 @@ fetch('https://gemstorm.up.railway.app/api/reviews')
         const order = await r.json();
         if (order && order.id) {
           const isOwner = String(order.user_id) === String(tgUserId);
-          setTimeout(() => showOrderDetail(found, isOwner), 0);
+          setTimeout(() => showOrderDetail(order, isOwner), 0);
           }
       } catch(e) {}
     }
@@ -3683,7 +3683,7 @@ fetch('https://gemstorm.up.railway.app/api/reviews')
       .then(order => {
         if (order && order.id) {
           const isOwner = String(order.user_id) === String(tgUserId);
-setTimeout(() => showOrderDetail(found, isOwner), 0);
+setTimeout(() => showOrderDetail(order, isOwner), 0);
         }
       })
       .catch(() => {});

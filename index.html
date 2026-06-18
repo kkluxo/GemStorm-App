@@ -300,23 +300,26 @@
     }
 
     .search-section {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 14px;
-      align-items: center;
-    }
+  display: flex;
+  gap: 0;
+  margin-bottom: 11px;
+  align-items: center;
+  position: relative;
+}
 
     .search-bar {
-      flex: 1;
-      background: #202023;
-      height: 48px;
-      border-radius: 34px;
-      border: 1px solid #2B2B2D;
-      display: flex;
-      align-items: center;
-      padding: 0 16px;
-      gap: 10px;
-    }
+  flex: 1;
+  background: #212124;
+  height: 46px;
+  border-radius: 34px;
+  border: 1px solid #2B2B2D;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 10px;
+  position: relative;
+  z-index: 2;
+}
 
     .search-icon {
       width: 20px;
@@ -351,6 +354,9 @@
   padding-right: 11px;
   cursor: pointer;
   flex-shrink: 0;
+  margin-left: -45px;
+  position: relative;
+  z-index: 1;
 }
 
     .filter-icon {

@@ -2859,8 +2859,18 @@ fetch('https://gemstorm.up.railway.app/api/reviews')
       : `<div class="review-avatar">👤</div>`;
     const dt = review.created_at ? new Date(review.created_at) : null;
     const dateStr = dt ? `${dt.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})} ${dt.toLocaleDateString('ru-RU')}` : '';
+    
+    // Товары из заказа
+    let orderItems = [];
+    try { orderItems = JSON.parse(order.items || '[]'); } catch(e) {}
+    const itemsHtml = orderItems.map(i => `
+      <div class="review-item-row">
+        <span class="review-item-name">${escapeHtml(i.name)}</span>
+        <span class="review-item-price">${formatPrice(i.price)}</span>
+      </div>`).join('');
+
     reviewBlock.innerHTML = `
-      <div style="margin-top:14px;">
+      <div style="margin-top:14px;" class="review-card-wrapper">
         <div class="review-card" style="margin-bottom:0;">
           <div class="review-header">
             ${avatar}
@@ -2871,6 +2881,7 @@ fetch('https://gemstorm.up.railway.app/api/reviews')
           </div>
           <div class="review-text" style="-webkit-line-clamp:unset;">${escapeHtml(review.text)}</div>
         </div>
+        ${itemsHtml ? `<div class="review-items-card">${itemsHtml}</div>` : ''}
       </div>
     `;
   })
@@ -3878,7 +3889,10 @@ document.getElementById("resetFiltersMainBtn")?.addEventListener("click", () => 
       currentOpenOrder = updatedOrder;
       const index = orders.findIndex(o => o.id == updatedOrder.id);
       if (index !== -1) orders[index] = updatedOrder;
-      showOrderDetail(updatedOrder);
+      // Проверяем владельца
+      const tgUserId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
+      const isOwner = String(updatedOrder.user_id) === String(tgUserId);
+      showOrderDetail(updatedOrder, isOwner);
       hapticLight();
     })
     .catch(() => {});

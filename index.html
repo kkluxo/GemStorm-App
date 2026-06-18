@@ -3595,10 +3595,28 @@
     if (startParam && startParam.startsWith('order_')) {
   const orderNum = startParam.slice(6);
   loadUserOrders().then(() => {
+    const tgUserId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
     const found = orders.find(o => String(o.order_number) === orderNum);
     if (found) {
+      const isOwner = String(found.user_id) === String(tgUserId);
       showPage('orders', true);
-      setTimeout(() => showOrderDetail(found, false), 100);
+      setTimeout(() => showOrderDetail(found, isOwner), 100);
+    } else {
+      // Заказ не найден в заказах пользователя — пробуем загрузить с сервера
+      fetch('https://gemstorm.up.railway.app/api/refresh-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderNumber: orderNum })
+      })
+      .then(r => r.json())
+      .then(order => {
+        if (order && order.id) {
+          const isOwner = String(order.user_id) === String(tgUserId);
+          showPage('orders', true);
+          setTimeout(() => showOrderDetail(order, isOwner), 100);
+        }
+      })
+      .catch(() => {});
     }
   });
 }

@@ -45,7 +45,7 @@ const productsRaw = [
   
   // Особые акции
   //[58, "90 гемов", "0.99", "0.99", "Особая акция", "Особые акции", 1, [], true, "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg"],
-  [59, "150 гемов", "4.99", "4.99", "Особая акция", "Особые акции", 1, [], true, "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  //[59, "150 гемов", "4.99", "4.99", "Особая акция", "Особые акции", 1, [], true, "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg"],
   //[60, "300 гемов", "9.99", "9.99", "Особая акция", "Особые акции", 1, [], true, "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg"],
   
   // Еженедельные акции

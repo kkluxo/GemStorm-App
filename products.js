@@ -36,12 +36,12 @@ const productsRaw = [
   [14, "Суперфорвард Лу", "14.99", "14.99", "Strikers", "Strikers", 1, [], true, "https://storage.botpapa.me/files/5ed5b090-6032-11f1-af2e-f7a93121b83b.jpeg"],
   
   // Esports
-  [15, "Победитель Отис", "4.99", "4.99", "Esports", "Esports", 1, [], true, "https://storage.botpapa.me/files/12adebb0-505b-11f1-bef9-f1ec7a2c6e45.jpeg"],
-  [16, "Чемпион мира Гас", "4.99", "4.99", "Esports", "Esports", 1, [], true, "https://storage.botpapa.me/files/0de56720-505b-11f1-bef9-f1ec7a2c6e45.jpeg"],
-  [17, "Яростная Тара", "4.99", "4.99", "Esports", "Esports", 1, [], true, "https://storage.botpapa.me/files/08e35c00-505b-11f1-bef9-f1ec7a2c6e45.jpeg"],
-  [45, "Фанат Фэнг", "4.99", "4.99", "Esports", "Esports", 1, [], true, "https://storage.botpapa.me/files/1fdcdc10-505b-11f1-bef9-f1ec7a2c6e45.jpeg"],
-  [46, "Хоккеист Мортис", "4.99", "4.99", "Esports", "Esports", 1, [], true, "https://storage.botpapa.me/files/cd577140-60d0-11f1-af2e-f7a93121b83b.jpeg"],
-  [18, "Кошка-воровка Джесси", "3.99", "3.99", "Esports", "Esports", 1, [], true, "https://storage.botpapa.me/files/027f28d0-505b-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  //[15, "Победитель Отис", "4.99", "4.99", "Esports", "Esports", 1, [], true, "https://storage.botpapa.me/files/12adebb0-505b-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  //[16, "Чемпион мира Гас", "4.99", "4.99", "Esports", "Esports", 1, [], true, "https://storage.botpapa.me/files/0de56720-505b-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  //[17, "Яростная Тара", "4.99", "4.99", "Esports", "Esports", 1, [], true, "https://storage.botpapa.me/files/08e35c00-505b-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  //[45, "Фанат Фэнг", "4.99", "4.99", "Esports", "Esports", 1, [], true, "https://storage.botpapa.me/files/1fdcdc10-505b-11f1-bef9-f1ec7a2c6e45.jpeg"],
+  //[46, "Хоккеист Мортис", "4.99", "4.99", "Esports", "Esports", 1, [], true, "https://storage.botpapa.me/files/cd577140-60d0-11f1-af2e-f7a93121b83b.jpeg"],
+  //[18, "Кошка-воровка Джесси", "3.99", "3.99", "Esports", "Esports", 1, [], true, "https://storage.botpapa.me/files/027f28d0-505b-11f1-bef9-f1ec7a2c6e45.jpeg"],
   
   // Особые акции
   //[58, "90 гемов", "0.99", "0.99", "Особая акция", "Особые акции", 1, [], true, "https://storage.botpapa.me/files/e5928d90-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg"],
@@ -72,16 +72,16 @@ const productsRaw = [
   [44, "20000 блингов", "8.99", "8.99", "Bling Deal", "Bling Deals", 1, [], true, "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg"],
     
   // Esports
-  [62, "Набор: SK Gaming", "2.49", "2.49", "Esports", "Esports", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/a9e85d7aa92b4f683fc527706f8ff5263720706ff378c6be6574aaec9e698850/brawlstars.52002969-x1-Emote_28001084-x1-PlayerIcon_68000621-x1-Spray.png"],
-  [63, "Набор: ZETA Division", "2.49", "2.49", "Esports", "Esports", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/1ee7c3e247a03e25e2ce750c3db253ddccafe4426b636a2850b8b69c3d5c36b8/brawlstars.52002973-x1-Emote_28001079-x1-PlayerIcon_68000618-x1-Spray.png"],
-  [64, "Набор: LOUD", "2.49", "2.49", "Esports", "Esports", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/f9d9d9042d346be24549212b444933e9b9971f6ca8083ec8134e149838f2fd40/brawlstars.52002967-x1-Emote_28001082-x1-PlayerIcon_68000623-x1-Spray.png"],
-  [65, "Набор: Team Heretics", "2.49", "2.49", "Esports", "Esports", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/ff20de05be75d8f80d8e10575ae291c1fc33a4b06c1f190c2d35adb14d66735f/brawlstars.52002970-x1-Emote_28001080-x1-PlayerIcon_68000625-x1-Spray.png"],
-  [66, "Набор: Reply Totem", "2.49", "2.49", "Esports", "Esports", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/d3909ff03606482bff39463f35c43d26e7e5ae60ca90a8dc9231afa9b191c611/brawlstars.52002971-x1-Emote_28001085-x1-PlayerIcon_68000620-x1-Spray.png"],
-  [67, "Набор: Natus Vincere", "2.49", "2.49", "Esports", "Esports", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/2bb41e466aac7b4b3b4e02ad9289d1d870e0c029df9b121c85df99d28b8fc122/brawlstars.52002968-x1-Emote_28001083-x1-PlayerIcon_68000622-x1-Spray.png"],
-  [68, "Набор: TRIBE Gaming", "2.49", "2.49", "Esports", "Esports", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/05c7be5bffb46e300be32d4a2f6a52f7460c31d1be7b7b642f755d81098be152/brawlstars.52002972-x1-Emote_28001086-x1-PlayerIcon_68000619-x1-Spray.png"],
-  [69, "Набор: Crazy Raccoon", "2.49", "2.49", "Esports", "Esports", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/300f2062942967da7ff70a86efab6c0c364ffba4f4b622dd7568a06ae5ab3779/brawlstars.52003059-x1-Emote_28001243-x1-PlayerIcon_68000679-x1-Spray.png"],
-  [70, "Набор: HMBLE", "2.49", "2.49", "Esports", "Esports", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/aacf62c69e2720d0bb517dae00040e36246f0ef29973b94d4b0a4fc9be5fe55e/brawlstars.52002966-x1-Emote_28001081-x1-PlayerIcon_68000624-x1-Spray.png"],
-  [71, "Набор: FUT Esports", "2.49", "2.49", "Esports", "Esports", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/f87e8c285d976feb500ccd540ee4dddff9e4fd04e6dc5a43ed909b7d4568e3af/brawlstars.52002964-x1-Emote_28001077-x1-PlayerIcon_68000626-x1-Spray.png"],
+  //[62, "Набор: SK Gaming", "2.49", "2.49", "Esports", "Esports", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/a9e85d7aa92b4f683fc527706f8ff5263720706ff378c6be6574aaec9e698850/brawlstars.52002969-x1-Emote_28001084-x1-PlayerIcon_68000621-x1-Spray.png"],
+  //[63, "Набор: ZETA Division", "2.49", "2.49", "Esports", "Esports", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/1ee7c3e247a03e25e2ce750c3db253ddccafe4426b636a2850b8b69c3d5c36b8/brawlstars.52002973-x1-Emote_28001079-x1-PlayerIcon_68000618-x1-Spray.png"],
+  //[64, "Набор: LOUD", "2.49", "2.49", "Esports", "Esports", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/f9d9d9042d346be24549212b444933e9b9971f6ca8083ec8134e149838f2fd40/brawlstars.52002967-x1-Emote_28001082-x1-PlayerIcon_68000623-x1-Spray.png"],
+  //[65, "Набор: Team Heretics", "2.49", "2.49", "Esports", "Esports", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/ff20de05be75d8f80d8e10575ae291c1fc33a4b06c1f190c2d35adb14d66735f/brawlstars.52002970-x1-Emote_28001080-x1-PlayerIcon_68000625-x1-Spray.png"],
+  //[66, "Набор: Reply Totem", "2.49", "2.49", "Esports", "Esports", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/d3909ff03606482bff39463f35c43d26e7e5ae60ca90a8dc9231afa9b191c611/brawlstars.52002971-x1-Emote_28001085-x1-PlayerIcon_68000620-x1-Spray.png"],
+  //[67, "Набор: Natus Vincere", "2.49", "2.49", "Esports", "Esports", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/2bb41e466aac7b4b3b4e02ad9289d1d870e0c029df9b121c85df99d28b8fc122/brawlstars.52002968-x1-Emote_28001083-x1-PlayerIcon_68000622-x1-Spray.png"],
+  //[68, "Набор: TRIBE Gaming", "2.49", "2.49", "Esports", "Esports", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/05c7be5bffb46e300be32d4a2f6a52f7460c31d1be7b7b642f755d81098be152/brawlstars.52002972-x1-Emote_28001086-x1-PlayerIcon_68000619-x1-Spray.png"],
+  //[69, "Набор: Crazy Raccoon", "2.49", "2.49", "Esports", "Esports", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/300f2062942967da7ff70a86efab6c0c364ffba4f4b622dd7568a06ae5ab3779/brawlstars.52003059-x1-Emote_28001243-x1-PlayerIcon_68000679-x1-Spray.png"],
+  //[70, "Набор: HMBLE", "2.49", "2.49", "Esports", "Esports", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/aacf62c69e2720d0bb517dae00040e36246f0ef29973b94d4b0a4fc9be5fe55e/brawlstars.52002966-x1-Emote_28001081-x1-PlayerIcon_68000624-x1-Spray.png"],
+  //[71, "Набор: FUT Esports", "2.49", "2.49", "Esports", "Esports", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/f87e8c285d976feb500ccd540ee4dddff9e4fd04e6dc5a43ed909b7d4568e3af/brawlstars.52002964-x1-Emote_28001077-x1-PlayerIcon_68000626-x1-Spray.png"],
   
   // Ежедневные акции
   [76, "500 монет", "1.99", "1.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://storage.botpapa.me/files/c04d8e50-56ba-11f1-bef9-f1ec7a2c6e45.jpeg"],

@@ -59,7 +59,8 @@ const productsRaw = [
   [80, "Карнавальная Менди", "6.99", "6.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/26766d0e3f1ff7b9ef68509a6b9de650255dc046f9a9b0633cb6a14995f0f360/brawlstars.29001111-x1-Skin.png"],
   [81, "Зевс Брок", "6.99", "6.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/ad1e2810ae49f4e2d18f6e91accdfa29aff3c35a188e7c8434c0dfa8e17f955d/brawlstars.29000656-x1-Skin.png"],
   [82, "Призрачный всадник Драко", "8.99", "8.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/9052f82dbec7d57547803a640d3c5b095010210866ff378b6ab3062dd75b66c4/brawlstars.29000943-x1-Skin.png"],
-
+  [83, "Родео Хэнк", "6.99", "6.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/0cfd49ba9b17b30f2e64a6219d645b0504bb908afa30d82ab8568e456c227a95/brawlstars.29000700-x1-Skin.png"],
+  
   // Bling Deals
   [19, "4000 блингов", "0.99", "0.99", "Bling Deal", "Bling Deals", 1, [], true, "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg"],
   [20, "5000 блингов", "4.99", "4.99", "Bling Deal", "Bling Deals", 1, [], true, "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg"],

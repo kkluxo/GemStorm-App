@@ -2680,7 +2680,13 @@ isSubmitting = true;
   const discountedPrice = appliedPromo 
     ? Math.round(prod.price * (1 - appliedPromo.discountPercent / 100)) 
     : prod.price;
-  return { id: parseInt(id), name: prod.name, qty, price: discountedPrice };
+  return { 
+    id: parseInt(id), 
+    name: prod.name, 
+    qty, 
+    price: discountedPrice,
+    originalPrice: prod.price  // сохраняем оригинальную цену
+  };
 });
         orderPromo = appliedPromo ? appliedPromo.code : null;
         orderPromoDiscount = appliedPromo ? appliedPromo.discountPercent : 0;
@@ -2811,7 +2817,12 @@ isSubmitting = true;
         const itemsHtml = items.map(i => {
   return `<div class="order-item-row">
     <span class="order-item-name">${escapeHtml(i.name)}${i.qty > 1 ? ` x${i.qty}` : ''}</span>
-    <span class="order-item-price">${formatPrice(i.price)}</span>
+    <span class="order-item-price" style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+      ${i.originalPrice && i.originalPrice !== i.price 
+        ? `<span style="color:#9ca3af;text-decoration:line-through;font-size:14px;">${formatPrice(i.originalPrice)}</span>` 
+        : ''}
+      ${formatPrice(i.price)}
+    </span>
   </div>`;
 }).join('');
         
@@ -2888,7 +2899,12 @@ isSubmitting = true;
   const itemsHtml = items.map(i => {
   return `<div class="order-item-row">
     <span class="order-item-name">${escapeHtml(i.name)}${i.qty > 1 ? ` x${i.qty}` : ''}</span>
-    <span class="order-item-price">${formatPrice(i.price)}</span>
+    <span class="order-item-price" style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+      ${i.originalPrice && i.originalPrice !== i.price 
+        ? `<span style="color:#9ca3af;text-decoration:line-through;font-size:14px;">${formatPrice(i.originalPrice)}</span>` 
+        : ''}
+      ${formatPrice(i.price)}
+    </span>
   </div>`;
 }).join('');
 
@@ -2969,7 +2985,12 @@ fetch('https://gemstorm.up.railway.app/api/reviews')
     const itemsHtml = orderItems.map(i => `
       <div class="review-item-row">
         <span class="review-item-name">${escapeHtml(i.name)}</span>
-        <span class="review-item-price">${formatPrice(i.price)}</span>
+        <span class="review-item-price" style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+  ${i.originalPrice && i.originalPrice !== i.price 
+    ? `<span style="color:#9ca3af;text-decoration:line-through;font-size:14px;">${formatPrice(i.originalPrice)}</span>` 
+    : ''}
+  ${formatPrice(i.price)}
+</span>
       </div>`).join('');
 
     reviewBlock.innerHTML = `
@@ -3459,7 +3480,12 @@ fetch('https://gemstorm.up.railway.app/api/reviews')
         let items = [];
         try { items = JSON.parse(rv.order_items || '[]'); } catch(e) {}
         if (items.length) {
-          itemsHtml = items.map(i => `<div class="review-item-row"><span class="review-item-name">${escapeHtml(i.name)}</span><span class="review-item-price">${formatPrice(i.price)}</span></div>`).join('');
+          itemsHtml = items.map(i => `<div class="review-item-row"><span class="review-item-name">${escapeHtml(i.name)}</span><span class="review-item-price" style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+  ${i.originalPrice && i.originalPrice !== i.price 
+    ? `<span style="color:#9ca3af;text-decoration:line-through;font-size:14px;">${formatPrice(i.originalPrice)}</span>` 
+    : ''}
+  ${formatPrice(i.price)}
+  </span></div>`).join('');
         }
         return `<div class="review-card-wrapper"><div class="review-card"><div class="review-header">${avatar}<div><div class="review-author-name">${escapeHtml(rv.user_name || 'Пользователь')}</div><div class="review-date">${dateStr}</div></div>${orderBadge}</div><div class="review-text">${escapeHtml(rv.text)}</div></div>${itemsHtml ? `<div class="review-items-card">${itemsHtml}</div>` : ''}</div>`;
       }).join('');

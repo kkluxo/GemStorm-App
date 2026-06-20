@@ -3756,6 +3756,24 @@ fetch('https://gemstorm.up.railway.app/api/reviews')
   function initApp() {
     loadCartFromLocalStorage();
     const tgU = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    
+    // Проверка блокировки
+    if (tgU?.id) {
+        fetch(`https://gemstorm.up.railway.app/api/user-status?userId=${tgU.id}`)
+            .then(r => r.json())
+            .then(data => {
+                if (data.status === 'blocked') {
+                    document.body.innerHTML = `
+                        <div style="position:fixed;inset:0;background:#121214;z-index:99999;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:30px;">
+                            <div style="font-size:22px;font-weight:600;color:white;margin-bottom:12px;">Доступ к приложению ограничен</div>
+                            <button onclick="window.open('https://t.me/GemStormHelp','_blank')" style="background:#4cb4e9;border:none;border-radius:34px;padding:14px 28px;color:white;font-size:17px;font-weight:600;cursor:pointer;margin-top:16px;">Связаться с поддержкой</button>
+                        </div>`;
+                }
+            }).catch(() => {});
+    }
+
+    loadCartFromLocalStorage();
+    const tgU = window.Telegram?.WebApp?.initDataUnsafe?.user;
     if (tgU?.id) {
       fetch('https://gemstorm.up.railway.app/api/track-user', {
         method: 'POST',

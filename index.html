@@ -2523,16 +2523,18 @@ ${appliedPromo ? `<span style="color:#9ca3af;text-decoration:line-through;font-s
     rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
     discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
 
-    const itemsListHtml = items.map(([id, qty]) => {
+    const itemsListHtml = Object.entries(cart).map(([id, qty]) => {
   const prod = products.find(p => p.id == id);
-  const discountedPrice = appliedPromo 
+  if (!prod) return '';
+  const newPrice = appliedPromo 
     ? Math.round(prod.price * qty * (1 - appliedPromo.discountPercent / 100)) 
     : prod.price * qty;
   return `<div class="order-item-row">
-    <span class="order-item-price" style="display:flex;align-items:center;gap:6px;">
-  ${formatPrice(discountedPrice)}
-  ${appliedPromo ? `<span style="color:#9ca3af;text-decoration:line-through;font-size:14px;">${formatPrice(prod.price * qty)}</span>` : ''}
-</span>
+    <span class="order-item-name">${escapeHtml(prod.name)}${qty > 1 ? ` x${qty}` : ''}</span>
+    <span class="order-item-price" style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+      ${appliedPromo ? `<span style="color:#9ca3af;text-decoration:line-through;font-size:14px;">${formatPrice(prod.price * qty)}</span>` : ''}
+      ${formatPrice(newPrice)}
+    </span>
   </div>`;
 }).join('');
 
@@ -2597,17 +2599,18 @@ ${appliedPromo ? `<span style="color:#9ca3af;text-decoration:line-through;font-s
     rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
     discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
 
-    const itemsListHtml = items.map(([id, qty]) => {
+    const itemsListHtml = Object.entries(cart).map(([id, qty]) => {
   const prod = products.find(p => p.id == id);
-  const discountedPrice = appliedPromo 
+  if (!prod) return '';
+  const newPrice = appliedPromo 
     ? Math.round(prod.price * qty * (1 - appliedPromo.discountPercent / 100)) 
     : prod.price * qty;
   return `<div class="order-item-row">
     <span class="order-item-name">${escapeHtml(prod.name)}${qty > 1 ? ` x${qty}` : ''}</span>
-    <span class="order-item-price" style="display:flex;align-items:center;gap:6px;">
-  ${formatPrice(discountedPrice)}
-  ${appliedPromo ? `<span style="color:#9ca3af;text-decoration:line-through;font-size:14px;">${formatPrice(prod.price * qty)}</span>` : ''}
-</span>
+    <span class="order-item-price" style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+      ${appliedPromo ? `<span style="color:#9ca3af;text-decoration:line-through;font-size:14px;">${formatPrice(prod.price * qty)}</span>` : ''}
+      ${formatPrice(newPrice)}
+    </span>
   </div>`;
 }).join('');
 
@@ -2805,17 +2808,10 @@ isSubmitting = true;
         const textClass = getStatusTextClass(status);
         const bgClass = getStatusBgClass(status);
         
-        const itemsListHtml = items.map(([id, qty]) => {
-  const prod = products.find(p => p.id == id);
-  const discountedPrice = appliedPromo 
-    ? Math.round(prod.price * qty * (1 - appliedPromo.discountPercent / 100)) 
-    : prod.price * qty;
+        const itemsHtml = items.map(i => {
   return `<div class="order-item-row">
-    <span class="order-item-name">${escapeHtml(prod.name)}${qty > 1 ? ` x${qty}` : ''}</span>
-    <span class="order-item-price">
-      ${appliedPromo ? `<span style="color:#9ca3af;text-decoration:line-through;font-size:14px;margin-right:5px;">${formatPrice(prod.price * qty)}</span>` : ''}
-      ${formatPrice(discountedPrice)}
-    </span>
+    <span class="order-item-name">${escapeHtml(i.name)}${i.qty > 1 ? ` x${i.qty}` : ''}</span>
+    <span class="order-item-price">${formatPrice(i.price)}</span>
   </div>`;
 }).join('');
         
@@ -2889,17 +2885,10 @@ isSubmitting = true;
   const email = isOwner ? (order.email || '—') : '***';
   const verCode = isOwner ? order.verification_code : null;
 
-  const itemsListHtml = items.map(([id, qty]) => {
-  const prod = products.find(p => p.id == id);
-  const discountedPrice = appliedPromo 
-    ? Math.round(prod.price * qty * (1 - appliedPromo.discountPercent / 100)) 
-    : prod.price * qty;
+  const itemsHtml = items.map(i => {
   return `<div class="order-item-row">
-    <span class="order-item-name">${escapeHtml(prod.name)}${qty > 1 ? ` x${qty}` : ''}</span>
-    <span class="order-item-price">
-      ${appliedPromo ? `<span style="color:#9ca3af;text-decoration:line-through;font-size:14px;margin-right:5px;">${formatPrice(prod.price * qty)}</span>` : ''}
-      ${formatPrice(discountedPrice)}
-    </span>
+    <span class="order-item-name">${escapeHtml(i.name)}${i.qty > 1 ? ` x${i.qty}` : ''}</span>
+    <span class="order-item-price">${formatPrice(i.price)}</span>
   </div>`;
 }).join('');
 

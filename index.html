@@ -3772,9 +3772,7 @@ fetch('https://gemstorm.up.railway.app/api/reviews')
             }).catch(() => {});
     }
 
-    loadCartFromLocalStorage();
-    const tgU = window.Telegram?.WebApp?.initDataUnsafe?.user;
-    if (tgU?.id) {
+      if (tgU?.id) {
       fetch('https://gemstorm.up.railway.app/api/track-user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

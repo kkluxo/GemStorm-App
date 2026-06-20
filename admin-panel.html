@@ -1118,7 +1118,6 @@ async function deletePromo(id) {
   document.addEventListener('click', function(e) {
     const doubleBtn = e.target.closest('#headerDoubleBtn');
     if (!doubleBtn) return;
-    =
     const isRefresh = e.target.closest('#headerRefreshIcon');
     const isSupport = e.target.closest('#headerSupportIcon');
     
@@ -1128,7 +1127,7 @@ async function deletePromo(id) {
       else if (currentAdminPage === 'users') renderUsersPage();
       else if (currentAdminPage === 'reviews') renderReviewsPage();
       else if (currentAdminPage === 'profile') renderProfilePage();
-      else if (currentAdminPage === 'promo') renderPromoPage();
+      else if (currentAdminPage === 'promos') renderPromosPage();
     } else if (isSupport) {
       hapticLight();
       window.open('https://t.me/GemStormHelp', '_blank');

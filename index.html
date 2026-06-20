@@ -2475,7 +2475,7 @@ function hapticMedium() {
         if (promoInput) promoInput.addEventListener("keypress", (e) => { if (e.key === "Enter") applyBtn?.click(); });
       }, 0);
     } else {
-      fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${appliedPromo ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="checkoutBtn">Перейти к оформлению</button><button class="promo-btn" id="openPromoBtn"><img src="https://storage.botpapa.me/files/8324fec0-5933-11f1-bef9-f1ec7a2c6e45.png" alt="Промокод"></button></div></div>`;
+      fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper">${appliedPromo ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}<span class="total-price">${formatPrice(discountedTotal)}</span></span></div><div class="checkout-buttons-row"><button class="checkout-button" id="checkoutBtn">Перейти к оформлению</button><button class="promo-btn" id="openPromoBtn"><img src="https://storage.botpapa.me/files/8324fec0-5933-11f1-bef9-f1ec7a2c6e45.png" alt="Промокод"></button></div></div>`;
       setTimeout(() => {
         document.getElementById("checkoutBtn")?.addEventListener("click", async () => {
           hapticMedium();
@@ -2521,12 +2521,15 @@ function hapticMedium() {
     discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
 
     const itemsListHtml = items.map(([id, qty]) => {
-      const prod = products.find(p => p.id == id);
-      return `<div class="order-item-row">
-        <span class="order-item-name">${escapeHtml(prod.name)}${qty > 1 ? ` x${qty}` : ''}</span>
-        <span class="order-item-price">${formatPrice(prod.price * qty)}</span>
-      </div>`;
-    }).join('');
+  const prod = products.find(p => p.id == id);
+  const itemPrice = appliedPromo 
+    ? Math.round(prod.price * qty * (1 - appliedPromo.discountPercent / 100)) 
+    : prod.price * qty;
+  return `<div class="order-item-row">
+    <span class="order-item-name">${escapeHtml(prod.name)}${qty > 1 ? ` x${qty}` : ''}</span>
+    <span class="order-item-price">${formatPrice(itemPrice)}</span>
+  </div>`;
+}).join('');
 
     container.innerHTML = `
       <div style="position:relative;margin-bottom:14px;">
@@ -2554,7 +2557,7 @@ function hapticMedium() {
 
     const fixedBlock = document.getElementById("cartCheckoutFixed");
     fixedBlock.style.display = "block";
-    fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${appliedPromo ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="payBtn">Перейти к оплате</button><button class="promo-btn" id="helpBtn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь"></button></div></div>`;
+    fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper">${appliedPromo ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}<span class="total-price">${formatPrice(discountedTotal)}</span></span></div><div class="checkout-buttons-row"><button class="checkout-button" id="payBtn">Перейти к оплате</button><button class="promo-btn" id="helpBtn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь"></button></div></div>`;
     setTimeout(() => {
       const paymentSelect = document.getElementById("paymentMethodSelect");
       paymentSelect?.addEventListener("change", function() {
@@ -2590,12 +2593,15 @@ function hapticMedium() {
     discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
 
     const itemsListHtml = items.map(([id, qty]) => {
-      const prod = products.find(p => p.id == id);
-      return `<div class="order-item-row">
-        <span class="order-item-name">${escapeHtml(prod.name)}${qty > 1 ? ` x${qty}` : ''}</span>
-        <span class="order-item-price">${formatPrice(prod.price * qty)}</span>
-      </div>`;
-    }).join('');
+  const prod = products.find(p => p.id == id);
+  const itemPrice = appliedPromo 
+    ? Math.round(prod.price * qty * (1 - appliedPromo.discountPercent / 100)) 
+    : prod.price * qty;
+  return `<div class="order-item-row">
+    <span class="order-item-name">${escapeHtml(prod.name)}${qty > 1 ? ` x${qty}` : ''}</span>
+    <span class="order-item-price">${formatPrice(itemPrice)}</span>
+  </div>`;
+}).join('');
 
     container.innerHTML = `
       <div style="position:relative;margin-bottom:14px;">
@@ -2623,7 +2629,7 @@ function hapticMedium() {
 
     const fixedBlock = document.getElementById("cartCheckoutFixed");
     fixedBlock.style.display = "block";
-    fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${appliedPromo ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="paidBtn">Я оплатил</button><button class="promo-btn" id="helpBtn2"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь"></button></div></div>`;
+    fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper">${appliedPromo ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}<span class="total-price">${formatPrice(discountedTotal)}</span></span></div><div class="checkout-buttons-row"><button class="checkout-button" id="paidBtn">Я оплатил</button><button class="promo-btn" id="helpBtn2"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь"></button></div></div>`;
     setTimeout(() => {
       const copyBtn = document.getElementById("copyCardBtn");
       copyBtn?.addEventListener("click", async () => { if (navigator.clipboard) { copyBtn.style.transform = "scale(0.85)"; await navigator.clipboard.writeText(cardNum.replace(/\s/g, "")); setTimeout(() => { copyBtn.style.transform = "scale(1)"; }, 150); hapticLight(); } });

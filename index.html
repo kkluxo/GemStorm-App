@@ -2325,7 +2325,10 @@ function hapticMedium() {
     for (let [id, qty] of items) {
       const prod = products.find(p => p.id == id);
       if (!prod) continue;
-      html += `<div class="cart-item-wrapper"><div class="cart-item"><img class="cart-img" src="${prod.image}" alt="${escapeHtml(prod.name)}"><div class="cart-info"><div class="cart-product-name">${escapeHtml(prod.name)}</div><div class="cart-product-price">${formatPrice(prod.price)}</div><div class="cart-product-category">${escapeHtml(prod.label || prod.category)}</div></div><div class="cart-actions" style="display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-start;gap:11px;padding-right:0px;padding-top:0px;">${!['Пропуски', 'Кристаллы'].includes(prod.category) ? `<button class="cart-warn-btn" data-id="${id}" style="margin-right:5px;"><img src="https://storage.botpapa.me/files/ea9c0cf0-592a-11f1-bef9-f1ec7a2c6e45.png" style="width:21px;height:21px;"></button>` : ''}<div class="cart-quantity"><button class="cart-qty-btn" data-dec="${id}"><img src="https://storage.botpapa.me/files/975c4510-49de-11f1-bef9-f1ec7a2c6e45.png" alt="-"></button><span class="cart-qty-value">${qty}</span><button class="cart-qty-btn" data-inc="${id}" style="${qty >= (prod.category === 'Кристаллы' ? 3 : 1) ? 'opacity:0.4;pointer-events:none;' : ''}"><img src="https://storage.botpapa.me/files/9a5d01f0-49de-11f1-bef9-f1ec7a2c6e45.png" alt="+"></button></div>
+      html += `<div class="cart-item-wrapper"><div class="cart-item"><img class="cart-img" src="${prod.image}" alt="${escapeHtml(prod.name)}"><div class="cart-info"><div class="cart-product-name">${escapeHtml(prod.name)}</div><div class="cart-product-price">
+  ${appliedPromo ? `<span style="color:#9ca3af;text-decoration:line-through;font-size:15px;margin-right:6px;">${formatPrice(prod.price)}</span>` : ''}
+  ${formatPrice(appliedPromo ? Math.round(prod.price * (1 - appliedPromo.discountPercent / 100)) : prod.price)}
+</div><div class="cart-product-category">${escapeHtml(prod.label || prod.category)}</div></div><div class="cart-actions" style="display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-start;gap:11px;padding-right:0px;padding-top:0px;">${!['Пропуски', 'Кристаллы'].includes(prod.category) ? `<button class="cart-warn-btn" data-id="${id}" style="margin-right:5px;"><img src="https://storage.botpapa.me/files/ea9c0cf0-592a-11f1-bef9-f1ec7a2c6e45.png" style="width:21px;height:21px;"></button>` : ''}<div class="cart-quantity"><button class="cart-qty-btn" data-dec="${id}"><img src="https://storage.botpapa.me/files/975c4510-49de-11f1-bef9-f1ec7a2c6e45.png" alt="-"></button><span class="cart-qty-value">${qty}</span><button class="cart-qty-btn" data-inc="${id}" style="${qty >= (prod.category === 'Кристаллы' ? 3 : 1) ? 'opacity:0.4;pointer-events:none;' : ''}"><img src="https://storage.botpapa.me/files/9a5d01f0-49de-11f1-bef9-f1ec7a2c6e45.png" alt="+"></button></div>
 </div></div><div class="cart-item-delivery"><span class="cart-item-delivery-label">Способ получения</span><span class="cart-item-delivery-value">вход в аккаунт</span></div></div>`;
     }
     container.innerHTML = html;
@@ -2522,12 +2525,15 @@ function hapticMedium() {
 
     const itemsListHtml = items.map(([id, qty]) => {
   const prod = products.find(p => p.id == id);
-  const itemPrice = appliedPromo 
+  const discountedPrice = appliedPromo 
     ? Math.round(prod.price * qty * (1 - appliedPromo.discountPercent / 100)) 
     : prod.price * qty;
   return `<div class="order-item-row">
     <span class="order-item-name">${escapeHtml(prod.name)}${qty > 1 ? ` x${qty}` : ''}</span>
-    <span class="order-item-price">${formatPrice(itemPrice)}</span>
+    <span class="order-item-price">
+      ${appliedPromo ? `<span style="color:#9ca3af;text-decoration:line-through;font-size:14px;margin-right:5px;">${formatPrice(prod.price * qty)}</span>` : ''}
+      ${formatPrice(discountedPrice)}
+    </span>
   </div>`;
 }).join('');
 
@@ -2594,12 +2600,15 @@ function hapticMedium() {
 
     const itemsListHtml = items.map(([id, qty]) => {
   const prod = products.find(p => p.id == id);
-  const itemPrice = appliedPromo 
+  const discountedPrice = appliedPromo 
     ? Math.round(prod.price * qty * (1 - appliedPromo.discountPercent / 100)) 
     : prod.price * qty;
   return `<div class="order-item-row">
     <span class="order-item-name">${escapeHtml(prod.name)}${qty > 1 ? ` x${qty}` : ''}</span>
-    <span class="order-item-price">${formatPrice(itemPrice)}</span>
+    <span class="order-item-price">
+      ${appliedPromo ? `<span style="color:#9ca3af;text-decoration:line-through;font-size:14px;margin-right:5px;">${formatPrice(prod.price * qty)}</span>` : ''}
+      ${formatPrice(discountedPrice)}
+    </span>
   </div>`;
 }).join('');
 
@@ -2797,12 +2806,19 @@ isSubmitting = true;
         const textClass = getStatusTextClass(status);
         const bgClass = getStatusBgClass(status);
         
-        const itemsHtml = items.map(i => `
-          <div class="order-item-row">
-            <span class="order-item-name">${escapeHtml(i.name)} ${i.qty > 1 ? `x${i.qty}` : ''}</span>
-            <span class="order-item-price">${formatPrice(i.price * i.qty)}</span>
-          </div>
-        `).join('');
+        const itemsListHtml = items.map(([id, qty]) => {
+  const prod = products.find(p => p.id == id);
+  const discountedPrice = appliedPromo 
+    ? Math.round(prod.price * qty * (1 - appliedPromo.discountPercent / 100)) 
+    : prod.price * qty;
+  return `<div class="order-item-row">
+    <span class="order-item-name">${escapeHtml(prod.name)}${qty > 1 ? ` x${qty}` : ''}</span>
+    <span class="order-item-price">
+      ${appliedPromo ? `<span style="color:#9ca3af;text-decoration:line-through;font-size:14px;margin-right:5px;">${formatPrice(prod.price * qty)}</span>` : ''}
+      ${formatPrice(discountedPrice)}
+    </span>
+  </div>`;
+}).join('');
         
         return `<div class="order-wrapper" data-order-id="${o.id}">
           <div class="order-main-card">
@@ -2874,12 +2890,19 @@ isSubmitting = true;
   const email = isOwner ? (order.email || '—') : '***';
   const verCode = isOwner ? order.verification_code : null;
 
-  const itemsHtml = items.map(i => `
-    <div class="order-item-row">
-      <span class="order-item-name">${escapeHtml(i.name)} ${i.qty > 1 ? `x${i.qty}` : ''}</span>
-      <span class="order-item-price">${formatPrice(i.price * i.qty)}</span>
-    </div>
-  `).join('');
+  const itemsListHtml = items.map(([id, qty]) => {
+  const prod = products.find(p => p.id == id);
+  const discountedPrice = appliedPromo 
+    ? Math.round(prod.price * qty * (1 - appliedPromo.discountPercent / 100)) 
+    : prod.price * qty;
+  return `<div class="order-item-row">
+    <span class="order-item-name">${escapeHtml(prod.name)}${qty > 1 ? ` x${qty}` : ''}</span>
+    <span class="order-item-price">
+      ${appliedPromo ? `<span style="color:#9ca3af;text-decoration:line-through;font-size:14px;margin-right:5px;">${formatPrice(prod.price * qty)}</span>` : ''}
+      ${formatPrice(discountedPrice)}
+    </span>
+  </div>`;
+}).join('');
 
   const isAwaitingCode = order.status_code === 'awaiting_code';
   const statusDisplay = getStatusDisplayText(order.status_code, order.status);

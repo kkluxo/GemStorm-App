@@ -2629,17 +2629,14 @@ function hapticMedium() {
       copyBtn?.addEventListener("click", async () => { if (navigator.clipboard) { copyBtn.style.transform = "scale(0.85)"; await navigator.clipboard.writeText(cardNum.replace(/\s/g, "")); setTimeout(() => { copyBtn.style.transform = "scale(1)"; }, 150); hapticLight(); } });
       document.getElementById("helpBtn2")?.addEventListener("click", () => { hapticLight(); window.open("https://t.me/GemStormHelp", "_blank"); });
       document.getElementById("paidBtn")?.addEventListener("click", async () => {
-        hapticMedium();
-const confirmed = await new Promise(resolve => {
-  window.Telegram?.WebApp?.showConfirm(
-
-        const confirmed = await new Promise(resolve => {
-          window.Telegram?.WebApp?.showConfirm(
-            'Если вы отправили перевод, пожалуйста нажмите «ОК».\n\nОбработка заказа осуществляется только после поступления оплаты. Заказы, созданные без оплаты, не рассматриваются.',
-            resolve
-          );
-        });
-        if (!confirmed) return;
+  hapticMedium();
+  const confirmed = await new Promise(resolve => {
+    window.Telegram?.WebApp?.showConfirm(
+      'Если вы отправили перевод, пожалуйста нажмите «ОК».\n\nОбработка заказа осуществляется только после поступления оплаты. Заказы, созданные без оплаты, не рассматриваются.',
+      resolve
+    );
+  });
+  if (!confirmed) return;
         if (isSubmitting) return;
         isSubmitting = true;
         const btn = document.getElementById("paidBtn");

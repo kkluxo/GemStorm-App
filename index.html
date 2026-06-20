@@ -2632,10 +2632,10 @@ function hapticMedium() {
   hapticMedium();
 const confirmed = await new Promise(resolve => {
   window.Telegram.WebApp.showPopup({
-    message: 'Если вы отправили перевод, пожалуйста нажмите ОК\n\nЕсли же вы создадите заказ без оплаты, то ваш заказ будет отменён',
+    message: 'Если вы отправили перевод, пожалуйста нажмите «ОК».',
     buttons: [
-  { id: 'cancel', type: 'cancel' },
-  { id: 'ok', type: 'ok', text: 'Я оплатил' }
+  { id: 'ok', type: 'ok', text: 'OK' },
+  { id: 'cancel', type: 'cancel' }
 ]
   }, (buttonId) => {
     resolve(buttonId === 'ok');

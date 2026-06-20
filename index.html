@@ -2634,9 +2634,9 @@ const confirmed = await new Promise(resolve => {
   window.Telegram.WebApp.showPopup({
     message: 'Если вы отправили перевод, пожалуйста нажмите ОК\n\nЕсли же вы создадите заказ без оплаты, то ваш заказ будет отменён',
     buttons: [
-      { id: 'ok', type: 'ok', text: 'Я оплатил' },
-      { id: 'cancel', type: 'cancel' }
-    ]
+  { id: 'cancel', type: 'cancel' },
+  { id: 'ok', type: 'ok', text: 'Я оплатил' }
+]
   }, (buttonId) => {
     resolve(buttonId === 'ok');
   });

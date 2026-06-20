@@ -2508,8 +2508,8 @@ function hapticMedium() {
       }, 0);
     }
   }
-
-  function renderCheckoutForm() {
+  
+    function renderCheckoutForm() {
     const container = document.getElementById("checkoutFormContent");
 
     let rawTotal = 0;
@@ -2521,15 +2521,34 @@ function hapticMedium() {
     discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
 
     const itemsListHtml = items.map(([id, qty]) => {
-  const prod = products.find(p => p.id == id);
-  return `<div class="order-item-row">
-    <span class="order-item-name">${escapeHtml(prod.name)} ${qty > 1 ? `x${qty}` : ''}</span>
-    <span class="order-item-price">${formatPrice(prod.price * qty)}</span>
-  </div>`;
-}).join('');
+      const prod = products.find(p => p.id == id);
+      return `<div class="order-item-row">
+        <span class="order-item-name">${escapeHtml(prod.name)}${qty > 1 ? ` x${qty}` : ''}</span>
+        <span class="order-item-price">${formatPrice(prod.price * qty)}</span>
+      </div>`;
+    }).join('');
 
-container.innerHTML = `<div class="content-card">...твой существующий HTML...</div>
-<div class="order-items-card" style="margin-top:0;padding:16px 18px;">${itemsListHtml}</div>`;
+    container.innerHTML = `
+      <div class="content-card">
+        <div class="form-section">
+          <div class="form-label">Почта Supercell ID</div>
+          <input type="email" class="form-input" id="emailInput" placeholder="Укажите почту аккаунта" value="${escapeHtml(checkoutData.email)}">
+        </div>
+        <div class="form-section">
+          <div class="form-label">Способ оплаты</div>
+          <select class="form-select-native" id="paymentMethodSelect">
+            <option value="" disabled ${!checkoutData.paymentMethod ? 'selected' : ''}>Нажмите для выбора</option>
+            ${paymentMethodsOptions.map(o => `<option value="${o.value}" ${checkoutData.paymentMethod === o.value ? 'selected' : ''}>${o.label}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-section" style="margin-bottom:0;">
+          <div class="form-label">Данные отправителя</div>
+          <input type="text" class="form-input" id="senderNameInput" placeholder="Укажите имя отправителя" value="${escapeHtml(checkoutData.senderName)}">
+        </div>
+      </div>
+      <div class="order-items-card" style="margin-top:12px;padding:16px 18px;">
+        ${itemsListHtml}
+      </div>`;
 
     const fixedBlock = document.getElementById("cartCheckoutFixed");
     fixedBlock.style.display = "block";
@@ -2555,6 +2574,7 @@ container.innerHTML = `<div class="content-card">...твой существую�
       });
     }, 0);
   }
+
 
   function renderPaymentPage() {
     const container = document.getElementById("paymentContent");

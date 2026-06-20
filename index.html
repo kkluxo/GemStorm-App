@@ -2529,25 +2529,27 @@ function hapticMedium() {
     }).join('');
 
     container.innerHTML = `
-      <div class="content-card">
-        <div class="form-section">
-          <div class="form-label">Почта Supercell ID</div>
-          <input type="email" class="form-input" id="emailInput" placeholder="Укажите почту аккаунта" value="${escapeHtml(checkoutData.email)}">
+      <div style="position:relative;margin-bottom:14px;">
+        <div class="content-card" style="position:relative;z-index:2;margin-bottom:0;border-radius:34px;">
+          <div class="form-section">
+            <div class="form-label">Почта Supercell ID</div>
+            <input type="email" class="form-input" id="emailInput" placeholder="Укажите почту аккаунта" value="${escapeHtml(checkoutData.email)}">
+          </div>
+          <div class="form-section">
+            <div class="form-label">Способ оплаты</div>
+            <select class="form-select-native" id="paymentMethodSelect">
+              <option value="" disabled ${!checkoutData.paymentMethod ? 'selected' : ''}>Нажмите для выбора</option>
+              ${paymentMethodsOptions.map(o => `<option value="${o.value}" ${checkoutData.paymentMethod === o.value ? 'selected' : ''}>${o.label}</option>`).join('')}
+            </select>
+          </div>
+          <div class="form-section" style="margin-bottom:0;">
+            <div class="form-label">Данные отправителя</div>
+            <input type="text" class="form-input" id="senderNameInput" placeholder="Укажите имя отправителя" value="${escapeHtml(checkoutData.senderName)}">
+          </div>
         </div>
-        <div class="form-section">
-          <div class="form-label">Способ оплаты</div>
-          <select class="form-select-native" id="paymentMethodSelect">
-            <option value="" disabled ${!checkoutData.paymentMethod ? 'selected' : ''}>Нажмите для выбора</option>
-            ${paymentMethodsOptions.map(o => `<option value="${o.value}" ${checkoutData.paymentMethod === o.value ? 'selected' : ''}>${o.label}</option>`).join('')}
-          </select>
+        <div style="background:#141416;border:1px solid #2B2B2D;border-radius:0 0 28px 28px;padding:12px 18px;margin-top:-28px;padding-top:40px;position:relative;z-index:1;">
+          ${itemsListHtml}
         </div>
-        <div class="form-section" style="margin-bottom:0;">
-          <div class="form-label">Данные отправителя</div>
-          <input type="text" class="form-input" id="senderNameInput" placeholder="Укажите имя отправителя" value="${escapeHtml(checkoutData.senderName)}">
-        </div>
-      </div>
-      <div class="order-items-card" style="margin-top:12px;padding:16px 18px;">
-        ${itemsListHtml}
       </div>`;
 
     const fixedBlock = document.getElementById("cartCheckoutFixed");
@@ -2575,7 +2577,6 @@ function hapticMedium() {
     }, 0);
   }
 
-
   function renderPaymentPage() {
     const container = document.getElementById("paymentContent");
     const cardNum = getCardNumberFromValue(checkoutData.paymentMethod);
@@ -2589,15 +2590,36 @@ function hapticMedium() {
     discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
 
     const itemsListHtml = items.map(([id, qty]) => {
-  const prod = products.find(p => p.id == id);
-  return `<div class="order-item-row">
-    <span class="order-item-name">${escapeHtml(prod.name)} ${qty > 1 ? `x${qty}` : ''}</span>
-    <span class="order-item-price">${formatPrice(prod.price * qty)}</span>
-  </div>`;
-}).join('');
+      const prod = products.find(p => p.id == id);
+      return `<div class="order-item-row">
+        <span class="order-item-name">${escapeHtml(prod.name)}${qty > 1 ? ` x${qty}` : ''}</span>
+        <span class="order-item-price">${formatPrice(prod.price * qty)}</span>
+      </div>`;
+    }).join('');
 
-container.innerHTML = `<div class="content-card">...твой существующий HTML...</div>
-<div class="order-items-card" style="margin-top:0;padding:16px 18px;">${itemsListHtml}</div>`;
+    container.innerHTML = `
+      <div style="position:relative;margin-bottom:14px;">
+        <div class="content-card" style="position:relative;z-index:2;margin-bottom:0;border-radius:34px;">
+          <div class="form-section">
+            <div class="form-label">Номер карты</div>
+            <div class="form-select-readonly card-number-row">
+              <span class="card-number-text" style="font-size:19px;font-weight:500;">${cardNum}</span>
+              <img class="copy-icon" id="copyCardBtn" src="https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png" alt="copy">
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-label">Получатель</div>
+            <div class="form-select-readonly"><span>Азат Ф.</span></div>
+          </div>
+          <div class="form-section" style="margin-bottom:0;">
+            <div class="form-label">Банк получателя</div>
+            <div class="form-select-readonly"><span>${bank}</span></div>
+          </div>
+        </div>
+        <div style="background:#141416;border:1px solid #2B2B2D;border-radius:0 0 28px 28px;padding:12px 18px;margin-top:-28px;padding-top:40px;position:relative;z-index:1;">
+          ${itemsListHtml}
+        </div>
+      </div>`;
 
     const fixedBlock = document.getElementById("cartCheckoutFixed");
     fixedBlock.style.display = "block";
@@ -2607,13 +2629,13 @@ container.innerHTML = `<div class="content-card">...твой существую�
       copyBtn?.addEventListener("click", async () => { if (navigator.clipboard) { copyBtn.style.transform = "scale(0.85)"; await navigator.clipboard.writeText(cardNum.replace(/\s/g, "")); setTimeout(() => { copyBtn.style.transform = "scale(1)"; }, 150); hapticLight(); } });
       document.getElementById("helpBtn2")?.addEventListener("click", () => { hapticLight(); window.open("https://t.me/GemStormHelp", "_blank"); });
       document.getElementById("paidBtn")?.addEventListener("click", async () => {
-  const confirmed = await new Promise(resolve => {
-    window.Telegram?.WebApp?.showConfirm(
-      'Если вы отправили перевод, пожалуйста нажмите ОК\n\nЕсли же вы создадите заказ без оплаты, то ваш заказ будет отменён',
-      resolve
-    );
-  });
-  if (!confirmed) return;
+        const confirmed = await new Promise(resolve => {
+          window.Telegram?.WebApp?.showConfirm(
+            'Если вы отправили перевод, пожалуйста нажмите ОК\n\nЕсли же вы создадите заказ без оплаты, то ваш заказ будет отменён',
+            resolve
+          );
+        });
+        if (!confirmed) return;
         if (isSubmitting) return;
         isSubmitting = true;
         const btn = document.getElementById("paidBtn");

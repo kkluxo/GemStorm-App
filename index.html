@@ -2547,7 +2547,7 @@ function hapticMedium() {
             <input type="text" class="form-input" id="senderNameInput" placeholder="Укажите имя отправителя" value="${escapeHtml(checkoutData.senderName)}">
           </div>
         </div>
-        <div style="background:#141416;border:1px solid #2B2B2D;border-radius:0 0 28px 28px;padding:12px 18px;margin-top:-32px;padding-top:40px;position:relative;z-index:1;">
+        <div style="background:#141416;border:1px solid #2B2B2D;border-radius:0 0 28px 28px;padding:12px 18px;margin-top:-30px;padding-top:40px;position:relative;z-index:1;">
           ${itemsListHtml}
         </div>
       </div>`;
@@ -2616,7 +2616,7 @@ function hapticMedium() {
             <div class="form-select-readonly"><span>${bank}</span></div>
           </div>
         </div>
-        <div style="background:#141416;border:1px solid #2B2B2D;border-radius:0 0 28px 28px;padding:12px 18px;margin-top:-32px;padding-top:40px;position:relative;z-index:1;">
+        <div style="background:#141416;border:1px solid #2B2B2D;border-radius:0 0 28px 28px;padding:12px 18px;margin-top:-30px;padding-top:40px;position:relative;z-index:1;">
           ${itemsListHtml}
         </div>
       </div>`;
@@ -2629,9 +2629,13 @@ function hapticMedium() {
       copyBtn?.addEventListener("click", async () => { if (navigator.clipboard) { copyBtn.style.transform = "scale(0.85)"; await navigator.clipboard.writeText(cardNum.replace(/\s/g, "")); setTimeout(() => { copyBtn.style.transform = "scale(1)"; }, 150); hapticLight(); } });
       document.getElementById("helpBtn2")?.addEventListener("click", () => { hapticLight(); window.open("https://t.me/GemStormHelp", "_blank"); });
       document.getElementById("paidBtn")?.addEventListener("click", async () => {
+        hapticMedium();
+const confirmed = await new Promise(resolve => {
+  window.Telegram?.WebApp?.showConfirm(
+
         const confirmed = await new Promise(resolve => {
           window.Telegram?.WebApp?.showConfirm(
-            'Если вы отправили перевод, пожалуйста нажмите «ОК»\n\nЕсли же вы создадите заказ без оплаты, то этот заказ не будет обработан',
+            'Если вы отправили перевод, пожалуйста нажмите «ОК».\n\nОбработка заказа осуществляется только после поступления оплаты. Заказы, созданные без оплаты, не рассматриваются.',
             resolve
           );
         });
@@ -2913,7 +2917,7 @@ function hapticMedium() {
         <span class="order-detail-value" style="color:#ffffff; font-weight:500;">${formatPrice(order.total)}</span>
       </div>
     </div>
-    <div class="order-items-card" style="margin-top: -28px; padding-top: 36px;">
+    <div class="order-items-card" style="margin-top: -32px; padding-top: 36px;">
       ${itemsHtml}
     </div>
     <div id="orderReviewBlock"></div>

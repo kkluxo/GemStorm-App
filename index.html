@@ -2464,6 +2464,12 @@ ${appliedPromo ? `<span style="color:#9ca3af;text-decoration:line-through;font-s
                 alert('Промокод не найден');
               } else if (data.reason === 'already_used') {
                 alert('Данный промокод уже был использован ранее');
+              } else if (data.reason === 'expired') {
+    alert('Срок действия промокода истёк');
+} else if (data.reason === 'limit_reached') {
+    alert('Промокод больше не доступен — лимит активаций исчерпан');
+} else if (data.reason === 'not_for_you') {
+    alert('Этот промокод предназначен для другого пользователя');
               } else if (data.reason === 'first_order_only') {
                 alert('Данный промокод доступен только на первый заказ');
               }

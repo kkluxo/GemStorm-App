@@ -232,7 +232,7 @@
       border-radius: 20px; padding: 4px 10px; font-size: 15px; font-weight: 600;
       margin-left: auto; flex-shrink: 0;
     }
-    .user-spent-row { display: flex; justify-content: space-between; align-items: center; }
+    .user-spent-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; }
     .user-spent-label { font-size: 15px; color: #9e9e9e; }
     .user-spent-value { font-size: 15px; color: #ffffff; font-weight: 600; }
 
@@ -279,7 +279,7 @@
       border: 1px solid #2B2B2D; border-radius: 0 0 30px 30px;
       padding: 16px 18px; margin-top: -27px; padding-top: 41px; position: relative; z-index: 1;
     }
-    .profile-stats-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; }
+    .profile-stats-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; }
     .profile-stats-row:first-child { padding-top: 0; }
     .profile-stats-row:last-child { padding-bottom: 0; }
     .profile-stats-label { font-size: 16px; color: #cbcdcd; font-weight: 500; }
@@ -760,12 +760,12 @@
             <div class="user-card-bottom">
               <div class="user-spent-row">
                 <span class="user-spent-label">Статус польз.</span>
-                <span class="user-spent-value" style="color:${statusColor};">${statusText}</span>
-              </div>
+               <span class="user-spent-value" style="color:${statusColor};font-weight:400;">${statusText}</span>
+           </div>
               <div class="user-spent-row">
                 <span class="user-spent-label">Объем покупок</span>
-                <span class="user-spent-value">${formatPrice(u.total_spent)}</span>
-              </div>
+                <span class="user-spent-value" style="font-weight:400;">${formatPrice(u.total_spent)}</span>
+         </div>
             </div>
           </div>`;
         }).join('')}`;
@@ -922,10 +922,14 @@
           e.stopPropagation();
           hapticLight();
           const reviewId = btn.dataset.id;
-          if (confirm('Удалить отзыв?')) {
-            try {
-              const r = await fetch(`${API}/api/reviews/${reviewId}`, { 
-                method: 'DELETE',
+          window.Telegram.WebApp.showPopup({
+  message: 'Удалить отзыв?',
+  buttons: [{ id: 'ok', type: 'destructive', text: 'Удалить' }, { id: 'cancel', type: 'cancel' }]
+}, async (buttonId) => {
+  if (buttonId !== 'ok') return;
+  try {
+    const r = await fetch(`${API}/api/reviews/${reviewId}`, {
+               method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${getAdminToken()}` }
               });
               if (r.ok) { 
@@ -1211,6 +1215,7 @@ async function renderCreatePromoPage() {
     fixedBar.className = 'fixed-bottom-bar';
     fixedBar.innerHTML = `<div class="action-card"><div class="action-buttons-row"><button class="update-status-btn" id="createPromoSubmitBtn">Создать промокод</button></div></div>`;
     document.body.appendChild(fixedBar);
+    fixedBar.style.bottom = '100px';
 
     setTimeout(() => {
         document.getElementById('createPromoSubmitBtn')?.addEventListener('click', async () => {

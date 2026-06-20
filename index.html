@@ -2632,7 +2632,7 @@ function hapticMedium() {
   hapticMedium();
   const confirmed = await new Promise(resolve => {
     window.Telegram?.WebApp?.showConfirm(
-      'Если вы отправили перевод, пожалуйста нажмите «ОК».\n\nНеоплаченные заказы не обрабатываются нашей командой.',
+      'Если вы отправили перевод, пожалуйста нажмите «ОК».',
       resolve
     );
   });

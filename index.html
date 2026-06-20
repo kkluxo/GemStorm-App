@@ -2632,7 +2632,7 @@ function hapticMedium() {
   hapticMedium();
   const confirmed = await new Promise(resolve => {
     window.Telegram?.WebApp?.showConfirm(
-      'Если вы отправили перевод, пожалуйста нажмите «ОК».\n\nЕсли вы создали неоплаченный заказ, то данный заказ не будет обработан нашей командой.',
+      'Если вы отправили перевод, пожалуйста нажмите «ОК».\n\nПри создании неоплаченного заказа, данный заказ не будет обработан нашей командой.',
       resolve
     );
   });
@@ -2914,7 +2914,7 @@ function hapticMedium() {
         <span class="order-detail-value" style="color:#ffffff; font-weight:500;">${formatPrice(order.total)}</span>
       </div>
     </div>
-    <div class="order-items-card" style="margin-top: -32px; padding-top: 38px;">
+    <div class="order-items-card" style="margin-top: -32px; padding-top: 40px;">
       ${itemsHtml}
     </div>
     <div id="orderReviewBlock"></div>

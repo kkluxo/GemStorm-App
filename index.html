@@ -2631,9 +2631,14 @@ function hapticMedium() {
       document.getElementById("paidBtn")?.addEventListener("click", async () => {
   hapticMedium();
   const confirmed = await new Promise(resolve => {
-    window.Telegram?.WebApp?.showConfirm(
-      'Если вы отправили перевод, пожалуйста нажмите «ОК».',
-      resolve
+    window.Telegram.WebApp.showPopup({
+  message: 'Если вы отправили перевод, пожалуйста нажмите ОК\n\nЕсли же вы создадите заказ без оплаты, то ваш заказ будет отменён',
+  buttons: [
+    { id: 'ok', type: 'default', text: 'Я оплатил' },
+    { id: 'cancel', type: 'cancel' }
+  ]
+}, (buttonId) => {
+  if (buttonId === 'ok') {
     );
   });
   if (!confirmed) return;

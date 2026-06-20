@@ -2630,20 +2630,20 @@ function hapticMedium() {
       document.getElementById("helpBtn2")?.addEventListener("click", () => { hapticLight(); window.open("https://t.me/GemStormHelp", "_blank"); });
       document.getElementById("paidBtn")?.addEventListener("click", async () => {
   hapticMedium();
-  const confirmed = await new Promise(resolve => {
-    window.Telegram.WebApp.showPopup({
-  message: 'Если вы отправили перевод, пожалуйста нажмите ОК\n\nЕсли же вы создадите заказ без оплаты, то ваш заказ будет отменён',
-  buttons: [
-    { id: 'ok', type: 'default', text: 'Я оплатил' },
-    { id: 'cancel', type: 'cancel' }
-  ]
-}, (buttonId) => {
-  if (buttonId === 'ok') {
-    );
+const confirmed = await new Promise(resolve => {
+  window.Telegram.WebApp.showPopup({
+    message: 'Если вы отправили перевод, пожалуйста нажмите ОК\n\nЕсли же вы создадите заказ без оплаты, то ваш заказ будет отменён',
+    buttons: [
+      { id: 'ok', type: 'default', text: 'Я оплатил' },
+      { id: 'cancel', type: 'cancel' }
+    ]
+  }, (buttonId) => {
+    resolve(buttonId === 'ok');
   });
-  if (!confirmed) return;
-        if (isSubmitting) return;
-        isSubmitting = true;
+});
+if (!confirmed) return;
+if (isSubmitting) return;
+isSubmitting = true;
         const btn = document.getElementById("paidBtn");
         if (btn) { btn.disabled = true; btn.textContent = "Обработка..."; }
         hapticMedium();

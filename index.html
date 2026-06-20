@@ -2664,7 +2664,13 @@ isSubmitting = true;
         const cartItems = Object.entries(cart);
         total = cartItems.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
         if (appliedPromo) total = Math.round(total * (1 - appliedPromo.discountPercent / 100));
-        orderItems = cartItems.map(([id, qty]) => ({ id: parseInt(id), name: products.find(p => p.id == id).name, qty, price: products.find(p => p.id == id).price }));
+        orderItems = cartItems.map(([id, qty]) => {
+  const prod = products.find(p => p.id == id);
+  const discountedPrice = appliedPromo 
+    ? Math.round(prod.price * (1 - appliedPromo.discountPercent / 100)) 
+    : prod.price;
+  return { id: parseInt(id), name: prod.name, qty, price: discountedPrice };
+});
         orderPromo = appliedPromo ? appliedPromo.code : null;
         orderPromoDiscount = appliedPromo ? appliedPromo.discountPercent : 0;
 

@@ -362,10 +362,9 @@
   <div id="detailContent"></div>
 </div>
 
-<!-- Обращения (новый раздел) -->
-<div id="tickets-page" class="page">
-  <div id="ticketsHeader"></div>
-  <div id="ticketsContent"></div>
+<div id="promos-page" class="page">
+  <div id="promosHeader"></div>
+  <div id="promosContent"></div>
 </div>
 
 <div id="bottomNav" style="position:fixed;bottom:18px;left:18px;right:18px;z-index:1001;max-width:600px;margin:0 auto;width:calc(100% - 36px);display:flex;gap:10px;align-items:center;">
@@ -502,7 +501,7 @@
     document.getElementById(pageId + '-page')?.classList.add('active-page');
     currentAdminPage = pageId;
 
-    const mainPages = ['orders', 'users', 'reviews', 'profile', 'tickets'];
+    const mainPages = ['orders', 'users', 'reviews', 'profile', 'promo'];
     if (mainPages.includes(pageId)) {
       document.querySelectorAll('.menu-item').forEach(b => b.classList.remove('active'));
       document.querySelector(`.menu-item[data-page="${pageId}"]`)?.classList.add('active');
@@ -521,7 +520,7 @@
     if (pageId === 'users') { renderUsersPage(); }
     if (pageId === 'reviews') { renderReviewsPage(); }
     if (pageId === 'profile') { renderProfilePage(); }
-    if (pageId === 'tickets') { renderTicketsPage(); }
+    if (pageId === 'promos') { renderPromosPage(); }
 
     window.scrollTo({ top: 0 });
   }
@@ -794,56 +793,6 @@
     }
   }
 
-  // ===== СТРАНИЦА ОБРАЩЕНИЙ (новая) =====
-  async function renderTicketsPage() {
-    const container = document.getElementById('ticketsContent');
-    const headerContainer = document.getElementById('ticketsHeader');
-    if (headerContainer) headerContainer.innerHTML = renderPageHeader('https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png', 'Обращения');
-    
-    if (!container) return;
-    container.innerHTML = '<div class="empty-state">Загрузка...</div>';
-    try {
-      const r = await fetch(`${API}/api/tickets`, {
-        headers: { 'Authorization': `Bearer ${getAdminToken()}` }
-      });
-      if (!r.ok) throw new Error('Ошибка загрузки');
-      const tickets = await r.json();
-      if (!tickets.length) {
-        container.innerHTML = '<div class="empty-state"><div class="empty-title">Нет обращений</div></div>';
-        return;
-      }
-
-      container.innerHTML = tickets.map(t => {
-        const dt = new Date(t.created_at);
-        const dateStr = dt.toLocaleString('ru-RU', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' });
-        return `<div class="order-wrapper">
-          <div class="order-main-card">
-            <div class="order-header">
-              <span class="order-id">${escapeHtml(t.user_username || t.user_name || 'Пользователь')}</span>
-              <span class="order-card-status status-pending-text status-pending-bg">${escapeHtml(t.reason || 'Другая проблема')}</span>
-            </div>
-            <div class="order-date">${dateStr}</div>
-            <div class="order-total" style="font-size:15px;font-weight:400;color:#cbcdcd;">${escapeHtml(t.message)}</div>
-            ${t.order_id ? `<div style="font-size:14px;color:#9e9e9e;margin-top:6px;">Заказ #${t.order_id}</div>` : ''}
-          </div>
-          <div class="order-items-card">
-            <div class="order-item-row">
-              <span class="order-item-name">Статус</span>
-              <span class="order-item-price" style="color:#4cb4e9;">${t.resolved ? '✅ Закрыто' : '⏳ Ожидает'}</span>
-            </div>
-            <div class="order-item-row">
-              <span class="order-item-name">ID пользователя</span>
-              <span class="order-item-price">${t.user_id || '—'}</span>
-            </div>
-          </div>
-        </div>`;
-      }).join('');
-
-    } catch(e) {
-      container.innerHTML = `<div class="empty-state">Ошибка загрузки: ${e.message}</div>`;
-    }
-  }
-
   async function renderProfilePage() {
     const container = document.getElementById('profileContent');
     const headerContainer = document.getElementById('profileHeader');
@@ -906,14 +855,14 @@
         </div>
         <svg style="width:18px;height:18px;opacity:0.4;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
       </div>
-
-      <div class="subscribe-card" id="goTicketsBtn">
-        <div>
-          <div class="subscribe-title">Обращения пользователей</div>
-          <div class="subscribe-text">Просмотр обращений в поддержку</div>
-        </div>
-        <svg style="width:18px;height:18px;opacity:0.4;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-      </div>
+      
+      <div class="subscribe-card" id="goPromosBtn">
+  <div>
+    <div class="subscribe-title">Промокоды</div>
+    <div class="subscribe-text">Создавать и управлять промокодами</div>
+  </div>
+  <svg style="width:18px;height:18px;opacity:0.4;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+</div>
 
       <div class="settings-card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
@@ -975,13 +924,128 @@
         hapticLight();
         showStatsPage();
       });
-
-      document.getElementById('goTicketsBtn')?.addEventListener('click', () => {
-        hapticLight();
-        showAdminPage('tickets');
-      });
+      
+      document.getElementById('goPromosBtn')?.addEventListener('click', () => {
+    hapticLight();
+    showAdminPage('promos');
+});
     }, 0);
   }
+  
+  async function renderPromosPage() {
+    const container = document.getElementById('promosContent');
+    const headerContainer = document.getElementById('promosHeader');
+    if (headerContainer) headerContainer.innerHTML = renderPageHeader('https://storage.botpapa.me/files/8324fec0-5933-11f1-bef9-f1ec7a2c6e45.png', 'Промокоды');
+    if (!container) return;
+
+    container.innerHTML = `
+        <div class="settings-card" style="margin-bottom:16px;">
+            <div class="settings-title">Создать промокод</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <input class="status-select" id="promoCode" placeholder="Код (напр. SALE20)" style="background:#303032;border-radius:34px;padding:14px 16px;color:white;font-size:17px;border:none;outline:none;">
+                <input class="status-select" id="promoDiscount" type="number" placeholder="Скидка %" min="1" max="100" style="background:#303032;border-radius:34px;padding:14px 16px;color:white;font-size:17px;border:none;outline:none;">
+                <select class="status-select" id="promoType">
+                    <option value="all">Для всех</option>
+                    <option value="first_order">Только первый заказ</option>
+                </select>
+                <input class="status-select" id="promoUserId" placeholder="User ID (необязательно)" style="background:#303032;border-radius:34px;padding:14px 16px;color:white;font-size:17px;border:none;outline:none;">
+                <input class="status-select" id="promoExpires" type="datetime-local" placeholder="Срок действия" style="background:#303032;border-radius:34px;padding:14px 16px;color:white;font-size:17px;border:none;outline:none;color-scheme:dark;">
+                <input class="status-select" id="promoMaxUses" type="number" placeholder="Макс. активаций (необязательно)" min="1" style="background:#303032;border-radius:34px;padding:14px 16px;color:white;font-size:17px;border:none;outline:none;">
+                <button class="update-status-btn" id="createPromoBtn">Создать промокод</button>
+            </div>
+        </div>
+        <div id="promosList"><div class="empty-state">Загрузка...</div></div>`;
+
+    setTimeout(() => {
+        document.getElementById('createPromoBtn')?.addEventListener('click', async () => {
+            hapticMedium();
+            const code = document.getElementById('promoCode')?.value.trim();
+            const discount = document.getElementById('promoDiscount')?.value;
+            const type = document.getElementById('promoType')?.value;
+            const userId = document.getElementById('promoUserId')?.value.trim();
+            const expiresAt = document.getElementById('promoExpires')?.value;
+            const maxUses = document.getElementById('promoMaxUses')?.value;
+
+            if (!code || !discount) { alert('Введите код и скидку'); return; }
+
+            try {
+                const r = await fetch(`${API}/api/promo-codes`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getAdminToken()}` },
+                    body: JSON.stringify({
+                        code,
+                        discount: parseInt(discount),
+                        type,
+                        userId: userId || null,
+                        expiresAt: expiresAt || null,
+                        maxUses: maxUses || null
+                    })
+                });
+                const data = await r.json();
+                if (r.ok) { hapticLight(); loadPromosList(); document.getElementById('promoCode').value = ''; document.getElementById('promoDiscount').value = ''; document.getElementById('promoUserId').value = ''; document.getElementById('promoExpires').value = ''; document.getElementById('promoMaxUses').value = ''; }
+                else alert(data.error || 'Ошибка создания');
+            } catch(e) { alert('Ошибка соединения'); }
+        });
+        loadPromosList();
+    }, 0);
+}
+
+async function loadPromosList() {
+    const container = document.getElementById('promosList');
+    if (!container) return;
+    try {
+        const r = await fetch(`${API}/api/promo-codes`, {
+            headers: { 'Authorization': `Bearer ${getAdminToken()}` }
+        });
+        const list = await r.json();
+        if (!list.length) { container.innerHTML = '<div class="empty-state"><div class="empty-title">Промокодов нет</div></div>'; return; }
+        container.innerHTML = list.map(p => {
+            const expires = p.expires_at ? new Date(p.expires_at).toLocaleDateString('ru-RU') : '∞';
+            const uses = p.max_uses ? `${p.used_count}/${p.max_uses}` : `${p.used_count}/∞`;
+            const forUser = p.user_id ? `Для: ${p.user_id}` : 'Для всех';
+            return `<div class="order-wrapper">
+                <div class="order-main-card">
+                    <div class="order-header">
+                        <span class="order-id">${p.code}</span>
+                        <span class="order-card-status ${p.active ? 'status-completed-text status-completed-bg' : 'status-cancelled-text status-cancelled-bg'}">${p.active ? 'Активен' : 'Отключён'}</span>
+                    </div>
+                    <div class="order-date">${forUser} · Тип: ${p.type === 'first_order' ? 'первый заказ' : 'все'}</div>
+                    <div class="order-total">−${p.discount}%</div>
+                </div>
+                <div class="order-items-card">
+                    <div class="order-item-row"><span class="order-item-name">Использований</span><span class="order-item-price">${uses}</span></div>
+                    <div class="order-item-row"><span class="order-item-name">Срок действия</span><span class="order-item-price">${expires}</span></div>
+                    <div class="order-item-row" style="margin-top:8px;gap:8px;">
+                        ${p.active
+                            ? `<button onclick="togglePromo(${p.id}, false)" style="flex:1;background:rgba(239,68,68,0.12);border:none;border-radius:34px;padding:10px;color:#ef4444;font-size:15px;font-weight:500;cursor:pointer;">Деактивировать</button>`
+                            : `<button onclick="togglePromo(${p.id}, true)" style="flex:1;background:rgba(34,197,94,0.12);border:none;border-radius:34px;padding:10px;color:#22c55e;font-size:15px;font-weight:500;cursor:pointer;">Активировать</button>`}
+                        <button onclick="deletePromo(${p.id})" style="flex:1;background:rgba(239,68,68,0.08);border:none;border-radius:34px;padding:10px;color:#ef4444;font-size:15px;font-weight:500;cursor:pointer;">Удалить</button>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    } catch(e) {
+        container.innerHTML = '<div class="empty-state">Ошибка загрузки</div>';
+    }
+}
+
+async function togglePromo(id, activate) {
+    hapticLight();
+    try {
+        const url = activate ? `${API}/api/promo-codes/${id}/activate` : `${API}/api/promo-codes/${id}`;
+        await fetch(url, { method: activate ? 'POST' : 'DELETE', headers: { 'Authorization': `Bearer ${getAdminToken()}` } });
+        loadPromosList();
+    } catch(e) { alert('Ошибка'); }
+}
+
+async function deletePromo(id) {
+    hapticLight();
+    if (!confirm('Удалить промокод?')) return;
+    try {
+        await fetch(`${API}/api/promo-codes/${id}/delete`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${getAdminToken()}` } });
+        loadPromosList();
+    } catch(e) { alert('Ошибка'); }
+}
 
   async function showStatsPage() {
     const headerContainer = document.getElementById('statsHeader');
@@ -1042,9 +1106,9 @@
           showAdminPage('profile');
         } else if (document.getElementById('detail-page').classList.contains('active-page')) {
           showAdminPage('orders');
-        } else if (document.getElementById('tickets-page').classList.contains('active-page')) {
-          showAdminPage('profile');
-        } else {
+        } else if (document.getElementById('promos-page').classList.contains('active-page')) {
+    showAdminPage('profile');
+} else {
           showAdminPage('orders');
         }
       });
@@ -1054,7 +1118,7 @@
   document.addEventListener('click', function(e) {
     const doubleBtn = e.target.closest('#headerDoubleBtn');
     if (!doubleBtn) return;
-    
+    =
     const isRefresh = e.target.closest('#headerRefreshIcon');
     const isSupport = e.target.closest('#headerSupportIcon');
     
@@ -1064,7 +1128,7 @@
       else if (currentAdminPage === 'users') renderUsersPage();
       else if (currentAdminPage === 'reviews') renderReviewsPage();
       else if (currentAdminPage === 'profile') renderProfilePage();
-      else if (currentAdminPage === 'tickets') renderTicketsPage();
+      else if (currentAdminPage === 'promo') renderPromoPage();
     } else if (isSupport) {
       hapticLight();
       window.open('https://t.me/GemStormHelp', '_blank');
@@ -1091,7 +1155,7 @@
       showAdminPage('profile');
     } else if (document.getElementById('detail-page').classList.contains('active-page')) {
       showAdminPage('orders');
-    } else if (document.getElementById('tickets-page').classList.contains('active-page')) {
+    } else if (document.getElementById('promos-page').classList.contains('active-page')) {
       showAdminPage('profile');
     } else {
       showAdminPage('orders');

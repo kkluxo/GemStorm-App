@@ -2841,10 +2841,7 @@ isSubmitting = true;
               </div>
             </div>
             <div class="order-date">${o.date} ${o.time || ''}</div>
-            <div class="order-total" style="display:flex;align-items:center;gap:8px;">
-  ${formatPrice(o.total)}
-  ${o.promo_discount ? `<span style="color:#9ca3af;text-decoration:line-through;font-size:15px;font-weight:400;">${formatPrice(Math.round(o.total / (1 - o.promo_discount / 100)))}</span>` : ''}
-</div>
+            <div class="order-total">${formatPrice(o.total)}</div>
           </div>
           <div class="order-items-card">
             ${itemsHtml}
@@ -2948,10 +2945,10 @@ isSubmitting = true;
         <span class="order-detail-label">Почта</span>
         <span class="order-detail-value">${escapeHtml(email)}</span>
       </div>
-      ${order.promo ? `<div class="order-detail-row">
-  <span class="order-detail-label">Промокод</span>
-  <span class="order-detail-value">${isOwner ? `${order.promo} (${order.promo_discount}%)` : `*** (${order.promo_discount}%)`}</span>
-</div>` : ''}
+      ${order.promo && isOwner ? `<div class="order-detail-row">
+        <span class="order-detail-label">Промокод</span>
+        <span class="order-detail-value">${order.promo} (${order.promo_discount}%)</span>
+      </div>` : ''}
       ${verCode ? `<div class="order-detail-row">
         <span class="order-detail-label">Код</span>
         <span class="order-detail-value" style="color:#ffffff;">${escapeHtml(verCode)}</span>
@@ -3152,19 +3149,14 @@ fetch('https://gemstorm.up.railway.app/api/reviews')
   
   // Функция для построения HTML товаров
   function buildItemsHtml(itemsArr) {
-  if (!itemsArr || !itemsArr.length) return '';
-  return itemsArr.map(i => 
-    `<div class="review-item-row">
-      <span class="review-item-name">${escapeHtml(i.name)}</span>
-      <span class="review-item-price" style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
-        ${i.originalPrice && i.originalPrice !== i.price 
-          ? `<span style="color:#9ca3af;text-decoration:line-through;font-size:14px;">${formatPrice(i.originalPrice)}</span>` 
-          : ''}
-        ${formatPrice(i.price)}
-      </span>
-    </div>`
-  ).join('');
-}
+    if (!itemsArr || !itemsArr.length) return '';
+    return itemsArr.map(i => 
+      `<div class="review-item-row">
+        <span class="review-item-name">${escapeHtml(i.name)}</span>
+        <span class="review-item-price">${formatPrice(i.price)}</span>
+      </div>`
+    ).join('');
+  }
 
   // Проверяем, есть ли пользователь
   if (!userId) {
@@ -3500,33 +3492,32 @@ fetch('https://gemstorm.up.railway.app/api/reviews')
       // Убрал addEventListener на review-order-badge (алерт удалён)
       container.querySelectorAll('.review-order-badge').forEach(badge => {
   badge.addEventListener('click', async () => {
-    hapticLight();
-    const orderNum = badge.textContent.replace('#', '').trim();
-    const tgUserId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
+  hapticLight();
+  const orderNum = badge.textContent.replace('#', '').trim();
+  const tgUserId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
 
-    // Сначала ищем в своих заказах
-    await loadUserOrders();
-    let found = orders.find(o => String(o.order_number) === orderNum);
+  await loadUserOrders();
+  let found = orders.find(o => String(o.order_number) === orderNum);
 
-    if (found) {
-      const isOwner = String(found.user_id) === String(tgUserId);
-      setTimeout(() => showOrderDetail(found, isOwner), 0);
-        } else {
-      // Грузим с сервера
-      try {
-        const r = await fetch('https://gemstorm.up.railway.app/api/refresh-order', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ orderNumber: orderNum })
-        });
-        const order = await r.json();
-        if (order && order.id) {
-          const isOwner = String(order.user_id) === String(tgUserId);
-          setTimeout(() => showOrderDetail(order, isOwner), 0);
-          }
-      } catch(e) {}
-    }
-  });
+  if (found) {
+    const isOwner = String(found.user_id) === String(tgUserId);
+    navigationHistory.push('reviews'); // добавляем reviews в историю
+    setTimeout(() => showOrderDetail(found, isOwner), 0);
+  } else {
+    try {
+      const r = await fetch('https://gemstorm.up.railway.app/api/refresh-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderNumber: orderNum })
+      });
+      const order = await r.json();
+      if (order && order.id) {
+        const isOwner = String(order.user_id) === String(tgUserId);
+        navigationHistory.push('reviews'); // добавляем reviews в историю
+        setTimeout(() => showOrderDetail(order, isOwner), 0);
+      }
+    } catch(e) {}
+  }
 });
     } catch(e) {
       container.innerHTML = `<div class="review-empty">Не удалось загрузить отзывы</div>`;

@@ -898,7 +898,7 @@
 
     .card-number-text {
       flex: 1;
-      font-size: 18px;
+      font-size: 19px;
       font-weight: 500;
     }
 
@@ -2520,7 +2520,17 @@ function hapticMedium() {
     rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
     discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
 
-    container.innerHTML = `<div class="content-card"><div class="form-section"><div class="form-label">Почта Supercell ID</div><input type="email" class="form-input" id="emailInput" placeholder="Укажите почту аккаунта" value="${escapeHtml(checkoutData.email)}"></div><div class="form-section"><div class="form-label">Способ оплаты</div><select class="form-select-native" id="paymentMethodSelect"><option value="" disabled ${!checkoutData.paymentMethod ? 'selected' : ''}>Нажмите для выбора</option>${paymentMethodsOptions.map(o => `<option value="${o.value}" ${checkoutData.paymentMethod === o.value ? 'selected' : ''}>${o.label}</option>`).join('')}</select></div><div class="form-section"><div class="form-label">Данные отправителя</div><input type="text" class="form-input" id="senderNameInput" placeholder="Укажите имя отправителя" value="${escapeHtml(checkoutData.senderName)}"></div></div>`;
+    const itemsListHtml = items.map(([id, qty]) => {
+  const prod = products.find(p => p.id == id);
+  return `<div class="order-item-row">
+    <span class="order-item-name">${escapeHtml(prod.name)} ${qty > 1 ? `x${qty}` : ''}</span>
+    <span class="order-item-price">${formatPrice(prod.price * qty)}</span>
+  </div>`;
+}).join('');
+
+container.innerHTML = `<div class="content-card">...твой существующий HTML...</div>
+<div class="order-items-card" style="margin-top:0;padding:16px 18px;">${itemsListHtml}</div>`;
+
     const fixedBlock = document.getElementById("cartCheckoutFixed");
     fixedBlock.style.display = "block";
     fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${appliedPromo ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="payBtn">Перейти к оплате</button><button class="promo-btn" id="helpBtn"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь"></button></div></div>`;
@@ -2558,7 +2568,17 @@ function hapticMedium() {
     rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
     discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
 
-    container.innerHTML = `<div class="content-card"><div class="form-section"><div class="form-label">Номер карты</div><div class="form-select-readonly card-number-row"><span class="card-number-text">${cardNum}</span><img class="copy-icon" id="copyCardBtn" src="https://storage.botpapa.me/files/5d229210-4a28-11f1-bef9-f1ec7a2c6e45.png" alt="copy"></div></div><div class="form-section"><div class="form-label">Получатель</div><div class="form-select-readonly"><span>Азат Ф.</span></div></div><div class="form-section"><div class="form-label">Банк получателя</div><div class="form-select-readonly"><span>${bank}</span></div></div></div>`;
+    const itemsListHtml = items.map(([id, qty]) => {
+  const prod = products.find(p => p.id == id);
+  return `<div class="order-item-row">
+    <span class="order-item-name">${escapeHtml(prod.name)} ${qty > 1 ? `x${qty}` : ''}</span>
+    <span class="order-item-price">${formatPrice(prod.price * qty)}</span>
+  </div>`;
+}).join('');
+
+container.innerHTML = `<div class="content-card">...твой существующий HTML...</div>
+<div class="order-items-card" style="margin-top:0;padding:16px 18px;">${itemsListHtml}</div>`;
+
     const fixedBlock = document.getElementById("cartCheckoutFixed");
     fixedBlock.style.display = "block";
     fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="total-label">Общая стоимость:</span><span class="total-price-wrapper"><span class="total-price">${formatPrice(discountedTotal)}</span>${appliedPromo ? `<span class="total-old-price">${formatPrice(rawTotal)}</span>` : ''}</span></div><div class="checkout-buttons-row"><button class="checkout-button" id="paidBtn">Я оплатил</button><button class="promo-btn" id="helpBtn2"><img src="https://storage.botpapa.me/files/bc747470-4a25-11f1-bef9-f1ec7a2c6e45.png" alt="Помощь"></button></div></div>`;
@@ -2567,6 +2587,13 @@ function hapticMedium() {
       copyBtn?.addEventListener("click", async () => { if (navigator.clipboard) { copyBtn.style.transform = "scale(0.85)"; await navigator.clipboard.writeText(cardNum.replace(/\s/g, "")); setTimeout(() => { copyBtn.style.transform = "scale(1)"; }, 150); hapticLight(); } });
       document.getElementById("helpBtn2")?.addEventListener("click", () => { hapticLight(); window.open("https://t.me/GemStormHelp", "_blank"); });
       document.getElementById("paidBtn")?.addEventListener("click", async () => {
+  const confirmed = await new Promise(resolve => {
+    window.Telegram?.WebApp?.showConfirm(
+      'Если вы отправили перевод, пожалуйста нажмите ОК\n\nЕсли же вы создадите заказ без оплаты, то ваш заказ будет отменён',
+      resolve
+    );
+  });
+  if (!confirmed) return;
         if (isSubmitting) return;
         isSubmitting = true;
         const btn = document.getElementById("paidBtn");

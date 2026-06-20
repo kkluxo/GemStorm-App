@@ -422,6 +422,9 @@ await pool.query(`ALTER TABLE promo_codes ADD COLUMN IF NOT EXISTS expires_at TI
 await pool.query(`ALTER TABLE promo_codes ADD COLUMN IF NOT EXISTS max_uses INTEGER DEFAULT NULL`);
 await pool.query(`ALTER TABLE promo_codes ADD COLUMN IF NOT EXISTS used_count INTEGER DEFAULT 0`);
 
+        // Добавляем колонку status для блокировки пользователей
+        await pool.query(`ALTER TABLE app_users ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'active'`);
+
         // Заполняем начальные промокоды
         await pool.query(`
             INSERT INTO promo_codes (code, discount, type) VALUES
@@ -519,7 +522,7 @@ app.get('/api/users', adminAuth, async (req, res) => {
         const result = await pool.query(`
             SELECT
                 au.user_id, au.user_name, au.user_username, au.photo_url,
-                au.first_seen, au.last_seen,
+                au.first_seen, au.last_seen, au.status,
                 COALESCE(o.orders_count, 0) as orders_count,
                 COALESCE(o.total_spent, 0) as total_spent
             FROM app_users au
@@ -827,6 +830,18 @@ app.post('/api/track-user', async (req, res) => {
     }
 });
 
+// ПРОВЕРКА СТАТУСА ПОЛЬЗОВАТЕЛЯ (публичный)
+app.get('/api/user-status', async (req, res) => {
+    try {
+        const { userId } = req.query;
+        if (!userId) return res.json({ status: 'active' });
+        const result = await pool.query('SELECT status FROM app_users WHERE user_id = $1', [userId]);
+        res.json({ status: result.rows[0]?.status || 'active' });
+    } catch (err) {
+        res.json({ status: 'active' });
+    }
+});
+
 app.post('/api/migrate-users', adminAuth, async (req, res) => {
     try {
         await pool.query(`
@@ -923,6 +938,68 @@ app.post('/api/use-promo', async (req, res) => {
             `INSERT INTO promo_usage (user_id, promo_code, order_id) VALUES ($1, $2, $3)`,
             [userId, code.toUpperCase(), orderId]
         );
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ПРОВЕРКА ЛИМИТА ЗАКАЗОВ (rate limit)
+app.get('/api/check-rate-limit', async (req, res) => {
+    try {
+        const { userId } = req.query;
+        if (!userId) return res.json({ limited: false });
+        const tenMinutesAgo = Date.now() - 10 * 60 * 1000;
+        const recentResult = await pool.query(`
+            SELECT COUNT(*) as count FROM orders
+            WHERE user_id = $1 AND timestamp >= $2
+        `, [userId, tenMinutesAgo]);
+        const recentCount = parseInt(recentResult.rows[0].count);
+        if (recentCount >= 3) {
+            const firstResult = await pool.query(`
+                SELECT timestamp FROM orders WHERE user_id = $1
+                ORDER BY id DESC LIMIT 3
+            `, [userId]);
+            const oldest = firstResult.rows[firstResult.rows.length - 1];
+            if (oldest) {
+                const limitUntil = Number(oldest.timestamp) + 30 * 60 * 1000;
+                if (Date.now() < limitUntil) return res.json({ limited: true });
+            }
+        }
+        res.json({ limited: false });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ПОЛУЧИТЬ ПОЛЬЗОВАТЕЛЯ ПО ID (админ)
+app.get('/api/user/:userId', adminAuth, async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const userResult = await pool.query(`
+            SELECT au.*, 
+                COALESCE(o.orders_count, 0) as orders_count,
+                COALESCE(o.total_spent, 0) as total_spent
+            FROM app_users au
+            LEFT JOIN (
+                SELECT user_id::TEXT, COUNT(*) as orders_count, SUM(total) as total_spent
+                FROM orders WHERE user_id IS NOT NULL GROUP BY user_id::TEXT
+            ) o ON au.user_id::TEXT = o.user_id
+            WHERE au.user_id = $1
+        `, [userId]);
+        if (!userResult.rows.length) return res.status(404).json({ error: 'Не найден' });
+        res.json(userResult.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ИЗМЕНИТЬ СТАТУС ПОЛЬЗОВАТЕЛЯ (админ)
+app.post('/api/user/:userId/status', adminAuth, async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { status } = req.body;
+        await pool.query('UPDATE app_users SET status = $1 WHERE user_id = $2', [status, userId]);
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });

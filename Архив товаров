@@ -1,1 +1,452 @@
-ла
+## АДМИНПАНЕЛЬ (`admin-panel.html`)
+
+**7. Разрешить копирование текста** — в `<style>` найди или добавь:
+
+```css
+body {
+  -webkit-user-select: text;
+  user-select: text;
+}
+```
+
+**8. Добавить новые HTML страницы** — после `<div id="promos-page" ...>` добавь:
+
+```html
+<div id="create-promo-page" class="page">
+  <div id="createPromoHeader"></div>
+  <div id="createPromoContent"></div>
+</div>
+
+<div id="user-detail-page" class="page">
+  <div id="userDetailHeader"></div>
+  <div id="userDetailContent"></div>
+</div>
+```
+
+**9. Обновить `renderPromosPage`** — замени всю функцию:
+
+```javascript
+async function renderPromosPage() {
+    const container = document.getElementById('promosContent');
+    const headerContainer = document.getElementById('promosHeader');
+    if (headerContainer) headerContainer.innerHTML = renderPageHeader('https://storage.botpapa.me/files/8324fec0-5933-11f1-bef9-f1ec7a2c6e45.png', 'Промокоды');
+    if (!container) return;
+    container.innerHTML = '<div id="promosList"><div class="empty-state">Загрузка...</div></div>';
+    loadPromosList();
+
+    const oldFixed = document.getElementById('adminFixedBar');
+    if (oldFixed) oldFixed.remove();
+    const fixedBar = document.createElement('div');
+    fixedBar.id = 'adminFixedBar';
+    fixedBar.className = 'fixed-bottom-bar';
+    fixedBar.innerHTML = `<div class="action-card">
+        <div class="action-buttons-row">
+            <button class="update-status-btn" id="goCreatePromoBtn">Создать промокод</button>
+            <button class="refresh-circle-btn" id="refreshPromosBtn">
+                <img src="https://storage.botpapa.me/files/9aa1c690-64ce-11f1-af2e-f7a93121b83b.png" alt="refresh">
+            </button>
+        </div>
+    </div>`;
+    document.body.appendChild(fixedBar);
+    setTimeout(() => {
+        document.getElementById('goCreatePromoBtn')?.addEventListener('click', () => {
+            hapticLight();
+            showAdminPage('create-promo');
+        });
+        document.getElementById('refreshPromosBtn')?.addEventListener('click', () => {
+            hapticLight();
+            loadPromosList();
+        });
+    }, 0);
+}
+```
+
+**10. Обновить `loadPromosList`** — замени полностью:
+
+```javascript
+async function loadPromosList() {
+    const container = document.getElementById('promosList');
+    if (!container) return;
+    try {
+        const r = await fetch(`${API}/api/promo-codes`, {
+            headers: { 'Authorization': `Bearer ${getAdminToken()}` }
+        });
+        const list = await r.json();
+        if (!list.length) { container.innerHTML = '<div class="empty-state"><div class="empty-title">Промокодов нет</div></div>'; return; }
+        
+        container.innerHTML = list.map(p => {
+            const now = new Date();
+            const isExpired = p.expires_at && new Date(p.expires_at) < now;
+            const isLimitReached = p.max_uses !== null && p.used_count >= p.max_uses;
+            const isActive = p.active && !isExpired && !isLimitReached;
+            
+            let expiresStr = '∞';
+            if (p.expires_at) {
+                const d = new Date(p.expires_at);
+                const hh = String(d.getHours()).padStart(2,'0');
+                const mm = String(d.getMinutes()).padStart(2,'0');
+                const dd = String(d.getDate()).padStart(2,'0');
+                const mo = String(d.getMonth()+1).padStart(2,'0');
+                expiresStr = `${hh}:${mm} ${dd}.${mo}`;
+            }
+            
+            const uses = p.max_uses ? `${p.used_count}/${p.max_uses}` : `${p.used_count}/∞`;
+            const forUser = p.user_id ? `Для: ${p.user_id}` : 'Для всех';
+            
+            return `<div class="order-wrapper" style="margin-bottom:14px;">
+                <div class="order-main-card" style="position:relative;">
+                    <div class="order-header">
+                        <span class="order-id">${p.code}</span>
+                        <span class="order-card-status ${isActive ? 'status-completed-text status-completed-bg' : 'status-cancelled-text status-cancelled-bg'}">${isActive ? 'Активен' : 'Не активен'}</span>
+                    </div>
+                    <div class="order-date">${forUser} · Тип: ${p.type === 'first_order' ? 'первый заказ' : 'все'}</div>
+                    <div class="order-total">−${p.discount}%</div>
+                    <button onclick="deletePromo(${p.id})" style="position:absolute;bottom:12px;right:12px;background:rgba(239,68,68,0.12);border:none;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+                        <img src="https://storage.botpapa.me/files/19b700d0-4a0d-11f1-bef9-f1ec7a2c6e45.png" style="width:18px;height:18px;">
+                    </button>
+                </div>
+                <div class="order-items-card">
+                    <div class="order-item-row"><span class="order-item-name">Использований</span><span class="order-item-price">${uses}</span></div>
+                    <div class="order-item-row"><span class="order-item-name">Срок действия</span><span class="order-item-price">${expiresStr}</span></div>
+                </div>
+            </div>`;
+        }).join('');
+    } catch(e) {
+        container.innerHTML = '<div class="empty-state">Ошибка загрузки</div>';
+    }
+}
+```
+
+**11. Обновить `deletePromo`** — используй `showPopup` вместо `confirm`:
+
+```javascript
+async function deletePromo(id) {
+    hapticLight();
+    window.Telegram.WebApp.showPopup({
+        message: 'Удалить промокод?',
+        buttons: [
+            { id: 'ok', type: 'destructive', text: 'Удалить' },
+            { id: 'cancel', type: 'cancel' }
+        ]
+    }, async (buttonId) => {
+        if (buttonId !== 'ok') return;
+        try {
+            await fetch(`${API}/api/promo-codes/${id}/delete`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${getAdminToken()}` } });
+            loadPromosList();
+        } catch(e) { alert('Ошибка'); }
+    });
+}
+```
+
+**12. Добавить функцию `renderCreatePromoPage`** — добавь после `deletePromo`:
+
+```javascript
+async function renderCreatePromoPage() {
+    const container = document.getElementById('createPromoContent');
+    const headerContainer = document.getElementById('createPromoHeader');
+    if (headerContainer) headerContainer.innerHTML = renderPageHeader('https://storage.botpapa.me/files/8324fec0-5933-11f1-bef9-f1ec7a2c6e45.png', 'Создать промокод');
+    if (!container) return;
+
+    container.innerHTML = `
+        <div class="settings-card">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <input id="promoCode" placeholder="Введите промокод" style="background:#303032;border-radius:34px;padding:14px 16px;color:white;font-size:17px;border:none;outline:none;width:100%;">
+                <input id="promoDiscount" type="number" placeholder="Процент скидки" min="1" max="100" style="background:#303032;border-radius:34px;padding:14px 16px;color:white;font-size:17px;border:none;outline:none;width:100%;">
+                <select id="promoType" style="background:#303032;border-radius:34px;padding:14px 16px;color:white;font-size:17px;border:none;outline:none;width:100%;appearance:none;">
+                    <option value="all">Все заказы</option>
+                    <option value="first_order">Первый заказ</option>
+                </select>
+                <input id="promoUserId" placeholder="ID пользователя (необязательно)" style="background:#303032;border-radius:34px;padding:14px 16px;color:white;font-size:17px;border:none;outline:none;width:100%;">
+                <input id="promoExpires" placeholder="Срок действия: 14:08 21.06 (МСК)" style="background:#303032;border-radius:34px;padding:14px 16px;color:white;font-size:17px;border:none;outline:none;width:100%;">
+                <input id="promoMaxUses" type="number" placeholder="Количество активаций (необязательно)" min="1" style="background:#303032;border-radius:34px;padding:14px 16px;color:white;font-size:17px;border:none;outline:none;width:100%;">
+            </div>
+        </div>`;
+
+    const oldFixed = document.getElementById('adminFixedBar');
+    if (oldFixed) oldFixed.remove();
+    const fixedBar = document.createElement('div');
+    fixedBar.id = 'adminFixedBar';
+    fixedBar.className = 'fixed-bottom-bar';
+    fixedBar.innerHTML = `<div class="action-card"><div class="action-buttons-row"><button class="update-status-btn" id="createPromoSubmitBtn">Создать промокод</button></div></div>`;
+    document.body.appendChild(fixedBar);
+
+    setTimeout(() => {
+        document.getElementById('createPromoSubmitBtn')?.addEventListener('click', async () => {
+            hapticMedium();
+            const code = document.getElementById('promoCode')?.value.trim();
+            const discount = document.getElementById('promoDiscount')?.value;
+            const type = document.getElementById('promoType')?.value;
+            const userId = document.getElementById('promoUserId')?.value.trim();
+            const expiresRaw = document.getElementById('promoExpires')?.value.trim();
+            const maxUses = document.getElementById('promoMaxUses')?.value;
+
+            if (!code || !discount) { alert('Введите код и скидку'); return; }
+
+            // Парсим дату формата "14:08 21.06" по МСК
+            let expiresAt = null;
+            if (expiresRaw) {
+                try {
+                    const [timePart, datePart] = expiresRaw.split(' ');
+                    const [hh, mm] = timePart.split(':').map(Number);
+                    const [dd, mo] = datePart.split('.').map(Number);
+                    const year = new Date().getFullYear();
+                    // Создаём дату по МСК (UTC+3)
+                    const mskDate = new Date(Date.UTC(year, mo - 1, dd, hh - 3, mm));
+                    expiresAt = mskDate.toISOString();
+                } catch(e) { alert('Неверный формат срока. Используйте: 14:08 21.06'); return; }
+            }
+
+            try {
+                const r = await fetch(`${API}/api/promo-codes`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getAdminToken()}` },
+                    body: JSON.stringify({
+                        code, discount: parseInt(discount), type,
+                        userId: userId || null,
+                        expiresAt,
+                        maxUses: maxUses || null
+                    })
+                });
+                const data = await r.json();
+                if (r.ok) { hapticLight(); showAdminPage('promos'); }
+                else alert(data.error || 'Ошибка создания');
+            } catch(e) { alert('Ошибка соединения'); }
+        });
+    }, 0);
+}
+```
+
+**13. Обновить карточки заказов** — в функции `renderOrders` замени строку с `itemsHtml` на версию с кнопкой удаления. Найди:
+
+```javascript
+return `<div class="order-wrapper" data-order-id="${order.id}">
+        <div class="order-main-card">
+```
+
+Замени весь return на:
+
+```javascript
+return `<div class="order-wrapper" data-order-id="${order.id}">
+        <div class="order-main-card" style="position:relative;">
+          <div class="order-header">
+            <span class="order-id">Заказ #${order.order_number}</span>
+            <span class="order-card-status ${tc} ${bc}">${sd}</span>
+          </div>
+          <div class="order-date">${order.date} ${order.time || ''}</div>
+          <div class="order-total">${formatPrice(order.total)}</div>
+          <button class="admin-delete-order-btn" data-id="${order.id}" data-num="${order.order_number}" style="position:absolute;bottom:12px;right:12px;background:rgba(239,68,68,0.12);border:none;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+            <img src="https://storage.botpapa.me/files/19b700d0-4a0d-11f1-bef9-f1ec7a2c6e45.png" style="width:18px;height:18px;">
+          </button>
+        </div>
+        <div class="order-items-card">${itemsHtml}</div>
+      </div>`;
+```
+
+Затем после `container.querySelectorAll('.order-wrapper').forEach(...)` добавь:
+
+```javascript
+container.querySelectorAll('.admin-delete-order-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        hapticLight();
+        const orderId = btn.dataset.id;
+        const orderNum = btn.dataset.num;
+        window.Telegram.WebApp.showPopup({
+            message: `Удалить заказ #${orderNum}?`,
+            buttons: [
+                { id: 'ok', type: 'destructive', text: 'Удалить' },
+                { id: 'cancel', type: 'cancel' }
+            ]
+        }, async (buttonId) => {
+            if (buttonId !== 'ok') return;
+            try {
+                const r = await fetch(`${API}/api/orders/${orderId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${getAdminToken()}` }
+                });
+                if (r.ok) { hapticLight(); await loadOrders(); }
+                else alert('Ошибка удаления');
+            } catch(e) { alert('Ошибка соединения'); }
+        });
+    });
+});
+```
+
+**14. Обновить карточки пользователей** — в `renderUsersPage` замени генерацию карточек:
+
+```javascript
+${users.map((u, idx) => {
+    const rank = idx + 1;
+    const rankColor = ['#4cb4e9', '#4cb4e9', '#4cb4e9'][idx] || '#4cb4e9';
+    const avatarHtml = u.photo_url
+        ? `<div class="user-avatar-circle"><img src="${u.photo_url}" alt="avatar"></div>`
+        : `<div class="user-avatar-circle">👤</div>`;
+    const idText = `ID: ${u.user_id}${u.user_username ? ' · @' + escapeHtml(u.user_username) : ''}`;
+    const isBlocked = u.status === 'blocked';
+    const statusText = isBlocked ? 'заблок.' : 'активен';
+    const statusColor = isBlocked ? '#ef4444' : '#22c55e';
+    return `<div class="user-card-wrapper" data-user-id="${u.user_id}" style="cursor:pointer;">
+        <div class="user-card">
+            <div class="user-header">
+                ${avatarHtml}
+                <div class="user-header-info">
+                    <div class="user-name">${escapeHtml(u.user_name || 'Без имени')}</div>
+                    <div class="user-id-text">${idText}</div>
+                </div>
+                <span class="user-rank-badge" style="color:#4cb4e9;">#${rank}</span>
+            </div>
+        </div>
+        <div class="user-card-bottom">
+            <div class="user-spent-row">
+                <span class="user-spent-label">Статус польз.</span>
+                <span class="user-spent-value" style="color:${statusColor};">${statusText}</span>
+            </div>
+            <div class="user-spent-row">
+                <span class="user-spent-label">Объем покупок</span>
+                <span class="user-spent-value">${formatPrice(u.total_spent)}</span>
+            </div>
+        </div>
+    </div>`;
+}).join('')}`;
+```
+
+Затем после генерации HTML добавь обработчики кликов:
+
+```javascript
+container.querySelectorAll('.user-card-wrapper').forEach(wrapper => {
+    wrapper.addEventListener('click', () => {
+        hapticLight();
+        const userId = wrapper.dataset.userId;
+        const user = users.find(u => u.user_id === userId);
+        if (user) showUserDetail(user);
+    });
+});
+```
+
+**15. Добавить функцию `showUserDetail`** — добавь после `renderUsersPage`:
+
+```javascript
+async function showUserDetail(user) {
+    const bottomNav = document.getElementById('bottomNav');
+    if (bottomNav) bottomNav.style.display = 'none';
+
+    const headerContainer = document.getElementById('userDetailHeader');
+    if (headerContainer) headerContainer.innerHTML = renderPageHeader('https://storage.botpapa.me/files/49df3ed0-5110-11f1-bef9-f1ec7a2c6e45.png', escapeHtml(user.user_name || 'Пользователь'));
+
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+    document.getElementById('user-detail-page').classList.add('active-page');
+    currentAdminPage = 'user-detail';
+    window.Telegram?.WebApp?.BackButton.show();
+    window.scrollTo({ top: 0 });
+
+    const container = document.getElementById('userDetailContent');
+    const isBlocked = user.status === 'blocked';
+
+    const firstSeenDate = user.first_seen ? new Date(user.first_seen) : null;
+    const firstSeenStr = firstSeenDate 
+        ? `${String(firstSeenDate.getDate()).padStart(2,'0')}.${String(firstSeenDate.getMonth()+1).padStart(2,'0')}`
+        : '—';
+
+    const avatarHtml = user.photo_url
+        ? `<div class="user-avatar-circle" style="width:60px;height:60px;font-size:28px;"><img src="${user.photo_url}" alt="avatar"></div>`
+        : `<div class="user-avatar-circle" style="width:60px;height:60px;font-size:28px;">👤</div>`;
+
+    const tgLink = user.user_username ? `https://t.me/${user.user_username}` : null;
+
+    container.innerHTML = `
+        <div class="profile-wrapper">
+            <div class="profile-main-card" ${tgLink ? `onclick="window.open('${tgLink}','_blank')" style="cursor:pointer;"` : ''}>
+                ${avatarHtml}
+                <div>
+                    <div class="profile-nickname">${escapeHtml(user.user_name || 'Без имени')}</div>
+                    ${user.user_username ? `<div class="profile-username">@${escapeHtml(user.user_username)}</div>` : ''}
+                </div>
+            </div>
+            <div class="profile-bottom-card">
+                <div class="profile-stats-row">
+                    <span class="profile-stats-label">Регистрация</span>
+                    <span class="profile-stats-value">${firstSeenStr}</span>
+                </div>
+                <div class="profile-stats-row">
+                    <span class="profile-stats-label">Статус польз.</span>
+                    <span class="profile-stats-value" style="color:${isBlocked ? '#ef4444' : '#22c55e'};">${isBlocked ? 'заблок.' : 'активен'}</span>
+                </div>
+                <div class="profile-stats-row">
+                    <span class="profile-stats-label">Всего заказов</span>
+                    <span class="profile-stats-value">${user.orders_count}</span>
+                </div>
+                <div class="profile-stats-row">
+                    <span class="profile-stats-label">Объем покупок</span>
+                    <span class="profile-stats-value">${formatPrice(user.total_spent)}</span>
+                </div>
+            </div>
+        </div>`;
+
+    const oldFixed = document.getElementById('adminFixedBar');
+    if (oldFixed) oldFixed.remove();
+    const fixedBar = document.createElement('div');
+    fixedBar.id = 'adminFixedBar';
+    fixedBar.className = 'fixed-bottom-bar';
+    fixedBar.innerHTML = `<div class="action-card">
+        <select class="status-select" id="userStatusSelect">
+            <option value="active" ${!isBlocked ? 'selected' : ''}>Активен</option>
+            <option value="blocked" ${isBlocked ? 'selected' : ''}>Заблокирован</option>
+        </select>
+        <div class="action-buttons-row">
+            <button class="update-status-btn" id="saveUserStatusBtn">Сохранить статус</button>
+        </div>
+    </div>`;
+    document.body.appendChild(fixedBar);
+
+    document.getElementById('saveUserStatusBtn')?.addEventListener('click', async () => {
+        hapticMedium();
+        const newStatus = document.getElementById('userStatusSelect').value;
+        try {
+            const r = await fetch(`${API}/api/user/${user.user_id}/status`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getAdminToken()}` },
+                body: JSON.stringify({ status: newStatus })
+            });
+            if (r.ok) {
+                hapticLight();
+                user.status = newStatus;
+                showUserDetail(user);
+            } else alert('Ошибка сохранения');
+        } catch(e) { alert('Ошибка соединения'); }
+    });
+}
+```
+
+**16. Обновить `showAdminPage`** — добавь в список mainPages и обработчик:
+
+Найди:
+```javascript
+const mainPages = ['orders', 'users', 'reviews', 'profile', 'promo'];
+```
+Замени на:
+```javascript
+const mainPages = ['orders', 'users', 'reviews', 'profile'];
+```
+
+Найди:
+```javascript
+if (pageId === 'promos') { renderPromosPage(); }
+```
+Добавь после:
+```javascript
+if (pageId === 'create-promo') { renderCreatePromoPage(); }
+```
+
+**17. Обновить `initBackButton`** — добавь обработку новых страниц:
+
+```javascript
+} else if (document.getElementById('promos-page').classList.contains('active-page')) {
+    showAdminPage('profile');
+} else if (document.getElementById('create-promo-page').classList.contains('active-page')) {
+    showAdminPage('promos');
+} else if (document.getElementById('user-detail-page').classList.contains('active-page')) {
+    showAdminPage('users');
+} else {
+```
+
+**18. То же самое в `popstate`** — добавь те же проверки.

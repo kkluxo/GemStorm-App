@@ -680,7 +680,6 @@
       </div>
     </div>`;
     document.body.appendChild(fixedBar);
-    fixedBar.style.bottom = '100px';
 
     document.getElementById('adminUpdateStatusBtn').addEventListener('click', async () => {
       const newCode = document.getElementById('adminStatusSelect').value;
@@ -936,8 +935,8 @@
     if (r.ok) { hapticLight(); renderReviewsPage(); }
     else alert('Ошибка удаления');
   } catch(e) { alert('Ошибка соединения'); }
-});
-      });
+        });
+        }); // закрытие forEach
     } catch(e) {
       container.innerHTML = '<div class="review-empty">Ошибка загрузки</div>';
     }
@@ -1104,6 +1103,7 @@
         </div>
     </div>`;
     document.body.appendChild(fixedBar);
+    fixedBar.style.bottom = '100px';
     setTimeout(() => {
         document.getElementById('goCreatePromoBtn')?.addEventListener('click', () => {
             hapticLight();

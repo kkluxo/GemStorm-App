@@ -923,20 +923,22 @@
           hapticLight();
           const reviewId = btn.dataset.id;
           window.Telegram.WebApp.showPopup({
-  message: 'Удалить отзыв?',
-  buttons: [{ id: 'ok', type: 'destructive', text: 'Удалить' }, { id: 'cancel', type: 'cancel' }]
-}, async (buttonId) => {
-  if (buttonId !== 'ok') return;
-  try {
-    const r = await fetch(`${API}/api/reviews/${reviewId}`, {
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${getAdminToken()}` }
-    });
-    if (r.ok) { hapticLight(); renderReviewsPage(); }
-    else alert('Ошибка удаления');
-  } catch(e) { alert('Ошибка соединения'); }
+            message: 'Удалить отзыв?',
+            buttons: [{ id: 'ok', type: 'destructive', text: 'Удалить' }, { id: 'cancel', type: 'cancel' }]
+          }, async (buttonId) => {
+            if (buttonId !== 'ok') return;
+            try {
+              const r = await fetch(`${API}/api/reviews/${reviewId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${getAdminToken()}` }
+              });
+              if (r.ok) { hapticLight(); renderReviewsPage(); }
+              else alert('Ошибка удаления');
+            } catch(e) { alert('Ошибка соединения'); }
+          });
         });
-        }); // закрытие forEach
+      });
+
     } catch(e) {
       container.innerHTML = '<div class="review-empty">Ошибка загрузки</div>';
     }

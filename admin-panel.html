@@ -680,6 +680,7 @@
       </div>
     </div>`;
     document.body.appendChild(fixedBar);
+    fixedBar.style.bottom = '100px';
 
     document.getElementById('adminUpdateStatusBtn').addEventListener('click', async () => {
       const newCode = document.getElementById('adminStatusSelect').value;
@@ -929,16 +930,13 @@
   if (buttonId !== 'ok') return;
   try {
     const r = await fetch(`${API}/api/reviews/${reviewId}`, {
-               method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${getAdminToken()}` }
-              });
-              if (r.ok) { 
-                hapticLight(); 
-                renderReviewsPage(); 
-              } else alert('Ошибка удаления');
-            } catch(e) { alert('Ошибка соединения'); }
-          }
-        });
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${getAdminToken()}` }
+    });
+    if (r.ok) { hapticLight(); renderReviewsPage(); }
+    else alert('Ошибка удаления');
+  } catch(e) { alert('Ошибка соединения'); }
+});
       });
     } catch(e) {
       container.innerHTML = '<div class="review-empty">Ошибка загрузки</div>';

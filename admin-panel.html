@@ -167,10 +167,12 @@
       margin-top: -28px; padding-top: 36px; position: relative; z-index: 1; margin-bottom: 16px;
     }
 
-    .fixed-bottom-bar {
-      position: fixed; bottom: 18px; left: 18px; right: 18px; z-index: 1000;
-      max-width: 600px; margin: 0 auto; width: calc(100% - 36px);
-    }
+    /* СТАЛО */
+.fixed-bottom-bar {
+  position: fixed; bottom: 100px; left: 18px; right: 18px; z-index: 1000;
+  max-width: 600px; margin: 0 auto; width: calc(100% - 36px);
+}
+
     .action-card {
       background: #222225f9; backdrop-filter: blur(12px); border-radius: 34px;
       padding: 14px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; gap: 12px;
@@ -232,7 +234,7 @@
       border-radius: 20px; padding: 4px 10px; font-size: 15px; font-weight: 600;
       margin-left: auto; flex-shrink: 0;
     }
-    .user-spent-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; }
+    .user-spent-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; }
     .user-spent-label { font-size: 15px; color: #9e9e9e; }
     .user-spent-value { font-size: 15px; color: #ffffff; font-weight: 600; }
 
@@ -664,10 +666,11 @@ document.getElementById('detailContent').innerHTML = `
     ${order.verification_code ? `<div class="order-detail-row"><span class="order-detail-label">Код</span><span class="order-detail-value">${escapeHtml(order.verification_code)}</span></div>` : ''}
     <div class="order-detail-row" style="padding-bottom:4px;"><span class="order-detail-label">Сумма заказа</span><span class="order-detail-value">${formatPrice(order.total)}</span></div>
   </div>
-  <div class="detail-items-card">${itemsHtml}</div>
-  <div id="detailUserCard" style="margin-top:14px;"></div>
-  <div id="detailReviewCard" style="margin-top:14px;margin-bottom:100px;"></div>`;
+      <div class="detail-items-card">${itemsHtml}</div>
+      <div id="detailUserCard" style="margin-top:14px;"></div>
+      <div id="detailReviewCard" style="margin-top:14px;margin-bottom:160px;"></div>`;
 
+// Загружаем карточку пользователя
 // Загружаем карточку пользователя
 if (order.user_id) {
   fetch(`${API}/api/user/${order.user_id}`, {
@@ -676,10 +679,11 @@ if (order.user_id) {
     const userCard = document.getElementById('detailUserCard');
     if (!userCard || !u || !u.user_id) return;
     const avatarHtml = u.photo_url
-      ? `<div class="user-avatar-circle" style="width:42px;height:42px;"><img src="${u.photo_url}" alt="avatar"></div>`
-      : `<div class="user-avatar-circle" style="width:42px;height:42px;">👤</div>`;
+      ? `<div class="user-avatar-circle"><img src="${u.photo_url}" alt="avatar"></div>`
+      : `<div class="user-avatar-circle">👤</div>`;
+    const isBlocked = u.status === 'blocked';
     userCard.innerHTML = `
-      <div class="user-card-wrapper" style="cursor:pointer;" id="detailUserCardClickable">
+      <div class="user-card-wrapper" id="detailUserCardClickable" style="cursor:pointer;">
         <div class="user-card">
           <div class="user-header">
             ${avatarHtml}
@@ -690,6 +694,7 @@ if (order.user_id) {
           </div>
         </div>
         <div class="user-card-bottom">
+          <div class="user-spent-row"><span class="user-spent-label">Статус польз.</span><span class="user-spent-value" style="color:${isBlocked ? '#ef4444' : '#22c55e'};font-weight:400;">${isBlocked ? 'заблок.' : 'активен'}</span></div>
           <div class="user-spent-row"><span class="user-spent-label">Заказов</span><span class="user-spent-value" style="font-weight:400;">${u.orders_count}</span></div>
           <div class="user-spent-row"><span class="user-spent-label">Объем покупок</span><span class="user-spent-value" style="font-weight:400;">${formatPrice(u.total_spent)}</span></div>
         </div>

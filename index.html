@@ -2435,7 +2435,7 @@ ${appliedPromo ? `<span style="color:#9ca3af;text-decoration:line-through;font-s
     const rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
     const discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
     if (isPromoMode) {
-      fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="promo-label">Введите промокод на скидку</span></div><div class="promo-input-row"><input type="text" class="promo-input" id="promoInput" placeholder="Введите промокод" value="${appliedPromo ? appliedPromo.code : ''}"><button class="promo-action-btn apply-btn" id="promoApplyBtn"><img src="https://storage.botpapa.me/files/b254ec20-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="apply"></button><button class="promo-action-btn back-btn" id="promoBackBtn"><img src="https://storage.botpapa.me/files/af0747c0-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="back"></button></div></div>`;
+      fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="promo-label">Введите промокод на скидку</span></div><div class="promo-input-row"><input type="text" class="promo-input" id="promoInput" placeholder="Введите промокод" value="${appliedPromo ? appliedPromo.code : ''}" oninput="this.value=this.value.toUpperCase()"><button class="promo-action-btn apply-btn" id="promoApplyBtn"><img src="https://storage.botpapa.me/files/b254ec20-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="apply"></button><button class="promo-action-btn back-btn" id="promoBackBtn"><img src="https://storage.botpapa.me/files/af0747c0-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="back"></button></div></div>`;
       setTimeout(() => {
         const promoInput = document.getElementById("promoInput");
         const backBtn = document.getElementById("promoBackBtn");
@@ -3154,12 +3154,17 @@ fetch('https://gemstorm.up.railway.app/api/reviews')
   let reviewedOrderIds = [];
   
   // Функция для построения HTML товаров
-  function buildItemsHtml(itemsArr) {
+function buildItemsHtml(itemsArr) {
     if (!itemsArr || !itemsArr.length) return '';
     return itemsArr.map(i => 
       `<div class="review-item-row">
         <span class="review-item-name">${escapeHtml(i.name)}</span>
-        <span class="review-item-price">${formatPrice(i.price)}</span>
+        <span class="review-item-price" style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+          ${i.originalPrice && i.originalPrice !== i.price 
+            ? `<span style="color:#9ca3af;text-decoration:line-through;font-size:14px;">${formatPrice(i.originalPrice)}</span>` 
+            : ''}
+          ${formatPrice(i.price)}
+        </span>
       </div>`
     ).join('');
   }

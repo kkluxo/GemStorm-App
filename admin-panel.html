@@ -169,8 +169,20 @@
 
     /* СТАЛО */
 .fixed-bottom-bar {
-  position: fixed; bottom: 160px; left: 18px; right: 18px; z-index: 1000;
+  position: fixed; bottom: 18px; left: 18px; right: 18px; z-index: 1000;
   max-width: 600px; margin: 0 auto; width: calc(100% - 36px);
+}
+     
+    .fixed-bottom-bar-promo {
+  position: fixed;
+  bottom: 18px;
+  left: 18px;
+  right: 18px;
+  z-index: 1000;
+  max-width: 600px;
+  margin: 0 auto;
+  width: calc(100% - 36px);
+  padding-bottom: 80px;
 }
 
     .action-card {
@@ -1181,7 +1193,7 @@ fetch(`${API}/api/reviews`, {
     if (oldFixed) oldFixed.remove();
     const fixedBar = document.createElement('div');
     fixedBar.id = 'adminFixedBar';
-    fixedBar.className = 'fixed-bottom-bar';
+    fixedBar.className = 'fixed-bottom-bar-promo';
     fixedBar.innerHTML = `<div class="action-card">
         <div class="action-buttons-row">
             <button class="update-status-btn" id="goCreatePromoBtn">Создать промокод</button>
@@ -1309,7 +1321,7 @@ container.innerHTML = `
     if (oldFixed) oldFixed.remove();
     const fixedBar = document.createElement('div');
     fixedBar.id = 'adminFixedBar';
-    fixedBar.className = 'fixed-bottom-bar';
+    fixedBar.className = 'fixed-bottom-bar-promo';
     fixedBar.innerHTML = `<div class="action-card"><div class="action-buttons-row"><button class="update-status-btn" id="createPromoSubmitBtn">Создать промокод</button></div></div>`;
     document.body.appendChild(fixedBar);
 

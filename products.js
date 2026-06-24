@@ -27,12 +27,12 @@ const productsRaw = [
   [86, "Блинговый монарх Рико", "16.99", "16.99", "Гипер. скин", "Гипер. скины", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/a404d18b7d0eee32a92b53c8b1a58a67f22377e3cbf60ddbf7b9436e4ffc0f38/brawlstars.29000925-x1-Skin_5000023-x10000-Bling_5000001-x1000-Coins.png"],
 
   // Моя геройская академия
-  [49, "Набор: MHA", "32.99", "32.99", "MHA", "Hero Academy", 1, [49,50,51,52,53], true, "https://store.supercell.com/assets/offer-images/brawlstars/df876f611fb401294842243f161f4d32c5ee10a9381114ce27aedb75bdb6cac8/brawlstars.29001603-x1-Skin_29001598-x1-Skin_29001597-x1-Skin_29001596-x1-Skin.png"],
-  [50, "Томура Сигараки Гас", "9.99", "9.99", "MHA", "Hero Academy", 1, [49,50], true, "https://store.supercell.com/assets/offer-images/brawlstars/c4750e2c419aad6253eccdc2be2f7aefca730e5a91667d60d5943125075c7226/brawlstars.29001597-x1-Skin.png"],
-  [51, "Деку Фэнг", "7.99", "7.99", "MHA", "Hero Academy", 1, [49,51], true, "https://store.supercell.com/assets/offer-images/brawlstars/045fdd3cf0c31c2f5d269919227048617b4e693ede08071e6174de7867131132/brawlstars.29001598-x1-Skin.png"],
-  [52, "Всемогущий Эль Примо", "13.99", "13.99", "MHA", "Hero Academy", 1, [49,52], true, "https://store.supercell.com/assets/offer-images/brawlstars/cd373618e8c19d219c0c127fd6fe1c8ec8e3587c744de3b08c7cfca39649ee8c/brawlstars.29001603-x1-Skin.png"],
-  [53, "Бакуго Эдгар", "9.99", "9.99", "MHA", "Hero Academy", 1, [49,53], true, "https://store.supercell.com/assets/offer-images/brawlstars/05d23915f6f720cba5b06b728e5b17369ee9dc70b2eecbecfb76f4b277eb5c6b/brawlstars.29001596-x1-Skin.png"],
-  [61, "Уравити Джанет", "7.99", "7.99", "MHA", "Hero Academy", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/567884c788d3b7ddd622c00b7f9455b95c80f9ee77938a2d2b59256dcb4365f0/brawlstars.29001595-x1-Skin.png"],
+  //[49, "Набор: MHA", "32.99", "32.99", "MHA", "Hero Academy", 1, [49,50,51,52,53], true, "https://store.supercell.com/assets/offer-images/brawlstars/df876f611fb401294842243f161f4d32c5ee10a9381114ce27aedb75bdb6cac8/brawlstars.29001603-x1-Skin_29001598-x1-Skin_29001597-x1-Skin_29001596-x1-Skin.png"],
+  //[50, "Томура Сигараки Гас", "9.99", "9.99", "MHA", "Hero Academy", 1, [49,50], true, "https://store.supercell.com/assets/offer-images/brawlstars/c4750e2c419aad6253eccdc2be2f7aefca730e5a91667d60d5943125075c7226/brawlstars.29001597-x1-Skin.png"],
+  //[51, "Деку Фэнг", "7.99", "7.99", "MHA", "Hero Academy", 1, [49,51], true, "https://store.supercell.com/assets/offer-images/brawlstars/045fdd3cf0c31c2f5d269919227048617b4e693ede08071e6174de7867131132/brawlstars.29001598-x1-Skin.png"],
+  //[52, "Всемогущий Эль Примо", "13.99", "13.99", "MHA", "Hero Academy", 1, [49,52], true, "https://store.supercell.com/assets/offer-images/brawlstars/cd373618e8c19d219c0c127fd6fe1c8ec8e3587c744de3b08c7cfca39649ee8c/brawlstars.29001603-x1-Skin.png"],
+  //[53, "Бакуго Эдгар", "9.99", "9.99", "MHA", "Hero Academy", 1, [49,53], true, "https://store.supercell.com/assets/offer-images/brawlstars/05d23915f6f720cba5b06b728e5b17369ee9dc70b2eecbecfb76f4b277eb5c6b/brawlstars.29001596-x1-Skin.png"],
+  //[61, "Уравити Джанет", "7.99", "7.99", "MHA", "Hero Academy", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/567884c788d3b7ddd622c00b7f9455b95c80f9ee77938a2d2b59256dcb4365f0/brawlstars.29001595-x1-Skin.png"],
 
   // Strikers
   [11, "Набор: 3 скина", "24.99", "24.99", "Strikers", "Strikers", 1, [11,12], true, "https://storage.botpapa.me/files/58cac0f0-6032-11f1-af2e-f7a93121b83b.jpeg"],

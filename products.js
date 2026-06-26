@@ -64,11 +64,14 @@ const productsRaw = [
   //[55, "Злая королева Пэм", "8.99", "8.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/94f663077bdf674241b0e60705aa2949eb3e96a5c4bd9672f6540bc29b5e6d00/brawlstars.29000354-x1-Skin.png"],
   //[56, "Арджуна Бо", "6.99", "6.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/6fe55fe9ac9cde53a0eef8ad9a63909fc063ca6cb5de88a78438f192d138f6e7/brawlstars.29000731-x1-Skin.png"],
   //[57, "Снежная королева Амбер", "8.99", "8.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/c49da0d47d2b1873a81c33dcbd6e6b501155b205266ddfe6ec8db2a290168037/brawlstars.29000597-x1-Skin.png"],
-  [80, "Карнавальная Менди", "6.99", "6.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/26766d0e3f1ff7b9ef68509a6b9de650255dc046f9a9b0633cb6a14995f0f360/brawlstars.29001111-x1-Skin.png"],
-  [81, "Зевс Брок", "6.99", "6.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/ad1e2810ae49f4e2d18f6e91accdfa29aff3c35a188e7c8434c0dfa8e17f955d/brawlstars.29000656-x1-Skin.png"],
-  [82, "Призрачный всадник Драко", "8.99", "8.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/9052f82dbec7d57547803a640d3c5b095010210866ff378b6ab3062dd75b66c4/brawlstars.29000943-x1-Skin.png"],
-  [83, "Родео Хэнк", "6.99", "6.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/0cfd49ba9b17b30f2e64a6219d645b0504bb908afa30d82ab8568e456c227a95/brawlstars.29000700-x1-Skin.png"],
-  
+  //[80, "Карнавальная Менди", "6.99", "6.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/26766d0e3f1ff7b9ef68509a6b9de650255dc046f9a9b0633cb6a14995f0f360/brawlstars.29001111-x1-Skin.png"],
+  //[81, "Зевс Брок", "6.99", "6.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/ad1e2810ae49f4e2d18f6e91accdfa29aff3c35a188e7c8434c0dfa8e17f955d/brawlstars.29000656-x1-Skin.png"],
+  //[82, "Призрачный всадник Драко", "8.99", "8.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/9052f82dbec7d57547803a640d3c5b095010210866ff378b6ab3062dd75b66c4/brawlstars.29000943-x1-Skin.png"],
+  //[83, "Родео Хэнк", "6.99", "6.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/0cfd49ba9b17b30f2e64a6219d645b0504bb908afa30d82ab8568e456c227a95/brawlstars.29000700-x1-Skin.png"],
+  [84, "Мультяшка Спайк", "8.99", "8.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/048776f4a9468a4cd1a6fc66f5e8e15702efa22fbe09b1b7f0df3ec8f86faefe/brawlstars.29000751-x1-Skin.png"],
+  [85, "Тор Биби", "8.99", "8.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/d398d33e7c4a095bcf7004263a875546f6ae89ff3a29981231a802f2203bcd68/brawlstars.29000782-x1-Skin.png"],
+  [86, "Афина Пайпер", "6.99", "6.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/6c2cb81e55fa2174a3aa082ea998343e6ae4bfe7e445c96e8a37fa51d40cd2d7/brawlstars.29000905-x1-Skin.png"],
+
   // Bling Deals
   [19, "4000 блингов", "0.99", "0.99", "Bling Deal", "Bling Deals", 1, [], true, "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg"],
   [20, "5000 блингов", "4.99", "4.99", "Bling Deal", "Bling Deals", 1, [], true, "https://storage.botpapa.me/files/80188ea0-591e-11f1-bef9-f1ec7a2c6e45.jpeg"],

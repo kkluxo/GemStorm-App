@@ -163,3 +163,6 @@ const robloxRaw = [
   // ...
 ];
 window.robloxProducts = makeProducts(robloxRaw, 'roblox_');
+
+const products = window.brawlProducts;
+window.products = products;

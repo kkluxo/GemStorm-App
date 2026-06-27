@@ -3889,20 +3889,6 @@ if (currentPageId === "game") {
     if (targetPage) targetPage.classList.add("active-page");
     const checkoutBlock = document.getElementById("cartCheckoutFixed");
     if (pageId === "catalog") {
-  if (currentGame && !skipHistoryAdd) {
-    // Просто показываем game-страницу как есть, без перерисовки
-    document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
-    document.getElementById("game-page")?.classList.add("active-page");
-    if (checkoutBlock) checkoutBlock.style.display = "none";
-    window.scrollTo({ top: savedGameScrollY, behavior: 'instant' });
-    document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
-    document.querySelector('.menu-item[data-page="catalog"]')?.classList.add("active");
-    document.getElementById("profileMenuWrapper")?.classList.remove("active");
-    updateMenuSlider("catalog");
-    injectPageHeader();
-    if (window.Telegram?.WebApp) window.Telegram.WebApp.BackButton.show();
-    return;
-  }
   window.scrollTo({ top: 0, behavior: 'instant' });
   currentGame = null;
   savedGameScrollY = 0;
@@ -4162,7 +4148,6 @@ document.getElementById("resetFiltersMainBtn")?.addEventListener("click", () => 
   btn.addEventListener("click", () => {
     hapticLight();
     if (btn.dataset.page === "catalog" && currentGame) {
-  // Просто делаем game-страницу активной без какого-либо рендера
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
   document.getElementById("game-page")?.classList.add("active-page");
   document.querySelectorAll(".menu-item").forEach(b => b.classList.remove("active"));
@@ -4171,6 +4156,7 @@ document.getElementById("resetFiltersMainBtn")?.addEventListener("click", () => 
   updateMenuSlider("catalog");
   injectPageHeader();
   if (window.Telegram?.WebApp) window.Telegram.WebApp.BackButton.show();
+  window.scrollTo({ top: savedGameScrollY, behavior: 'instant' });
   return;
       document.querySelectorAll(".menu-item").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");

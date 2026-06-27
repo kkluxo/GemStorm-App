@@ -465,12 +465,12 @@ function getBot() {
                     ...NO_FORWARD,
                     reply_markup: {
                         inline_keyboard: [
+                           // [
+                                //{ text: 'Поддержка', url: 'https://t.me/PlacedHelpBot' },
+                                //{ text: 'Наш канал', url: 'https://t.me/PlacedGames' }
+                            //],
                             [
-                                { text: 'Поддержка', url: 'https://t.me/PlacedHelpBot' },
-                                { text: 'Наш канал', url: 'https://t.me/PlacedGames' }
-                            ],
-                            [
-                                { text: 'Открыть магазин PlacedGames', web_app: { url: APP_URL } }
+                                { text: 'Открыть приложение PlacedGames', web_app: { url: APP_URL } }
                             ]
                         ]
                     }

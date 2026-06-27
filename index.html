@@ -3890,13 +3890,19 @@ if (currentPageId === "game") {
     const checkoutBlock = document.getElementById("cartCheckoutFixed");
     if (pageId === "catalog") {
   if (currentGame && !skipHistoryAdd) {
-    // Пришли через меню — показываем game напрямую без мигания
+    const gamePage = document.getElementById("game-page");
     document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
-    document.getElementById("game-page")?.classList.add("active-page");
+    if (gamePage) {
+      gamePage.style.visibility = "hidden";
+      gamePage.classList.add("active-page");
+    }
     renderGamePage();
     if (checkoutBlock) checkoutBlock.style.display = "none";
-    setTimeout(() => window.scrollTo({ top: savedGameScrollY, behavior: 'instant' }), 30);
-    // Обновляем ползунок меню на "каталог"
+    window.scrollTo({ top: savedGameScrollY, behavior: 'instant' });
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: savedGameScrollY, behavior: 'instant' });
+      if (gamePage) gamePage.style.visibility = "";
+    });
     document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
     document.querySelector('.menu-item[data-page="catalog"]')?.classList.add("active");
     document.getElementById("profileMenuWrapper")?.classList.remove("active");

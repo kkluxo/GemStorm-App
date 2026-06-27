@@ -2029,9 +2029,9 @@
   <div class="search-section" style="display:flex;gap:10px;margin-bottom:11px;align-items:center;">
   <div class="search-bar">
     <img class="search-icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'%3E%3C/path%3E%3C/svg%3E">
-    <input type="text" class="search-input" id="searchInput" placeholder="Найти товар по названию">
+    <input type="text" class="search-input" id="searchInput" placeholder="Найти игру по названию">
   </div>
-  <div class="filter-btn" id="resetFiltersMainBtn" onclick="hapticLight();showPage('filter')" style="cursor:pointer;">
+  <div class="filter-btn" id="resetFiltersMainBtn" style="cursor:pointer;">
     <img class="filter-icon" src="https://storage.botpapa.me/files/bc7cbf30-49e0-11f1-bef9-f1ec7a2c6e45.png" alt="filter">
   </div>
 </div>
@@ -2075,6 +2075,16 @@
 </div>
 
 <div id="game-page" class="page">
+  <div class="search-section" style="display:flex;gap:10px;margin-bottom:11px;align-items:center;position:relative;">
+    <div class="search-bar">
+      <img class="search-icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'%3E%3C/path%3E%3C/svg%3E">
+      <input type="text" class="search-input" id="gameSearchInput" placeholder="Найти товар по названию">
+    </div>
+    <div class="filter-btn" id="gameFilterBtn" style="cursor:pointer;">
+      <img class="filter-icon" src="https://storage.botpapa.me/files/bc7cbf30-49e0-11f1-bef9-f1ec7a2c6e45.png" alt="filter">
+    </div>
+  </div>
+  <div id="gameCategoryDropdown" style="display:none;background:#262629;border:1px solid #2B2B2D;border-radius:20px;margin-bottom:11px;overflow:hidden;"></div>
   <div id="gameProductsGrid" class="products-grid"></div>
 </div>
 
@@ -3447,17 +3457,26 @@ function buildItemsHtml(itemsArr) {
   }
 }
   
-  function renderGamePage() {
+  let gameSearchQuery = "";
+let gameCategoryFilter = "Все категории";
+
+function renderGamePage() {
   const grid = document.getElementById("gameProductsGrid");
   if (!grid || !currentGame) return;
 
-  // Обновляем заголовок
   const titleSpan = document.querySelector('#game-page .page-header-title-btn span');
   if (titleSpan) titleSpan.textContent = currentGame.name;
   const titleIcon = document.querySelector('#game-page .page-header-title-btn img');
   if (titleIcon) titleIcon.src = currentGame.image;
 
-  const prods = currentGame.getProducts().filter(p => p.visible === true);
+  let prods = currentGame.getProducts().filter(p => p.visible === true);
+
+  if (gameCategoryFilter !== "Все категории") {
+    prods = prods.filter(p => p.category === gameCategoryFilter);
+  }
+  if (gameSearchQuery.trim()) {
+    prods = prods.filter(p => p.name.toLowerCase().includes(gameSearchQuery.toLowerCase()));
+  }
 
   if (!prods.length) {
     grid.style.display = "flex";
@@ -3481,6 +3500,44 @@ function buildItemsHtml(itemsArr) {
   `).join("");
 
   attachGameCardEvents();
+
+  // Поиск
+  const gameSearchEl = document.getElementById("gameSearchInput");
+  if (gameSearchEl) {
+    gameSearchEl.value = gameSearchQuery;
+    gameSearchEl.oninput = (e) => { gameSearchQuery = e.target.value; renderGamePage(); };
+  }
+
+  // Фильтр-кнопка
+  const filterBtn = document.getElementById("gameFilterBtn");
+  if (filterBtn) {
+    filterBtn.onclick = () => {
+      hapticLight();
+      const dropdown = document.getElementById("gameCategoryDropdown");
+      if (!dropdown) return;
+      if (dropdown.style.display === "none") {
+        const allProds = currentGame.getProducts().filter(p => p.visible);
+        const cats = ["Все категории", ...new Set(allProds.map(p => p.category))];
+        dropdown.innerHTML = cats.map(cat => `
+          <div class="dropdown-item ${gameCategoryFilter === cat ? 'selected' : ''}" data-cat="${escapeHtml(cat)}">
+            ${escapeHtml(cat)}
+            ${gameCategoryFilter === cat ? '<span style="color:#4cb4e9;">✓</span>' : ''}
+          </div>
+        `).join("");
+        dropdown.style.display = "block";
+        dropdown.querySelectorAll(".dropdown-item").forEach(item => {
+          item.addEventListener("click", () => {
+            hapticLight();
+            gameCategoryFilter = item.dataset.cat;
+            dropdown.style.display = "none";
+            renderGamePage();
+          });
+        });
+      } else {
+        dropdown.style.display = "none";
+      }
+    };
+  }
 }
 
 function attachGameCardEvents() {

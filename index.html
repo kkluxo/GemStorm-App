@@ -3889,8 +3889,8 @@ if (currentPageId === "game") {
     if (targetPage) targetPage.classList.add("active-page");
     const checkoutBlock = document.getElementById("cartCheckoutFixed");
     if (pageId === "catalog") {
+  window.scrollTo({ top: 0, behavior: 'instant' });
   if (currentGame && !skipHistoryAdd) {
-    // пришли через меню — открываем игру сразу
     renderCatalog();
     initCategorySelect();
     initSortSelect();
@@ -3898,7 +3898,6 @@ if (currentPageId === "game") {
     setTimeout(() => showPage("game", true), 0);
     return;
   }
-  // пришли через кнопку назад — сбрасываем игру, показываем каталог
   currentGame = null;
   savedGameScrollY = 0;
   renderCatalog();
@@ -3975,7 +3974,13 @@ if (currentPageId === "game") {
         }
         showPage(previousPage, true);
       } else {
-        showPage("catalog");
+        if (currentGame) {
+          currentGame = null;
+          savedGameScrollY = 0;
+          showPage("catalog", true);
+        } else {
+          showPage("catalog");
+        }
       }
     });
   }

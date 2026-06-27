@@ -458,8 +458,8 @@ function getBot() {
         botInstance.start(async (ctx) => {
             try {
                 const message =
-    `${INVISIBLE_LINK}<b>Добро пожаловать в</b> <b><a href="https://t.me/GemStormBot">GemStorm</a></b>\n\n` +
-    `<b><a href="https://t.me/GemStormBot">GemStorm Store</a> - это бот для покупки</b> доната в игры <b>Supercell</b>`;
+    `${INVISIBLE_LINK}<b>Приветствуем в</b> <b><a href="https://t.me/PlacedGamesBot">Placed Games</a></b>\n\n` +
+    `<b><a href="https://t.me/GemStormBot">Placed Games </a> - это бот для покупки</b> доната в различные <b>игры</b>`;
                 await ctx.reply(message, {
                     parse_mode: 'HTML',
                     ...NO_FORWARD,

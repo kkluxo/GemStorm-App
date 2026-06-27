@@ -470,7 +470,7 @@ function getBot() {
                                 { text: 'Наш канал', url: 'https://t.me/GemStormStore' }
                             ],
                             [
-                                { text: 'Открыть приложение GemStorm', web_app: { url: APP_URL } }
+                                { text: 'Открыть приложение PlacedGames', web_app: { url: APP_URL } }
                             ]
                         ]
                     }

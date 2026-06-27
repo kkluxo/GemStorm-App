@@ -3889,15 +3889,23 @@ if (currentPageId === "game") {
     if (targetPage) targetPage.classList.add("active-page");
     const checkoutBlock = document.getElementById("cartCheckoutFixed");
     if (pageId === "catalog") {
-  window.scrollTo({ top: 0, behavior: 'instant' });
   if (currentGame && !skipHistoryAdd) {
-    renderCatalog();
-    initCategorySelect();
-    initSortSelect();
+    // Пришли через меню — показываем game напрямую без мигания
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
+    document.getElementById("game-page")?.classList.add("active-page");
+    renderGamePage();
     if (checkoutBlock) checkoutBlock.style.display = "none";
-    setTimeout(() => showPage("game", true), 0);
+    setTimeout(() => window.scrollTo({ top: savedGameScrollY, behavior: 'instant' }), 30);
+    // Обновляем ползунок меню на "каталог"
+    document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
+    document.querySelector('.menu-item[data-page="catalog"]')?.classList.add("active");
+    document.getElementById("profileMenuWrapper")?.classList.remove("active");
+    updateMenuSlider("catalog");
+    injectPageHeader();
+    if (window.Telegram?.WebApp) window.Telegram.WebApp.BackButton.show();
     return;
   }
+  window.scrollTo({ top: 0, behavior: 'instant' });
   currentGame = null;
   savedGameScrollY = 0;
   renderCatalog();

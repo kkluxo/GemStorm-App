@@ -458,19 +458,19 @@ function getBot() {
         botInstance.start(async (ctx) => {
             try {
                 const message =
-    `<b>Приветствуем в</b> <b><a href="https://t.me/PlacedGamesBot">Placed Games</a></b>\n\n` +
-    `<b><a href="https://t.me/GemStormBot">Placed Games</a></b> - это магазин для покупки доната в <b>разные игры.</b>`;
+    `${INVISIBLE_LINK}<b>Приветствуем в</b> <b><a href="https://t.me/PlacedGamesBot">Placed Games</a></b>\n\n` +
+    `<b><a href="https://t.me/PlacedGamesBot">Placed Games</a></b> - это магазин для покупки доната в <b>разные игры.</b>`;
                 await ctx.reply(message, {
                     parse_mode: 'HTML',
                     ...NO_FORWARD,
                     reply_markup: {
                         inline_keyboard: [
                             [
-                                { text: 'Поддержка', url: 'https://t.me/GemStormHelp' },
-                                { text: 'Наш канал', url: 'https://t.me/GemStormStore' }
+                                { text: 'Поддержка', url: 'https://t.me/PlacedHelpBot' },
+                                { text: 'Наш канал', url: 'https://t.me/PlacedGames' }
                             ],
                             [
-                                { text: 'Открыть приложение PlacedGames', web_app: { url: APP_URL } }
+                                { text: 'Открыть магазин PlacedGames', web_app: { url: APP_URL } }
                             ]
                         ]
                     }

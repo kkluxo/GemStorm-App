@@ -2122,6 +2122,12 @@
 
 <script src="products.js"></script>
 <script>
+document.querySelectorAll('*').forEach(el => {
+  const s = getComputedStyle(el);
+  if (s.backgroundColor === 'rgb(38, 38, 41)') el.style.backgroundColor = '#232326';
+});
+</script>
+<script>
 ['log','warn','error','info','debug','table','trace'].forEach(m => console[m] = () => {});
 
     (async function() {

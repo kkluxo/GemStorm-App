@@ -3469,7 +3469,7 @@ function renderGamePage() {
   const titleSpan = document.querySelector('#game-page .page-header-title-btn span');
   if (titleSpan) titleSpan.textContent = currentGame.name;
   const titleIcon = document.querySelector('#game-page .page-header-title-btn img');
-  if (titleIcon) titleIcon.src = currentGame.image;
+if (titleIcon) titleIcon.src = 'https://storage.botpapa.me/files/00f09750-5110-11f1-bef9-f1ec7a2c6e45.png';
 
   let prods = currentGame.getProducts().filter(p => p.visible === true);
 
@@ -3519,16 +3519,18 @@ if (filterBtn && catSelect) {
   catSelect.innerHTML = cats.map(cat =>
     `<option value="${escapeHtml(cat)}" ${gameCategoryFilter === cat ? 'selected' : ''}>${escapeHtml(cat)}</option>`
   ).join("");
-  catSelect.style.display = "block";
+  catSelect.style.display = "none"; // скрываем select
 
   filterBtn.onclick = () => {
     hapticLight();
+    catSelect.size = cats.length;
     catSelect.focus();
     catSelect.click();
   };
 
   catSelect.onchange = function() {
     gameCategoryFilter = this.value;
+    catSelect.size = 0;
     renderGamePage();
   };
 }

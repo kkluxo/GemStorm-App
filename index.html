@@ -2273,7 +2273,28 @@ const games = [
     name: 'Brawl Stars',
     developer: 'Supercell',
     image: 'https://i.postimg.cc/SNRVmpJV/IMG-7689.jpg',
-    getProducts: () => window.products || []
+    getProducts: () => window.brawlProducts || []
+  },
+  {
+    id: 'clashroyale',
+    name: 'Clash Royale',
+    developer: 'Supercell',
+    image: 'https://i.postimg.cc/4NywXTmv/IMG-7688.png',
+    getProducts: () => window.crProducts || []
+  },
+  {
+    id: 'clashofclans',
+    name: 'Clash of Clans',
+    developer: 'Supercell',
+    image: 'https://i.postimg.cc/bNrLqjsm/IMG-7691.png',
+    getProducts: () => window.cocProducts || []
+  },
+  {
+    id: 'roblox',
+    name: 'Roblox',
+    developer: 'Roblox Corporation',
+    image: 'https://i.postimg.cc/gkj4GPns/IMG-7692.jpg',
+    getProducts: () => window.robloxProducts || []
   }
 ];
 

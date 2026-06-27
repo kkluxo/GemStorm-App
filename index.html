@@ -2465,6 +2465,8 @@ grid.innerHTML = filteredGames.map(game => `
       hapticLight();
       const gameId = btn.dataset.openGame;
       currentGame = games.find(g => g.id === gameId);
+      currentGame = games.find(g => g.id === gameId);
+savedGameScrollY = 0;
       // Обновляем заголовок страницы игры
       const cfg = { icon: currentGame.image, title: currentGame.name };
       showPage("game");
@@ -3856,8 +3858,12 @@ function attachGameCardEvents() {
   }
 
   function showPage(pageId, skipHistoryAdd = false) {
+    let savedGameScrollY = 0;
     let currentPageId = null;
     for (const page of document.querySelectorAll(".page")) {
+      if (currentPageId === "game") {
+  savedGameScrollY = window.scrollY;
+}
       if (page.classList.contains("active-page")) {
         currentPageId = page.id.replace("-page", "");
         break;
@@ -3882,7 +3888,16 @@ function attachGameCardEvents() {
     const targetPage = document.getElementById(pageId + "-page");
     if (targetPage) targetPage.classList.add("active-page");
     const checkoutBlock = document.getElementById("cartCheckoutFixed");
-    if (pageId === "catalog") { renderCatalog(); initCategorySelect(); initSortSelect(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
+    if (pageId === "catalog") {
+  renderCatalog();
+  initCategorySelect();
+  initSortSelect();
+  if (checkoutBlock) checkoutBlock.style.display = "none";
+  if (currentGame) {
+    setTimeout(() => showPage("game", true), 0);
+    return;
+  }
+}
     if (pageId === "cart") { renderCartPage(); }
     if (pageId === "orders") { renderOrdersPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
     if (pageId === "profile") { renderProfilePage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
@@ -3892,7 +3907,11 @@ function attachGameCardEvents() {
     if (pageId === "order-detail") { if (checkoutBlock) checkoutBlock.style.display = "none"; }
     if (pageId === "reviews") { renderReviewsPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
     if (pageId === "gifts") { renderGiftsPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
-    if (pageId === "game") { renderGamePage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
+    if (pageId === "game") {
+  renderGamePage();
+  if (checkoutBlock) checkoutBlock.style.display = "none";
+  setTimeout(() => window.scrollTo({ top: savedGameScrollY, behavior: 'instant' }), 50);
+}
     if (pageId === "write-review") { renderWriteReviewPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }
     // 'ticket' удалён
     if (pageId === "checkout") { afterPaymentBackPage = "cart"; }

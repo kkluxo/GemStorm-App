@@ -10,8 +10,11 @@ const PORT = process.env.PORT || 3000;
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const ADMIN_ID = 7509324385;
 
-// Предпросмотр изображения через невидимый символ
-const PREVIEW_IMAGE_URL = 'https://i.postimg.cc/4dgdfZPP/A71C3DE8-46F9-4ACD-9214-BF2DF2E6E49D.jpg';
+// Сделай два:
+const PREVIEW_START_URL = 'https://i.postimg.cc/nzrHcz7L/F7C34F6E-75C4-4087-99AD-67943D3AFC8B.jpg';
+const PREVIEW_IMAGE_URL = 'https://i.postimg.cc/K8hvrmSb/6777DAC7-A893-410E-8BB3-72FAB5DB53A8.jpg';
+
+const INVISIBLE_LINK_START = `<a href="${PREVIEW_START_URL}">&#8205;</a>`;
 const INVISIBLE_LINK = `<a href="${PREVIEW_IMAGE_URL}">&#8205;</a>`;
 
 // Ссылки на приложение
@@ -458,7 +461,7 @@ function getBot() {
         botInstance.start(async (ctx) => {
             try {
                 const message =
-    `${INVISIBLE_LINK}<b>Приветствуем в</b> <b><a href="https://t.me/PlacedGamesBot">Placed Games</a></b>\n\n` +
+    `${INVISIBLE_LINK_START}<b>Приветствуем в</b> <b><a href="https://t.me/PlacedGamesBot">Placed Games</a></b>\n\n` +
     `<b><a href="https://t.me/PlacedGamesBot">Placed Games</a></b> - это магазин для <b>покупки</b> доната в <b>разные игры</b>`;
                 await ctx.reply(message, {
                     parse_mode: 'HTML',

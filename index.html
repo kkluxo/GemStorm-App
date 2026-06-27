@@ -2084,7 +2084,7 @@
       <img class="filter-icon" src="https://storage.botpapa.me/files/bc7cbf30-49e0-11f1-bef9-f1ec7a2c6e45.png" alt="filter">
     </div>
   </div>
-  <div id="gameCategoryDropdown" style="display:none;background:#262629;border:1px solid #2B2B2D;border-radius:20px;margin-bottom:11px;overflow:hidden;"></div>
+  <select id="gameCategorySelect" class="form-select-native" style="display:none;margin-bottom:11px;"></select>
   <div id="gameProductsGrid" class="products-grid"></div>
 </div>
 
@@ -2423,7 +2423,8 @@ ${appliedPromo ? `<span style="color:#9ca3af;text-decoration:line-through;font-s
   const grid = document.getElementById("catalogGrid");
   if (!grid) return;
   grid.style.display = "";
-  grid.innerHTML = games.map(game => `
+  const filteredGames = games.filter(g => g.name.toLowerCase().includes(searchQuery.toLowerCase()));
+grid.innerHTML = filteredGames.map(game => `
     <div class="product-card" data-game-id="${game.id}">
       <img class="card-img" src="${game.image}" alt="${escapeHtml(game.name)}" loading="lazy">
       <div class="card-info">
@@ -3510,34 +3511,25 @@ function renderGamePage() {
 
   // Фильтр-кнопка
   const filterBtn = document.getElementById("gameFilterBtn");
-  if (filterBtn) {
-    filterBtn.onclick = () => {
-      hapticLight();
-      const dropdown = document.getElementById("gameCategoryDropdown");
-      if (!dropdown) return;
-      if (dropdown.style.display === "none") {
-        const allProds = currentGame.getProducts().filter(p => p.visible);
-        const cats = ["Все категории", ...new Set(allProds.map(p => p.category))];
-        dropdown.innerHTML = cats.map(cat => `
-          <div class="dropdown-item ${gameCategoryFilter === cat ? 'selected' : ''}" data-cat="${escapeHtml(cat)}">
-            ${escapeHtml(cat)}
-            ${gameCategoryFilter === cat ? '<span style="color:#4cb4e9;">✓</span>' : ''}
-          </div>
-        `).join("");
-        dropdown.style.display = "block";
-        dropdown.querySelectorAll(".dropdown-item").forEach(item => {
-          item.addEventListener("click", () => {
-            hapticLight();
-            gameCategoryFilter = item.dataset.cat;
-            dropdown.style.display = "none";
-            renderGamePage();
-          });
-        });
-      } else {
-        dropdown.style.display = "none";
-      }
-    };
-  }
+const catSelect = document.getElementById("gameCategorySelect");
+if (filterBtn && catSelect) {
+  const allProds = currentGame.getProducts().filter(p => p.visible);
+  const cats = ["Все категории", ...new Set(allProds.map(p => p.category))];
+  catSelect.innerHTML = cats.map(cat =>
+    `<option value="${escapeHtml(cat)}" ${gameCategoryFilter === cat ? 'selected' : ''}>${escapeHtml(cat)}</option>`
+  ).join("");
+  catSelect.style.display = "block";
+
+  filterBtn.onclick = () => {
+    hapticLight();
+    catSelect.focus();
+    catSelect.click();
+  };
+
+  catSelect.onchange = function() {
+    gameCategoryFilter = this.value;
+    renderGamePage();
+  };
 }
 
 function attachGameCardEvents() {
@@ -3831,7 +3823,7 @@ function attachGameCardEvents() {
       'reviews': { icon: 'https://storage.botpapa.me/files/f665c4e0-510f-11f1-bef9-f1ec7a2c6e45.png', title: 'Отзывы' },
       'write-review': { icon: 'https://storage.botpapa.me/files/f665c4e0-510f-11f1-bef9-f1ec7a2c6e45.png', title: 'Оставить отзыв' },
       'gifts': { icon: 'https://storage.botpapa.me/files/501ffee0-51e9-11f1-bef9-f1ec7a2c6e45.png', title: 'Подарки' },
-      'game': { icon: 'https://storage.botpapa.me/files/00f09750-5110-11f1-bef9-f1ec7a2c6e45.png', title: 'Каталог' },
+      'game': { icon: currentGame?.image || 'https://storage.botpapa.me/files/00f09750-5110-11f1-bef9-f1ec7a2c6e45.png', title: currentGame?.name || 'Игра' },
     };
 
     const activePage = document.querySelector('.page.active-page');

@@ -3519,20 +3519,12 @@ if (filterBtn && catSelect) {
   catSelect.innerHTML = cats.map(cat =>
     `<option value="${escapeHtml(cat)}" ${gameCategoryFilter === cat ? 'selected' : ''}>${escapeHtml(cat)}</option>`
   ).join("");
-  catSelect.style.display = "none"; // скрываем select
-
-  filterBtn.onclick = () => {
-    hapticLight();
-    catSelect.size = cats.length;
-    catSelect.focus();
-    catSelect.click();
-  };
-
+  
   catSelect.onchange = function() {
-    gameCategoryFilter = this.value;
-    catSelect.size = 0;
-    renderGamePage();
-  };
+  hapticLight();
+  gameCategoryFilter = this.value;
+  renderGamePage();
+};
 }
 }
 

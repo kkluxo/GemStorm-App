@@ -2267,6 +2267,7 @@ function hapticMedium() {
   let navigationHistory = [];
   let orderMode = "cart";
   let currentGame = null;
+  let savedGameScrollY = 0;
 const games = [
   {
     id: 'brawlstars',
@@ -3858,17 +3859,16 @@ function attachGameCardEvents() {
   }
 
   function showPage(pageId, skipHistoryAdd = false) {
-    let savedGameScrollY = 0;
     let currentPageId = null;
-    for (const page of document.querySelectorAll(".page")) {
-      if (currentPageId === "game") {
+for (const page of document.querySelectorAll(".page")) {
+  if (page.classList.contains("active-page")) {
+    currentPageId = page.id.replace("-page", "");
+    break;
+  }
+}
+if (currentPageId === "game") {
   savedGameScrollY = window.scrollY;
 }
-      if (page.classList.contains("active-page")) {
-        currentPageId = page.id.replace("-page", "");
-        break;
-      }
-    }
     if (currentPageId && currentPageId !== pageId && !skipHistoryAdd) {
       const lastInHistory = navigationHistory[navigationHistory.length - 1];
       if (lastInHistory !== currentPageId) { navigationHistory.push(currentPageId); }
@@ -3889,14 +3889,22 @@ function attachGameCardEvents() {
     if (targetPage) targetPage.classList.add("active-page");
     const checkoutBlock = document.getElementById("cartCheckoutFixed");
     if (pageId === "catalog") {
+  if (currentGame && !skipHistoryAdd) {
+    // пришли через меню — открываем игру сразу
+    renderCatalog();
+    initCategorySelect();
+    initSortSelect();
+    if (checkoutBlock) checkoutBlock.style.display = "none";
+    setTimeout(() => showPage("game", true), 0);
+    return;
+  }
+  // пришли через кнопку назад — сбрасываем игру, показываем каталог
+  currentGame = null;
+  savedGameScrollY = 0;
   renderCatalog();
   initCategorySelect();
   initSortSelect();
   if (checkoutBlock) checkoutBlock.style.display = "none";
-  if (currentGame) {
-    setTimeout(() => showPage("game", true), 0);
-    return;
-  }
 }
     if (pageId === "cart") { renderCartPage(); }
     if (pageId === "orders") { renderOrdersPage(); if (checkoutBlock) checkoutBlock.style.display = "none"; }

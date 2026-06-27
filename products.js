@@ -10,7 +10,19 @@ function getRubPrice(usdPrice, isOld = false) {
   return Math.round(parseFloat(usdPrice) * (isOld ? 89 : 85));
 }
 
-const productsRaw = [
+function makeProducts(raw, prefix) {
+  return raw.map(p => ({
+    id: prefix + p[0],
+    name: p[1],
+    price: getRubPrice(p[2]),
+    oldPrice: getRubPrice(p[3], true),
+    label: p[4], category: p[5], maxQty: p[6],
+    conflictGroup: p[7].map(id => prefix + id),
+    visible: p[8], image: p[9]
+  }));
+}
+
+const brawlRaw = [
   // Пропуски
   [1, "Brawl Pass", "8.99", "8.99", "Пропуск", "Пропуски", 1, [1,2,3], true, "https://storage.botpapa.me/files/6b57bf60-499a-11f1-bef9-f1ec7a2c6e45.jpeg"],
   //[1, "Brawl Pass", "8.99", "8.99", "Пропуск", "Пропуски", 1, [1,2,3], true, "https://i.postimg.cc/DyRqmtSg/D95D9FEE-84F7-4CA2-BAAC-19CD16D3DF46.jpg"],

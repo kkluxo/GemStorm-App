@@ -2502,7 +2502,7 @@ ${appliedPromo ? `<span style="color:#9ca3af;text-decoration:line-through;font-s
     const isCartPageActive = document.getElementById("cart-page").classList.contains("active-page");
     if (!items.length || !isCartPageActive) { if (fixedBlock) fixedBlock.style.display = "none"; return; }
     fixedBlock.style.display = "block";
-    const rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
+    const rawTotal = items.reduce((s, [id, qty]) => s + (games.flatMap(g => g.getProducts()).find(p => p.id == id).price * qty), 0);
     const discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
     if (isPromoMode) {
       fixedBlock.innerHTML = `<div class="checkout-card"><div class="total-row"><span class="promo-label">Введите промокод на скидку</span></div><div class="promo-input-row"><input type="text" class="promo-input" id="promoInput" placeholder="Введите промокод" value="${appliedPromo ? appliedPromo.code : ''}" oninput="this.value=this.value.toUpperCase()"><button class="promo-action-btn apply-btn" id="promoApplyBtn"><img src="https://storage.botpapa.me/files/b254ec20-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="apply"></button><button class="promo-action-btn back-btn" id="promoBackBtn"><img src="https://storage.botpapa.me/files/af0747c0-4a13-11f1-bef9-f1ec7a2c6e45.png" alt="back"></button></div></div>`;
@@ -2596,7 +2596,7 @@ ${appliedPromo ? `<span style="color:#9ca3af;text-decoration:line-through;font-s
 
     const items = Object.entries(cart);
     if (!items.length) { container.innerHTML = '<div class="empty-state">Корзина пуста</div>'; return; }
-    rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
+    rawTotal = items.reduce((s, [id, qty]) => s + (games.flatMap(g => g.getProducts()).find(p => p.id == id).price * qty), 0);
     discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
 
     const itemsListHtml = Object.entries(cart).map(([id, qty]) => {
@@ -2672,7 +2672,7 @@ ${appliedPromo ? `<span style="color:#9ca3af;text-decoration:line-through;font-s
     let rawTotal = 0;
 
     const items = Object.entries(cart);
-    rawTotal = items.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
+    rawTotal = items.reduce((s, [id, qty]) => s + (games.flatMap(g => g.getProducts()).find(p => p.id == id).price * qty), 0);
     discountedTotal = appliedPromo ? Math.round(rawTotal * (1 - appliedPromo.discountPercent / 100)) : rawTotal;
 
     const itemsListHtml = Object.entries(cart).map(([id, qty]) => {
@@ -2749,7 +2749,7 @@ isSubmitting = true;
         let orderPromoDiscount = 0;
 
         const cartItems = Object.entries(cart);
-        total = cartItems.reduce((s, [id, qty]) => s + (products.find(p => p.id == id).price * qty), 0);
+        total = cartItems.reduce((s, [id, qty]) => s + (games.flatMap(g => g.getProducts()).find(p => p.id == id).price * qty), 0);
         if (appliedPromo) total = Math.round(total * (1 - appliedPromo.discountPercent / 100));
         orderItems = cartItems.map(([id, qty]) => {
   const prod = games.flatMap(g => g.getProducts()).find(p => p.id == id);

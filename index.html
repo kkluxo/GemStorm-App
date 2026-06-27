@@ -2414,8 +2414,8 @@ ${appliedPromo ? `<span style="color:#9ca3af;text-decoration:line-through;font-s
 </div></div><div class="cart-item-delivery"><span class="cart-item-delivery-label">Способ получения</span><span class="cart-item-delivery-value">вход в аккаунт</span></div></div>`;
     }
     container.innerHTML = html;
-    document.querySelectorAll("[data-dec]").forEach(btn => { btn.addEventListener("click", () => changeQty(btn.dataset.dec, -1); });
-    document.querySelectorAll("[data-inc]").forEach(btn => { btn.addEventListener("click", () => changeQty(btn.dataset.inc, 1); });
+    document.querySelectorAll("[data-dec]").forEach(btn => { btn.addEventListener("click", () => changeQty(btn.dataset.dec, -1)); });
+document.querySelectorAll("[data-inc]").forEach(btn => { btn.addEventListener("click", () => changeQty(btn.dataset.inc, 1)); });
     if (document.getElementById("cart-page").classList.contains("active-page")) { renderCheckoutBlock(); }
     document.querySelectorAll(".cart-warn-btn").forEach(btn => {
       btn.addEventListener("click", () => {

@@ -25,9 +25,9 @@ const productsRaw = [
   //[48, "Набор: Болт", "18.99", "18.99", "Боец Болт", "Боец Болт", 1, [47,48], true, "https://store.supercell.com/assets/offer-images/brawlstars/85b256626eb1cfcc67ea45c337c3822d7ba5a37820b79486f6940518151f6575/brawlstars.16000106-x1-Hero_23001279-x1-Item_23001280-x1-Item_23001281-x1-Item_23001282-x1-Item.png"],
   
   // Гиперзарядные скины
-  [84, "Монарх Рико", "16.99", "16.99", "Гипер. скин", "Гипер. скины", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/0be3e4ba65f42da3d73f1a29c8e9b20d7f680baa32d7d2ba83d0b088cd0c9b8e/brawlstars.29000920-x1-Skin_5000000-x250-Gems_5000001-x1500-Coins.png"],
-  [85, "Кристальный монарх Рико", "16.99", "16.99", "Гипер. скин", "Гипер. скины", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/718a2b8d839df2274c2fae1cff838514648f1e3167320d1add4c6452929929c0/brawlstars.29000926-x1-Skin_5000001-x3000-Coins_5000022-x500-PowerPoints.png"],
-  [86, "Блинговый монарх Рико", "16.99", "16.99", "Гипер. скин", "Гипер. скины", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/a404d18b7d0eee32a92b53c8b1a58a67f22377e3cbf60ddbf7b9436e4ffc0f38/brawlstars.29000925-x1-Skin_5000023-x10000-Bling_5000001-x1000-Coins.png"],
+  //[84, "Монарх Рико", "16.99", "16.99", "Гипер. скин", "Гипер. скины", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/0be3e4ba65f42da3d73f1a29c8e9b20d7f680baa32d7d2ba83d0b088cd0c9b8e/brawlstars.29000920-x1-Skin_5000000-x250-Gems_5000001-x1500-Coins.png"],
+  //[85, "Кристальный монарх Рико", "16.99", "16.99", "Гипер. скин", "Гипер. скины", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/718a2b8d839df2274c2fae1cff838514648f1e3167320d1add4c6452929929c0/brawlstars.29000926-x1-Skin_5000001-x3000-Coins_5000022-x500-PowerPoints.png"],
+  //[86, "Блинговый монарх Рико", "16.99", "16.99", "Гипер. скин", "Гипер. скины", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/a404d18b7d0eee32a92b53c8b1a58a67f22377e3cbf60ddbf7b9436e4ffc0f38/brawlstars.29000925-x1-Skin_5000023-x10000-Bling_5000001-x1000-Coins.png"],
 
   // Моя геройская академия
   //[49, "Набор: MHA", "32.99", "32.99", "MHA", "Hero Academy", 1, [49,50,51,52,53], true, "https://store.supercell.com/assets/offer-images/brawlstars/df876f611fb401294842243f161f4d32c5ee10a9381114ce27aedb75bdb6cac8/brawlstars.29001603-x1-Skin_29001598-x1-Skin_29001597-x1-Skin_29001596-x1-Skin.png"],

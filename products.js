@@ -13,7 +13,7 @@ function getRubPrice(usdPrice, isOld = false) {
 const productsRaw = [
   // Пропуски
   [90, "Brawl Stars", "8.99", "8.99", "Пропуск", "Пропуски", 1, [], true, "https://i.postimg.cc/SNRVmpJV/IMG-7689.jpg"],
-  [91, "Clash Royale, "8.99", "8.99", "Пропуск", "Пропуски", 1, [], true, "https://i.postimg.cc/4NywXTmv/IMG-7688.png"],
+  [91, "Clash Royale", "8.99", "8.99", "Пропуск", "Пропуски", 1, [], true, "https://i.postimg.cc/4NywXTmv/IMG-7688.png"],
   [92, "Clash of Clans", "8.99", "8.99", "Пропуск", "Пропуски", 1, [], true, "https://i.postimg.cc/bNrLqjsm/IMG-7691.png"],
   [93, "Roblox", "8.99", "8.99", "Пропуск", "Пропуски", 1, [], true, "https://i.postimg.cc/gkj4GPns/IMG-7692.jpg"],
   [1, "Brawl Pass", "8.99", "8.99", "Пропуск", "Пропуски", 1, [1,2,3], true, "https://storage.botpapa.me/files/6b57bf60-499a-11f1-bef9-f1ec7a2c6e45.jpeg"],

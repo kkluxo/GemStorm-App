@@ -195,3 +195,5 @@ function renderFilterModal() {
     });
   });
 }
+
+window.products = products;

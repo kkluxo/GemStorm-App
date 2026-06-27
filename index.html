@@ -4161,8 +4161,19 @@ document.getElementById("resetFiltersMainBtn")?.addEventListener("click", () => 
     searchInputEl.addEventListener("input", (e) => { searchQuery = e.target.value; renderCatalog(); });
   }
   document.querySelectorAll(".menu-item").forEach(btn => {
-    btn.addEventListener("click", () => { hapticLight(); showPage(btn.dataset.page); });
+  btn.addEventListener("click", () => {
+    hapticLight();
+    if (btn.dataset.page === "catalog" && currentGame) {
+      showPage("game", true);
+      document.querySelectorAll(".menu-item").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById("profileMenuWrapper")?.classList.remove("active");
+      updateMenuSlider("catalog");
+      return;
+    }
+    showPage(btn.dataset.page);
   });
+});
 
   let lastSliderIndex = 0;
 

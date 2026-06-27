@@ -11,7 +11,7 @@ const BOT_TOKEN = process.env.BOT_TOKEN;
 const ADMIN_ID = 7509324385;
 
 // Предпросмотр изображения через невидимый символ
-const PREVIEW_IMAGE_URL = 'https://i.postimg.cc/BbKT1JDC/27B9A002-A2DC-462C-9D44-AC4354C170DC.jpg';
+const PREVIEW_IMAGE_URL = 'https://i.postimg.cc/BbKT1JDC/27B9A002-A2DC-462C-9D44-AC4354C170DC.jpg?=1';
 const INVISIBLE_LINK = `<a href="${PREVIEW_IMAGE_URL}">&#8205;</a>`;
 
 // Ссылки на приложение

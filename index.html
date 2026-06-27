@@ -2111,10 +2111,6 @@
 </div>
 
 <script src="products.js"></script>
-<script src="brawlstars.js"></script>
-<script src="clashroyale.js"></script>
-<script src="clashofclans.js"></script>
-<script src="roblox.js"></script>
 <script>
 ['log','warn','error','info','debug','table','trace'].forEach(m => console[m] = () => {});
 
@@ -2266,30 +2262,10 @@ const games = [
     name: 'Brawl Stars',
     developer: 'Supercell',
     image: 'https://i.postimg.cc/SNRVmpJV/IMG-7689.jpg',
-    getProducts: () => window.brawlStarsProducts || []
-  },
-  {
-    id: 'clashroyale',
-    name: 'Clash Royale',
-    developer: 'Supercell',
-    image: 'https://i.postimg.cc/4NywXTmv/IMG-7688.png',
-    getProducts: () => window.clashRoyaleProducts || []
-  },
-  {
-    id: 'clashofclans',
-    name: 'Clash of Clans',
-    developer: 'Supercell',
-    image: 'https://i.postimg.cc/bNrLqjsm/IMG-7691.png',
-    getProducts: () => window.clashOfClansProducts || []
-  },
-  {
-    id: 'roblox',
-    name: 'Roblox',
-    developer: 'Roblox Corporation',
-    image: 'https://i.postimg.cc/gkj4GPns/IMG-7692.jpg',
-    getProducts: () => window.robloxProducts || []
+    getProducts: () => window.products || []
   }
 ];
+
   let afterPaymentBackPage = "cart";
 
   const promoDeals = []; // Удалено всё связанное с акциями
@@ -4038,18 +4014,7 @@ setTimeout(() => showOrderDetail(order, isOwner), 0);
   if (sortSelect) sortSelect.value = currentSort;
 }
 
-function initCategorySelect() {
-  const catSelect = document.getElementById("categorySelect");
-  if (!catSelect) return;
-  const cats = [...new Set(products.filter(p => p.visible).map(p => p.category))];
-  catSelect.innerHTML = `<option value="all">Все категории</option>` + cats.map(c => `<option value="${c}">${c}</option>`).join("");
-  catSelect.value = currentFilter === "Все категории" ? "all" : currentFilter;
-  catSelect.addEventListener("change", function() {
-    hapticLight();
-    currentFilter = this.value === "all" ? "Все категории" : this.value;
-    renderCatalog();
-  });
-}
+function initCategorySelect() {}
 
 function initSortSelect() {
   const sortSelect = document.getElementById("sortSelect");

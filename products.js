@@ -27,5 +27,3 @@ function mapProduct(p) {
 
 // products — объединение всех игр, заполняется после загрузки всех JS-файлов игр
 // canAddToCart определён в index.html, так как требует доступа к games[]
-ENDOFFILE
-echo "done"

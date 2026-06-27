@@ -3960,17 +3960,26 @@ if (currentPageId === "game") {
       const tg = window.Telegram.WebApp;
       if (pageId === "catalog") { tg.BackButton.hide(); } else { tg.BackButton.show(); }
     }
-    window.scrollTo({ top: 0 });
+    window.scrollTo({ top: 0, behavior: 'instant' });
   }
 
   function initBackButtonHandler() {
-    if (window.Telegram && window.Telegram.WebApp) {
-      const tg = window.Telegram.WebApp;
-      tg.BackButton.onClick(function() {
-        if (navigationHistory.length > 0) { const previousPage = navigationHistory.pop(); showPage(previousPage, true); } else { showPage("catalog"); }
-      });
-    }
+  if (window.Telegram && window.Telegram.WebApp) {
+    const tg = window.Telegram.WebApp;
+    tg.BackButton.onClick(function() {
+      if (navigationHistory.length > 0) {
+        const previousPage = navigationHistory.pop();
+        if (previousPage === "catalog") {
+          currentGame = null;
+          savedGameScrollY = 0;
+        }
+        showPage(previousPage, true);
+      } else {
+        showPage("catalog");
+      }
+    });
   }
+}
 
   function initApp() {
     loadCartFromLocalStorage();

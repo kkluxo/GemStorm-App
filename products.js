@@ -128,6 +128,29 @@ const productsRaw = [
   [9, "950 гемов", "49.99", "49.99", "Кристаллы", "Кристаллы", 3, [], true, "https://storage.botpapa.me/files/ec10b160-4a1d-11f1-bef9-f1ec7a2c6e45.jpeg"],
   [10, "2000 гемов", "99.99", "99.99", "Кристаллы", "Кристаллы", 3, [], true, "https://storage.botpapa.me/files/767ed1d0-499a-11f1-bef9-f1ec7a2c6e45.jpeg"]
 ];
+window.brawlProducts = makeProducts(brawlRaw, 'bs_');
+window.products = window.brawlProducts; // для обратной совместимости
+
+// ===== CLASH ROYALE =====
+const crRaw = [
+  [1, "Название товара", "1.99", "1.99", "Категория", "Категория", 1, [], true, "URL"],
+  // ...
+];
+window.crProducts = makeProducts(crRaw, 'cr_');
+
+// ===== CLASH OF CLANS =====
+const cocRaw = [
+  [1, "Название товара", "1.99", "1.99", "Категория", "Категория", 1, [], true, "URL"],
+  // ...
+];
+window.cocProducts = makeProducts(cocRaw, 'coc_');
+
+// ===== ROBLOX =====
+const robloxRaw = [
+  [1, "Название товара", "1.99", "1.99", "Категория", "Категория", 1, [], true, "URL"],
+  // ...
+];
+window.robloxProducts = makeProducts(robloxRaw, 'roblox_');
 
 const products = productsRaw.map(p => ({
   id: p[0], name: p[1], 

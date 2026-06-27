@@ -2414,8 +2414,8 @@ ${appliedPromo ? `<span style="color:#9ca3af;text-decoration:line-through;font-s
 </div></div><div class="cart-item-delivery"><span class="cart-item-delivery-label">Способ получения</span><span class="cart-item-delivery-value">вход в аккаунт</span></div></div>`;
     }
     container.innerHTML = html;
-    document.querySelectorAll("[data-dec]").forEach(btn => { btn.addEventListener("click", () => changeQty(parseInt(btn.dataset.dec), -1)); });
-    document.querySelectorAll("[data-inc]").forEach(btn => { btn.addEventListener("click", () => changeQty(parseInt(btn.dataset.inc), 1)); });
+    document.querySelectorAll("[data-dec]").forEach(btn => { btn.addEventListener("click", () => changeQty(btn.dataset.dec, -1); });
+    document.querySelectorAll("[data-inc]").forEach(btn => { btn.addEventListener("click", () => changeQty(btn.dataset.inc, 1); });
     if (document.getElementById("cart-page").classList.contains("active-page")) { renderCheckoutBlock(); }
     document.querySelectorAll(".cart-warn-btn").forEach(btn => {
       btn.addEventListener("click", () => {
@@ -2427,7 +2427,7 @@ ${appliedPromo ? `<span style="color:#9ca3af;text-decoration:line-through;font-s
   
   function updateAllCards() {
     document.querySelectorAll('.product-card').forEach(card => {
-      const cardId = parseInt(card.dataset.id);
+      const cardId = card.dataset.id;
       const btnContainer = card.querySelector('.card-info > div:last-child');
       if (btnContainer) { btnContainer.outerHTML = renderCartButtonHtml(cardId); }
     });
@@ -2474,8 +2474,8 @@ grid.innerHTML = filteredGames.map(game => `
 
   function attachCardEvents() {
     document.querySelectorAll('.product-card').forEach(card => {
-      const cardId = parseInt(card.dataset.id);
-      const actionBtn = card.querySelector('.card-action-btn');
+      const cardId = card.dataset.id;
+    const actionBtn = card.querySelector('.card-action-btn');
       if (!actionBtn) return;
       if (actionBtn.classList.contains('cart-add-btn')) {
         actionBtn.replaceWith(actionBtn.cloneNode(true));
@@ -3551,7 +3551,7 @@ if (filterBtn && catSelect) {
 
 function attachGameCardEvents() {
   document.querySelectorAll('#game-page .product-card').forEach(card => {
-    const cardId = parseInt(card.dataset.id);
+    const cardId = card.dataset.id;
     const actionBtn = card.querySelector('.card-action-btn');
     if (!actionBtn) return;
     if (actionBtn.classList.contains('cart-add-btn')) {

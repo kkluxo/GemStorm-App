@@ -458,7 +458,7 @@ function getBot() {
         botInstance.start(async (ctx) => {
             try {
                 const message =
-    `${INVISIBLE_LINK}<b>Приветствуем в</b> <b><a href="https://t.me/PlacedGamesBot">Placed Games</a></b>\n\n` +
+    `<b>Приветствуем в</b> <b><a href="https://t.me/PlacedGamesBot">Placed Games</a></b>\n\n` +
     `<b><a href="https://t.me/GemStormBot">Placed Games</a></b> - это магазин для покупки доната в <b>разные игры.</b>`;
                 await ctx.reply(message, {
                     parse_mode: 'HTML',

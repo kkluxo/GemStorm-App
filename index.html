@@ -3870,9 +3870,11 @@ if (currentPageId === "game") {
   savedGameScrollY = window.scrollY;
 }
     if (currentPageId && currentPageId !== pageId && !skipHistoryAdd) {
-      const lastInHistory = navigationHistory[navigationHistory.length - 1];
-      if (lastInHistory !== currentPageId) { navigationHistory.push(currentPageId); }
-    }
+  const lastInHistory = navigationHistory[navigationHistory.length - 1];
+  if (lastInHistory !== currentPageId && currentPageId !== "game") {
+    navigationHistory.push(currentPageId);
+  }
+}
     if (pageId === "catalog") { navigationHistory = []; }
     if (isPromoMode) {
       isPromoMode = false;

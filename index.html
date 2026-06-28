@@ -3399,7 +3399,7 @@ function buildItemsHtml(itemsArr) {
           </div>
         </div>
         
-        <div class="review-items-card" id="previewItemsCard" style="border-radius:28px;margin-top:0;padding-top:16px;">
+        <div style="position:relative;margin-top:-28px;z-index:1;background:#141416;border:1px solid #2B2B2D;border-radius:0 0 28px 28px;padding:12px 18px;padding-top:40px;" id="previewItemsCard">
   ${buildItemsHtml(orderItemsMap[completedOrders[0]?.id])}
 </div>
       `;

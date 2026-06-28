@@ -145,8 +145,14 @@ window.products = window.brawlProducts; // для обратной совмес�
 
 // ===== CLASH ROYALE =====
 const crRaw = [
-  [1, "Название товара", "1.99", "1.99", "Категория", "Категория", 1, [], true, "URL"],
-  // ...
+  [1, "Pass Royale", "11.99", "11.99", "Пропуски", "Пропуски", 1, [], true, "https://store.supercell.com/assets/offer-images/clashroyale/c220364329b3742e4ffbab70be0869f8a54e8843e0393381c07e0d9e7bc11d75/clashroyale.5000050-x1-SeasonPass.png"],
+  [2, "Мини-пропуск", "3.99", "3.99", "Пропуски", "Пропуски", 1, [], true, "https://store.supercell.com/assets/offer-images/clashroyale/37c6222472d10746cfaf28ebb20ea8b93cd81ab413e82969bae016b9c9603b30/clashroyale.664434-x1-MiniPass.png"],
+  [3, "80 гемов", "0.99", "0.99", "Кристаллы", "Кристаллы", 1, [], true, "https://store.supercell.com/assets/offer-images/clashroyale/fceb25deefb2473a93e0820c7720bceb00102c8639f25b05e64616f539f2359b/clashroyale.5000000-x80-Gems.png"],
+  [4, "500 гемов", "4.99", "4.99", "Кристаллы", "Кристаллы", 1, [], true, "https://store.supercell.com/assets/offer-images/clashroyale/bfc2cd8fbbee541961ec21770b63ac4bbf5809707cbe71d901a3e0837e6b30bb/clashroyale.5000000-x500-Gems.png"],
+  [5, "1200 гемов", "9.99", "9.99", "Кристаллы", "Кристаллы", 1, [], true, "https://store.supercell.com/assets/offer-images/clashroyale/80b3cdf4ab35523da4fc0e935d02c1a6f5adc7aa06cd11a382e4648036d8ca79/clashroyale.5000000-x1200-Gems.png"],
+  [6, "2500 гемов", "19.99", "19.99", "Кристаллы", "Кристаллы", 1, [], true, "https://store.supercell.com/assets/offer-images/clashroyale/7414bf980a9f3de2ea7e7dbf893c5813ff8e2ce112d78019764eb4156f61be65/clashroyale.5000000-x2500-Gems.png"],
+
+
 ];
 window.crProducts = makeProducts(crRaw, 'cr_');
 

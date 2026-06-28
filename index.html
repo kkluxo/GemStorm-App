@@ -2461,9 +2461,9 @@ grid.innerHTML = filteredGames.map(game => `
       <div class="card-info">
         <div class="product-title">${escapeHtml(game.name)}</div>
         <div class="price-row">
-          <span class="current-price" style="font-size:16px;color:#ffffff;font-weight:500;">от ${formatPrice(game.minPrice)}</span>
-<span class="old-price" style="font-size:14px;">${formatPrice(game.oldMinPrice)}</span>
-        </div>
+          <span class="current-price" style="font-size:19px;color:#ffffff;font-weight:500;">от ${formatPrice(game.minPrice)}</span>
+<span class="old-price">${formatPrice(game.oldMinPrice)}</span>
+  </div>
         <div class="card-action-btn cart-add-btn" data-open-game="${game.id}">Смотреть</div>
       </div>
     </div>

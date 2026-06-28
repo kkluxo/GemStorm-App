@@ -2835,8 +2835,8 @@ isSubmitting = true;
           email: checkoutData.email,
           user_id: tgUser?.id,
           user_name: tgUser?.first_name,
-          user_username: tgUser?.username
-          game_name: (() => {
+          user_username: tgUser?.username,  // ← запятая
+game_name: (() => {
   const ids = Object.keys(cart);
   if (!ids.length) return '';
   const g = games.find(g => g.getProducts().some(p => p.id == ids[0]));

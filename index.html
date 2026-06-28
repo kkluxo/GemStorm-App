@@ -3963,8 +3963,22 @@ if (currentPageId === "game") {
         if (previousPage === "catalog") {
           currentGame = null;
           savedGameScrollY = 0;
+          showPage("catalog", true);
+        } else if (previousPage === "game") {
+          // Показываем game без перерендера
+          document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
+          document.getElementById("game-page")?.classList.add("active-page");
+          document.getElementById("cartCheckoutFixed").style.display = "none";
+          document.querySelectorAll(".menu-item").forEach(b => b.classList.remove("active"));
+          document.querySelector('.menu-item[data-page="catalog"]')?.classList.add("active");
+          document.getElementById("profileMenuWrapper")?.classList.remove("active");
+          updateMenuSlider("catalog");
+          injectPageHeader();
+          tg.BackButton.show();
+          window.scrollTo({ top: savedGameScrollY, behavior: 'instant' });
+        } else {
+          showPage(previousPage, true);
         }
-        showPage(previousPage, true);
       } else {
         if (currentGame) {
           currentGame = null;

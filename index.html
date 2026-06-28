@@ -2274,6 +2274,8 @@ const games = [
     name: 'Brawl Stars',
     developer: 'Supercell',
     image: 'https://i.postimg.cc/SNRVmpJV/IMG-7689.jpg',
+    minPrice: 85,
+    oldMinPrice: 89,
     getProducts: () => window.brawlProducts || []
   },
   {
@@ -2281,6 +2283,8 @@ const games = [
     name: 'Clash Royale',
     developer: 'Supercell',
     image: 'https://i.postimg.cc/4NywXTmv/IMG-7688.png',
+    minPrice: 85,
+    oldMinPrice: 89,
     getProducts: () => window.crProducts || []
   },
   {
@@ -2288,6 +2292,8 @@ const games = [
     name: 'Clash of Clans',
     developer: 'Supercell',
     image: 'https://i.postimg.cc/bNrLqjsm/IMG-7691.png',
+    minPrice: 85,
+    oldMinPrice: 89,
     getProducts: () => window.cocProducts || []
   },
   {
@@ -2295,6 +2301,8 @@ const games = [
     name: 'Roblox',
     developer: 'Roblox Corporation',
     image: 'https://i.postimg.cc/gkj4GPns/IMG-7692.jpg',
+    minPrice: 42,
+    oldMinPrice: 44,
     getProducts: () => window.robloxProducts || []
   }
 ];
@@ -2453,7 +2461,8 @@ grid.innerHTML = filteredGames.map(game => `
       <div class="card-info">
         <div class="product-title">${escapeHtml(game.name)}</div>
         <div class="price-row">
-          <span class="current-price" style="font-size:16px;color:#9ca3af;font-weight:400;">${escapeHtml(game.developer)}</span>
+          <span class="current-price" style="font-size:16px;color:#ffffff;font-weight:500;">от ${formatPrice(game.minPrice)}</span>
+<span class="old-price" style="font-size:14px;">${formatPrice(game.oldMinPrice)}</span>
         </div>
         <div class="card-action-btn cart-add-btn" data-open-game="${game.id}">Смотреть</div>
       </div>

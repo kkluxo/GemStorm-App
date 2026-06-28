@@ -3072,7 +3072,14 @@ game_name: (() => {
       </div>
       <div class="order-detail-row">
   <span class="order-detail-label">Сервис</span>
-  <span class="order-detail-value">${escapeHtml(order.game_name || '—')}</span>
+  <span class="order-detail-value">${escapeHtml(order.game_name || (() => {
+  let items = [];
+  try { items = JSON.parse(order.items || '[]'); } catch(e) {}
+  if (!items.length) return '—';
+  const firstItem = items[0];
+  const game = games.find(g => g.getProducts().some(p => p.name === firstItem.name));
+  return game?.name || '—';
+})())}</span>
 </div>
       <div class="order-detail-row">
         <span class="order-detail-label">Способ оплаты</span>

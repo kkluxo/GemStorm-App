@@ -175,5 +175,11 @@ const robloxRaw = [
 ];
 window.robloxProducts = makeProducts(robloxRaw, 'roblox_');
 
+const tgRaw = [
+  [1, "Премиум 3 месяца", "1.99", "1.99", "Категория", "Категория", 1, [], true, "URL"],
+  // ...
+];
+window.tgProducts = makeProducts(tgRaw, 'tg_');
+
 const products = window.brawlProducts;
 window.products = products;

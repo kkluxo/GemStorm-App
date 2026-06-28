@@ -3244,7 +3244,7 @@ fetch('https://gemstorm.up.railway.app/api/reviews')
       <select id="reviewGameSelect" style="position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer;font-size:16px;"></select>
     </div>
   </div>
-  <div id="reviewsList"><div class="review-empty">Загрузка отзывов...</div></div>`;
+  <div id="reviewsList" style="margin-top:11px;"><div class="review-empty">Загрузка отзывов...</div></div>
 
     let hasReviewableOrder = false;
     if (userId) {
@@ -3381,7 +3381,7 @@ function buildItemsHtml(itemsArr) {
 
       // Рендерим страницу
       container.innerHTML = `
-        <div class="order-data-card" style="margin-bottom:14px;">
+        <div class="order-data-card" style="margin-bottom:0;position:relative;z-index:2;">
           <div class="form-section">
             <div class="form-label">Выберите заказ</div>
             <select class="form-select-native" id="reviewOrderSelect">

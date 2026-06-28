@@ -47,7 +47,7 @@ const brawlRaw = [
   //[61, "Уравити Джанет", "7.99", "7.99", "MHA", "Hero Academy", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/567884c788d3b7ddd622c00b7f9455b95c80f9ee77938a2d2b59256dcb4365f0/brawlstars.29001595-x1-Skin.png"],
 
   // Strikers
-  [11, "Набор: 3 скина", "24.99", "24.99", "Strikers", "Strikers", 1, [11,12], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/Strikers.JPEG"],
+  [11, "Набор: 3 скина", "24.99", "24.99", "Strikers", "Strikers", 1, [11,12], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/StrikersSet.JPEG"],
   [12, "Табло Вольт", "9.99", "9.99", "Strikers", "Strikers", 1, [11,12], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/TabloVolt.JPEG"],
   [13, "Судья Милп", "9.99", "9.99", "Strikers", "Strikers", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/JudgeMilp.JPEG"],
   [14, "Суперфорвард Лу", "14.99", "14.99", "Strikers", "Strikers", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/SuperforwardLu.JPEG"],

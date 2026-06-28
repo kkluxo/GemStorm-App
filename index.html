@@ -2395,6 +2395,7 @@ const cartGame = games.find(g => g.getProducts().some(p => p.id === firstId));
       else if (cart[pid] > 0) cart[pid]--;
     }
     if (document.getElementById("catalog-page").classList.contains("active-page")) { updateSingleCard(pid); }
+    if (document.getElementById("game-page").classList.contains("active-page")) { updateSingleCard(pid); }
     if (document.getElementById("cart-page").classList.contains("active-page")) { renderCartPage(); }
     else if (document.getElementById("checkout-page").classList.contains("active-page")) { renderCheckoutForm(); }
     else { document.getElementById("cartCheckoutFixed").style.display = "none"; }

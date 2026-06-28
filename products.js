@@ -47,7 +47,7 @@ const brawlRaw = [
   //[61, "Уравити Джанет", "7.99", "7.99", "MHA", "Hero Academy", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/567884c788d3b7ddd622c00b7f9455b95c80f9ee77938a2d2b59256dcb4365f0/brawlstars.29001595-x1-Skin.png"],
 
   // Strikers
-  [11, "Набор: 3 скина", "24.99", "24.99", "Strikers", "Strikers", 1, [11,12], true, "https://https://i.postimg.cc/L8JzDq9Q/A246CBBC-F479-4C85-96C3-855F8C9E0048.jpg"],
+  [11, "Набор: 3 скина", "24.99", "24.99", "Strikers", "Strikers", 1, [11,12], true, "https://i.postimg.cc/L8JzDq9Q/A246CBBC-F479-4C85-96C3-855F8C9E0048.jpg"],
   [12, "Табло Вольт", "9.99", "9.99", "Strikers", "Strikers", 1, [11,12], true, "https://i.postimg.cc/mgPQjcLX/250C2C8C-2755-404B-B4A7-50193426C7FD.jpg"],
   [13, "Судья Милп", "9.99", "9.99", "Strikers", "Strikers", 1, [], true, "https://i.postimg.cc/qvN8wtJ1/A2DAA4B5-D5D4-4FF2-ABED-393FA32E9D9B.jpg"],
   [14, "Суперфорвард Лу", "14.99", "14.99", "Strikers", "Strikers", 1, [], true, "https://i.postimg.cc/7Z5g9CHm/439A613A-9658-4558-B0A5-DB381981F708.jpg"],
@@ -142,7 +142,7 @@ window.products = window.brawlProducts; // для обратной совмес�
 
 // ===== CLASH ROYALE =====
 const crRaw = [
-  [1, "Pass Royale", "11.99", "11.99", "Пропуски", "Пропуски", 1, [], true, "https://store.supercell.com/assets/offer-images/clashroyale/c220364329b3742e4ffbab70be0869f8a54e8843e0393381c07e0d9e7bc11d75/clashroyale.5000050-x1-SeasonPass.png"],
+  [1, "Pass Royale", "11.99", "11.99", "Пропуски", "Пропуски", 1, [], true, "https://i.postimg.cc/Jn568yBy/D768989D-DA0E-476C-84FC-926B9BC516D2.jpg"],
   [2, "Мини-пропуск", "3.99", "3.99", "Пропуски", "Пропуски", 1, [], true, "https://store.supercell.com/assets/offer-images/clashroyale/37c6222472d10746cfaf28ebb20ea8b93cd81ab413e82969bae016b9c9603b30/clashroyale.664434-x1-MiniPass.png"],
   [3, "80 гемов", "0.99", "0.99", "Кристаллы", "Кристаллы", 1, [], true, "https://store.supercell.com/assets/offer-images/clashroyale/fceb25deefb2473a93e0820c7720bceb00102c8639f25b05e64616f539f2359b/clashroyale.5000000-x80-Gems.png"],
   [4, "500 гемов", "4.99", "4.99", "Кристаллы", "Кристаллы", 1, [], true, "https://store.supercell.com/assets/offer-images/clashroyale/bfc2cd8fbbee541961ec21770b63ac4bbf5809707cbe71d901a3e0837e6b30bb/clashroyale.5000000-x500-Gems.png"],

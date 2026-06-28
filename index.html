@@ -2836,6 +2836,12 @@ isSubmitting = true;
           user_id: tgUser?.id,
           user_name: tgUser?.first_name,
           user_username: tgUser?.username
+          game_name: (() => {
+  const ids = Object.keys(cart);
+  if (!ids.length) return '';
+  const g = games.find(g => g.getProducts().some(p => p.id == ids[0]));
+  return g?.name || '';
+})(),
         };
 
         const success = await sendOrderToServer(order);
@@ -2969,7 +2975,10 @@ isSubmitting = true;
               </div>
             </div>
             <div class="order-date">${o.date} ${o.time || ''}</div>
-            <div class="order-total">${formatPrice(o.total)}</div>
+            <div class="order-total" style="display:flex;align-items:baseline;gap:8px;">
+  ${formatPrice(o.total)}
+  ${o.promo_discount ? `<span style="color:#9ca3af;text-decoration:line-through;font-size:14px;">${formatPrice(Math.round(o.total / (1 - o.promo_discount / 100)))}</span>` : ''}
+</div>
           </div>
           <div class="order-items-card">
             ${itemsHtml}
@@ -3061,6 +3070,10 @@ isSubmitting = true;
         <span class="order-detail-label">Дата</span>
         <span class="order-detail-value">${order.date} ${order.time || ''}</span>
       </div>
+      <div class="order-detail-row">
+  <span class="order-detail-label">Сервис</span>
+  <span class="order-detail-value">${escapeHtml(order.game_name || '—')}</span>
+</div>
       <div class="order-detail-row">
         <span class="order-detail-label">Способ оплаты</span>
         <span class="order-detail-value">${paymentMethod}</span>
@@ -3220,7 +3233,18 @@ fetch('https://gemstorm.up.railway.app/api/reviews')
     const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
     const userId = tgUser?.id;
 
-    container.innerHTML = `<div id="reviewsList"><div class="review-empty">Загрузка отзывов...</div></div>`;
+    container.innerHTML = `
+  <div class="search-section" style="display:flex;gap:10px;margin-bottom:11px;align-items:center;">
+    <div class="search-bar">
+      <img class="search-icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'%3E%3C/path%3E%3C/svg%3E">
+      <input type="text" class="search-input" id="reviewSearchInput" placeholder="Найти отзыв по товарам">
+    </div>
+    <div class="filter-btn" id="reviewFilterBtn" style="cursor:pointer;position:relative;overflow:hidden;">
+      <img class="filter-icon" src="https://storage.botpapa.me/files/bc7cbf30-49e0-11f1-bef9-f1ec7a2c6e45.png" alt="filter">
+      <select id="reviewGameSelect" style="position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer;font-size:16px;"></select>
+    </div>
+  </div>
+  <div id="reviewsList"><div class="review-empty">Загрузка отзывов...</div></div>`;
 
     let hasReviewableOrder = false;
     if (userId) {
@@ -3375,25 +3399,9 @@ function buildItemsHtml(itemsArr) {
           </div>
         </div>
         
-        <!-- Карточка предпросмотра -->
-        <div class="review-card-wrapper" id="reviewPreviewWrapper">
-          <div class="review-card">
-            <div class="review-header">
-              ${photoUrl
-                ? `<img style="width:38px;height:38px;border-radius:50%;object-fit:cover;flex-shrink:0;" src="${photoUrl}" alt="avatar">`
-                : `<div class="review-avatar">👤</div>`}
-              <div>
-                <div class="review-author-name">${escapeHtml(nickname)}</div>
-                <div class="review-date">предпросмотр</div>
-              </div>
-              <span class="review-order-badge" id="previewOrderBadge">#${completedOrders[0]?.order_number || ''}</span>
-            </div>
-            <div class="review-text" id="previewText">...</div>
-          </div>
-          <div class="review-items-card" id="previewItemsCard">
-            ${buildItemsHtml(orderItemsMap[completedOrders[0]?.id])}
-          </div>
-        </div>
+        <div class="review-items-card" id="previewItemsCard" style="border-radius:28px;margin-top:0;padding-top:16px;">
+  ${buildItemsHtml(orderItemsMap[completedOrders[0]?.id])}
+</div>
       `;
 
       // Фиксированный блок с кнопкой отправки
@@ -3412,37 +3420,28 @@ function buildItemsHtml(itemsArr) {
 
       // Навешиваем обработчики
       setTimeout(() => {
-        const textarea = document.getElementById('reviewTextarea');
-        const counter = document.getElementById('reviewCharCount');
-        const previewText = document.getElementById('previewText');
-        const previewOrderBadge = document.getElementById('previewOrderBadge');
-        const previewItemsCard = document.getElementById('previewItemsCard');
-        const orderSelect = document.getElementById('reviewOrderSelect');
-        const submitBtn = document.getElementById('reviewSubmitBtnFixed');
+  const textarea = document.getElementById('reviewTextarea');
+  const counter = document.getElementById('reviewCharCount');
+  const previewItemsCard = document.getElementById('previewItemsCard');
+  const orderSelect = document.getElementById('reviewOrderSelect');
+  const submitBtn = document.getElementById('reviewSubmitBtnFixed');
 
-        // Обновление предпросмотра при вводе
-        textarea?.addEventListener('input', function() {
-          let val = this.value.replace(/[\r\n]/g, '');
-          if (val !== this.value) this.value = val;
-          if (counter) counter.textContent = `${val.length}/70`;
-          if (previewText) previewText.textContent = val.trim() || '...';
-        });
+  textarea?.addEventListener('input', function() {
+    let val = this.value.replace(/[\r\n]/g, '');
+    if (val !== this.value) this.value = val;
+    if (counter) counter.textContent = `${val.length}/70`;
+  });
 
-        // Запрет ввода Enter в textarea
-        textarea?.addEventListener('keydown', function(e) {
-          if (e.key === 'Enter') e.preventDefault();
-        });
+  textarea?.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') e.preventDefault();
+  });
 
-        // Обновление предпросмотра при смене заказа
-        orderSelect?.addEventListener('change', function() {
-          const selected = this.options[this.selectedIndex];
-          const num = selected?.dataset.num || '';
-          const orderId = this.value;
-          if (previewOrderBadge) previewOrderBadge.textContent = `#${num}`;
-          if (previewItemsCard) {
-            previewItemsCard.innerHTML = buildItemsHtml(orderItemsMap[orderId]);
-          }
-        });
+  orderSelect?.addEventListener('change', function() {
+    const orderId = this.value;
+    if (previewItemsCard) {
+      previewItemsCard.innerHTML = buildItemsHtml(orderItemsMap[orderId]);
+    }
+  });
 
         // ===== ОСНОВНОЙ ОБРАБОТЧИК ОТПРАВКИ =====
         submitBtn?.addEventListener('click', async function() {
@@ -3695,6 +3694,72 @@ function attachGameCardEvents() {
       }
     }
   }
+  
+  function renderReviewsList(list) {
+  const container = document.getElementById('reviewsList');
+  if (!container) return;
+  if (!list.length) {
+    container.innerHTML = `<div class="review-empty">Пока нет отзывов</div>`;
+    return;
+  }
+  container.innerHTML = list.map(rv => {
+    const avatar = rv.photo_url
+      ? `<img style="width:38px;height:38px;border-radius:50%;object-fit:cover;flex-shrink:0;" src="${rv.photo_url}" alt="avatar">`
+      : `<div class="review-avatar">👤</div>`;
+    const dt = rv.created_at ? new Date(rv.created_at) : null;
+    const dateStr = dt ? `${dt.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})} ${dt.toLocaleDateString('ru-RU')}` : '';
+    const orderBadge = rv.order_number ? `<span class="review-order-badge" data-order-num="${rv.order_number}">#${rv.order_number}</span>` : '';
+    let itemsHtml = '';
+    let items = [];
+    try { items = JSON.parse(rv.order_items || '[]'); } catch(e) {}
+    if (items.length) {
+      itemsHtml = items.map(i => `<div class="review-item-row"><span class="review-item-name">${escapeHtml(i.name)}</span><span class="review-item-price" style="display:flex;align-items:center;gap:6px;flex-shrink:0;">${i.originalPrice && i.originalPrice !== i.price ? `<span style="color:#9ca3af;text-decoration:line-through;font-size:14px;">${formatPrice(i.originalPrice)}</span>` : ''}${formatPrice(i.price)}</span></div>`).join('');
+    }
+    return `<div class="review-card-wrapper"><div class="review-card"><div class="review-header">${avatar}<div><div class="review-author-name">${escapeHtml(rv.user_name || 'Пользователь')}</div><div class="review-date">${dateStr}</div></div>${orderBadge}</div><div class="review-text">${escapeHtml(rv.text)}</div></div>${itemsHtml ? `<div class="review-items-card">${itemsHtml}</div>` : ''}</div>`;
+  }).join('');
+  container.querySelectorAll('.review-order-badge').forEach(badge => {
+    badge.addEventListener('click', async () => {
+      hapticLight();
+      const orderNum = badge.textContent.replace('#', '').trim();
+      const tgUserId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
+      await loadUserOrders();
+      let found = orders.find(o => String(o.order_number) === orderNum);
+      if (found) {
+        const isOwner = String(found.user_id) === String(tgUserId);
+        navigationHistory.push('reviews');
+        setTimeout(() => showOrderDetail(found, isOwner), 0);
+      }
+    });
+  });
+}
+
+  function applyReviewFilters(list) {
+  const searchVal = document.getElementById('reviewSearchInput')?.value.toLowerCase() || '';
+  const gameVal = document.getElementById('reviewGameSelect')?.value || 'Все отзывы';
+  
+  let filtered = list;
+  
+  if (gameVal !== 'Все отзывы') {
+    filtered = filtered.filter(rv => {
+      let items = [];
+      try { items = JSON.parse(rv.order_items || '[]'); } catch(e) {}
+      // Ищем игру по названию через games
+      const game = games.find(g => g.name === gameVal);
+      if (!game) return false;
+      return items.some(i => game.getProducts().some(p => p.name === i.name));
+    });
+  }
+  
+  if (searchVal.trim()) {
+    filtered = filtered.filter(rv => {
+      let items = [];
+      try { items = JSON.parse(rv.order_items || '[]'); } catch(e) {}
+      return items.some(i => i.name.toLowerCase().includes(searchVal));
+    });
+  }
+  
+  renderReviewsList(filtered);
+}
 
   // Обновлённая функция loadReviewsList (убрана закреплённая карточка и алерт)
   async function loadReviewsList() {
@@ -3705,30 +3770,22 @@ function attachGameCardEvents() {
       const r = await fetch('https://gemstorm.up.railway.app/api/reviews');
       if (!r.ok) throw new Error();
       const list = await r.json();
+      // Заполняем фильтр играми
+const gameSelect = document.getElementById('reviewGameSelect');
+if (gameSelect) {
+  const gameNames = ['Все отзывы', ...games.map(g => g.name)];
+  gameSelect.innerHTML = gameNames.map(n => `<option value="${n}">${n}</option>`).join('');
+  gameSelect.onchange = () => { hapticLight(); applyReviewFilters(list); };
+}
+const searchInput = document.getElementById('reviewSearchInput');
+if (searchInput) {
+  searchInput.oninput = () => applyReviewFilters(list);
+}
+applyReviewFilters(list);
       if (!list.length) {
         container.innerHTML = `<div class="review-empty">Пока нет отзывов</div>`;
         return;
       }
-      container.innerHTML = list.map(rv => {
-        const avatar = rv.photo_url
-          ? `<img style="width:38px;height:38px;border-radius:50%;object-fit:cover;flex-shrink:0;" src="${rv.photo_url}" alt="avatar">`
-          : `<div class="review-avatar">👤</div>`;
-        const dt = rv.created_at ? new Date(rv.created_at) : null;
-        const dateStr = dt ? `${dt.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})} ${dt.toLocaleDateString('ru-RU')}` : '';
-        const orderBadge = rv.order_number ? `<span class="review-order-badge" data-order-num="${rv.order_number}" data-user-name="${escapeHtml(rv.user_name || 'Пользователь')}">#${rv.order_number}</span>` : '';
-        let itemsHtml = '';
-        let items = [];
-        try { items = JSON.parse(rv.order_items || '[]'); } catch(e) {}
-        if (items.length) {
-          itemsHtml = items.map(i => `<div class="review-item-row"><span class="review-item-name">${escapeHtml(i.name)}</span><span class="review-item-price" style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
-  ${i.originalPrice && i.originalPrice !== i.price 
-    ? `<span style="color:#9ca3af;text-decoration:line-through;font-size:14px;">${formatPrice(i.originalPrice)}</span>` 
-    : ''}
-  ${formatPrice(i.price)}
-  </span></div>`).join('');
-        }
-        return `<div class="review-card-wrapper"><div class="review-card"><div class="review-header">${avatar}<div><div class="review-author-name">${escapeHtml(rv.user_name || 'Пользователь')}</div><div class="review-date">${dateStr}</div></div>${orderBadge}</div><div class="review-text">${escapeHtml(rv.text)}</div></div>${itemsHtml ? `<div class="review-items-card">${itemsHtml}</div>` : ''}</div>`;
-      }).join('');
       // Убрал addEventListener на review-order-badge (алерт удалён)
       container.querySelectorAll('.review-order-badge').forEach(badge => {
   badge.addEventListener('click', async () => {

@@ -24,10 +24,10 @@ function makeProducts(raw, prefix) {
 
 const brawlRaw = [
   // Пропуски
-  [1, "Brawl Pass", "8.99", "8.99", "Пропуск", "Пропуски", 1, [1,2,3], true, "https://i.postimg.cc/W3HgLT1D/E0BFE07E-C22B-4D95-AC6C-D9C5F1AE2A6C.jpg"],
-  [2, "Brawl Pass Plus", "12.99", "12.99", "Пропуск", "Пропуски", 1, [1,2,3], true, "https://i.postimg.cc/B6VH94nP/CC18C26A-F4A8-4FA0-868B-FAA8D154C6B0.jpg"],
-  [3, "Улучш. до BP+", "4.99", "4.99", "Пропуск", "Пропуски", 1, [1,2,3], true, "https://i.postimg.cc/B6VH94nP/CC18C26A-F4A8-4FA0-868B-FAA8D154C6B0.jpg"],
-  [4, "Pro Pass", "24.99", "24.99", "Пропуск", "Пропуски", 1, [], true, "https://i.postimg.cc/NMzmqBjr/58016960-087B-4C8B-8CF3-227A8EC827B6.jpg"],
+  [1, "Brawl Pass", "8.99", "8.99", "Пропуск", "Пропуски", 1, [1,2,3], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/BrawlPass.JPEG"],
+  [2, "Brawl Pass Plus", "12.99", "12.99", "Пропуск", "Пропуски", 1, [1,2,3], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/BrawlPassPlus.JPEG"],
+  [3, "Улучш. до BP+", "4.99", "4.99", "Пропуск", "Пропуски", 1, [1,2,3], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/BrawlPassPlus.JPEG"],
+  [4, "Pro Pass", "24.99", "24.99", "Пропуск", "Пропуски", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/ProPass.JPEG"],
 
   // Боец Болт
   //[47, "Боец Болт", "8.99", "9.99", "Боец Болт", "Боец Болт", 1, [47,48], true, "https://store.supercell.com/assets/offer-images/brawlstars/ab15739c18373b4c23c775819fc499026cc0a0f6abbe55ba0d761f8be59a69e1/brawlstars.16000106-x1-Hero.png"],
@@ -47,10 +47,10 @@ const brawlRaw = [
   //[61, "Уравити Джанет", "7.99", "7.99", "MHA", "Hero Academy", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/567884c788d3b7ddd622c00b7f9455b95c80f9ee77938a2d2b59256dcb4365f0/brawlstars.29001595-x1-Skin.png"],
 
   // Strikers
-  [11, "Набор: 3 скина", "24.99", "24.99", "Strikers", "Strikers", 1, [11,12], true, "https://i.postimg.cc/L8JzDq9Q/A246CBBC-F479-4C85-96C3-855F8C9E0048.jpg"],
-  [12, "Табло Вольт", "9.99", "9.99", "Strikers", "Strikers", 1, [11,12], true, "https://i.postimg.cc/mgPQjcLX/250C2C8C-2755-404B-B4A7-50193426C7FD.jpg"],
-  [13, "Судья Милп", "9.99", "9.99", "Strikers", "Strikers", 1, [], true, "https://i.postimg.cc/qvN8wtJ1/A2DAA4B5-D5D4-4FF2-ABED-393FA32E9D9B.jpg"],
-  [14, "Суперфорвард Лу", "14.99", "14.99", "Strikers", "Strikers", 1, [], true, "https://i.postimg.cc/7Z5g9CHm/439A613A-9658-4558-B0A5-DB381981F708.jpg"],
+  [11, "Набор: 3 скина", "24.99", "24.99", "Strikers", "Strikers", 1, [11,12], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/Strikers.JPEG"],
+  [12, "Табло Вольт", "9.99", "9.99", "Strikers", "Strikers", 1, [11,12], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/TabloVolt.JPEG"],
+  [13, "Судья Милп", "9.99", "9.99", "Strikers", "Strikers", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/JudgeMilp.JPEG"],
+  [14, "Суперфорвард Лу", "14.99", "14.99", "Strikers", "Strikers", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/SuperforwardLu.JPEG"],
   
   // Esports
   //[15, "Победитель Отис", "4.99", "4.99", "Esports", "Esports", 1, [], true, "https://storage.botpapa.me/files/12adebb0-505b-11f1-bef9-f1ec7a2c6e45.jpeg"],
@@ -77,19 +77,19 @@ const brawlRaw = [
   //[81, "Зевс Брок", "6.99", "6.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/ad1e2810ae49f4e2d18f6e91accdfa29aff3c35a188e7c8434c0dfa8e17f955d/brawlstars.29000656-x1-Skin.png"],
   //[82, "Призрачный всадник Драко", "8.99", "8.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/9052f82dbec7d57547803a640d3c5b095010210866ff378b6ab3062dd75b66c4/brawlstars.29000943-x1-Skin.png"],
   //[83, "Родео Хэнк", "6.99", "6.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/0cfd49ba9b17b30f2e64a6219d645b0504bb908afa30d82ab8568e456c227a95/brawlstars.29000700-x1-Skin.png"],
-  [87, "Мультяшка Спайк", "8.99", "8.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://i.postimg.cc/pLmDC9WS/BEEA33E2-98AD-4083-9571-D71A1065C2DB.jpg"],
-  [88, "Тор Биби", "8.99", "8.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://i.postimg.cc/138pBgmj/BD77BEBD-657F-40B7-9186-2DD6E031B80D.jpg"],
-  [89, "Афина Пайпер", "6.99", "6.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://i.postimg.cc/HkrQzJYK/E4166992-96FB-4BEE-B830-EF34318E9CFD.jpg"],
+  [87, "Мультяшка Спайк", "8.99", "8.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/CartoonSpike.JPEG"],
+  [88, "Тор Биби", "8.99", "8.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/TorBibi.JPEG"],
+  [89, "Афина Пайпер", "6.99", "6.99", "Ежен. акция", "Ежен. акции", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/AthenaPiper.JPEG"],
 
   // Bling Deals
-  [19, "4000 блингов", "0.99", "0.99", "Bling Deal", "Bling Deals", 1, [], true, "https://i.postimg.cc/bwZQgGyT/1DCF305F-E3AA-45B7-90E6-8E0C333A4B64.jpg"],
-  [20, "5000 блингов", "4.99", "4.99", "Bling Deal", "Bling Deals", 1, [], true, "https://i.postimg.cc/bwZQgGyT/1DCF305F-E3AA-45B7-90E6-8E0C333A4B64.jpg"],
-  [41, "8000 блингов", "5.99", "5.99", "Bling Deal", "Bling Deals", 1, [], true, "https://i.postimg.cc/bwZQgGyT/1DCF305F-E3AA-45B7-90E6-8E0C333A4B64.jpg"],
-  [42, "8500 блингов", "5.99", "5.99", "Bling Deal", "Bling Deals", 1, [], true, "https://i.postimg.cc/bwZQgGyT/1DCF305F-E3AA-45B7-90E6-8E0C333A4B64.jpg"],
-  [75, "12000 блингов", "7.99", "7.99", "Bling Deal", "Bling Deals", 1, [], true, "https://i.postimg.cc/bwZQgGyT/1DCF305F-E3AA-45B7-90E6-8E0C333A4B64.jpg"],
-  [43, "12500 блингов", "7.99", "7.99", "Bling Deal", "Bling Deals", 1, [], true, "https://i.postimg.cc/bwZQgGyT/1DCF305F-E3AA-45B7-90E6-8E0C333A4B64.jpg"],
-  [54, "16000 блингов", "8.99", "8.99", "Bling Deal", "Bling Deals", 1, [], true, "https://i.postimg.cc/bwZQgGyT/1DCF305F-E3AA-45B7-90E6-8E0C333A4B64.jpg"],
-  [44, "20000 блингов", "8.99", "8.99", "Bling Deal", "Bling Deals", 1, [], true, "https://i.postimg.cc/bwZQgGyT/1DCF305F-E3AA-45B7-90E6-8E0C333A4B64.jpg"],
+  [19, "4000 блингов", "0.99", "0.99", "Bling Deal", "Bling Deals", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/Blings.JPEG"],
+  [20, "5000 блингов", "4.99", "4.99", "Bling Deal", "Bling Deals", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/Blings.JPEG"],
+  [41, "8000 блингов", "5.99", "5.99", "Bling Deal", "Bling Deals", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/Blings.JPEG"],
+  [42, "8500 блингов", "5.99", "5.99", "Bling Deal", "Bling Deals", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/Blings.JPEG"],
+  [75, "12000 блингов", "7.99", "7.99", "Bling Deal", "Bling Deals", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/Blings.JPEG"],
+  [43, "12500 блингов", "7.99", "7.99", "Bling Deal", "Bling Deals", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/Blings.JPEG"],
+  [54, "16000 блингов", "8.99", "8.99", "Bling Deal", "Bling Deals", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/Blings.JPEG"],
+  [44, "20000 блингов", "8.99", "8.99", "Bling Deal", "Bling Deals", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/Blings.JPEG"],
     
   // Esports
   //[62, "Набор: SK Gaming", "2.49", "2.49", "Esports", "Esports", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/a9e85d7aa92b4f683fc527706f8ff5263720706ff378c6be6574aaec9e698850/brawlstars.52002969-x1-Emote_28001084-x1-PlayerIcon_68000621-x1-Spray.png"],
@@ -104,38 +104,38 @@ const brawlRaw = [
   //[71, "Набор: FUT Esports", "2.49", "2.49", "Esports", "Esports", 1, [], true, "https://store.supercell.com/assets/offer-images/brawlstars/f87e8c285d976feb500ccd540ee4dddff9e4fd04e6dc5a43ed909b7d4568e3af/brawlstars.52002964-x1-Emote_28001077-x1-PlayerIcon_68000626-x1-Spray.png"],
   
   // Ежедневные акции
-  [76, "500 монет", "1.99", "1.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://i.postimg.cc/52XwgH4g/89B6DE65-52B5-4BAA-8890-ABBFD8267437.jpg"],
-  [35, "600 монет", "1.99", "1.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://i.postimg.cc/52XwgH4g/89B6DE65-52B5-4BAA-8890-ABBFD8267437.jpg"],
-  [36, "900 монет", "0.99", "0.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://i.postimg.cc/52XwgH4g/89B6DE65-52B5-4BAA-8890-ABBFD8267437.jpg"],
-  [37, "1100 монет", "3.99", "3.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://i.postimg.cc/52XwgH4g/89B6DE65-52B5-4BAA-8890-ABBFD8267437.jpg"],
-  [78, "1255 монет", "4.99", "4.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://i.postimg.cc/52XwgH4g/89B6DE65-52B5-4BAA-8890-ABBFD8267437.jpg"],
-  [38, "1750 монет", "1.99", "1.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://i.postimg.cc/52XwgH4g/89B6DE65-52B5-4BAA-8890-ABBFD8267437.jpg"],
-  [39, "900 очков силы", "0.99", "0.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://i.postimg.cc/9QDGb4m1/AF32B517-CEBA-4D64-883C-B829A471AA4E.jpg"],
-  [40, "1000 очков силы", "2.99", "2.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://i.postimg.cc/9QDGb4m1/AF32B517-CEBA-4D64-883C-B829A471AA4E.jpg"],
-  [75, "1800 очков силы", "1.99", "1.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://i.postimg.cc/9QDGb4m1/AF32B517-CEBA-4D64-883C-B829A471AA4E.jpg"],
-  [79, "2000 очков силы", "6.99", "6.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://i.postimg.cc/9QDGb4m1/AF32B517-CEBA-4D64-883C-B829A471AA4E.jpg"],
-  [72, "750 монет + 500 оч. силы", "4.99", "4.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://i.postimg.cc/NjK1DysS/1516B159-C4F3-4FE1-8CDD-505928458EFC.jpg"],
-  [73, "1400 монет + 800 оч. силы", "6.99", "6.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://i.postimg.cc/NjK1DysS/1516B159-C4F3-4FE1-8CDD-505928458EFC.jpg"],
-  [74, "1500 монет + 900 оч. силы", "6.99", "6.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://i.postimg.cc/NjK1DysS/1516B159-C4F3-4FE1-8CDD-505928458EFC.jpg"],
-  [77, "2000 монет + 500 оч. силы", "7.99", "7.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://i.postimg.cc/NjK1DysS/1516B159-C4F3-4FE1-8CDD-505928458EFC.jpg"],
-  [25, "50 гемов", "1.99", "1.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://i.postimg.cc/DwSq6Wv1/DBAA91BC-80D9-4D5F-A141-7E851EBEA0A1.jpg"],
-  [26, "60 гемов", "2.99", "2.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://i.postimg.cc/NjK1DysH/FBA27475-C985-42ED-846D-A2D756768155.jpg"],
-  [27, "90 гемов", "0.99", "0.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://i.postimg.cc/NjK1DysH/FBA27475-C985-42ED-846D-A2D756768155.jpg"],
-  [28, "95 гемов", "3.99", "3.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://i.postimg.cc/NjK1DysH/FBA27475-C985-42ED-846D-A2D756768155.jpg"],
-  [29, "100 гемов", "4.99", "4.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://i.postimg.cc/NjK1DysH/FBA27475-C985-42ED-846D-A2D756768155.jpg"],
-  [30, "120 гемов", "5.99", "5.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://i.postimg.cc/NjK1DysH/FBA27475-C985-42ED-846D-A2D756768155.jpg"],
-  [31, "140 гемов", "6.99", "6.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://i.postimg.cc/3xkg1y8j/A93A789B-6A9E-4290-87A9-CEACA9C2F4EA.jpg"],
-  [32, "160 гемов", "7.99", "7.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://i.postimg.cc/3xkg1y8j/A93A789B-6A9E-4290-87A9-CEACA9C2F4EA.jpg"],
-  [33, "180 гемов", "8.99", "8.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://i.postimg.cc/3xkg1y8j/A93A789B-6A9E-4290-87A9-CEACA9C2F4EA.jpg"],
-  [34, "180 гемов", "1.99", "1.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://i.postimg.cc/3xkg1y8j/A93A789B-6A9E-4290-87A9-CEACA9C2F4EA.jpg"],
+  [76, "500 монет", "1.99", "1.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/Coins.JPEG"],
+  [35, "600 монет", "1.99", "1.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/Coins.JPEG"],
+  [36, "900 монет", "0.99", "0.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/Coins.JPEG"],
+  [37, "1100 монет", "3.99", "3.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/Coins.JPEG"],
+  [78, "1255 монет", "4.99", "4.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/Coins.JPEG"],
+  [38, "1750 монет", "1.99", "1.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/Coins.JPEG"],
+  [39, "900 очков силы", "0.99", "0.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/Points.JPEG"],
+  [40, "1000 очков силы", "2.99", "2.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/Points.JPEG"],
+  [75, "1800 очков силы", "1.99", "1.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/Points.JPEG"],
+  [79, "2000 очков силы", "6.99", "6.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/Points.JPEG"],
+  [72, "750 монет + 500 оч. силы", "4.99", "4.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/Set.JPEG"],
+  [73, "1400 монет + 800 оч. силы", "6.99", "6.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/Set.JPEG"],
+  [74, "1500 монет + 900 оч. силы", "6.99", "6.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/Set.JPEG"],
+  [77, "2000 монет + 500 оч. силы", "7.99", "7.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/Set.JPEG"],
+  [25, "50 гемов", "1.99", "1.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/30Gems.JPEG"],
+  [26, "60 гемов", "2.99", "2.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/80Gems.JPEG"],
+  [27, "90 гемов", "0.99", "0.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/80Gems.JPEG"],
+  [28, "95 гемов", "3.99", "3.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/80Gems.JPEG"],
+  [29, "100 гемов", "4.99", "4.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/80Gems.JPEG"],
+  [30, "120 гемов", "5.99", "5.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/80Gems.JPEG"],
+  [31, "140 гемов", "6.99", "6.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/170Gems.JPEG"],
+  [32, "160 гемов", "7.99", "7.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/170Gems.JPEG"],
+  [33, "180 гемов", "8.99", "8.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/170Gems.JPEG"],
+  [34, "180 гемов", "1.99", "1.99", "Ежедн. акция", "Ежедн. акции", 1, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/170Gems.JPEG"],
   
   // Кристаллы
-  [5, "30 гемов", "1.99", "1.99", "Кристаллы", "Кристаллы", 3, [], true, "https://i.postimg.cc/DwSq6Wv1/DBAA91BC-80D9-4D5F-A141-7E851EBEA0A1.jpg"],
-  [6, "80 гемов", "4.99", "4.99", "Кристаллы", "Кристаллы", 3, [], true, "https://i.postimg.cc/NjK1DysH/FBA27475-C985-42ED-846D-A2D756768155.jpg"],
-  [7, "170 гемов", "8.99", "8.99", "Кристаллы", "Кристаллы", 3, [], true, "https://i.postimg.cc/3xkg1y8j/A93A789B-6A9E-4290-87A9-CEACA9C2F4EA.jpg"],
-  [8, "360 гемов", "19.99", "19.99", "Кристаллы", "Кристаллы", 3, [], true, "https://i.postimg.cc/138pBgmp/7A6A7CC6-F6C2-4D65-9B9E-554057FC09AD.jpg"],
-  [9, "950 гемов", "49.99", "49.99", "Кристаллы", "Кристаллы", 3, [], true, "https://i.postimg.cc/138pBgmG/FF24B142-DBD1-460D-871E-8421E4563760.jpg"],
-  [10, "2000 гемов", "99.99", "99.99", "Кристаллы", "Кристаллы", 3, [], true, "https://i.postimg.cc/fRVxC3zf/682E88F8-A51A-4880-B697-F86ACE0D3C86.jpg"]
+  [5, "30 гемов", "1.99", "1.99", "Кристаллы", "Кристаллы", 3, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/30Gems.JPEG"],
+  [6, "80 гемов", "4.99", "4.99", "Кристаллы", "Кристаллы", 3, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/80Gems.JPEG"],
+  [7, "170 гемов", "8.99", "8.99", "Кристаллы", "Кристаллы", 3, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/170Gems.JPEG"],
+  [8, "360 гемов", "19.99", "19.99", "Кристаллы", "Кристаллы", 3, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/360Gems.JPEG"],
+  [9, "950 гемов", "49.99", "49.99", "Кристаллы", "Кристаллы", 3, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/950Gems.JPEG"],
+  [10, "2000 гемов", "99.99", "99.99", "Кристаллы", "Кристаллы", 3, [], true, "https://cdn.jsdelivr.net/gh/melssed/PG@main/bs/2000Gems.JPEG"]
 ];
 window.brawlProducts = makeProducts(brawlRaw, 'bs_');
 window.products = window.brawlProducts; // для обратной совместимости

@@ -163,6 +163,12 @@ const cocRaw = [
 ];
 window.cocProducts = makeProducts(cocRaw, 'coc_');
 
+const hdRaw = [
+  [1, "Название товара", "1.99", "1.99", "Категория", "Категория", 1, [], true, "URL"],
+  // ...
+];
+window.hdProducts = makeProducts(hdRaw, 'hd_');
+
 // ===== ROBLOX =====
 const robloxRaw = [
   [1, "80 робуксов", "0.49", "0.49", "Робуксы", "Робуксы", 1, [], true, "https://i.postimg.cc/Wzy4fm0g/06BADDD1-A06A-4C6F-B498-E73C85183DE5.jpg"],
